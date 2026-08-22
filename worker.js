@@ -1,13 +1,22 @@
 const BYBIT_BASE = "https://api.bybit.com";
 
+// ===============================
+// SETTINGS
+// ===============================
+
 const TIMEFRAMES = [
   { key: "1", label: "1m", weight: 2 },
   { key: "3", label: "3m", weight: 3 },
   { key: "5", label: "5m", weight: 4 }
 ];
 
+// 200 ارز در مرحله اول
 const INITIAL_SCAN = 200;
+
+// فقط 20 ارز برتر تحلیل عمیق
 const DEEP_SCAN = 20;
+
+// برای تست، سیگنال خیلی سخت نباشد
 const MIN_SIGNAL_SCORE = 55;
 
 const cors = {
@@ -18,6 +27,7 @@ const cors = {
 
 export default {
   async fetch(request) {
+
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
@@ -29,7 +39,12 @@ export default {
 
     try {
 
+      // ===============================
+      // FUTURES
+      // ===============================
+
       if (url.pathname === "/api/futures") {
+
         const data = await bybit(
           "/v5/market/instruments-info?category=linear&limit=1000"
         );
@@ -53,7 +68,12 @@ export default {
         });
       }
 
+      // ===============================
+      // KLINE
+      // ===============================
+
       if (url.pathname === "/api/kline") {
+
         const symbol = normalizeSymbol(
           url.searchParams.get("symbol")
         );
@@ -88,7 +108,12 @@ export default {
         });
       }
 
+      // ===============================
+      // FOOTPRINT
+      // ===============================
+
       if (url.pathname === "/api/footprint") {
+
         const symbol = normalizeSymbol(
           url.searchParams.get("symbol")
         );
@@ -110,7 +135,12 @@ export default {
         });
       }
 
+      // ===============================
+      // MARKET
+      // ===============================
+
       if (url.pathname === "/api/market") {
+
         const symbol = normalizeSymbol(
           url.searchParams.get("symbol")
         );
@@ -132,7 +162,12 @@ export default {
         });
       }
 
+      // ===============================
+      // MANUAL ANALYZE
+      // ===============================
+
       if (url.pathname === "/api/analyze") {
+
         const symbol = normalizeSymbol(
           url.searchParams.get("symbol")
         );
@@ -145,16 +180,25 @@ export default {
         }
 
         const result =
-          await analyzeSymbol(symbol, true);
+          await analyzeSymbol(
+            symbol,
+            true
+          );
 
         return json({
           ok: true,
           ...result
         });
       }
+
+      // ===============================
+      // SCAN
+      // ===============================
 
       if (url.pathname === "/api/scan") {
-        const result = await scanMarket();
+
+        const result =
+          await scanMarket();
 
         return json({
           ok: true,
@@ -162,8 +206,14 @@ export default {
         });
       }
 
+      // ===============================
+      // ALERTS
+      // ===============================
+
       if (url.pathname === "/api/alerts") {
-        const result = await scanMarket();
+
+        const result =
+          await scanMarket();
 
         const alerts =
           result.results.filter(x =>
@@ -173,7 +223,8 @@ export default {
 
         return json({
           ok: true,
-          alerts
+          alerts,
+          timestamp: Date.now()
         });
       }
 
@@ -183,110 +234,141 @@ export default {
       }, 404);
 
     } catch (error) {
+
       return json({
         ok: false,
         error: "Worker error",
-        detail: error?.message || String(error)
+        detail:
+          error?.message ||
+          String(error)
       }, 500);
     }
   }
 };
 
 
-// =================================================
+// ======================================================
 // MARKET SCAN
-// =================================================
+// ======================================================
 
 async function scanMarket() {
 
-  const tickerData = await bybit(
-    "/v5/market/tickers?category=linear"
-  );
+  const tickerData =
+    await bybit(
+      "/v5/market/tickers?category=linear"
+    );
 
   const tickers =
     tickerData.result?.list || [];
 
-  // ابتدا 200 ارز فعال‌تر
-  const candidates = tickers
-    .filter(x =>
-      x.symbol &&
-      x.symbol.endsWith("USDT") &&
-      !x.symbol.includes("-") &&
-      Number(x.turnover24h || 0) > 0
-    )
-    .sort((a, b) => {
+  // ----------------------------------------------------
+  // مرحله اول:
+  // 200 ارز با اولویت بیشتر
+  // ----------------------------------------------------
 
-      const aScore =
-        Math.abs(Number(a.price24hPcnt || 0)) * 0.45 +
-        Math.log10(
-          Math.max(Number(a.turnover24h || 1), 1)
-        ) * 0.55;
+  const candidates =
+    tickers
+      .filter(x =>
+        x.symbol &&
+        x.symbol.endsWith("USDT") &&
+        !x.symbol.includes("-") &&
+        Number(x.turnover24h || 0) > 0
+      )
+      .sort((a, b) => {
 
-      const bScore =
-        Math.abs(Number(b.price24hPcnt || 0)) * 0.45 +
-        Math.log10(
-          Math.max(Number(b.turnover24h || 1), 1)
-        ) * 0.55;
+        const turnoverA =
+          Number(a.turnover24h || 0);
 
-      return bScore - aScore;
-    })
-    .slice(0, INITIAL_SCAN);
+        const turnoverB =
+          Number(b.turnover24h || 0);
 
-  // از بین 200 ارز، 20 ارز تحلیل عمیق
+        const changeA =
+          Math.abs(Number(a.price24hPcnt || 0));
+
+        const changeB =
+          Math.abs(Number(b.price24hPcnt || 0));
+
+        // ترکیب حجم + حرکت قیمت
+        const scoreA =
+          Math.log10(turnoverA + 1) +
+          changeA * 10;
+
+        const scoreB =
+          Math.log10(turnoverB + 1) +
+          changeB * 10;
+
+        return scoreB - scoreA;
+      })
+      .slice(0, INITIAL_SCAN);
+
+  // ----------------------------------------------------
+  // از 200 ارز:
+  // فقط 20 ارز تحلیل عمیق
+  // ----------------------------------------------------
+
   const deepCandidates =
     candidates.slice(0, DEEP_SCAN);
 
-  const results = [];
-
   const batchResults =
     await Promise.all(
-      deepCandidates.map(async ticker => {
+      deepCandidates.map(
+        async ticker => {
 
-        try {
-          return await analyzeSymbol(
-            ticker.symbol,
-            false
-          );
-        } catch (e) {
-          return {
-            symbol: ticker.symbol,
-            direction: "WAIT",
-            signal: "WAIT",
-            score: 0,
-            error: e.message
-          };
+          try {
+
+            return await analyzeSymbol(
+              ticker.symbol,
+              false
+            );
+
+          } catch (e) {
+
+            return {
+              symbol: ticker.symbol,
+              signal: "WAIT",
+              direction: "WAIT",
+              score: 0,
+              error: e?.message || String(e)
+            };
+          }
         }
-      })
+      )
     );
 
-  for (const r of batchResults) {
-
-    if (
-      r &&
-      r.signal !== "WAIT" &&
-      r.score >= MIN_SIGNAL_SCORE
-    ) {
-      results.push(r);
-    }
-  }
-
-  results.sort(
-    (a, b) => b.score - a.score
-  );
+  const results =
+    batchResults
+      .filter(x =>
+        x &&
+        x.signal !== "WAIT" &&
+        x.score >= MIN_SIGNAL_SCORE
+      )
+      .sort(
+        (a, b) =>
+          b.score - a.score
+      )
+      .slice(0, 10);
 
   return {
+
     scanned: candidates.length,
-    deepScanned: deepCandidates.length,
-    found: results.length,
-    results: results.slice(0, 10),
-    timestamp: Date.now()
+
+    deepScanned:
+      deepCandidates.length,
+
+    found:
+      results.length,
+
+    results,
+
+    timestamp:
+      Date.now()
   };
 }
 
 
-// =================================================
+// ======================================================
 // ANALYZE
-// =================================================
+// ======================================================
 
 async function analyzeSymbol(
   symbol,
@@ -295,32 +377,37 @@ async function analyzeSymbol(
 
   const tfResults =
     await Promise.all(
-      TIMEFRAMES.map(async tf => {
+      TIMEFRAMES.map(
+        async tf => {
 
-        try {
+          try {
 
-          const rows =
-            await getKlines(
-              symbol,
-              tf.key,
-              100
-            );
+            const rows =
+              await getKlines(
+                symbol,
+                tf.key,
+                100
+              );
 
-          return {
-            key: tf.key,
-            data: analyzeTimeframe(rows)
-          };
+            return {
+              key: tf.key,
+              data:
+                analyzeTimeframe(rows)
+            };
 
-        } catch (e) {
+          } catch (e) {
 
-          return {
-            key: tf.key,
-            data: {
-              error: e.message
-            }
-          };
+            return {
+              key: tf.key,
+              data: {
+                error:
+                  e?.message ||
+                  String(e)
+              }
+            };
+          }
         }
-      })
+      )
     );
 
   const timeframes = {};
@@ -335,7 +422,9 @@ async function analyzeSymbol(
       .filter(x => !x.error);
 
   if (!valid.length) {
-    throw new Error("No market data");
+    throw new Error(
+      "No market data"
+    );
   }
 
   let bullish = 0;
@@ -353,9 +442,14 @@ async function analyzeSymbol(
   let longScore = 0;
   let shortScore = 0;
 
+  // ----------------------------------------------------
+  // تایم‌فریم‌ها
+  // ----------------------------------------------------
+
   for (const tf of TIMEFRAMES) {
 
-    const x = timeframes[tf.key];
+    const x =
+      timeframes[tf.key];
 
     if (!x || x.error)
       continue;
@@ -405,10 +499,19 @@ async function analyzeSymbol(
     }
   }
 
+  // ----------------------------------------------------
+  // MARKET
+  // ----------------------------------------------------
 
   const market =
     await getMarketData(symbol);
 
+  const book =
+    market.orderBook;
+
+  // ----------------------------------------------------
+  // FOOTPRINT
+  // ----------------------------------------------------
 
   let footprint = null;
 
@@ -417,16 +520,26 @@ async function analyzeSymbol(
     footprint =
       await getFootprint(symbol);
 
-    if (footprint.deltaPercent > 12)
-      longScore += 10;
+    if (
+      footprint.deltaPercent > 12
+    ) {
+      longScore += 12;
+    }
 
-    if (footprint.deltaPercent < -12)
-      shortScore += 10;
+    if (
+      footprint.deltaPercent < -12
+    ) {
+      shortScore += 12;
+    }
   }
 
-
+  // ----------------------------------------------------
   // OI
-  if (market.oi.changePercent > 2) {
+  // ----------------------------------------------------
+
+  if (
+    market.oi.changePercent > 2
+  ) {
 
     if (longScore > shortScore)
       longScore += 5;
@@ -435,7 +548,9 @@ async function analyzeSymbol(
       shortScore += 5;
   }
 
-  if (market.oi.changePercent < -2) {
+  if (
+    market.oi.changePercent < -2
+  ) {
 
     if (longScore > shortScore)
       longScore += 3;
@@ -444,49 +559,67 @@ async function analyzeSymbol(
       shortScore += 3;
   }
 
+  // ----------------------------------------------------
+  // FUNDING
+  // ----------------------------------------------------
 
-  // Funding
-  if (market.funding.rate > 0.05) {
-    longScore -= 4;
-    shortScore += 3;
+  if (
+    market.funding.rate > 0.05
+  ) {
+
+    longScore -= 6;
+    shortScore += 4;
   }
 
-  if (market.funding.rate < -0.05) {
-    shortScore -= 4;
-    longScore += 3;
+  if (
+    market.funding.rate < -0.05
+  ) {
+
+    shortScore -= 6;
+    longScore += 4;
   }
 
-
-  // Order Book
-  const book = market.orderBook;
+  // ----------------------------------------------------
+  // ORDER BOOK
+  // ----------------------------------------------------
 
   if (
     book.bidRatio > 60 &&
     book.askRatio < 40
   ) {
-    longScore += 6;
+    longScore += 7;
   }
 
   if (
     book.askRatio > 60 &&
     book.bidRatio < 40
   ) {
-    shortScore += 6;
+    shortScore += 7;
   }
 
+  if (book.oppositeWallForLong)
+    longScore -= 12;
 
-  // Hunt
+  if (book.oppositeWallForShort)
+    shortScore -= 12;
+
+  // ----------------------------------------------------
+  // HUNT
+  // ----------------------------------------------------
+
   const hunt =
     detectLiquidityHunt(valid);
 
   if (hunt === "BULLISH_HUNT")
-    longScore += 6;
+    longScore += 7;
 
   if (hunt === "BEARISH_HUNT")
-    shortScore += 6;
+    shortScore += 7;
 
+  // ----------------------------------------------------
+  // LIQUIDATION
+  // ----------------------------------------------------
 
-  // Liquidation
   const liquidationPressure =
     detectLiquidationPressure(
       valid,
@@ -498,60 +631,82 @@ async function analyzeSymbol(
     liquidationPressure ===
     "LONG_LIQUIDATION"
   ) {
-    shortScore += 7;
+    shortScore += 8;
   }
 
   if (
     liquidationPressure ===
     "SHORT_LIQUIDATION"
   ) {
-    longScore += 7;
+    longScore += 8;
   }
 
-
-  // =================================================
-  // MULTI TF BONUS
-  // =================================================
-
-  if (bullish === 3)
-    longScore += 12;
-
-  else if (bullish === 2)
-    longScore += 7;
-
-  if (bearish === 3)
-    shortScore += 12;
-
-  else if (bearish === 2)
-    shortScore += 7;
-
-
-  // =================================================
-  // RAW DIRECTION
-  // =================================================
+  // ----------------------------------------------------
+  // DIRECTION
+  // ----------------------------------------------------
 
   let direction = "WAIT";
 
   if (
     longScore > shortScore &&
-    bullish >= 2
+    longScore >= 30
   ) {
     direction = "LONG";
   }
 
-  else if (
+  if (
     shortScore > longScore &&
-    bearish >= 2
+    shortScore >= 30
   ) {
     direction = "SHORT";
   }
 
+  // ----------------------------------------------------
+  // 3 TF CONFIRMATION
+  // ----------------------------------------------------
+
+  if (bullish === 3)
+    longScore += 15;
+
+  if (bearish === 3)
+    shortScore += 15;
+
+  // دو تایم‌فریم هم‌جهت هم امتیاز اضافه می‌گیرد
+  if (bullish === 2)
+    longScore += 8;
+
+  if (bearish === 2)
+    shortScore += 8;
+
+  // جهت نهایی
+  if (
+    longScore > shortScore &&
+    longScore >= 30
+  ) {
+    direction = "LONG";
+
+  } else if (
+    shortScore > longScore &&
+    shortScore >= 30
+  ) {
+    direction = "SHORT";
+
+  } else {
+    direction = "WAIT";
+  }
+
+  // ----------------------------------------------------
+  // MAIN TF
+  // ----------------------------------------------------
 
   const main =
     timeframes["5"] ||
     timeframes["3"] ||
     timeframes["1"];
 
+  // ----------------------------------------------------
+  // FINAL SCORE
+  // ----------------------------------------------------
 
   const score =
     calculateFinalScoreV10(
@@ -566,89 +721,95 @@ async function analyzeSymbol(
       liquidationPressure
     );
 
-
-  // =================================================
-  // SAFETY FILTER - سبک‌تر
-  // =================================================
+  // ----------------------------------------------------
+  // SAFETY
+  // ----------------------------------------------------
 
   let confirmed = true;
 
   const reasons = [];
 
-
+  // حداقل 2 تایم‌فریم
   if (
     direction === "LONG" &&
     bullish < 2
   ) {
+
     confirmed = false;
+
     reasons.push(
-      "تأیید حداقل ۲ تایم‌فریم صعودی لازم است"
+      "کمتر از ۲ تایم‌فریم صعودی"
     );
   }
-
 
   if (
     direction === "SHORT" &&
     bearish < 2
   ) {
+
     confirmed = false;
+
     reasons.push(
-      "تأیید حداقل ۲ تایم‌فریم نزولی لازم است"
+      "کمتر از ۲ تایم‌فریم نزولی"
     );
   }
 
-
-  // Footprint مخالف فقط امتیاز را کم می‌کند
-  // و دیگر به تنهایی سیگنال را حذف نمی‌کند.
-
+  // Footprint مخالف
   if (
     direction === "LONG" &&
     footprint &&
-    footprint.deltaPercent < -20
+    footprint.deltaPercent < -15
   ) {
+
+    confirmed = false;
 
     reasons.push(
       "Footprint مخالف LONG است"
     );
   }
 
-
   if (
     direction === "SHORT" &&
     footprint &&
-    footprint.deltaPercent > 20
+    footprint.deltaPercent > 15
   ) {
+
+    confirmed = false;
 
     reasons.push(
       "Footprint مخالف SHORT است"
     );
   }
 
-
-  // دیوار سفارش فقط هشدار است
+  // دیوار مخالف
   if (
     direction === "LONG" &&
     book.oppositeWallForLong
   ) {
+
+    confirmed = false;
 
     reasons.push(
       "دیوار فروش نزدیک ورود وجود دارد"
     );
   }
 
-
   if (
     direction === "SHORT" &&
     book.oppositeWallForShort
   ) {
+
+    confirmed = false;
 
     reasons.push(
       "دیوار خرید نزدیک ورود وجود دارد"
     );
   }
 
-
-  if (score < MIN_SIGNAL_SCORE) {
+  // امتیاز
+  if (
+    score < MIN_SIGNAL_SCORE
+  ) {
 
     confirmed = false;
 
@@ -657,10 +818,12 @@ async function analyzeSymbol(
     );
   }
 
-
   if (!confirmed)
     direction = "WAIT";
 
+  // ----------------------------------------------------
+  // TARGETS
+  // ----------------------------------------------------
 
   let targets = null;
 
@@ -672,11 +835,9 @@ async function analyzeSymbol(
     targets =
       calculateTargetsV10(
         main,
-        direction,
-        market
+        direction
       );
   }
-
 
   return {
 
@@ -693,7 +854,8 @@ async function analyzeSymbol(
 
     score,
 
-    price: main.price,
+    price:
+      main.price,
 
     entry:
       targets?.entry || null,
@@ -719,20 +881,23 @@ async function analyzeSymbol(
         direction,
         bullish,
         bearish,
-        market,
         book,
         footprint
       ),
 
-    bullishTimeframes: bullish,
+    bullishTimeframes:
+      bullish,
 
-    bearishTimeframes: bearish,
+    bearishTimeframes:
+      bearish,
 
     market,
 
-    orderBook: book,
+    orderBook:
+      book,
 
-    liquidityHunt: hunt,
+    liquidityHunt:
+      hunt,
 
     liquidationPressure,
 
@@ -745,14 +910,16 @@ async function analyzeSymbol(
 }
 
 
-// =================================================
+// ======================================================
 // TIMEFRAME
-// =================================================
+// ======================================================
 
 function analyzeTimeframe(rows) {
 
   if (!rows || rows.length < 30)
-    throw new Error("Not enough candles");
+    throw new Error(
+      "Not enough candles"
+    );
 
   const closes =
     rows.map(x => x.close);
@@ -770,7 +937,10 @@ function analyzeTimeframe(rows) {
     sma(closes, 20);
 
   const previousMA20 =
-    sma(closes.slice(0, -1), 20);
+    sma(
+      closes.slice(0, -1),
+      20
+    );
 
   let maSlope = "FLAT";
 
@@ -780,7 +950,6 @@ function analyzeTimeframe(rows) {
   if (ma20 < previousMA20)
     maSlope = "DOWN";
 
-
   let trend = "RANGE";
 
   if (ma7 > ma20)
@@ -789,14 +958,12 @@ function analyzeTimeframe(rows) {
   if (ma7 < ma20)
     trend = "BEARISH";
 
-
   const current =
     rows[rows.length - 1];
 
   const touchMA20 =
     current.low <= ma20 &&
     current.high >= ma20;
-
 
   const reaction =
     current.close > current.open
@@ -805,13 +972,11 @@ function analyzeTimeframe(rows) {
       ? "BEARISH"
       : "NEUTRAL";
 
-
   const structure =
     detectStructure(rows);
 
   const fvg =
     detectFVG(rows);
-
 
   const volumeMA7 =
     sma(volumes, 7);
@@ -822,7 +987,6 @@ function analyzeTimeframe(rows) {
   const volumeSpike =
     current.volume >
     volumeMA20 * 1.5;
-
 
   return {
 
@@ -845,34 +1009,52 @@ function analyzeTimeframe(rows) {
     fvg,
 
     volume: {
-      current: current.volume,
-      ma7: volumeMA7,
-      ma20: volumeMA20,
-      spike: volumeSpike
+
+      current:
+        current.volume,
+
+      ma7:
+        volumeMA7,
+
+      ma20:
+        volumeMA20,
+
+      spike:
+        volumeSpike
     }
   };
 }
 
 
-// =================================================
+// ======================================================
 // STRUCTURE
-// =================================================
+// ======================================================
 
 function detectStructure(rows) {
 
   if (rows.length < 12)
     return "NONE";
 
-  const n = rows.length;
+  const n =
+    rows.length;
 
-  const h1 = rows[n - 7].high;
-  const h2 = rows[n - 4].high;
-  const h3 = rows[n - 1].high;
+  const h1 =
+    rows[n - 7].high;
 
-  const l1 = rows[n - 7].low;
-  const l2 = rows[n - 4].low;
-  const l3 = rows[n - 1].low;
+  const h2 =
+    rows[n - 4].high;
 
+  const h3 =
+    rows[n - 1].high;
+
+  const l1 =
+    rows[n - 7].low;
+
+  const l2 =
+    rows[n - 4].low;
+
+  const l3 =
+    rows[n - 1].low;
 
   if (
     h3 > h2 &&
@@ -882,7 +1064,6 @@ function detectStructure(rows) {
     return "BULLISH";
   }
 
-
   if (
     h3 < h2 &&
     h2 < h1 &&
@@ -891,18 +1072,18 @@ function detectStructure(rows) {
     return "BEARISH";
   }
 
-
   return "NONE";
 }
 
 
-// =================================================
+// ======================================================
 // FVG
-// =================================================
+// ======================================================
 
 function detectFVG(rows) {
 
   if (rows.length < 3) {
+
     return {
       type: "NONE",
       bottom: null,
@@ -917,41 +1098,56 @@ function detectFVG(rows) {
   const c =
     rows[rows.length - 1];
 
-
   if (c.low > a.high) {
 
     return {
+
       type: "BULLISH",
-      bottom: a.high,
-      top: c.low,
-      status: "ACTIVE"
+
+      bottom:
+        a.high,
+
+      top:
+        c.low,
+
+      status:
+        "ACTIVE"
     };
   }
-
 
   if (c.high < a.low) {
 
     return {
+
       type: "BEARISH",
-      bottom: c.high,
-      top: a.low,
-      status: "ACTIVE"
+
+      bottom:
+        c.high,
+
+      top:
+        a.low,
+
+      status:
+        "ACTIVE"
     };
   }
 
-
   return {
+
     type: "NONE",
+
     bottom: null,
+
     top: null,
+
     status: "NONE"
   };
 }
 
 
-// =================================================
+// ======================================================
 // MARKET DATA
-// =================================================
+// ======================================================
 
 async function getMarketData(symbol) {
 
@@ -981,7 +1177,6 @@ async function getMarketData(symbol) {
       "&limit=25"
     );
 
-
   const [
     tickerData,
     oiData,
@@ -992,18 +1187,17 @@ async function getMarketData(symbol) {
     bookPromise
   ]);
 
-
   const ticker =
     tickerData.result?.list?.[0] || {};
 
   const oiList =
     oiData.result?.list || [];
 
-
   let oiCurrent = 0;
   let oiPrevious = 0;
 
   if (oiList.length > 0) {
+
     oiCurrent =
       Number(
         oiList[0].openInterest || 0
@@ -1011,12 +1205,12 @@ async function getMarketData(symbol) {
   }
 
   if (oiList.length > 1) {
+
     oiPrevious =
       Number(
         oiList[1].openInterest || 0
       );
   }
-
 
   const oiChangePercent =
     oiPrevious > 0
@@ -1026,39 +1220,49 @@ async function getMarketData(symbol) {
         ) * 100
       : 0;
 
-
   const bids =
     bookData.result?.b || [];
 
   const asks =
     bookData.result?.a || [];
 
-
   const orderBook =
     analyzeOrderBook(
       bids,
       asks,
-      Number(ticker.lastPrice || 0)
+      Number(
+        ticker.lastPrice || 0
+      )
     );
-
 
   return {
 
     price:
-      Number(ticker.lastPrice || 0),
+      Number(
+        ticker.lastPrice || 0
+      ),
 
     funding: {
+
       rate:
-        Number(ticker.fundingRate || 0) * 100,
+        Number(
+          ticker.fundingRate || 0
+        ) * 100,
 
       nextFunding:
         ticker.nextFundingTime || null
     },
 
     oi: {
-      current: oiCurrent,
-      previous: oiPrevious,
-      changePercent: oiChangePercent
+
+      current:
+        oiCurrent,
+
+      previous:
+        oiPrevious,
+
+      changePercent:
+        oiChangePercent
     },
 
     orderBook
@@ -1066,9 +1270,9 @@ async function getMarketData(symbol) {
 }
 
 
-// =================================================
+// ======================================================
 // ORDER BOOK
-// =================================================
+// ======================================================
 
 function analyzeOrderBook(
   bids,
@@ -1082,13 +1286,16 @@ function analyzeOrderBook(
   let biggestBid = 0;
   let biggestAsk = 0;
 
-
   for (const b of bids) {
 
-    const p = Number(b[0] || 0);
-    const q = Number(b[1] || 0);
+    const p =
+      Number(b[0] || 0);
 
-    const value = p * q;
+    const q =
+      Number(b[1] || 0);
+
+    const value =
+      p * q;
 
     bidValue += value;
 
@@ -1096,13 +1303,16 @@ function analyzeOrderBook(
       biggestBid = value;
   }
 
-
   for (const a of asks) {
 
-    const p = Number(a[0] || 0);
-    const q = Number(a[1] || 0);
+    const p =
+      Number(a[0] || 0);
 
-    const value = p * q;
+    const q =
+      Number(a[1] || 0);
+
+    const value =
+      p * q;
 
     askValue += value;
 
@@ -1110,10 +1320,8 @@ function analyzeOrderBook(
       biggestAsk = value;
   }
 
-
   const total =
     bidValue + askValue;
-
 
   const bidRatio =
     total > 0
@@ -1125,44 +1333,44 @@ function analyzeOrderBook(
       ? (askValue / total) * 100
       : 50;
 
-
   const averageBid =
-    bids.length > 0
+    bids.length
       ? bidValue / bids.length
       : 0;
 
   const averageAsk =
-    asks.length > 0
+    asks.length
       ? askValue / asks.length
       : 0;
-
-
-  const oppositeWallForLong =
-    biggestAsk >
-    averageAsk * 5;
-
-  const oppositeWallForShort =
-    biggestBid >
-    averageBid * 5;
-
 
   return {
 
     bidValue,
+
     askValue,
+
     bidRatio,
+
     askRatio,
+
     biggestBid,
+
     biggestAsk,
-    oppositeWallForLong,
-    oppositeWallForShort
+
+    oppositeWallForLong:
+      biggestAsk >
+      averageAsk * 5,
+
+    oppositeWallForShort:
+      biggestBid >
+      averageBid * 5
   };
 }
 
 
-// =================================================
+// ======================================================
 // FOOTPRINT
-// =================================================
+// ======================================================
 
 async function getFootprint(symbol) {
 
@@ -1175,32 +1383,37 @@ async function getFootprint(symbol) {
       "&limit=500"
     );
 
-
   const trades =
     data.result?.list || [];
-
 
   if (!trades.length) {
 
     return {
+
       trades: 0,
+
       buyVolume: 0,
+
       sellVolume: 0,
+
       delta: 0,
+
       deltaPercent: 0,
+
       buyRatio: 0,
+
       sellRatio: 0,
+
       largeTrade: false,
+
       largeTradeNotional: 0
     };
   }
-
 
   let buyVolume = 0;
   let sellVolume = 0;
 
   const notionals = [];
-
 
   for (const t of trades) {
 
@@ -1213,18 +1426,22 @@ async function getFootprint(symbol) {
     const notional =
       price * size;
 
-    notionals.push(notional);
-
+    notionals.push(
+      notional
+    );
 
     if (
-      String(t.side).toLowerCase() === "buy"
+      String(t.side)
+        .toLowerCase() === "buy"
     ) {
+
       buyVolume += size;
+
     } else {
+
       sellVolume += size;
     }
   }
-
 
   const total =
     buyVolume + sellVolume;
@@ -1247,34 +1464,32 @@ async function getFootprint(symbol) {
       ? (sellVolume / total) * 100
       : 0;
 
-
   const average =
     notionals.reduce(
       (a, b) => a + b,
       0
     ) / notionals.length;
 
-
-  let largest = 0;
-
-  for (const n of notionals) {
-
-    if (n > largest)
-      largest = n;
-  }
-
+  const largest =
+    Math.max(
+      ...notionals
+    );
 
   return {
 
-    trades: trades.length,
+    trades:
+      trades.length,
 
     buyVolume,
+
     sellVolume,
 
     delta,
+
     deltaPercent,
 
     buyRatio,
+
     sellRatio,
 
     largeTrade:
@@ -1289,9 +1504,9 @@ async function getFootprint(symbol) {
 }
 
 
-// =================================================
+// ======================================================
 // LIQUIDITY HUNT
-// =================================================
+// ======================================================
 
 function detectLiquidityHunt(
   analyses
@@ -1299,7 +1514,6 @@ function detectLiquidityHunt(
 
   let bullish = false;
   let bearish = false;
-
 
   for (const x of analyses) {
 
@@ -1310,7 +1524,6 @@ function detectLiquidityHunt(
       bullish = true;
     }
 
-
     if (
       x.structure === "BEARISH" &&
       x.reaction === "BEARISH"
@@ -1318,7 +1531,6 @@ function detectLiquidityHunt(
       bearish = true;
     }
   }
-
 
   if (bullish && !bearish)
     return "BULLISH_HUNT";
@@ -1330,9 +1542,9 @@ function detectLiquidityHunt(
 }
 
 
-// =================================================
-// LIQUIDATION PRESSURE
-// =================================================
+// ======================================================
+// LIQUIDATION
+// ======================================================
 
 function detectLiquidationPressure(
   analyses,
@@ -1346,14 +1558,12 @@ function detectLiquidationPressure(
   const delta =
     footprint?.deltaPercent || 0;
 
-
   if (
     oi < -2 &&
     delta < -12
   ) {
     return "LONG_LIQUIDATION";
   }
-
 
   if (
     oi < -2 &&
@@ -1362,14 +1572,13 @@ function detectLiquidationPressure(
     return "SHORT_LIQUIDATION";
   }
 
-
   return "NONE";
 }
 
 
-// =================================================
+// ======================================================
 // SCORE V10
-// =================================================
+// ======================================================
 
 function calculateFinalScoreV10(
   x,
@@ -1390,16 +1599,14 @@ function calculateFinalScoreV10(
     return 0;
   }
 
-
   let score = 0;
 
-
+  // MA
   if (
     direction === "LONG" &&
     x.maSlope === "UP"
   )
     score += 10;
-
 
   if (
     direction === "SHORT" &&
@@ -1407,69 +1614,65 @@ function calculateFinalScoreV10(
   )
     score += 10;
 
-
+  // Structure
   if (
     direction === "LONG" &&
     x.structure === "BULLISH"
   )
-    score += 10;
-
+    score += 12;
 
   if (
     direction === "SHORT" &&
     x.structure === "BEARISH"
   )
-    score += 10;
+    score += 12;
 
-
+  // FVG
   if (
     direction === "LONG" &&
     x.fvg.type === "BULLISH"
   )
-    score += 7;
-
+    score += 8;
 
   if (
     direction === "SHORT" &&
     x.fvg.type === "BEARISH"
   )
-    score += 7;
+    score += 8;
 
-
+  // MA20
   if (x.touchMA20)
-    score += 5;
+    score += 6;
 
-
+  // Volume
   if (x.volume.spike)
     score += 6;
 
-
-  // 3 تایم‌فریم
+  // 3 TF
   if (
     direction === "LONG" &&
     bullish === 3
   )
-    score += 20;
-
-  else if (
-    direction === "LONG" &&
-    bullish === 2
-  )
-    score += 12;
-
+    score += 18;
 
   if (
     direction === "SHORT" &&
     bearish === 3
   )
-    score += 20;
+    score += 18;
 
-  else if (
+  // 2 TF
+  if (
+    direction === "LONG" &&
+    bullish === 2
+  )
+    score += 10;
+
+  if (
     direction === "SHORT" &&
     bearish === 2
   )
-    score += 12;
-
+    score += 10;
 
   // Footprint
   if (footprint) {
@@ -1478,24 +1681,21 @@ function calculateFinalScoreV10(
       direction === "LONG" &&
       footprint.deltaPercent > 10
     )
-      score += 10;
-
+      score += 12;
 
     if (
       direction === "SHORT" &&
       footprint.deltaPercent < -10
     )
-      score += 10;
+      score += 12;
   }
 
-
-  // Order Book
+  // Order book
   if (
     direction === "LONG" &&
     book.bidRatio > 55
   )
     score += 5;
-
 
   if (
     direction === "SHORT" &&
@@ -1503,21 +1703,18 @@ function calculateFinalScoreV10(
   )
     score += 5;
 
-
   // Hunt
   if (
     direction === "LONG" &&
     hunt === "BULLISH_HUNT"
   )
-    score += 4;
-
+    score += 5;
 
   if (
     direction === "SHORT" &&
     hunt === "BEARISH_HUNT"
   )
-    score += 4;
-
+    score += 5;
 
   // Liquidation
   if (
@@ -1526,28 +1723,24 @@ function calculateFinalScoreV10(
   )
     score += 5;
 
-
   if (
     direction === "SHORT" &&
     liquidation === "LONG_LIQUIDATION"
   )
     score += 5;
 
-
-  // دیوار فقط کسر امتیاز
+  // مخالف
   if (
     direction === "LONG" &&
     book.oppositeWallForLong
   )
-    score -= 8;
-
+    score -= 15;
 
   if (
     direction === "SHORT" &&
     book.oppositeWallForShort
   )
-    score -= 8;
-
+    score -= 15;
 
   return Math.max(
     0,
@@ -1559,22 +1752,20 @@ function calculateFinalScoreV10(
 }
 
 
-// =================================================
+// ======================================================
 // CONFIRMATIONS
-// =================================================
+// ======================================================
 
 function countConfirmations(
   x,
   direction,
   bullish,
   bearish,
-  market,
   book,
   footprint
 ) {
 
   let c = 0;
-
 
   if (
     direction === "LONG" &&
@@ -1582,13 +1773,11 @@ function countConfirmations(
   )
     c++;
 
-
   if (
     direction === "SHORT" &&
     x.maSlope === "DOWN"
   )
     c++;
-
 
   if (
     direction === "LONG" &&
@@ -1596,65 +1785,41 @@ function countConfirmations(
   )
     c++;
 
-
   if (
     direction === "SHORT" &&
     x.structure === "BEARISH"
   )
     c++;
 
-
-  if (
-    direction === "LONG" &&
-    x.fvg.type === "BULLISH"
-  )
+  if (x.fvg.type !== "NONE")
     c++;
-
-
-  if (
-    direction === "SHORT" &&
-    x.fvg.type === "BEARISH"
-  )
-    c++;
-
 
   if (x.touchMA20)
     c++;
 
-
   if (x.volume.spike)
     c++;
 
-
   if (
-    direction === "LONG" &&
-    bullish >= 2
-  )
-    c++;
-
-
-  if (
-    direction === "SHORT" &&
+    bullish >= 2 ||
     bearish >= 2
   )
     c++;
 
+  if (footprint) {
 
-  if (
-    direction === "LONG" &&
-    footprint &&
-    footprint.deltaPercent > 10
-  )
-    c++;
+    if (
+      direction === "LONG" &&
+      footprint.deltaPercent > 10
+    )
+      c++;
 
-
-  if (
-    direction === "SHORT" &&
-    footprint &&
-    footprint.deltaPercent < -10
-  )
-    c++;
-
+    if (
+      direction === "SHORT" &&
+      footprint.deltaPercent < -10
+    )
+      c++;
+  }
 
   if (
     direction === "LONG" &&
@@ -1662,37 +1827,34 @@ function countConfirmations(
   )
     c++;
 
-
   if (
     direction === "SHORT" &&
     book.askRatio > 55
   )
     c++;
 
-
   return c;
 }
 
 
-// =================================================
+// ======================================================
 // TARGETS
-// =================================================
+// ======================================================
 
 function calculateTargetsV10(
   x,
-  direction,
-  market
+  direction
 ) {
 
   const price =
     Number(x.price);
 
-  // فعلاً برای تست 1.2%
   const risk =
     price * 0.012;
 
-
-  if (direction === "LONG") {
+  if (
+    direction === "LONG"
+  ) {
 
     return {
 
@@ -1713,7 +1875,6 @@ function calculateTargetsV10(
       rr: "1:3"
     };
   }
-
 
   return {
 
@@ -1736,9 +1897,9 @@ function calculateTargetsV10(
 }
 
 
-// =================================================
+// ======================================================
 // KLINES
-// =================================================
+// ======================================================
 
 async function getKlines(
   symbol,
@@ -1758,31 +1919,36 @@ async function getKlines(
       limit
     );
 
-
   return (
     data.result?.list || []
   )
     .reverse()
     .map(x => ({
 
-      time: Number(x[0]),
+      time:
+        Number(x[0]),
 
-      open: Number(x[1]),
+      open:
+        Number(x[1]),
 
-      high: Number(x[2]),
+      high:
+        Number(x[2]),
 
-      low: Number(x[3]),
+      low:
+        Number(x[3]),
 
-      close: Number(x[4]),
+      close:
+        Number(x[4]),
 
-      volume: Number(x[5])
+      volume:
+        Number(x[5])
     }));
 }
 
 
-// =================================================
+// ======================================================
 // BYBIT
-// =================================================
+// ======================================================
 
 async function bybit(path) {
 
@@ -1791,12 +1957,11 @@ async function bybit(path) {
       BYBIT_BASE + path,
       {
         headers: {
-          "Accept":
+          Accept:
             "application/json"
         }
       }
     );
-
 
   if (!response.ok) {
 
@@ -1806,10 +1971,8 @@ async function bybit(path) {
     );
   }
 
-
   const data =
     await response.json();
-
 
   if (
     data.retCode !== undefined &&
@@ -1822,14 +1985,13 @@ async function bybit(path) {
     );
   }
 
-
   return data;
 }
 
 
-// =================================================
+// ======================================================
 // HELPERS
-// =================================================
+// ======================================================
 
 function normalizeSymbol(symbol) {
 
@@ -1852,7 +2014,10 @@ function clamp(
 
   return Math.max(
     min,
-    Math.min(max, value)
+    Math.min(
+      max,
+      value
+    )
   );
 }
 
@@ -1868,12 +2033,10 @@ function sma(
   )
     return null;
 
-
   const part =
     data.slice(
       data.length - period
     );
-
 
   return (
     part.reduce(
