@@ -10,7 +10,7 @@ name="viewport"
 content="width=device-width,initial-scale=1"
 >
 
-<title>Bybit Futures Scanner</title>
+<title>Bybit Futures Scanner V10</title>
 
 <style>
 
@@ -75,8 +75,8 @@ button.scan{
 background:#2563eb
 }
 
-button.alert-off{
-background:#b42318
+button.stop{
+background:#b91c1c
 }
 
 .status{
@@ -89,7 +89,8 @@ line-height:1.8
 .tf{
 display:flex;
 gap:6px;
-margin-top:10px
+margin-top:10px;
+flex-wrap:wrap
 }
 
 .tf span{
@@ -210,13 +211,24 @@ color:#ffd740
 color:#8b949e
 }
 
-.alert-box{
-margin-top:10px;
-padding:10px;
-border-radius:10px;
+.alertBox{
 background:#11161d;
 border:1px solid #303947;
+border-radius:10px;
+padding:10px;
+margin-top:10px;
+line-height:1.8;
 font-size:13px
+}
+
+.alertOn{
+color:#00e676;
+font-weight:bold
+}
+
+.alertOff{
+color:#ff5252;
+font-weight:bold
 }
 
 @media(max-width:600px){
@@ -231,13 +243,19 @@ grid-template-columns:1fr 1fr
 
 </head>
 
+
 <body>
 
 <div class="container">
 
-<h1>📊 اسکنر فیوچرز Bybit</h1>
+
+<h1>
+📊 اسکنر فیوچرز Bybit
+</h1>
+
 
 <div class="card">
+
 
 <div class="row">
 
@@ -260,44 +278,58 @@ onclick="scanMarket()"
 
 </div>
 
+
 <div class="tf">
 
-<span>۱ دقیقه (1m)</span>
-<span>۳ دقیقه (3m)</span>
-<span>۵ دقیقه (5m)</span>
+<span>
+۱ دقیقه (1m)
+</span>
+
+<span>
+۳ دقیقه (3m)
+</span>
+
+<span>
+۵ دقیقه (5m)
+</span>
 
 </div>
 
-<div class="alert-box">
 
-<b>🔔 هشدار صوتی:</b>
+<div class="alertBox">
 
-<span id="alertStatus">
+<div>
+🔔 هشدار صوتی:
+<span
+id="alertStatus"
+class="alertOn"
+>
 فعال
 </span>
+</div>
+
+<div class="row">
 
 <button
 id="alertButton"
-class="alert-off"
+class="stop"
 onclick="toggleAlert()"
-style="margin-right:8px"
 >
 🔕 قطع هشدار
 </button>
 
-<br>
-
-<span id="alertMessage">
-هشدار فعال است.
-</span>
+</div>
 
 </div>
 
-<div id="status" class="status">
 
+<div
+id="status"
+class="status"
+>
 آماده اسکن Bybit
-
 </div>
+
 
 </div>
 
@@ -308,11 +340,14 @@ style="margin-right:8px"
 🏆 ۱۰ موقعیت برتر
 </div>
 
-<div id="scanInfo"
+
+<div
+id="scanInfo"
 class="status"
 >
-هنوز اسکن انجام نشده.
+۲۰۰ ارز بررسی اولیه نشده است.
 </div>
+
 
 <div id="results">
 
@@ -331,6 +366,7 @@ class="status"
 🔎 نتیجه تحلیل دستی
 </div>
 
+
 <div id="manual">
 
 <div class="empty">
@@ -341,37 +377,26 @@ class="status"
 
 </div>
 
+
 </div>
 
 
 <script>
 
-/* =========================================
-   ALERT SYSTEM
-========================================= */
 
-let alertEnabled =
-localStorage.getItem("bybitAlertEnabled") !== "false";
+const API_BASE = "";
+
+
+// =================================================
+// ALERT
+// =================================================
+
+let soundEnabled = true;
 
 let audioContext = null;
 
 
-/*
- * سیگنال‌هایی که قبلاً برایشان
- * هشدار داده شده.
- */
-
-let alertedSignals =
-JSON.parse(
-localStorage.getItem("bybitAlertedSignals") || "[]"
-);
-
-
-/* =========================================
-   AUDIO
-========================================= */
-
-function unlockAudio(){
+function initAudio(){
 
 try{
 
@@ -388,117 +413,70 @@ window.webkitAudioContext
 if(
 audioContext.state === "suspended"
 ){
-
 audioContext.resume();
-
 }
 
-}catch(e){
-
-console.log(
-"Audio error:",
-e
-);
-
-}
+}catch(e){}
 
 }
 
 
 function beep(){
 
-if(!alertEnabled)
+if(!soundEnabled)
 return;
 
 try{
 
-unlockAudio();
+initAudio();
 
-if(!audioContext)
-return;
-
-const now =
-audioContext.currentTime;
-
-for(
-let i=0;
-i<3;
-i++
-){
-
-const oscillator =
+const osc =
 audioContext.createOscillator();
 
 const gain =
 audioContext.createGain();
 
-oscillator.type =
-"sine";
+osc.type = "sine";
 
-oscillator.frequency.value =
-i === 0
-? 880
-: i === 1
-? 1100
-: 880;
+osc.frequency.value = 880;
 
-gain.gain.setValueAtTime(
-0.0001,
-now + i * 0.25
-);
+gain.gain.value = 0.15;
 
-gain.gain.exponentialRampToValueAtTime(
-0.35,
-now + i * 0.25 + 0.03
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.0001,
-now + i * 0.25 + 0.20
-);
-
-oscillator.connect(gain);
+osc.connect(gain);
 
 gain.connect(
 audioContext.destination
 );
 
-oscillator.start(
-now + i * 0.25
+osc.start();
+
+setTimeout(
+()=>{
+osc.frequency.value = 1100;
+},
+150
 );
 
-oscillator.stop(
-now + i * 0.25 + 0.21
+setTimeout(
+()=>{
+osc.stop();
+},
+400
 );
+
+}catch(e){}
 
 }
 
-}catch(e){
 
-console.log(
-"beep error:",
-e
-);
+function toggleAlert(){
 
-}
-
-}
-
-
-/* =========================================
-   ALERT TOGGLE
-========================================= */
-
-function updateAlertUI(){
+soundEnabled =
+!soundEnabled;
 
 const status =
 document.getElementById(
 "alertStatus"
-);
-
-const message =
-document.getElementById(
-"alertMessage"
 );
 
 const button =
@@ -506,151 +484,43 @@ document.getElementById(
 "alertButton"
 );
 
-if(alertEnabled){
+
+if(soundEnabled){
 
 status.textContent =
 "فعال";
 
-message.textContent =
-"هشدار فعال است.";
+status.className =
+"alertOn";
 
 button.textContent =
 "🔕 قطع هشدار";
-
-button.className =
-"alert-off";
 
 }else{
 
 status.textContent =
 "خاموش";
 
-message.textContent =
-"هشدار صوتی خاموش است.";
+status.className =
+"alertOff";
 
 button.textContent =
 "🔔 فعال کردن هشدار";
 
-button.className =
-"scan";
-
 }
 
 }
 
 
-function toggleAlert(){
-
-unlockAudio();
-
-alertEnabled =
-!alertEnabled;
-
-localStorage.setItem(
-"bybitAlertEnabled",
-String(alertEnabled)
-);
-
-updateAlertUI();
-
-if(alertEnabled){
-
-beep();
-
-}
-
-}
-
-
-/* =========================================
-   ALERT NEW SIGNAL
-========================================= */
-
-function checkAlerts(list){
-
-if(!alertEnabled)
-return;
-
-if(!Array.isArray(list))
-return;
-
-let newSignal = false;
-
-for(const r of list){
-
-if(
-!r ||
-(
-r.signal !== "CONFIRMED LONG" &&
-r.signal !== "CONFIRMED SHORT"
-)
-)
-continue;
-
-
-/*
- * شناسه منحصر به فرد سیگنال
- */
-
-const key =
-[
-r.symbol,
-r.direction,
-Math.round(r.score || 0)
-].join("_");
-
-
-if(
-!alertedSignals.includes(key)
-){
-
-alertedSignals.push(key);
-
-newSignal = true;
-
-}
-
-}
-
-
-/*
- * فقط سیگنال جدید زنگ می‌زند.
- */
-
-if(newSignal){
-
-if(
-alertedSignals.length > 100
-){
-
-alertedSignals =
-alertedSignals.slice(-100);
-
-}
-
-localStorage.setItem(
-"bybitAlertedSignals",
-JSON.stringify(
-alertedSignals
-)
-);
-
-beep();
-
-}
-
-}
-
-
-/* =========================================
-   NUMBER
-========================================= */
+// =================================================
+// FORMAT
+// =================================================
 
 function num(v){
 
 if(
-v === null ||
-v === undefined ||
+v===null ||
+v===undefined ||
 Number.isNaN(Number(v))
 )
 return "-";
@@ -668,8 +538,8 @@ maximumFractionDigits:8
 function pct(v){
 
 if(
-v === null ||
-v === undefined ||
+v===null ||
+v===undefined ||
 Number.isNaN(Number(v))
 )
 return "-";
@@ -678,10 +548,6 @@ return Number(v).toFixed(2)+"%";
 
 }
 
-
-/* =========================================
-   TRANSLATIONS
-========================================= */
 
 function trendFA(v){
 
@@ -753,7 +619,7 @@ function scoreClass(score){
 if(score>=75)
 return "green";
 
-if(score>=50)
+if(score>=55)
 return "yellow";
 
 return "gray";
@@ -761,9 +627,9 @@ return "gray";
 }
 
 
-/* =========================================
-   FOOTPRINT
-========================================= */
+// =================================================
+// FOOTPRINT
+// =================================================
 
 function renderFootprint(fp){
 
@@ -777,6 +643,7 @@ return `
 
 }
 
+
 if(fp.error){
 
 return `
@@ -788,6 +655,7 @@ ${fp.error}
 
 }
 
+
 return `
 
 <div class="section">
@@ -797,37 +665,27 @@ return `
 <div class="grid">
 
 <div class="box">
-
 <div class="label">
 حجم خرید
 </div>
-
 <div class="value green">
 ${num(fp.buyVolume)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 حجم فروش
 </div>
-
 <div class="value red">
 ${num(fp.sellVolume)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 دلتا
 </div>
-
 <div class="value ${
 fp.delta>=0
 ?"green"
@@ -835,16 +693,12 @@ fp.delta>=0
 }">
 ${num(fp.delta)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 دلتا درصد
 </div>
-
 <div class="value ${
 fp.deltaPercent>=0
 ?"green"
@@ -852,55 +706,39 @@ fp.deltaPercent>=0
 }">
 ${pct(fp.deltaPercent)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 نسبت خرید
 </div>
-
 <div class="value">
 ${pct(fp.buyRatio)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 نسبت فروش
 </div>
-
 <div class="value">
 ${pct(fp.sellRatio)}
 </div>
-
 </div>
-
 
 <div class="box">
-
 <div class="label">
-معاملات
+تعداد معاملات
 </div>
-
 <div class="value">
 ${num(fp.trades)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 معامله بزرگ
 </div>
-
 <div class="value ${
 fp.largeTrade
 ?"yellow"
@@ -912,7 +750,6 @@ fp.largeTrade
 :"❌ خیر"
 }
 </div>
-
 </div>
 
 </div>
@@ -922,13 +759,12 @@ fp.largeTrade
 <b>
 نتیجه Footprint:
 </b>
-
 <br>
 
 ${
-fp.delta > 0
+fp.delta>0
 ?"🟢 فشار خرید بیشتر است"
-:fp.delta < 0
+:fp.delta<0
 ?"🔴 فشار فروش بیشتر است"
 :"🟡 تعادل خرید و فروش"
 }
@@ -945,43 +781,19 @@ ${num(fp.largeTradeNotional)}
 }
 
 
-/* =========================================
-   RENDER SIGNAL
-========================================= */
+// =================================================
+// SIGNAL
+// =================================================
 
 function renderSignal(r){
 
 const cls =
-r.direction === "LONG"
+r.direction==="LONG"
 ?"long"
-:r.direction === "SHORT"
+:r.direction==="SHORT"
 ?"short"
 :"wait";
 
-let reasons = "";
-
-if(
-r.reasons &&
-r.reasons.length
-){
-
-reasons = `
-
-<div class="confirm">
-
-<b>⚠️ نکات:</b>
-
-<br>
-
-${r.reasons
-.map(x => "• "+x)
-.join("<br>")}
-
-</div>
-
-`;
-
-}
 
 return `
 
@@ -1022,80 +834,57 @@ ${r.score}/100
 <div class="grid">
 
 <div class="box">
-
 <div class="label">
 قیمت فعلی
 </div>
-
 <div class="value">
 ${num(r.price)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 ورود
 </div>
-
 <div class="value">
 ${num(r.entry)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 حد ضرر
 </div>
-
 <div class="value red">
 ${num(r.sl)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 هدف ۱
 </div>
-
 <div class="value green">
 ${num(r.tp1)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 هدف ۲
 </div>
-
 <div class="value green">
 ${num(r.tp2)}
 </div>
-
 </div>
 
-
 <div class="box">
-
 <div class="label">
 هدف ۳
 </div>
-
 <div class="value green">
 ${num(r.tp3)}
 </div>
-
 </div>
 
 </div>
@@ -1131,21 +920,19 @@ ${r.bearishTimeframes}/3
 <div class="confirm">
 
 <div class="section">
-📈 ۱ دقیقه
+📈 وضعیت ۱ دقیقه
 </div>
 
 ${renderTF(r.timeframes["1"])}
 
-
 <div class="section">
-📈 ۳ دقیقه
+📈 وضعیت ۳ دقیقه
 </div>
 
 ${renderTF(r.timeframes["3"])}
 
-
 <div class="section">
-📈 ۵ دقیقه
+📈 وضعیت ۵ دقیقه
 </div>
 
 ${renderTF(r.timeframes["5"])}
@@ -1153,9 +940,32 @@ ${renderTF(r.timeframes["5"])}
 </div>
 
 
-${renderFootprint(r.footprint)}
+${
+r.reasons &&
+r.reasons.length
+?
+`
 
-${reasons}
+<div class="confirm">
+
+<b>
+⚠️ نکات:
+</b>
+
+<br>
+
+${r.reasons
+.map(x=>`• ${x}`)
+.join("<br>")}
+
+</div>
+
+`
+:""
+}
+
+
+${renderFootprint(r.footprint)}
 
 </div>
 
@@ -1164,9 +974,9 @@ ${reasons}
 }
 
 
-/* =========================================
-   TF
-========================================= */
+// =================================================
+// TF
+// =================================================
 
 function renderTF(x){
 
@@ -1175,6 +985,7 @@ return "❌ اطلاعات دریافت نشد.";
 
 if(x.error)
 return "❌ "+x.error;
+
 
 return `
 
@@ -1209,36 +1020,36 @@ ${structureFA(x.structure)}
 <br>
 
 FVG:
-${fvgFA(x.fvg?.type)}
+${fvgFA(x.fvg.type)}
 
 <br>
 
 حجم فعلی:
-${num(x.volume?.current)}
+${num(x.volume.current)}
 
 <br>
 
 میانگین حجم 7:
-${num(x.volume?.ma7)}
+${num(x.volume.ma7)}
 
 <br>
 
 میانگین حجم 20:
-${num(x.volume?.ma20)}
+${num(x.volume.ma20)}
 
 <br>
 
 جهش حجم:
-${x.volume?.spike?"🔥 بله":"❌ خیر"}
+${x.volume.spike?"🔥 بله":"❌ خیر"}
 
 `;
 
 }
 
 
-/* =========================================
-   GET JSON
-========================================= */
+// =================================================
+// GET JSON
+// =================================================
 
 async function getJSON(url){
 
@@ -1263,13 +1074,13 @@ return data;
 }
 
 
-/* =========================================
-   MANUAL ANALYZE
-========================================= */
+// =================================================
+// MANUAL ANALYZE
+// =================================================
 
 async function analyzeSymbol(){
 
-unlockAudio();
+initAudio();
 
 const symbol =
 document
@@ -1278,11 +1089,13 @@ document
 .trim()
 .toUpperCase();
 
+
 const manual =
 document.getElementById("manual");
 
 const status =
 document.getElementById("status");
+
 
 if(!symbol){
 
@@ -1293,6 +1106,7 @@ return;
 
 }
 
+
 manual.innerHTML =
 `
 <div class="empty">
@@ -1300,22 +1114,28 @@ manual.innerHTML =
 </div>
 `;
 
+
 status.textContent =
 `⏳ تحلیل ${symbol} در ۱، ۳ و ۵ دقیقه...`;
+
 
 try{
 
 const data =
 await getJSON(
+API_BASE+
 "/api/analyze?symbol="+
 encodeURIComponent(symbol)
 );
 
+
 manual.innerHTML =
 renderSignal(data);
 
+
 status.textContent =
 `✅ تحلیل ${symbol} کامل شد.`;
+
 
 }catch(e){
 
@@ -1336,57 +1156,70 @@ status.textContent =
 }
 
 
-/* =========================================
-   MARKET SCAN
-========================================= */
+// =================================================
+// SCAN
+// =================================================
 
 async function scanMarket(){
 
-unlockAudio();
+initAudio();
 
 const results =
-document.getElementById("results");
+document.getElementById(
+"results"
+);
 
 const status =
-document.getElementById("status");
+document.getElementById(
+"status"
+);
 
 const scanInfo =
-document.getElementById("scanInfo");
+document.getElementById(
+"scanInfo"
+);
+
 
 results.innerHTML =
 `
 <div class="empty">
+
 ⏳ در حال اسکن سریع بازار...
+
 <br>
+
 ۲۰۰ ارز بررسی اولیه می‌شوند.
+
 <br>
-۲۰ ارز تحلیل عمیق می‌شوند.
+
+از بین آنها ۲۰ ارز تحلیل عمیق می‌شوند.
+
 </div>
 `;
 
-status.textContent =
-"⏳ دریافت ۲۰۰ ارز اولویت‌دار Bybit...";
 
-scanInfo.textContent =
-"⏳ در حال اسکن...";
+status.textContent =
+"⏳ دریافت و اولویت‌بندی ۲۰۰ ارز Bybit...";
+
 
 try{
 
 const data =
 await getJSON(
-"/api/scan"
+API_BASE+"/api/scan"
 );
+
 
 const list =
 data.results || [];
 
 
-/*
- * هشدار فقط برای
- * CONFIRMED LONG / SHORT
- */
-
-checkAlerts(list);
+scanInfo.innerHTML =
+`
+۲۰۰ ارز بررسی اولیه شدند.
+${data.deepScanned || 20}
+ارز تحلیل عمیق شدند.
+`;
 
 
 if(!list.length){
@@ -1394,7 +1227,9 @@ if(!list.length){
 results.innerHTML =
 `
 <div class="empty">
+
 🟡 فعلاً سیگنال تأییدشده‌ای پیدا نشد.
+
 </div>
 `;
 
@@ -1405,43 +1240,58 @@ list
 .map(renderSignal)
 .join("");
 
+
+if(soundEnabled){
+
+beep();
+
+}
+
 }
 
 
 status.textContent =
-`✅ اسکن کامل شد — ${list.length} موقعیت برتر از ${data.deepScanned || 20} ارز تحلیل عمیق.`;
+`
+✅ اسکن کامل شد —
+${list.length}
+موقعیت برتر از
+${data.deepScanned || 20}
+ارز تحلیل عمیق.
+`;
 
-scanInfo.textContent =
-`${data.scanned || 200} ارز بررسی اولیه شدند.
-${data.deepScanned || 20} ارز تحلیل عمیق شدند.`;
 
 }catch(e){
 
 results.innerHTML =
 `
 <div class="empty">
+
 ❌ خطا
+
 <br><br>
+
 ${e.message}
+
 </div>
 `;
 
 status.textContent =
 "❌ اسکن بازار انجام نشد.";
 
-scanInfo.textContent =
-"❌ خطا در اسکن";
-
 }
 
 }
 
 
-/* =========================================
-   START
-========================================= */
+// =================================================
+// AUTO INIT
+// =================================================
 
-updateAlertUI();
+document.addEventListener(
+"click",
+initAudio,
+{once:true}
+);
 
 </script>
 
