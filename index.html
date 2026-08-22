@@ -2,204 +2,156 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Crypto Scanner V2</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Crypto Scanner V3</title>
 
 <style>
-
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
-    margin:0;
-    background:#0b0f14;
-    color:#fff;
-    font-family:Arial,Tahoma,sans-serif;
+margin:0;
+background:#0b0f14;
+color:#fff;
+font-family:Arial,Tahoma,sans-serif
 }
 
 .container{
-    max-width:720px;
-    margin:auto;
-    padding:15px;
+max-width:760px;
+margin:auto;
+padding:14px
 }
 
 .card{
-    background:#151b23;
-    border:1px solid #293241;
-    border-radius:14px;
-    padding:15px;
-    margin-bottom:12px;
+background:#151b23;
+border:1px solid #293241;
+border-radius:14px;
+padding:15px;
+margin-bottom:12px
 }
 
-h1{
-    font-size:22px;
-    margin:5px 0 15px;
-}
-
-h2{
-    font-size:17px;
-    margin:5px 0 12px;
-}
+h1{font-size:22px;margin:5px 0 15px}
+h2{font-size:17px;margin:5px 0 12px}
 
 .row{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+display:flex;
+gap:8px;
+flex-wrap:wrap
 }
 
-input,
-select,
-button{
-    min-height:44px;
-    padding:9px 12px;
-    border-radius:9px;
-    border:1px solid #394555;
-    background:#0b0f14;
-    color:white;
-    font-size:15px;
+input,select,button{
+min-height:44px;
+padding:9px 12px;
+border-radius:9px;
+border:1px solid #394555;
+background:#0b0f14;
+color:white;
+font-size:15px
 }
 
 input{
-    flex:1;
-    min-width:150px;
+flex:1;
+min-width:140px
 }
 
 button{
-    background:#238636;
-    border:0;
-    font-weight:bold;
-    min-width:90px;
-}
-
-button:active{
-    opacity:.7;
+background:#238636;
+border:0;
+font-weight:bold;
+min-width:90px
 }
 
 .grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
 }
 
 .box{
-    background:#0b0f14;
-    border-radius:10px;
-    padding:13px;
-    text-align:center;
+background:#0b0f14;
+border-radius:10px;
+padding:12px;
+text-align:center
 }
 
 .label{
-    color:#8b949e;
-    font-size:12px;
-    margin-bottom:7px;
+color:#8b949e;
+font-size:12px;
+margin-bottom:7px
 }
 
 .value{
-    font-size:16px;
-    font-weight:bold;
+font-size:16px;
+font-weight:bold
 }
 
 .signal{
-    text-align:center;
-    font-size:22px;
-    font-weight:bold;
-    padding:18px;
-    margin-top:12px;
-    background:#0b0f14;
-    border-radius:12px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+padding:18px;
+margin-top:12px;
+background:#0b0f14;
+border-radius:12px
 }
 
 .info{
-    color:#8b949e;
-    font-size:13px;
-    line-height:1.9;
+color:#8b949e;
+font-size:13px;
+line-height:1.9
 }
 
-.good{
-    color:#3fb950;
-}
-
-.bad{
-    color:#f85149;
-}
-
-.warning{
-    color:#d29922;
-}
-
-.neutral{
-    color:#8b949e;
-}
+.good{color:#3fb950}
+.bad{color:#f85149}
+.warning{color:#d29922}
 
 .reason{
-    background:#0b0f14;
-    border-radius:10px;
-    padding:13px;
-    line-height:2;
-    font-size:14px;
-}
-
-.structure{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-}
-
-.structure-box{
-    background:#0b0f14;
-    border-radius:10px;
-    padding:12px;
-}
-
-.structure-title{
-    color:#8b949e;
-    font-size:12px;
-    margin-bottom:6px;
+background:#0b0f14;
+border-radius:10px;
+padding:13px;
+line-height:2;
+font-size:14px
 }
 
 .score{
-    text-align:center;
-    font-size:30px;
-    font-weight:bold;
-    margin:10px 0;
+text-align:center;
+font-size:30px;
+font-weight:bold;
+margin:10px
+}
+
+.tf-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:7px
+}
+
+.tf-box{
+background:#0b0f14;
+border-radius:9px;
+padding:10px;
+text-align:center;
+font-size:13px
 }
 
 .badge{
-    display:inline-block;
-    padding:5px 9px;
-    border-radius:7px;
-    background:#151b23;
-    border:1px solid #394555;
-    font-size:12px;
-    margin:2px;
-}
-
-.small{
-    font-size:12px;
-    color:#8b949e;
+display:inline-block;
+padding:5px 8px;
+border-radius:7px;
+background:#151b23;
+border:1px solid #394555;
+font-size:12px;
+margin:2px
 }
 
 hr{
-    border:0;
-    border-top:1px solid #293241;
-    margin:15px 0;
+border:0;
+border-top:1px solid #293241;
+margin:15px 0
 }
 
 @media(max-width:450px){
-
-    .grid,
-    .structure{
-        grid-template-columns:1fr 1fr;
-    }
-
-    .signal{
-        font-size:19px;
-    }
-
+.tf-grid{grid-template-columns:1fr 1fr}
 }
-
 </style>
 </head>
 
@@ -207,7 +159,7 @@ hr{
 
 <div class="container">
 
-<h1>📊 Crypto Scanner V2</h1>
+<h1>📊 Crypto Scanner V3</h1>
 
 <div class="card">
 
@@ -294,57 +246,26 @@ placeholder="مثلاً BTCUSDT">
 
 <h2>🏗 ساختار بازار</h2>
 
-<div class="structure">
+<div class="grid">
 
-<div class="structure-box">
-
-<div class="structure-title">
-ساختار فعلی
+<div class="box">
+<div class="label">ساختار</div>
+<div id="marketStructure" class="value">-</div>
 </div>
 
-<div id="marketStructure" class="value">
--
+<div class="box">
+<div class="label">شکست ساختار</div>
+<div id="bos" class="value">-</div>
 </div>
 
+<div class="box">
+<div class="label">تغییر ساختار</div>
+<div id="choch" class="value">-</div>
 </div>
 
-
-<div class="structure-box">
-
-<div class="structure-title">
-شکست ساختار
-</div>
-
-<div id="bos" class="value">
--
-</div>
-
-</div>
-
-
-<div class="structure-box">
-
-<div class="structure-title">
-تغییر ساختار
-</div>
-
-<div id="choch" class="value">
--
-</div>
-
-</div>
-
-
-<div class="structure-box">
-
-<div class="structure-title">
-جمع‌آوری نقدینگی
-</div>
-
-<div id="sweep" class="value">
--
-</div>
-
+<div class="box">
+<div class="label">نقدینگی</div>
+<div id="sweep" class="value">-</div>
 </div>
 
 </div>
@@ -354,14 +275,92 @@ placeholder="مثلاً BTCUSDT">
 
 <div class="card">
 
-<h2>📊 امتیاز تحلیل</h2>
+<h2>📐 FVG</h2>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">نوع FVG</div>
+<div id="fvgType" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">وضعیت</div>
+<div id="fvgStatus" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">کف FVG</div>
+<div id="fvgLow" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">سقف FVG</div>
+<div id="fvgHigh" class="value">-</div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>📊 حجم</h2>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">حجم فعلی</div>
+<div id="volume" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">میانگین حجم 7</div>
+<div id="volumeMA7" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">میانگین حجم 20</div>
+<div id="volumeMA20" class="value">-</div>
+</div>
+
+<div class="box">
+<div class="label">جهش حجم</div>
+<div id="volumeSpike" class="value">-</div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>🌐 تأیید چندتایم‌فریمی</h2>
+
+<div id="multiTF" class="tf-grid">
+</div>
+
+<hr>
+
+<div id="multiTFResult" class="info">
+در حال بررسی...
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>📊 امتیاز نهایی</h2>
 
 <div id="score" class="score">
 -
 </div>
 
 <div id="scoreDetails" class="info">
-هنوز اسکن انجام نشده.
+-
 </div>
 
 </div>
@@ -372,7 +371,7 @@ placeholder="مثلاً BTCUSDT">
 <h2>🧠 دلیل سیگنال</h2>
 
 <div id="reason" class="reason">
-هنوز اسکن انجام نشده.
+-
 </div>
 
 </div>
@@ -380,10 +379,10 @@ placeholder="مثلاً BTCUSDT">
 
 <div class="card">
 
-<h2>📋 اطلاعات اسکن</h2>
+<h2>📋 اطلاعات</h2>
 
 <p id="analysis" class="info">
-هنوز اسکن انجام نشده.
+-
 </p>
 
 </div>
@@ -394,955 +393,1289 @@ placeholder="مثلاً BTCUSDT">
 <script>
 
 
+const TIMEFRAMES=[
+"1","3","5","15","30","60","120","240","D"
+];
+
+
+const TF_NAMES={
+"1":"1 دقیقه",
+"3":"3 دقیقه",
+"5":"5 دقیقه",
+"15":"15 دقیقه",
+"30":"30 دقیقه",
+"60":"1 ساعت",
+"120":"2 ساعت",
+"240":"4 ساعت",
+"D":"1 روز"
+};
+
+
 /* =========================
-   ابزارهای پایه
+   SMA
 ========================= */
 
+function sma(data,period){
 
-function sma(data, period){
+if(data.length<period)return null;
 
-    if(data.length < period){
-        return null;
-    }
+const part=data.slice(-period);
 
-    const part =
-        data.slice(data.length - period);
-
-    return part.reduce(
-        (sum,value) => sum + value,
-        0
-    ) / period;
-}
-
-
-function number(value){
-
-    if(value === null ||
-       value === undefined ||
-       Number.isNaN(value)){
-
-        return "-";
-    }
-
-    return Number(value).toLocaleString(
-        "en-US",
-        {
-            maximumFractionDigits:8
-        }
-    );
+return part.reduce(
+(a,b)=>a+b,0
+)/period;
 }
 
 
 /* =========================
-   پیدا کردن Swing High
+   عدد
 ========================= */
 
-function isSwingHigh(rows,index,lookback=2){
+function fmt(v){
 
-    if(
-        index < lookback ||
-        index >= rows.length-lookback
-    ){
-        return false;
-    }
+if(v===null||v===undefined||
+Number.isNaN(v))return "-";
 
-    const high =
-        Number(rows[index][2]);
-
-    for(
-        let i=1;
-        i<=lookback;
-        i++
-    ){
-
-        if(
-            high <= Number(rows[index-i][2]) ||
-            high <= Number(rows[index+i][2])
-        ){
-
-            return false;
-        }
-
-    }
-
-    return true;
+return Number(v).toLocaleString(
+"en-US",
+{maximumFractionDigits:8}
+);
 }
 
 
 /* =========================
-   پیدا کردن Swing Low
+   دریافت کندل
 ========================= */
 
-function isSwingLow(rows,index,lookback=2){
+async function getKlines(symbol,tf){
 
-    if(
-        index < lookback ||
-        index >= rows.length-lookback
-    ){
-        return false;
-    }
+const url=
+"https://api.bybit.com/v5/market/kline"+
+"?category=linear"+
+"&symbol="+encodeURIComponent(symbol)+
+"&interval="+encodeURIComponent(tf)+
+"&limit=100";
 
-    const low =
-        Number(rows[index][3]);
+const response=await fetch(url);
 
-    for(
-        let i=1;
-        i<=lookback;
-        i++
-    ){
+const data=await response.json();
 
-        if(
-            low >= Number(rows[index-i][3]) ||
-            low >= Number(rows[index+i][3])
-        ){
+if(data.retCode!==0){
 
-            return false;
-        }
+throw new Error(
+data.retMsg||"خطای Bybit"
+);
 
-    }
+}
 
-    return true;
+if(!data.result||
+!data.result.list){
+
+throw new Error(
+"داده‌ای دریافت نشد"
+);
+
+}
+
+return data.result.list.reverse();
+
 }
 
 
 /* =========================
-   استخراج ساختار بازار
+   Swing
 ========================= */
 
-function analyzeStructure(rows){
+function swingHigh(rows,i){
 
-    const highs=[];
-    const lows=[];
+if(i<2||i>=rows.length-2)return false;
 
-    for(
-        let i=2;
-        i<rows.length-2;
-        i++
-    ){
+const h=Number(rows[i][2]);
 
-        if(isSwingHigh(rows,i,2)){
+return(
+h>Number(rows[i-1][2]) &&
+h>Number(rows[i-2][2]) &&
+h>Number(rows[i+1][2]) &&
+h>Number(rows[i+2][2])
+);
 
-            highs.push({
-                index:i,
-                price:Number(rows[i][2])
-            });
+}
 
-        }
 
-        if(isSwingLow(rows,i,2)){
+function swingLow(rows,i){
 
-            lows.push({
-                index:i,
-                price:Number(rows[i][3])
-            });
+if(i<2||i>=rows.length-2)return false;
 
-        }
+const l=Number(rows[i][3]);
 
-    }
-
-
-    let marketStructure =
-        "نامشخص";
-
-    let lastHigh=null;
-    let previousHigh=null;
-
-    let lastLow=null;
-    let previousLow=null;
-
-
-    if(highs.length>=2){
-
-        previousHigh =
-            highs[highs.length-2];
-
-        lastHigh =
-            highs[highs.length-1];
-
-    }
-
-
-    if(lows.length>=2){
-
-        previousLow =
-            lows[lows.length-2];
-
-        lastLow =
-            lows[lows.length-1];
-
-    }
-
-
-    if(
-        lastHigh &&
-        previousHigh &&
-        lastLow &&
-        previousLow
-    ){
-
-        const higherHigh =
-            lastHigh.price >
-            previousHigh.price;
-
-        const higherLow =
-            lastLow.price >
-            previousLow.price;
-
-        const lowerHigh =
-            lastHigh.price <
-            previousHigh.price;
-
-        const lowerLow =
-            lastLow.price <
-            previousLow.price;
-
-
-        if(higherHigh && higherLow){
-
-            marketStructure =
-                "صعودی";
-
-        }
-        else if(lowerHigh && lowerLow){
-
-            marketStructure =
-                "نزولی";
-
-        }
-        else{
-
-            marketStructure =
-                "ترکیبی / رنج";
-
-        }
-
-    }
-
-
-    const current =
-        Number(rows[rows.length-1][4]);
-
-    const previousClose =
-        Number(rows[rows.length-2][4]);
-
-
-    let bos =
-        "ندارد";
-
-    let choch =
-        "ندارد";
-
-
-    if(lastHigh){
-
-        if(current > lastHigh.price){
-
-            bos =
-                "🟢 شکست ساختار صعودی";
-
-            if(
-                marketStructure === "نزولی"
-            ){
-
-                choch =
-                    "🟢 تغییر ساختار به صعودی";
-
-            }
-
-        }
-
-    }
-
-
-    if(lastLow){
-
-        if(current < lastLow.price){
-
-            bos =
-                "🔴 شکست ساختار نزولی";
-
-            if(
-                marketStructure === "صعودی"
-            ){
-
-                choch =
-                    "🔴 تغییر ساختار به نزولی";
-
-            }
-
-        }
-
-    }
-
-
-    /* =========================
-       Liquidity Sweep
-    ========================= */
-
-    let sweep =
-        "ندارد";
-
-
-    const lastIndex =
-        rows.length-1;
-
-    const lastHighCandle =
-        Number(rows[lastIndex][2]);
-
-    const lastLowCandle =
-        Number(rows[lastIndex][3]);
-
-
-    if(lastHigh){
-
-        const previousHighPrice =
-            lastHigh.price;
-
-        if(
-            lastHighCandle >
-            previousHighPrice &&
-            current <
-            previousHighPrice
-        ){
-
-            sweep =
-                "🔴 جمع‌آوری نقدینگی بالای سقف";
-
-        }
-
-    }
-
-
-    if(lastLow){
-
-        const previousLowPrice =
-            lastLow.price;
-
-        if(
-            lastLowCandle <
-            previousLowPrice &&
-            current >
-            previousLowPrice
-        ){
-
-            sweep =
-                "🟢 جمع‌آوری نقدینگی زیر کف";
-
-        }
-
-    }
-
-
-    return {
-
-        highs,
-        lows,
-
-        lastHigh,
-        lastLow,
-
-        marketStructure,
-        bos,
-        choch,
-        sweep
-
-    };
+return(
+l<Number(rows[i-1][3]) &&
+l<Number(rows[i-2][3]) &&
+l<Number(rows[i+1][3]) &&
+l<Number(rows[i+2][3])
+);
 
 }
 
 
 /* =========================
-   تحلیل اصلی
+   ساختار
+========================= */
+
+function structureAnalysis(rows){
+
+let highs=[];
+let lows=[];
+
+for(
+let i=2;
+i<rows.length-2;
+i++
+){
+
+if(swingHigh(rows,i)){
+
+highs.push({
+index:i,
+price:Number(rows[i][2])
+});
+
+}
+
+if(swingLow(rows,i)){
+
+lows.push({
+index:i,
+price:Number(rows[i][3])
+});
+
+}
+
+}
+
+
+let structure="نامشخص";
+
+let lastHigh=
+highs.length?
+highs[highs.length-1]:null;
+
+let prevHigh=
+highs.length>1?
+highs[highs.length-2]:null;
+
+let lastLow=
+lows.length?
+lows[lows.length-1]:null;
+
+let prevLow=
+lows.length>1?
+lows[lows.length-2]:null;
+
+
+if(
+lastHigh&&prevHigh&&
+lastLow&&prevLow
+){
+
+if(
+lastHigh.price>prevHigh.price &&
+lastLow.price>prevLow.price
+){
+
+structure="صعودی";
+
+}
+else if(
+lastHigh.price<prevHigh.price &&
+lastLow.price<prevLow.price
+){
+
+structure="نزولی";
+
+}
+else{
+
+structure="ترکیبی / رنج";
+
+}
+
+}
+
+
+const close=
+Number(rows.at(-1)[4]);
+
+
+let bos="ندارد";
+let choch="ندارد";
+
+
+if(lastHigh&&close>lastHigh.price){
+
+bos="🟢 شکست ساختار صعودی";
+
+if(structure==="نزولی"){
+
+choch=
+"🟢 تغییر ساختار به صعودی";
+
+}
+
+}
+
+
+if(lastLow&&close<lastLow.price){
+
+bos="🔴 شکست ساختار نزولی";
+
+if(structure==="صعودی"){
+
+choch=
+"🔴 تغییر ساختار به نزولی";
+
+}
+
+}
+
+
+/* Liquidity Sweep */
+
+let sweep="ندارد";
+
+const high=
+Number(rows.at(-1)[2]);
+
+const low=
+Number(rows.at(-1)[3]);
+
+
+if(
+lastHigh &&
+high>lastHigh.price &&
+close<lastHigh.price
+){
+
+sweep=
+"🔴 جمع‌آوری نقدینگی بالای سقف";
+
+}
+
+
+if(
+lastLow &&
+low<lastLow.price &&
+close>lastLow.price
+){
+
+sweep=
+"🟢 جمع‌آوری نقدینگی زیر کف";
+
+}
+
+
+return{
+structure,
+bos,
+choch,
+sweep,
+lastHigh,
+lastLow
+};
+
+}
+
+
+/* =========================
+   FVG
+========================= */
+
+function findFVG(rows){
+
+let found=null;
+
+
+/*
+سه کندل:
+
+کندل اول
+کندل وسط
+کندل سوم
+
+FVG صعودی:
+Low کندل سوم > High کندل اول
+
+FVG نزولی:
+High کندل سوم < Low کندل اول
+*/
+
+
+for(
+let i=2;
+i<rows.length;
+i++
+){
+
+const c1=rows[i-2];
+const c3=rows[i];
+
+const high1=
+Number(c1[2]);
+
+const low1=
+Number(c1[3]);
+
+const high3=
+Number(c3[2]);
+
+const low3=
+Number(c3[3]);
+
+
+if(low3>high1){
+
+found={
+type:"🟢 FVG صعودی",
+low:high1,
+high:low3,
+index:i
+};
+
+}
+
+
+if(high3<low1){
+
+found={
+type:"🔴 FVG نزولی",
+low:high3,
+high:low1,
+index:i
+};
+
+}
+
+}
+
+
+/* بررسی پر شدن FVG */
+
+if(!found){
+
+return{
+type:"ندارد",
+status:"ندارد",
+low:null,
+high:null
+};
+
+}
+
+
+const current=
+Number(rows.at(-1)[4]);
+
+
+let status=
+"فعال";
+
+
+if(
+current>=found.low &&
+current<=found.high
+){
+
+status=
+"🟡 قیمت داخل FVG";
+
+}
+
+
+/* اگر بعد از تشکیل FVG
+قیمت کاملاً از آن عبور کرده باشد */
+
+if(found.type.includes("صعودی")){
+
+if(current<found.low){
+
+status=
+"⚠️ FVG شکسته شده";
+
+}
+
+}
+
+
+if(found.type.includes("نزولی")){
+
+if(current>found.high){
+
+status=
+"⚠️ FVG شکسته شده";
+
+}
+
+}
+
+
+return{
+type:found.type,
+status,
+low:found.low,
+high:found.high
+};
+
+}
+
+
+/* =========================
+   حجم
+========================= */
+
+function volumeAnalysis(rows){
+
+const volumes=
+rows.map(
+r=>Number(r[5])
+);
+
+const current=
+volumes.at(-1);
+
+const ma7=
+sma(volumes,7);
+
+const ma20=
+sma(volumes,20);
+
+
+const spike=
+current>ma20*1.5;
+
+
+return{
+current,
+ma7,
+ma20,
+spike
+};
+
+}
+
+
+/* =========================
+   تحلیل یک تایم‌فریم
+========================= */
+
+function analyzeTF(rows){
+
+const closes=
+rows.map(
+r=>Number(r[4])
+);
+
+const price=
+closes.at(-1);
+
+const ma7=
+sma(closes,7);
+
+const ma20=
+sma(closes,20);
+
+
+let trend="رنج";
+
+
+if(ma7>ma20)
+trend="صعودی";
+
+else if(ma7<ma20)
+trend="نزولی";
+
+
+const structure=
+structureAnalysis(rows);
+
+const fvg=
+findFVG(rows);
+
+const volume=
+volumeAnalysis(rows);
+
+
+let pullback=false;
+
+const previous=
+closes.at(-2);
+
+
+if(
+trend==="صعودی" &&
+previous<=ma7 &&
+price>ma7
+){
+
+pullback=true;
+
+}
+
+
+if(
+trend==="نزولی" &&
+previous>=ma7 &&
+price<ma7
+){
+
+pullback=true;
+
+}
+
+
+return{
+price,
+ma7,
+ma20,
+trend,
+pullback,
+structure,
+fvg,
+volume
+};
+
+}
+
+
+/* =========================
+   امتیاز
+========================= */
+
+function calculateScore(a){
+
+let score=50;
+
+let reasons=[];
+
+
+if(a.trend==="صعودی"){
+
+score+=10;
+
+reasons.push(
+"روند صعودی است"
+);
+
+}
+
+
+if(a.trend==="نزولی"){
+
+score-=10;
+
+reasons.push(
+"روند نزولی است"
+);
+
+}
+
+
+if(a.structure.structure==="صعودی"){
+
+score+=10;
+
+reasons.push(
+"ساختار بازار صعودی است"
+);
+
+}
+
+
+if(a.structure.structure==="نزولی"){
+
+score-=10;
+
+reasons.push(
+"ساختار بازار نزولی است"
+);
+
+}
+
+
+if(
+a.structure.bos.includes("صعودی")
+){
+
+score+=15;
+
+reasons.push(
+"شکست ساختار صعودی"
+);
+
+}
+
+
+if(
+a.structure.bos.includes("نزولی")
+){
+
+score-=15;
+
+reasons.push(
+"شکست ساختار نزولی"
+);
+
+}
+
+
+if(
+a.structure.choch.includes("صعودی")
+){
+
+score+=15;
+
+reasons.push(
+"تغییر ساختار صعودی"
+);
+
+}
+
+
+if(
+a.structure.choch.includes("نزولی")
+){
+
+score-=15;
+
+reasons.push(
+"تغییر ساختار نزولی"
+);
+
+}
+
+
+if(a.pullback){
+
+if(a.trend==="صعودی"){
+
+score+=7;
+
+reasons.push(
+"پولبک صعودی"
+);
+
+}
+
+if(a.trend==="نزولی"){
+
+score-=7;
+
+reasons.push(
+"پولبک نزولی"
+);
+
+}
+
+}
+
+
+/* FVG */
+
+if(
+a.fvg.type.includes("صعودی") &&
+a.fvg.status==="🟡 قیمت داخل FVG"
+){
+
+score+=10;
+
+reasons.push(
+"قیمت داخل FVG صعودی"
+);
+
+}
+
+
+if(
+a.fvg.type.includes("نزولی") &&
+a.fvg.status==="🟡 قیمت داخل FVG"
+){
+
+score-=10;
+
+reasons.push(
+"قیمت داخل FVG نزولی"
+);
+
+}
+
+
+/* Volume */
+
+if(a.volume.spike){
+
+if(a.trend==="صعودی"){
+
+score+=5;
+
+reasons.push(
+"جهش حجم در روند صعودی"
+);
+
+}
+
+else if(a.trend==="نزولی"){
+
+score-=5;
+
+reasons.push(
+"جهش حجم در روند نزولی"
+);
+
+}
+
+}
+
+
+if(
+a.structure.sweep.includes("زیر کف")
+){
+
+score+=8;
+
+reasons.push(
+"جمع‌آوری نقدینگی زیر کف"
+);
+
+}
+
+
+if(
+a.structure.sweep.includes("بالای سقف")
+){
+
+score-=8;
+
+reasons.push(
+"جمع‌آوری نقدینگی بالای سقف"
+);
+
+}
+
+
+score=Math.max(
+0,
+Math.min(100,score)
+);
+
+
+return{
+score,
+reasons
+};
+
+}
+
+
+/* =========================
+   نمایش تایم‌فریم‌ها
+========================= */
+
+async function multiTFAnalysis(symbol){
+
+const container=
+document.getElementById(
+"multiTF"
+);
+
+container.innerHTML="";
+
+
+let bullish=0;
+let bearish=0;
+let neutral=0;
+
+
+for(
+const tf of TIMEFRAMES
+){
+
+const box=
+document.createElement("div");
+
+box.className="tf-box";
+
+box.innerHTML=
+TF_NAMES[tf]+
+"<br>⏳";
+
+container.appendChild(box);
+
+
+try{
+
+const rows=
+await getKlines(symbol,tf);
+
+const a=
+analyzeTF(rows);
+
+
+let icon="🟡";
+
+if(a.trend==="صعودی")
+icon="🟢";
+
+if(a.trend==="نزولی")
+icon="🔴";
+
+
+if(a.trend==="صعودی")
+bullish++;
+
+else if(a.trend==="نزولی")
+bearish++;
+
+else
+neutral++;
+
+
+box.innerHTML=
+TF_NAMES[tf]+
+"<br>"+
+icon+
+" "+
+a.trend;
+
+
+}
+catch(e){
+
+box.innerHTML=
+TF_NAMES[tf]+
+"<br>❌";
+
+}
+
+}
+
+
+let result="🟡 بازار چندتایم‌فریمی خنثی است";
+
+
+if(
+bullish>bearish &&
+bullish>=5
+){
+
+result=
+"🟢 تأیید چندتایم‌فریمی صعودی: "+
+bullish+
+" از 9 تایم‌فریم";
+
+}
+
+
+if(
+bearish>bullish &&
+bearish>=5
+){
+
+result=
+"🔴 تأیید چندتایم‌فریمی نزولی: "+
+bearish+
+" از 9 تایم‌فریم";
+
+}
+
+
+if(
+bullish===bearish
+){
+
+result=
+"🟡 قدرت خریدار و فروشنده برابر است";
+
+}
+
+
+document.getElementById(
+"multiTFResult"
+).textContent=result;
+
+
+return{
+bullish,
+bearish,
+neutral
+};
+
+}
+
+
+/* =========================
+   اسکن اصلی
 ========================= */
 
 async function scan(){
 
-    const symbol =
-        document
-        .getElementById("symbol")
-        .value
-        .trim()
-        .toUpperCase();
+const symbol=
+document.getElementById(
+"symbol"
+).value
+.trim()
+.toUpperCase();
 
+const tf=
+document.getElementById(
+"tf"
+).value;
 
-    const tf =
-        document
-        .getElementById("tf")
-        .value;
 
+const status=
+document.getElementById(
+"status"
+);
 
-    const status =
-        document.getElementById("status");
 
+if(!symbol){
 
-    const signal =
-        document.getElementById("signal");
+status.textContent=
+"❌ نماد را وارد کن.";
 
+return;
 
-    if(!symbol){
+}
 
-        status.textContent =
-            "❌ نماد را وارد کن.";
 
-        return;
-    }
+status.textContent=
+"⏳ دریافت اطلاعات...";
 
 
-    status.textContent =
-        "⏳ در حال دریافت اطلاعات از Bybit...";
+document.getElementById(
+"signal"
+).textContent=
+"🟡 در حال تحلیل...";
 
 
-    signal.textContent =
-        "🟡 در حال تحلیل...";
+try{
 
+const rows=
+await getKlines(symbol,tf);
 
-    try{
+const a=
+analyzeTF(rows);
 
-        const url =
-            "https://api.bybit.com/v5/market/kline" +
-            "?category=linear" +
-            "&symbol=" +
-            encodeURIComponent(symbol) +
-            "&interval=" +
-            encodeURIComponent(tf) +
-            "&limit=100";
+const result=
+calculateScore(a);
 
 
-        const response =
-            await fetch(url);
+/* چندتایم‌فریمی */
 
+const mtf=
+await multiTFAnalysis(symbol);
 
-        const data =
-            await response.json();
 
+/*
+اثر تأیید چندتایم‌فریمی
+*/
 
-        if(data.retCode !== 0){
+let finalScore=
+result.score;
 
-            throw new Error(
-                data.retMsg ||
-                "خطای Bybit"
-            );
 
-        }
+if(mtf.bullish>=5){
 
+finalScore+=10;
 
-        const rows =
-            data.result &&
-            data.result.list
-            ? data.result.list.reverse()
-            : [];
+result.reasons.push(
+"تأیید صعودی چندتایم‌فریمی"
+);
 
+}
 
-        if(rows.length < 30){
 
-            throw new Error(
-                "داده کافی دریافت نشد."
-            );
+if(mtf.bearish>=5){
 
-        }
+finalScore-=10;
 
+result.reasons.push(
+"تأیید نزولی چندتایم‌فریمی"
+);
 
-        /* =========================
-           قیمت
-        ========================= */
+}
 
-        const closes =
-            rows.map(
-                row => Number(row[4])
-            );
 
+finalScore=
+Math.max(
+0,
+Math.min(100,finalScore)
+);
 
-        const price =
-            closes[closes.length-1];
 
+/* سیگنال */
 
-        const previous =
-            closes[closes.length-2];
+let signal=
+"🟡 انتظار";
 
 
-        /* =========================
-           میانگین متحرک
-        ========================= */
+if(finalScore>=80){
 
-        const ma7 =
-            sma(closes,7);
+signal=
+"🟢 تمایل قوی به خرید";
 
+}
+else if(finalScore>=65){
 
-        const ma20 =
-            sma(closes,20);
+signal=
+"🟢 تمایل به خرید";
 
+}
+else if(finalScore<=20){
 
-        let trend =
-            "رنج";
+signal=
+"🔴 تمایل قوی به فروش";
 
+}
+else if(finalScore<=35){
 
-        if(ma7 > ma20){
+signal=
+"🔴 تمایل به فروش";
 
-            trend =
-                "صعودی";
+}
 
-        }
-        else if(ma7 < ma20){
 
-            trend =
-                "نزولی";
+/* اگر تأیید چندتایم‌فریمی
+خلاف جهت باشد، احتیاط */
 
-        }
+if(
+a.trend==="صعودی" &&
+mtf.bearish>=5
+){
 
+signal=
+"🟡 اختلاف تایم‌فریم‌ها";
 
-        /* =========================
-           رنج
-        ========================= */
+}
 
-        const distance =
-            Math.abs(ma7-ma20) /
-            ma20;
 
+if(
+a.trend==="نزولی" &&
+mtf.bullish>=5
+){
 
-        const isRange =
-            distance < 0.0015;
+signal=
+"🟡 اختلاف تایم‌فریم‌ها";
 
+}
 
-        /* =========================
-           Pullback
-        ========================= */
 
-        let pullback =
-            false;
+/* نمایش */
 
+document.getElementById(
+"price"
+).textContent=
+fmt(a.price);
 
-        if(
-            trend === "صعودی" &&
-            previous <= ma7 &&
-            price > ma7
-        ){
 
-            pullback = true;
+document.getElementById(
+"ma7"
+).textContent=
+fmt(a.ma7);
 
-        }
 
+document.getElementById(
+"ma20"
+).textContent=
+fmt(a.ma20);
 
-        if(
-            trend === "نزولی" &&
-            previous >= ma7 &&
-            price < ma7
-        ){
 
-            pullback = true;
+document.getElementById(
+"trend"
+).textContent=
+a.trend;
 
-        }
 
+document.getElementById(
+"range"
+).textContent=
+Math.abs(a.ma7-a.ma20)/a.ma20<0.0015
+?"بله":"خیر";
 
-        /* =========================
-           ساختار
-        ========================= */
 
-        const structure =
-            analyzeStructure(rows);
+document.getElementById(
+"pullback"
+).textContent=
+a.pullback
+?"بله":"خیر";
 
 
-        /* =========================
-           امتیاز
-        ========================= */
+document.getElementById(
+"marketStructure"
+).textContent=
+a.structure.structure;
 
-        let score = 50;
 
-        let reasons=[];
+document.getElementById(
+"bos"
+).textContent=
+a.structure.bos;
 
 
-        if(trend === "صعودی"){
+document.getElementById(
+"choch"
+).textContent=
+a.structure.choch;
 
-            score += 10;
 
-            reasons.push(
-                "روند صعودی است"
-            );
+document.getElementById(
+"sweep"
+).textContent=
+a.structure.sweep;
 
-        }
 
+/* FVG */
 
-        if(trend === "نزولی"){
+document.getElementById(
+"fvgType"
+).textContent=
+a.fvg.type;
 
-            score -= 10;
 
-            reasons.push(
-                "روند نزولی است"
-            );
+document.getElementById(
+"fvgStatus"
+).textContent=
+a.fvg.status;
 
-        }
 
+document.getElementById(
+"fvgLow"
+).textContent=
+fmt(a.fvg.low);
 
-        if(
-            structure.marketStructure ===
-            "صعودی"
-        ){
 
-            score += 10;
+document.getElementById(
+"fvgHigh"
+).textContent=
+fmt(a.fvg.high);
 
-            reasons.push(
-                "ساختار بازار صعودی است"
-            );
 
-        }
+/* Volume */
 
+document.getElementById(
+"volume"
+).textContent=
+fmt(a.volume.current);
 
-        if(
-            structure.marketStructure ===
-            "نزولی"
-        ){
 
-            score -= 10;
+document.getElementById(
+"volumeMA7"
+).textContent=
+fmt(a.volume.ma7);
 
-            reasons.push(
-                "ساختار بازار نزولی است"
-            );
 
-        }
+document.getElementById(
+"volumeMA20"
+).textContent=
+fmt(a.volume.ma20);
 
 
-        if(
-            structure.bos.includes("صعودی")
-        ){
+document.getElementById(
+"volumeSpike"
+).textContent=
+a.volume.spike
+?"🔥 بله"
+:"خیر";
 
-            score += 15;
 
-            reasons.push(
-                "شکست ساختار صعودی مشاهده شد"
-            );
+/* Score */
 
-        }
+document.getElementById(
+"score"
+).textContent=
+finalScore+
+" / 100";
 
 
-        if(
-            structure.bos.includes("نزولی")
-        ){
+document.getElementById(
+"scoreDetails"
+).textContent=
+"امتیاز نهایی شامل روند، ساختار، FVG، حجم و تأیید 9 تایم‌فریم است.";
 
-            score -= 15;
 
-            reasons.push(
-                "شکست ساختار نزولی مشاهده شد"
-            );
+/* Signal */
 
-        }
+document.getElementById(
+"signal"
+).textContent=
+signal;
 
 
-        if(
-            structure.choch.includes("صعودی")
-        ){
+/* Reasons */
 
-            score += 15;
+document.getElementById(
+"reason"
+).innerHTML=
+result.reasons.length
+?
+result.reasons
+.map(
+x=>"• "+x
+)
+.join("<br>")
+:
+"دلیل مشخصی پیدا نشد.";
 
-            reasons.push(
-                "تغییر ساختار به سمت صعودی مشاهده شد"
-            );
 
-        }
+/* اطلاعات */
 
+document.getElementById(
+"analysis"
+).textContent=
+symbol+
+" | تایم‌فریم: "+
+TF_NAMES[tf]+
+" | کندل: "+
+rows.length+
+" | تأیید صعودی: "+
+mtf.bullish+
+" | تأیید نزولی: "+
+mtf.bearish;
 
-        if(
-            structure.choch.includes("نزولی")
-        ){
 
-            score -= 15;
+status.textContent=
+"✅ دریافت داده از Bybit موفق بود.";
 
-            reasons.push(
-                "تغییر ساختار به سمت نزولی مشاهده شد"
-            );
 
-        }
+}
+catch(error){
 
+console.error(error);
 
-        if(pullback){
+document.getElementById(
+"signal"
+).textContent=
+"❌ خطا";
 
-            if(trend === "صعودی"){
 
-                score += 8;
+status.textContent=
+"خطا: "+
+error.message;
 
-                reasons.push(
-                    "پولبک صعودی مشاهده شد"
-                );
-
-            }
-
-            if(trend === "نزولی"){
-
-                score -= 8;
-
-                reasons.push(
-                    "پولبک نزولی مشاهده شد"
-                );
-
-            }
-
-        }
-
-
-        if(
-            structure.sweep.includes("زیر کف")
-        ){
-
-            score += 10;
-
-            reasons.push(
-                "نقدینگی زیر کف جمع‌آوری شده است"
-            );
-
-        }
-
-
-        if(
-            structure.sweep.includes("بالای سقف")
-        ){
-
-            score -= 10;
-
-            reasons.push(
-                "نقدینگی بالای سقف جمع‌آوری شده است"
-            );
-
-        }
-
-
-        if(isRange){
-
-            score = 50;
-
-            reasons.push(
-                "بازار در محدوده رنج قرار دارد"
-            );
-
-        }
-
-
-        score =
-            Math.max(
-                0,
-                Math.min(100,score)
-            );
-
-
-        /* =========================
-           سیگنال نهایی
-        ========================= */
-
-        let finalSignal =
-            "🟡 انتظار";
-
-
-        if(
-            !isRange &&
-            score >= 75
-        ){
-
-            finalSignal =
-                "🟢 تمایل قوی به خرید";
-
-        }
-        else if(
-            !isRange &&
-            score >= 60
-        ){
-
-            finalSignal =
-                "🟢 تمایل به خرید";
-
-        }
-        else if(
-            !isRange &&
-            score <= 25
-        ){
-
-            finalSignal =
-                "🔴 تمایل قوی به فروش";
-
-        }
-        else if(
-            !isRange &&
-            score <= 40
-        ){
-
-            finalSignal =
-                "🔴 تمایل به فروش";
-
-        }
-
-
-        if(isRange){
-
-            finalSignal =
-                "🟡 رنج / انتظار";
-
-        }
-
-
-        /* =========================
-           نمایش اطلاعات
-        ========================= */
-
-
-        document.getElementById(
-            "price"
-        ).textContent =
-            number(price);
-
-
-        document.getElementById(
-            "ma7"
-        ).textContent =
-            number(ma7);
-
-
-        document.getElementById(
-            "ma20"
-        ).textContent =
-            number(ma20);
-
-
-        document.getElementById(
-            "trend"
-        ).textContent =
-            trend;
-
-
-        document.getElementById(
-            "range"
-        ).textContent =
-            isRange
-            ? "بله"
-            : "خیر";
-
-
-        document.getElementById(
-            "pullback"
-        ).textContent =
-            pullback
-            ? "بله"
-            : "خیر";
-
-
-        document.getElementById(
-            "marketStructure"
-        ).textContent =
-            structure.marketStructure;
-
-
-        document.getElementById(
-            "bos"
-        ).textContent =
-            structure.bos;
-
-
-        document.getElementById(
-            "choch"
-        ).textContent =
-            structure.choch;
-
-
-        document.getElementById(
-            "sweep"
-        ).textContent =
-            structure.sweep;
-
-
-        signal.textContent =
-            finalSignal;
-
-
-        document.getElementById(
-            "score"
-        ).textContent =
-            score + " / 100";
-
-
-        document.getElementById(
-            "scoreDetails"
-        ).textContent =
-            "امتیاز بر اساس روند، ساختار، شکست ساختار، تغییر ساختار، پولبک و نقدینگی محاسبه شده است.";
-
-
-        document.getElementById(
-            "reason"
-        ).innerHTML =
-            reasons.length
-            ? reasons
-                .map(
-                    item =>
-                    "• " + item
-                )
-                .join("<br>")
-            : "دلیل مشخصی برای سیگنال پیدا نشد.";
-
-
-        document.getElementById(
-            "analysis"
-        ).textContent =
-            symbol +
-            " | تایم‌فریم: " +
-            getTimeframeName(tf) +
-            " | تعداد کندل: " +
-            rows.length;
-
-
-        status.textContent =
-            "✅ دریافت داده از Bybit موفق بود.";
-
-
-    }
-    catch(error){
-
-        console.error(error);
-
-
-        signal.textContent =
-            "❌ خطا";
-
-
-        status.textContent =
-            "خطا: " +
-            error.message;
-
-    }
+}
 
 }
 
 
 /* =========================
-   نام فارسی تایم‌فریم
-========================= */
-
-function getTimeframeName(tf){
-
-    const names = {
-
-        "1":"1 دقیقه",
-        "3":"3 دقیقه",
-        "5":"5 دقیقه",
-        "15":"15 دقیقه",
-        "30":"30 دقیقه",
-        "60":"1 ساعت",
-        "120":"2 ساعت",
-        "240":"4 ساعت",
-        "D":"1 روز"
-
-    };
-
-    return names[tf] || tf;
-
-}
-
-
-/* =========================
-   اسکن خودکار اولیه
+   اجرای اولیه
 ========================= */
 
 window.addEventListener(
-    "load",
-    function(){
+"load",
+function(){
 
-        scan();
+scan();
 
-    }
-);
+});
 
 </script>
 
