@@ -1,196 +1,216 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Crypto Scanner V1 Test</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<title>Bybit Futures Scanner</title>
 
 <style>
+
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  background:#0b0f14;
-  color:#fff;
-  font-family:Arial,Tahoma,sans-serif;
+margin:0;
+background:#080c12;
+color:#fff;
+font-family:Arial,Tahoma,sans-serif;
 }
 
 .container{
-  max-width:700px;
-  margin:auto;
-  padding:15px;
+max-width:850px;
+margin:auto;
+padding:14px;
 }
 
 .card{
-  background:#151b23;
-  border:1px solid #293241;
-  border-radius:14px;
-  padding:15px;
-  margin-bottom:12px;
+background:#131923;
+border:1px solid #293342;
+border-radius:14px;
+padding:14px;
+margin-bottom:12px;
 }
 
 h1{
-  font-size:21px;
-  margin-top:5px;
+font-size:21px;
+margin:5px 0 15px;
 }
 
 .row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
+display:flex;
+gap:8px;
+flex-wrap:wrap;
 }
 
-input,select,button{
-  min-height:44px;
-  padding:9px 12px;
-  border-radius:9px;
-  border:1px solid #394555;
-  background:#0b0f14;
-  color:white;
-  font-size:15px;
+input,button{
+height:45px;
+border-radius:9px;
+border:1px solid #394555;
+background:#080c12;
+color:#fff;
+padding:8px 12px;
+font-size:15px;
 }
 
 input{
-  flex:1;
-  min-width:150px;
+flex:1;
+min-width:170px;
 }
 
 button{
-  background:#238636;
-  border:0;
-  font-weight:bold;
+background:#238636;
+border:0;
+font-weight:bold;
+}
+
+button.scan{
+background:#8957e5;
+}
+
+.status{
+color:#8b949e;
+font-size:13px;
+margin-top:10px;
+}
+
+.results{
+display:grid;
+gap:10px;
+}
+
+.coin{
+background:#080c12;
+border:1px solid #303b4b;
+border-radius:12px;
+padding:13px;
+}
+
+.coinTitle{
+font-size:19px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.long{
+color:#3fb950;
+}
+
+.short{
+color:#f85149;
+}
+
+.wait{
+color:#d29922;
 }
 
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:7px;
 }
 
 .box{
-  background:#0b0f14;
-  border-radius:10px;
-  padding:13px;
-  text-align:center;
+background:#131923;
+border-radius:8px;
+padding:9px;
 }
 
 .label{
-  color:#8b949e;
-  font-size:12px;
-  margin-bottom:7px;
+color:#8b949e;
+font-size:11px;
 }
 
 .value{
-  font-size:17px;
-  font-weight:bold;
+font-size:14px;
+font-weight:bold;
+margin-top:4px;
 }
 
-.signal{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-  padding:18px;
-  margin-top:12px;
-  background:#0b0f14;
-  border-radius:12px;
+.details{
+margin-top:10px;
+line-height:1.8;
+font-size:13px;
+color:#c9d1d9;
 }
 
-.info{
-  color:#8b949e;
-  font-size:13px;
-  line-height:1.8;
+#manualResult{
+margin-top:12px;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>📊 Crypto Scanner V1</h1>
+<h1>📊 Bybit Futures Scanner</h1>
+
+
+<!-- SEARCH -->
 
 <div class="card">
 
 <div class="row">
 
 <input
-id="symbol"
-value="BTCUSDT"
-placeholder="مثلاً BTCUSDT">
+id="search"
+placeholder="مثلاً BTC یا SOLUSDT">
 
-<select id="tf">
+<button onclick="manualAnalyze()">
+🔎 تحلیل
+</button>
 
-<option value="1">1 دقیقه</option>
-<option value="3">3 دقیقه</option>
-<option value="5">5 دقیقه</option>
-<option value="15" selected>15 دقیقه</option>
-<option value="30">30 دقیقه</option>
-<option value="60">1 ساعت</option>
-<option value="120">2 ساعت</option>
-<option value="240">4 ساعت</option>
-<option value="D">1 روز</option>
+<button
+class="scan"
+onclick="autoScan()">
 
-</select>
+🚨 اسکن بازار
 
-<button onclick="scan()">
-SCAN
 </button>
 
 </div>
 
-<p id="status" class="info">
-آماده تست Bybit
-</p>
+<div id="status" class="status">
+آماده
+</div>
 
 </div>
 
+
+<!-- MANUAL -->
+
+<div
+id="manualResult"
+class="card"
+style="display:none">
+
+</div>
+
+
+<!-- AUTO -->
 
 <div class="card">
 
-<div class="grid">
+<h3>
+🚨 سیگنال‌های تأیید شده
+</h3>
 
-<div class="box">
-<div class="label">قیمت</div>
-<div id="price" class="value">-</div>
-</div>
+<div
+id="results"
+class="results">
 
-<div class="box">
-<div class="label">MA7</div>
-<div id="ma7" class="value">-</div>
-</div>
-
-<div class="box">
-<div class="label">MA20</div>
-<div id="ma20" class="value">-</div>
-</div>
-
-<div class="box">
-<div class="label">Trend</div>
-<div id="trend" class="value">-</div>
-</div>
-
-<div class="box">
-<div class="label">Range</div>
-<div id="range" class="value">-</div>
-</div>
-
-<div class="box">
-<div class="label">Pullback</div>
-<div id="pullback" class="value">-</div>
-</div>
-
-</div>
-
-<div id="signal" class="signal">
-WAIT
-</div>
-
-<p id="analysis" class="info">
 هنوز اسکن انجام نشده.
-</p>
+
+</div>
 
 </div>
 
@@ -199,309 +219,466 @@ WAIT
 
 <script>
 
-function sma(data, period){
 
-    if(data.length < period){
-        return null;
-    }
+function n(x){
 
-    const part =
-        data.slice(data.length - period);
+if(x === null ||
+x === undefined ||
+!Number.isFinite(Number(x)))
+return "-";
 
-    return part.reduce(
-        (sum,value) => sum + value,
-        0
-    ) / period;
+return Number(x).toLocaleString(
+"en-US",
+{
+maximumFractionDigits:8
+});
+
 }
 
 
-function number(value){
+// ==================================================
+// MANUAL
+// ==================================================
 
-    if(value === null || value === undefined){
-        return "-";
-    }
+async function manualAnalyze(){
 
-    return Number(value).toLocaleString(
-        "en-US",
-        {
-            maximumFractionDigits:8
-        }
-    );
+let symbol =
+document
+.getElementById("search")
+.value
+.trim()
+.toUpperCase();
+
+if(!symbol){
+
+alert("نماد را وارد کن.");
+
+return;
+}
+
+if(!symbol.endsWith("USDT"))
+symbol += "USDT";
+
+
+const status =
+document.getElementById("status");
+
+const box =
+document.getElementById("manualResult");
+
+
+status.textContent =
+"⏳ در حال تحلیل " + symbol;
+
+
+box.style.display = "block";
+
+box.innerHTML =
+"⏳ در حال دریافت اطلاعات...";
+
+
+try{
+
+const response =
+await fetch(
+"/api/analyze?symbol=" +
+encodeURIComponent(symbol)
+);
+
+const data =
+await response.json();
+
+
+if(!data.ok)
+throw new Error(
+data.detail ||
+data.error ||
+"خطا"
+);
+
+
+if(!data.exists){
+
+box.innerHTML =
+"❌ " +
+symbol +
+" در Bybit Futures وجود ندارد.";
+
+status.textContent =
+"نماد پیدا نشد.";
+
+return;
 }
 
 
-async function scan(){
+const best =
+data.best;
 
-    const symbol =
-        document
-        .getElementById("symbol")
-        .value
-        .trim()
-        .toUpperCase();
 
-    const tf =
-        document
-        .getElementById("tf")
-        .value;
+let html =
+"<div class='coin'>";
 
-    const status =
-        document.getElementById("status");
+html +=
+"<div class='coinTitle'>" +
+symbol +
+"</div>";
 
-    const signal =
-        document.getElementById("signal");
 
+if(!best){
 
-    if(!symbol){
+html +=
+"<div class='wait'>" +
+"🟡 WAIT — فعلاً سیگنال تأییدشده وجود ندارد." +
+"</div>";
 
-        status.textContent =
-            "❌ نماد را وارد کن.";
+}
+else{
 
-        return;
-    }
+const cls =
+best.direction === "LONG"
+? "long"
+: "short";
 
+html +=
+"<div class='" +
+cls +
+" coinTitle'>" +
+(best.direction === "LONG"
+? "🟢 LONG CONFIRMED"
+: "🔴 SHORT CONFIRMED") +
+"</div>";
 
-    status.textContent =
-        "⏳ در حال دریافت Kline از Bybit...";
 
-    signal.textContent =
-        "WAIT";
+html +=
+"<div class='grid'>" +
 
+boxx("TF",best.interval) +
 
-    try{
+boxx("Price",n(best.price)) +
 
-        const url =
-            "https://api.bybit.com/v5/market/kline" +
-            "?category=linear" +
-            "&symbol=" +
-            encodeURIComponent(symbol) +
-            "&interval=" +
-            encodeURIComponent(tf) +
-            "&limit=100";
+boxx("MA20",n(best.ma20)) +
 
+boxx("Entry",n(best.entry)) +
 
-        const response =
-            await fetch(url);
+boxx("SL",n(best.sl)) +
 
+boxx("TP1",n(best.tp1)) +
 
-        const data =
-            await response.json();
+boxx("TP2",n(best.tp2)) +
 
+boxx("TP3",n(best.tp3)) +
 
-        if(data.retCode !== 0){
+boxx("R:R","1:"+n(best.rr)) +
 
-            throw new Error(
-                data.retMsg ||
-                "خطای Bybit"
-            );
+boxx("Long Score",best.longScore) +
 
-        }
+boxx("Short Score",best.shortScore) +
 
+"</div>";
 
-        const rows =
-            data.result &&
-            data.result.list
-            ? data.result.list.reverse()
-            : [];
 
+html +=
+"<div class='details'>" +
 
-        if(rows.length < 20){
+"MA20 Touch: " +
+(best.touch ? "✅" : "❌") +
 
-            throw new Error(
-                "داده کافی دریافت نشد."
-            );
+"<br>" +
 
-        }
+"Confirmation: " +
+(best.confirmation ? "✅" : "❌") +
 
+"<br>" +
 
-        const closes =
-            rows.map(
-                row => Number(row[4])
-            );
+"Volume: " +
+(best.volumeConfirm ? "✅" : "❌") +
 
+"<br>" +
 
-        const price =
-            closes[closes.length - 1];
+"Structure: " +
+best.structure +
 
+"<br>" +
 
-        const ma7 =
-            sma(closes,7);
+"FVG: " +
+best.fvg +
 
+"</div>";
 
-        const ma20 =
-            sma(closes,20);
+}
 
+html += "</div>";
 
-        let trend =
-            "RANGE";
+box.innerHTML = html;
 
+status.textContent =
+"✅ تحلیل کامل شد.";
 
-        if(ma7 > ma20){
+}
+catch(e){
 
-            trend =
-                "BULLISH";
+box.innerHTML =
+"❌ خطا: " +
+e.message;
 
-        }
-        else if(ma7 < ma20){
+status.textContent =
+"خطا";
 
-            trend =
-                "BEARISH";
+}
 
-        }
+}
 
 
-        const distance =
-            Math.abs(ma7-ma20) /
-            ma20;
+function boxx(label,value){
 
+return `
+<div class="box">
+<div class="label">${label}</div>
+<div class="value">${value}</div>
+</div>
+`;
 
-        const isRange =
-            distance < 0.0015;
+}
 
 
-        const previous =
-            closes[closes.length-2];
+// ==================================================
+// AUTO SCANNER
+// ==================================================
 
+async function autoScan(){
 
-        let pullback =
-            false;
+const status =
+document.getElementById("status");
 
+const results =
+document.getElementById("results");
 
-        if(
-            trend === "BULLISH" &&
-            previous <= ma7 &&
-            price > ma7
-        ){
 
-            pullback = true;
+status.textContent =
+"⏳ دریافت لیست Bybit...";
 
-        }
+results.innerHTML =
+"⏳ در حال دریافت ارزها...";
 
 
-        if(
-            trend === "BEARISH" &&
-            previous >= ma7 &&
-            price < ma7
-        ){
+try{
 
-            pullback = true;
+const response =
+await fetch("/api/symbols");
 
-        }
+const data =
+await response.json();
 
 
-        let finalSignal =
-            "🟡 WAIT";
+if(!data.ok)
+throw new Error(
+data.error || "خطا"
+);
 
 
-        if(isRange){
+const symbols =
+data.futures;
 
-            finalSignal =
-                "🟡 RANGE / WAIT";
 
-        }
-        else if(
-            trend === "BULLISH" &&
-            price > ma7
-        ){
+status.textContent =
+"🔎 بررسی " +
+symbols.length +
+" ارز...";
 
-            finalSignal =
-                "🟢 LONG BIAS";
 
-        }
-        else if(
-            trend === "BEARISH" &&
-            price < ma7
-        ){
+const found = [];
 
-            finalSignal =
-                "🔴 SHORT BIAS";
 
-        }
+// برای جلوگیری از فشار زیاد روی API
+// فعلاً اولین 50 ارز را تست می‌کنیم.
 
+for(
+let i=0;
+i<Math.min(symbols.length,50);
+i++
+){
 
-        if(pullback){
+const symbol =
+symbols[i];
 
-            finalSignal +=
-                " + PULLBACK";
 
-        }
+try{
 
+const r =
+await fetch(
+"/api/analyze?symbol=" +
+encodeURIComponent(symbol)
+);
 
-        document.getElementById(
-            "price"
-        ).textContent =
-            number(price);
+const d =
+await r.json();
 
 
-        document.getElementById(
-            "ma7"
-        ).textContent =
-            number(ma7);
+if(
+d.ok &&
+d.exists &&
+d.best
+){
 
+found.push({
+symbol,
+best:d.best
+});
 
-        document.getElementById(
-            "ma20"
-        ).textContent =
-            number(ma20);
+}
 
+}
+catch(e){}
 
-        document.getElementById(
-            "trend"
-        ).textContent =
-            trend;
 
+status.textContent =
+"🔎 " +
+(i+1) +
+" / " +
+Math.min(symbols.length,50);
 
-        document.getElementById(
-            "range"
-        ).textContent =
-            isRange
-            ? "YES"
-            : "NO";
+}
 
 
-        document.getElementById(
-            "pullback"
-        ).textContent =
-            pullback
-            ? "YES"
-            : "NO";
+if(!found.length){
 
+results.innerHTML =
+"🟡 فعلاً سیگنال تأییدشده پیدا نشد.";
 
-        signal.textContent =
-            finalSignal;
+status.textContent =
+"اسکن تمام شد.";
 
+return;
+}
 
-        document.getElementById(
-            "analysis"
-        ).textContent =
-            symbol +
-            " | TF: " +
-            tf +
-            " | Candles: " +
-            rows.length;
 
+found.sort(
+(a,b) =>
+Math.max(
+b.best.longScore,
+b.best.shortScore
+)
+-
+Math.max(
+a.best.longScore,
+a.best.shortScore
+)
+);
 
-        status.textContent =
-            "✅ دریافت داده از Bybit موفق بود.";
 
-    }
-    catch(error){
+results.innerHTML =
+found
+.map(x => renderCoin(
+x.symbol,
+x.best
+))
+.join("");
 
-        console.error(error);
 
+status.textContent =
+"✅ " +
+found.length +
+" سیگنال پیدا شد.";
 
-        signal.textContent =
-            "❌ ERROR";
+}
+catch(e){
 
+results.innerHTML =
+"❌ " +
+e.message;
 
-        status.textContent =
-            "خطا: " +
-            error.message;
+status.textContent =
+"خطا";
 
-    }
+}
+
+}
+
+
+// ==================================================
+// RENDER
+// ==================================================
+
+function renderCoin(symbol,b){
+
+const long =
+b.direction === "LONG";
+
+return `
+
+<div class="coin">
+
+<div class="coinTitle ${long
+? "long"
+: "short"}">
+
+${long
+? "🟢 LONG"
+: "🔴 SHORT"}
+
+&nbsp;
+
+${symbol}
+
+</div>
+
+<div class="grid">
+
+${boxx("TF",b.interval)}
+
+${boxx("Price",n(b.price))}
+
+${boxx("MA20",n(b.ma20))}
+
+${boxx("Entry",n(b.entry))}
+
+${boxx("SL",n(b.sl))}
+
+${boxx("TP1",n(b.tp1))}
+
+${boxx("TP2",n(b.tp2))}
+
+${boxx("TP3",n(b.tp3))}
+
+${boxx("R:R","1:"+n(b.rr))}
+
+</div>
+
+<div class="details">
+
+MA20 Touch:
+${b.touch ? "✅" : "❌"}
+
+&nbsp;
+
+Confirmation:
+${b.confirmation ? "✅" : "❌"}
+
+&nbsp;
+
+Volume:
+${b.volumeConfirm ? "✅" : "❌"}
+
+<br>
+
+Structure:
+${b.structure}
+
+&nbsp;
+
+FVG:
+${b.fvg}
+
+</div>
+
+</div>
+
+`;
 
 }
 
 </script>
 
 </body>
+
 </html>
