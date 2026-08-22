@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Bybit Futures Scanner V7</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -50,8 +41,7 @@ h1{
   flex-wrap:wrap;
 }
 
-input,
-button{
+input,button{
   min-height:44px;
   padding:9px 12px;
   border-radius:9px;
@@ -70,7 +60,6 @@ button{
   background:#238636;
   border:0;
   font-weight:bold;
-  cursor:pointer;
 }
 
 button.scan{
@@ -175,26 +164,10 @@ button.scan{
   font-size:13px;
 }
 
-.green{
-  color:#00e676;
-}
-
-.red{
-  color:#ff5252;
-}
-
-.yellow{
-  color:#ffd740;
-}
-
-.gray{
-  color:#8b949e;
-}
-
-.small{
-  font-size:12px;
-  color:#8b949e;
-}
+.green{color:#00e676}
+.red{color:#ff5252}
+.yellow{color:#ffd740}
+.gray{color:#8b949e}
 
 .empty{
   text-align:center;
@@ -207,100 +180,42 @@ button.scan{
   color:#ffd740;
   font-weight:bold;
 }
-
-.progress{
-  margin-top:10px;
-  height:7px;
-  background:#202833;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.progressBar{
-  height:100%;
-  width:0%;
-  background:#2563eb;
-  transition:width .2s;
-}
-
-@media(max-width:600px){
-
-  .grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .title{
-    font-size:16px;
-  }
-
-  .score{
-    font-size:18px;
-  }
-
-}
-
 </style>
-
 </head>
-
 
 <body>
 
 <div class="container">
 
-<h1>
-📊 Bybit Futures Scanner V7
-</h1>
-
+<h1>📊 Bybit Futures Scanner V7</h1>
 
 <div class="card">
 
 <div class="row">
 
 <input
-  id="symbol"
-  value="BTCUSDT"
-  placeholder="مثلاً BTCUSDT"
->
+ id="symbol"
+ value="BTCUSDT"
+ placeholder="مثلاً BTCUSDT">
 
 <button onclick="analyzeSymbol()">
 🔎 تحلیل ارز
 </button>
 
-<button
-  class="scan"
-  onclick="scanMarket()"
->
+<button class="scan" onclick="scanMarket()">
 🚨 اسکن بازار
 </button>
 
 </div>
 
-
 <div class="tf">
-
 <span>1m</span>
 <span>3m</span>
 <span>5m</span>
-
 </div>
 
-
-<div
-  id="status"
-  class="status"
->
+<div id="status" class="status">
 آماده اسکن Bybit Futures
-</div>
-
-
-<div class="progress">
-
-<div
-  id="progressBar"
-  class="progressBar"
-></div>
-
 </div>
 
 </div>
@@ -312,13 +227,10 @@ button.scan{
 🏆 10 موقعیت برتر
 </div>
 
-
 <div id="results">
-
 <div class="empty">
 هنوز اسکن انجام نشده.
 </div>
-
 </div>
 
 </div>
@@ -330,13 +242,10 @@ button.scan{
 🔎 نتیجه تحلیل دستی
 </div>
 
-
 <div id="manual">
-
 <div class="empty">
 یک ارز وارد کن و روی «تحلیل ارز» بزن.
 </div>
-
 </div>
 
 </div>
@@ -346,21 +255,16 @@ button.scan{
 
 <script>
 
-
-/*
-==================================================
-تنظیم Worker
-==================================================
-*/
+/* =================================================
+   تنظیم Worker
+   ================================================= */
 
 const API_BASE = "";
 
 
-/*
-==================================================
-فقط سه تایم فریم
-==================================================
-*/
+/* =================================================
+   فقط 3 تایم فریم
+   ================================================= */
 
 const TIMEFRAMES = [
   "1",
@@ -369,11 +273,25 @@ const TIMEFRAMES = [
 ];
 
 
-/*
-==================================================
-ابزار عدد
-==================================================
-*/
+/* =================================================
+   وزن تأییدها
+   ================================================= */
+
+const WEIGHTS = {
+  trend:20,
+  maSlope:15,
+  maTouch:15,
+  reaction:10,
+  structure:15,
+  fvg:10,
+  volume:10,
+  mtf:5
+};
+
+
+/* =================================================
+   ابزارها
+   ================================================= */
 
 function number(value){
 
@@ -382,9 +300,7 @@ function number(value){
     value === undefined ||
     Number.isNaN(Number(value))
   ){
-
     return "-";
-
   }
 
   return Number(value).toLocaleString(
@@ -393,77 +309,52 @@ function number(value){
       maximumFractionDigits:8
     }
   );
-
 }
 
 
-/*
-==================================================
-درصد
-==================================================
-*/
+function scoreGrade(score){
 
-function percent(value){
+  if(score >= 85) return "A+";
+  if(score >= 75) return "A";
+  if(score >= 65) return "B";
+  if(score >= 55) return "C";
 
-  if(
-    value === null ||
-    value === undefined ||
-    Number.isNaN(Number(value))
-  ){
-
-    return "-";
-
-  }
-
-  return Number(value).toFixed(2) + "%";
-
+  return "WAIT";
 }
 
 
-/*
-==================================================
-SMA
-==================================================
-*/
+function gradeClass(score){
+
+  if(score >= 75) return "green";
+  if(score >= 55) return "yellow";
+
+  return "gray";
+}
+
 
 function sma(data,period){
 
-  if(
-    !data ||
-    data.length < period
-  ){
-
+  if(!data || data.length < period){
     return null;
-
   }
 
   const part =
-    data.slice(
-      data.length - period
-    );
+    data.slice(data.length-period);
 
-  return (
-    part.reduce(
-      (a,b)=>a+b,
-      0
-    ) / period
-  );
-
+  return part.reduce(
+    (a,b)=>a+b,
+    0
+  ) / period;
 }
 
 
-/*
-==================================================
-شیب MA20
-==================================================
-*/
+/* =================================================
+   شیب MA20
+   ================================================= */
 
 function calculateSlope(closes){
 
-  if(
-    !closes ||
-    closes.length < 25
-  ){
+  if(!closes || closes.length < 25){
 
     return {
       value:0,
@@ -473,17 +364,14 @@ function calculateSlope(closes){
 
   }
 
-
   const current =
     sma(closes,20);
-
 
   const previous =
     sma(
       closes.slice(0,-1),
       20
     );
-
 
   if(
     current === null ||
@@ -498,204 +386,126 @@ function calculateSlope(closes){
 
   }
 
-
   const value =
-    (
-      (current - previous) /
-      previous
-    ) * 100;
+    ((current-previous)/previous)*100;
 
-
-  let direction = "FLAT";
-
+  let direction="FLAT";
 
   if(value > 0.02){
-
-    direction = "UP";
-
+    direction="UP";
   }
   else if(value < -0.02){
-
-    direction = "DOWN";
-
+    direction="DOWN";
   }
 
-
   return {
-
     value,
-
     direction,
-
-    strength:
-      Math.min(
-        100,
-        Math.abs(value) * 1000
-      )
-
+    strength:Math.min(
+      100,
+      Math.abs(value)*1000
+    )
   };
-
 }
 
 
-/*
-==================================================
-نزدیکی قیمت به MA20
-==================================================
-*/
+/* =================================================
+   MA20 TOUCH
+   ================================================= */
 
 function ma20Touch(
   price,
   ma20,
-  tolerance = 0.003
+  tolerance=0.004
 ){
 
   if(
     price === null ||
     ma20 === null
   ){
-
     return false;
-
   }
 
-
-  const distance =
-    Math.abs(
-      price - ma20
-    ) / ma20;
-
-
-  return distance <= tolerance;
-
+  return (
+    Math.abs(price-ma20)/ma20
+  ) <= tolerance;
 }
 
 
-/*
-==================================================
-واکنش کندل
-==================================================
-*/
+/* =================================================
+   واکنش کندل
+   ================================================= */
 
 function candleReaction(
   rows,
   direction
 ){
 
-  if(
-    !rows ||
-    rows.length < 2
-  ){
-
+  if(!rows || rows.length<2){
     return false;
-
   }
 
-
   const last =
-    rows[
-      rows.length - 1
-    ];
-
+    rows[rows.length-1];
 
   const open =
     Number(last.open);
 
-
   const close =
     Number(last.close);
 
-
-  if(direction === "LONG"){
-
-    return close > open;
-
+  if(direction==="LONG"){
+    return close>open;
   }
 
-
-  if(direction === "SHORT"){
-
-    return close < open;
-
+  if(direction==="SHORT"){
+    return close<open;
   }
-
 
   return false;
-
 }
 
 
-/*
-==================================================
-ساختار
-==================================================
-*/
+/* =================================================
+   ساختار
+   ================================================= */
 
-function detectStructure(closes){
+function detectStructure(rows){
 
-  if(
-    !closes ||
-    closes.length < 10
-  ){
-
+  if(!rows || rows.length<10){
     return "NONE";
-
   }
 
-
-  const n =
-    closes.length;
-
+  const n=rows.length;
 
   const a =
-    closes[n - 6];
-
+    Number(rows[n-6].close);
 
   const b =
-    closes[n - 3];
-
+    Number(rows[n-3].close);
 
   const c =
-    closes[n - 1];
+    Number(rows[n-1].close);
 
-
-  if(
-    c > b &&
-    b > a
-  ){
-
+  if(c>b && b>a){
     return "BULLISH";
-
   }
 
-
-  if(
-    c < b &&
-    b < a
-  ){
-
+  if(c<b && b<a){
     return "BEARISH";
-
   }
-
 
   return "NONE";
-
 }
 
 
-/*
-==================================================
-FVG
-==================================================
-*/
+/* =================================================
+   FVG
+   ================================================= */
 
 function detectFVG(rows){
 
-  if(
-    !rows ||
-    rows.length < 3
-  ){
+  if(!rows || rows.length<3){
 
     return {
       type:"NONE",
@@ -705,236 +515,143 @@ function detectFVG(rows){
 
   }
 
-
   const a =
-    rows[
-      rows.length - 3
-    ];
-
+    rows[rows.length-3];
 
   const c =
-    rows[
-      rows.length - 1
-    ];
-
+    rows[rows.length-1];
 
   const aHigh =
     Number(a.high);
 
-
   const aLow =
     Number(a.low);
 
-
   const cHigh =
     Number(c.high);
-
 
   const cLow =
     Number(c.low);
 
 
-  if(
-    cLow > aHigh
-  ){
+  if(cLow>aHigh){
 
     return {
-
       type:"BULLISH",
-
       bottom:aHigh,
-
       top:cLow
-
     };
 
   }
 
 
-  if(
-    cHigh < aLow
-  ){
+  if(cHigh<aLow){
 
     return {
-
       type:"BEARISH",
-
       bottom:cHigh,
-
       top:aLow
-
     };
 
   }
 
 
   return {
-
     type:"NONE",
-
     bottom:null,
-
     top:null
-
   };
-
 }
 
 
-/*
-==================================================
-حجم
-==================================================
-*/
+/* =================================================
+   Volume
+   ================================================= */
 
 function volumeInfo(rows){
 
-  if(
-    !rows ||
-    rows.length < 20
-  ){
+  if(!rows || rows.length<20){
 
     return {
-
       current:0,
       ma7:0,
       ma20:0,
       spike:false
-
     };
 
   }
 
-
   const volumes =
     rows.map(
-      r => Number(r.volume)
+      r=>Number(r.volume)
     );
-
 
   const current =
-    volumes[
-      volumes.length - 1
-    ];
-
+    volumes[volumes.length-1];
 
   const ma7 =
-    sma(
-      volumes,
-      7
-    );
-
+    sma(volumes,7);
 
   const ma20 =
-    sma(
-      volumes,
-      20
-    );
-
+    sma(volumes,20);
 
   return {
 
     current,
-
     ma7,
-
     ma20,
 
     spike:
-      current >
-      ma20 * 1.5
+      current > ma20*1.5
 
   };
-
 }
 
 
-/*
-==================================================
-تحلیل یک تایم فریم
-==================================================
-*/
+/* =================================================
+   تحلیل یک تایم فریم
+   ================================================= */
 
 function analyzeTF(rows){
 
-  if(
-    !rows ||
-    rows.length < 25
-  ){
-
+  if(!rows || rows.length<30){
     return null;
-
   }
-
 
   const closes =
     rows.map(
-      r => Number(r.close)
+      r=>Number(r.close)
     );
-
 
   const price =
-    closes[
-      closes.length - 1
-    ];
-
+    closes[closes.length-1];
 
   const ma7 =
-    sma(
-      closes,
-      7
-    );
-
+    sma(closes,7);
 
   const ma20 =
-    sma(
-      closes,
-      20
-    );
-
+    sma(closes,20);
 
   const slope =
-    calculateSlope(
-      closes
-    );
+    calculateSlope(closes);
 
+  let trend="RANGE";
 
-  let trend = "RANGE";
-
-
-  if(
-    ma7 > ma20
-  ){
-
-    trend = "BULLISH";
-
+  if(ma7>ma20){
+    trend="BULLISH";
   }
-  else if(
-    ma7 < ma20
-  ){
-
-    trend = "BEARISH";
-
+  else if(ma7<ma20){
+    trend="BEARISH";
   }
-
 
   const structure =
-    detectStructure(
-      closes
-    );
-
+    detectStructure(rows);
 
   const fvg =
-    detectFVG(
-      rows
-    );
-
+    detectFVG(rows);
 
   const volume =
-    volumeInfo(
-      rows
-    );
-
+    volumeInfo(rows);
 
   const touch =
     ma20Touch(
@@ -942,13 +659,11 @@ function analyzeTF(rows){
       ma20
     );
 
-
   const longReaction =
     candleReaction(
       rows,
       "LONG"
     );
-
 
   const shortReaction =
     candleReaction(
@@ -956,335 +671,332 @@ function analyzeTF(rows){
       "SHORT"
     );
 
-
   return {
 
     price,
-
     ma7,
-
     ma20,
 
     trend,
-
     slope,
-
     structure,
-
     fvg,
-
     volume,
 
-    longTouch:touch,
-
-    shortTouch:touch,
+    touch,
 
     longReaction,
-
     shortReaction
+
+  };
+}
+
+
+/* =================================================
+   تعیین جهت از بین 1m / 3m / 5m
+   ================================================= */
+
+function determineDirection(analyses){
+
+  let longPoints=0;
+  let shortPoints=0;
+
+  TIMEFRAMES.forEach(tf=>{
+
+    const x=analyses[tf];
+
+    if(!x) return;
+
+    if(x.trend==="BULLISH"){
+      longPoints++;
+    }
+
+    if(x.trend==="BEARISH"){
+      shortPoints++;
+    }
+
+    if(x.slope.direction==="UP"){
+      longPoints++;
+    }
+
+    if(x.slope.direction==="DOWN"){
+      shortPoints++;
+    }
+
+    if(x.structure==="BULLISH"){
+      longPoints++;
+    }
+
+    if(x.structure==="BEARISH"){
+      shortPoints++;
+    }
+
+    if(x.fvg.type==="BULLISH"){
+      longPoints++;
+    }
+
+    if(x.fvg.type==="BEARISH"){
+      shortPoints++;
+    }
+
+  });
+
+
+  if(longPoints>=3 && longPoints>shortPoints){
+    return "LONG";
+  }
+
+  if(shortPoints>=3 && shortPoints>longPoints){
+    return "SHORT";
+  }
+
+  return "WAIT";
+}
+
+
+/* =================================================
+   MTF
+   ================================================= */
+
+function mtfScore(
+  analyses,
+  direction
+){
+
+  let score=0;
+
+  TIMEFRAMES.forEach(tf=>{
+
+    const x=analyses[tf];
+
+    if(!x) return;
+
+    if(
+      direction==="LONG" &&
+      x.trend==="BULLISH"
+    ){
+      score+=2;
+    }
+
+    if(
+      direction==="SHORT" &&
+      x.trend==="BEARISH"
+    ){
+      score+=2;
+    }
+
+  });
+
+  return Math.min(5,score);
+}
+
+
+/* =================================================
+   امتیاز
+   ================================================= */
+
+function calculateScore(
+  x,
+  direction,
+  mtf
+){
+
+  if(
+    !x ||
+    direction==="WAIT"
+  ){
+
+    return {
+      score:0,
+      confirmations:0,
+      total:8
+    };
+
+  }
+
+  let score=0;
+  let confirmations=0;
+
+
+  /* روند */
+
+  const goodTrend =
+    direction==="LONG"
+    ? x.trend==="BULLISH"
+    : x.trend==="BEARISH";
+
+  if(goodTrend){
+
+    score+=WEIGHTS.trend;
+    confirmations++;
+
+  }
+
+
+  /* شیب MA20 */
+
+  const goodSlope =
+    direction==="LONG"
+    ? x.slope.direction==="UP"
+    : x.slope.direction==="DOWN";
+
+  if(goodSlope){
+
+    score+=WEIGHTS.maSlope;
+    confirmations++;
+
+  }
+
+
+  /* لمس MA20 */
+
+  if(x.touch){
+
+    score+=WEIGHTS.maTouch;
+    confirmations++;
+
+  }
+
+
+  /* واکنش */
+
+  const reaction =
+    direction==="LONG"
+    ? x.longReaction
+    : x.shortReaction;
+
+  if(reaction){
+
+    score+=WEIGHTS.reaction;
+    confirmations++;
+
+  }
+
+
+  /* ساختار */
+
+  const goodStructure =
+    direction==="LONG"
+    ? x.structure==="BULLISH"
+    : x.structure==="BEARISH";
+
+  if(goodStructure){
+
+    score+=WEIGHTS.structure;
+    confirmations++;
+
+  }
+
+
+  /* FVG */
+
+  const goodFVG =
+    direction==="LONG"
+    ? x.fvg.type==="BULLISH"
+    : x.fvg.type==="BEARISH";
+
+  if(goodFVG){
+
+    score+=WEIGHTS.fvg;
+    confirmations++;
+
+  }
+
+
+  /* Volume */
+
+  if(x.volume.spike){
+
+    score+=WEIGHTS.volume;
+    confirmations++;
+
+  }
+
+
+  /* MTF */
+
+  if(mtf>0){
+
+    score+=WEIGHTS.mtf;
+    confirmations++;
+
+  }
+
+
+  return {
+
+    score:Math.min(
+      100,
+      Math.round(score)
+    ),
+
+    confirmations,
+
+    total:8
 
   };
 
 }
 
 
-/*
-==================================================
-تعیین جهت
-==================================================
-*/
-
-function determineDirection(x){
-
-  if(!x){
-
-    return "WAIT";
-
-  }
-
-
-  let longPoints = 0;
-
-  let shortPoints = 0;
-
-
-  if(
-    x.trend === "BULLISH"
-  ){
-
-    longPoints += 2;
-
-  }
-
-
-  if(
-    x.trend === "BEARISH"
-  ){
-
-    shortPoints += 2;
-
-  }
-
-
-  if(
-    x.slope.direction === "UP"
-  ){
-
-    longPoints += 2;
-
-  }
-
-
-  if(
-    x.slope.direction === "DOWN"
-  ){
-
-    shortPoints += 2;
-
-  }
-
-
-  if(
-    x.structure === "BULLISH"
-  ){
-
-    longPoints += 2;
-
-  }
-
-
-  if(
-    x.structure === "BEARISH"
-  ){
-
-    shortPoints += 2;
-
-  }
-
-
-  if(
-    x.fvg.type === "BULLISH"
-  ){
-
-    longPoints++;
-
-  }
-
-
-  if(
-    x.fvg.type === "BEARISH"
-  ){
-
-    shortPoints++;
-
-  }
-
-
-  if(
-    longPoints >
-    shortPoints &&
-    longPoints >= 3
-  ){
-
-    return "LONG";
-
-  }
-
-
-  if(
-    shortPoints >
-    longPoints &&
-    shortPoints >= 3
-  ){
-
-    return "SHORT";
-
-  }
-
-
-  return "WAIT";
-
-}
-
-
-/*
-==================================================
-اهداف
-==================================================
-*/
+/* =================================================
+   اهداف
+   ================================================= */
 
 function calculateTargets(
   x,
   direction
 ){
 
-  if(
-    !x ||
-    !x.price
-  ){
+  const price=x.price;
 
-    return null;
-
-  }
-
-
-  const price =
-    x.price;
-
+  let risk=
+    price*0.015;
 
   let sl;
 
-  let risk;
+  if(direction==="LONG"){
 
-
-  if(
-    direction === "LONG"
-  ){
-
-    let base =
-      price * 0.985;
-
-
-    if(
-      x.fvg.type === "BULLISH"
-    ){
-
-      base =
-        Math.min(
-          base,
-          x.fvg.bottom * 0.998
-        );
-
-    }
-
-
-    sl = base;
-
-
-    risk =
-      price - sl;
-
-  }
-  else if(
-    direction === "SHORT"
-  ){
-
-    let base =
-      price * 1.015;
-
-
-    if(
-      x.fvg.type === "BEARISH"
-    ){
-
-      base =
-        Math.max(
-          base,
-          x.fvg.top * 1.002
-        );
-
-    }
-
-
-    sl = base;
-
-
-    risk =
-      sl - price;
+    sl=price-risk;
 
   }
   else{
 
-    return null;
+    sl=price+risk;
 
   }
 
+  let tp1,tp2,tp3;
 
-  if(
-    risk <= 0
-  ){
+  if(direction==="LONG"){
 
-    risk =
-      price * 0.01;
-
-
-    if(
-      direction === "LONG"
-    ){
-
-      sl =
-        price - risk;
-
-    }
-    else{
-
-      sl =
-        price + risk;
-
-    }
-
-  }
-
-
-  let tp1;
-
-  let tp2;
-
-  let tp3;
-
-
-  if(
-    direction === "LONG"
-  ){
-
-    tp1 =
-      price + risk;
-
-    tp2 =
-      price + risk * 2;
-
-    tp3 =
-      price + risk * 3;
+    tp1=price+risk;
+    tp2=price+risk*2;
+    tp3=price+risk*3;
 
   }
   else{
 
-    tp1 =
-      price - risk;
-
-    tp2 =
-      price - risk * 2;
-
-    tp3 =
-      price - risk * 3;
+    tp1=price-risk;
+    tp2=price-risk*2;
+    tp3=price-risk*3;
 
   }
-
 
   return {
-
     entry:price,
-
     sl,
-
     tp1,
-
     tp2,
-
     tp3,
-
     rr:"1:3"
-
   };
-
 }
 
 
-/*
-==================================================
-دریافت Kline
-==================================================
-*/
+/* =================================================
+   دریافت Kline
+   ================================================= */
 
 async function getKlines(
   symbol,
@@ -1292,27 +1004,17 @@ async function getKlines(
 ){
 
   const url =
-    API_BASE +
-    "/api/kline" +
-    "?symbol=" +
-    encodeURIComponent(symbol) +
-    "&interval=" +
-    encodeURIComponent(interval) +
-    "&limit=100";
+    API_BASE+
+    "/api/kline"+
+    "?symbol="+
+    encodeURIComponent(symbol)+
+    "&interval="+
+    encodeURIComponent(interval)+
+    "&limit=60";
 
 
   const response =
     await fetch(url);
-
-
-  if(!response.ok){
-
-    throw new Error(
-      "HTTP " +
-      response.status
-    );
-
-  }
 
 
   const data =
@@ -1330,21 +1032,18 @@ async function getKlines(
   }
 
 
-  return data.rows || [];
-
+  return data.rows||[];
 }
 
 
-/*
-==================================================
-تحلیل کامل دستی
-فقط 1m / 3m / 5m
-==================================================
-*/
+/* =================================================
+   تحلیل کامل
+   فقط 1m / 3m / 5m
+   ================================================= */
 
 async function fullAnalyze(symbol){
 
-  const analyses = {};
+  const analyses={};
 
 
   for(
@@ -1359,22 +1058,22 @@ async function fullAnalyze(symbol){
           tf
         );
 
-
-      analyses[tf] =
-        analyzeTF(
-          rows
-        );
+      analyses[tf]=
+        analyzeTF(rows);
 
     }
-    catch(e){
+    catch(error){
 
-      analyses[tf] =
-        null;
+      analyses[tf]=null;
 
     }
 
   }
 
+
+  /*
+   تایم اصلی = 5 دقیقه
+  */
 
   const main =
     analyses["5"] ||
@@ -1385,212 +1084,37 @@ async function fullAnalyze(symbol){
   if(!main){
 
     throw new Error(
-      "اطلاعات کافی دریافت نشد."
+      "اطلاعات کافی برای "+
+      symbol+
+      " دریافت نشد."
     );
 
   }
 
 
-  /*
-  جهت اصلی از 5m
-  */
-
-  let direction =
+  const direction =
     determineDirection(
-      main
+      analyses
     );
 
 
-  /*
-  اگر 5m خنثی بود
-  از 3m استفاده می‌کنیم
-  */
-
-  if(
-    direction === "WAIT" &&
-    analyses["3"]
-  ){
-
-    direction =
-      determineDirection(
-        analyses["3"]
-      );
-
-  }
-
-
-  /*
-  اگر هنوز خنثی بود
-  از 1m
-  */
-
-  if(
-    direction === "WAIT" &&
-    analyses["1"]
-  ){
-
-    direction =
-      determineDirection(
-        analyses["1"]
-      );
-
-  }
-
-
-  let score = 0;
-
-  let confirmations = 0;
-
-
-  for(
-    const tf of TIMEFRAMES
-  ){
-
-    const x =
-      analyses[tf];
-
-
-    if(!x){
-      continue;
-    }
-
-
-    /*
-    روند
-    */
-
-    if(
-      direction === "LONG" &&
-      x.trend === "BULLISH"
-    ){
-
-      score += 15;
-
-      confirmations++;
-
-    }
-
-
-    if(
-      direction === "SHORT" &&
-      x.trend === "BEARISH"
-    ){
-
-      score += 15;
-
-      confirmations++;
-
-    }
-
-
-    /*
-    شیب MA20
-    */
-
-    if(
-      direction === "LONG" &&
-      x.slope.direction === "UP"
-    ){
-
-      score += 10;
-
-      confirmations++;
-
-    }
-
-
-    if(
-      direction === "SHORT" &&
-      x.slope.direction === "DOWN"
-    ){
-
-      score += 10;
-
-      confirmations++;
-
-    }
-
-
-    /*
-    ساختار
-    */
-
-    if(
-      direction === "LONG" &&
-      x.structure === "BULLISH"
-    ){
-
-      score += 10;
-
-      confirmations++;
-
-    }
-
-
-    if(
-      direction === "SHORT" &&
-      x.structure === "BEARISH"
-    ){
-
-      score += 10;
-
-      confirmations++;
-
-    }
-
-
-    /*
-    FVG
-    */
-
-    if(
-      direction === "LONG" &&
-      x.fvg.type === "BULLISH"
-    ){
-
-      score += 5;
-
-      confirmations++;
-
-    }
-
-
-    if(
-      direction === "SHORT" &&
-      x.fvg.type === "BEARISH"
-    ){
-
-      score += 5;
-
-      confirmations++;
-
-    }
-
-
-    /*
-    حجم
-    */
-
-    if(
-      x.volume.spike
-    ){
-
-      score += 5;
-
-    }
-
-  }
-
-
-  score =
-    Math.min(
-      100,
-      Math.round(score)
+  const mtf =
+    mtfScore(
+      analyses,
+      direction
+    );
+
+
+  const scoreData =
+    calculateScore(
+      main,
+      direction,
+      mtf
     );
 
 
   const targets =
-    direction === "WAIT"
+    direction==="WAIT"
     ? null
     : calculateTargets(
         main,
@@ -1602,13 +1126,20 @@ async function fullAnalyze(symbol){
 
     symbol,
 
+    main,
+
     direction,
 
-    score,
+    score:
+      scoreData.score,
 
-    confirmations,
+    confirmations:
+      scoreData.confirmations,
 
-    main,
+    total:
+      scoreData.total,
+
+    mtf,
 
     targets,
 
@@ -1619,188 +1150,93 @@ async function fullAnalyze(symbol){
 }
 
 
-/*
-==================================================
-نمایش تایم فریم ها
-==================================================
-*/
-
-function renderMTF(analyses){
-
-  const names = {
-
-    "1":"1m",
-
-    "3":"3m",
-
-    "5":"5m"
-
-  };
-
-
-  let html = "";
-
-
-  for(
-    const tf of TIMEFRAMES
-  ){
-
-    const x =
-      analyses[tf];
-
-
-    if(!x){
-
-      html +=
-        `${names[tf]} ⏳<br>`;
-
-      continue;
-
-    }
-
-
-    const icon =
-      x.trend === "BULLISH"
-      ? "🟢"
-      : x.trend === "BEARISH"
-      ? "🔴"
-      : "🟡";
-
-
-    html +=
-      `${names[tf]} ${icon} ${x.trend}<br>`;
-
-  }
-
-
-  return html;
-
-}
-
-
-/*
-==================================================
-نمایش نتیجه
-==================================================
-*/
+/* =================================================
+   نمایش
+   ================================================= */
 
 function renderSignal(result){
 
   const direction =
     result.direction;
 
+  const score =
+    result.score;
+
+  const grade =
+    scoreGrade(score);
 
   const cls =
-    direction === "LONG"
+    direction==="LONG"
     ? "long"
-    : direction === "SHORT"
+    : direction==="SHORT"
     ? "short"
     : "wait";
 
 
   const icon =
-    direction === "LONG"
+    direction==="LONG"
     ? "🟢 LONG"
-    : direction === "SHORT"
+    : direction==="SHORT"
     ? "🔴 SHORT"
     : "🟡 WAIT";
 
 
-  const x =
-    result.main;
+  const x=result.main;
+  const t=result.targets;
 
 
-  const t =
-    result.targets;
-
-
-  let targetsHTML = "";
+  let targetsHTML="";
 
 
   if(t){
 
-    targetsHTML = `
+    targetsHTML=`
 
-      <div class="grid">
+    <div class="grid">
 
-        <div class="box">
-
-          <div class="label">
-            Entry
-          </div>
-
-          <div class="value">
-            ${number(t.entry)}
-          </div>
-
+      <div class="box">
+        <div class="label">Entry</div>
+        <div class="value">
+          ${number(t.entry)}
         </div>
-
-
-        <div class="box">
-
-          <div class="label">
-            SL
-          </div>
-
-          <div class="value red">
-            ${number(t.sl)}
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <div class="label">
-            TP1
-          </div>
-
-          <div class="value green">
-            ${number(t.tp1)}
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <div class="label">
-            TP2
-          </div>
-
-          <div class="value green">
-            ${number(t.tp2)}
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <div class="label">
-            TP3
-          </div>
-
-          <div class="value green">
-            ${number(t.tp3)}
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <div class="label">
-            R:R
-          </div>
-
-          <div class="value">
-            ${t.rr}
-          </div>
-
-        </div>
-
       </div>
+
+      <div class="box">
+        <div class="label">SL</div>
+        <div class="value red">
+          ${number(t.sl)}
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">TP1</div>
+        <div class="value green">
+          ${number(t.tp1)}
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">TP2</div>
+        <div class="value green">
+          ${number(t.tp2)}
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">TP3</div>
+        <div class="value green">
+          ${number(t.tp3)}
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="label">R:R</div>
+        <div class="value">
+          ${t.rr}
+        </div>
+      </div>
+
+    </div>
 
     `;
 
@@ -1809,165 +1245,179 @@ function renderSignal(result){
 
   return `
 
-    <div class="signal ${cls}">
+  <div class="signal ${cls}">
 
-      <div class="header">
+    <div class="header">
 
-        <div>
+      <div>
 
-          <div class="title">
-            ${icon} ${result.symbol}
-          </div>
-
-          <div class="meta">
-            فقط 1m / 3m / 5m
-          </div>
-
+        <div class="title">
+          ${icon} ${result.symbol}
         </div>
 
-
-        <div class="score">
-
-          ${result.score}/100
-
+        <div class="meta">
+          تایم‌فریم‌های تحلیل:
+          1m / 3m / 5m
         </div>
 
       </div>
 
-
-      ${targetsHTML}
-
-
-      <div class="confirm">
-
-        <b>
-          تأییدها:
-        </b>
-
-        ${result.confirmations}
-
-        <br><br>
-
-
-        <b>
-          MA20 Touch:
-        </b>
-
-        ${
-          x.longTouch || x.shortTouch
-          ? "✅"
-          : "❌"
-        }
-
-        <br>
-
-
-        <b>
-          MA20 Slope:
-        </b>
-
-        ${
-          x.slope.direction === "UP"
-          ? "🟢 صعودی"
-          : x.slope.direction === "DOWN"
-          ? "🔴 نزولی"
-          : "🟡 خنثی"
-        }
-
-        <br>
-
-
-        <b>
-          Structure:
-        </b>
-
-        ${
-          x.structure === "BULLISH"
-          ? "🟢 BULLISH"
-          : x.structure === "BEARISH"
-          ? "🔴 BEARISH"
-          : "⚪ NONE"
-        }
-
-        <br>
-
-
-        <b>
-          FVG:
-        </b>
-
-        ${
-          x.fvg.type === "BULLISH"
-          ? "🟢 BULLISH"
-          : x.fvg.type === "BEARISH"
-          ? "🔴 BEARISH"
-          : "⚪ NONE"
-        }
-
-        <br>
-
-
-        <b>
-          Volume:
-        </b>
-
-        ${
-          x.volume.spike
-          ? "🔥 تأیید"
-          : "❌"
-        }
-
-      </div>
-
-
-      <div class="confirm">
-
-        <b>
-          تایم‌فریم‌ها:
-        </b>
-
-        <br>
-
-        ${renderMTF(
-          result.analyses
-        )}
-
+      <div class="score ${gradeClass(score)}">
+        ${score}/100
+        <small>${grade}</small>
       </div>
 
     </div>
+
+
+    ${targetsHTML}
+
+
+    <div class="confirm">
+
+      <b>تأییدها:</b>
+      ${result.confirmations}/${result.total}
+
+      <br>
+
+      MA20 Touch:
+      ${x.touch ? "✅":"❌"}
+
+      <br>
+
+      MA20 Slope:
+      ${
+        x.slope.direction==="UP"
+        ? "🟢 صعودی"
+        : x.slope.direction==="DOWN"
+        ? "🔴 نزولی"
+        : "🟡 خنثی"
+      }
+
+      <br>
+
+      Structure:
+      ${
+        x.structure==="BULLISH"
+        ? "🟢 BULLISH"
+        : x.structure==="BEARISH"
+        ? "🔴 BEARISH"
+        : "⚪ NONE"
+      }
+
+      <br>
+
+      FVG:
+      ${
+        x.fvg.type==="BULLISH"
+        ? "🟢 BULLISH"
+        : x.fvg.type==="BEARISH"
+        ? "🔴 BEARISH"
+        : "⚪ NONE"
+      }
+
+      <br>
+
+      Volume:
+      ${x.volume.spike ? "🔥 تأیید":"❌"}
+
+      <br>
+
+      تأیید 1m/3m/5m:
+      ${result.mtf}/5
+
+    </div>
+
+
+    <div class="confirm">
+
+      <b>تایم‌فریم‌ها:</b><br>
+
+      ${renderMTF(result.analyses)}
+
+    </div>
+
+  </div>
 
   `;
 
 }
 
 
-/*
-==================================================
-تحلیل دستی
-==================================================
-*/
+/* =================================================
+   نمایش 3 تایم فریم
+   ================================================= */
+
+function renderMTF(analyses){
+
+  const names={
+    "1":"1m",
+    "3":"3m",
+    "5":"5m"
+  };
+
+  let html="";
+
+
+  for(
+    const tf of TIMEFRAMES
+  ){
+
+    const x=
+      analyses[tf];
+
+
+    if(!x){
+
+      html+=
+        `${names[tf]} ⏳<br>`;
+
+      continue;
+
+    }
+
+
+    const icon=
+      x.trend==="BULLISH"
+      ? "🟢"
+      : x.trend==="BEARISH"
+      ? "🔴"
+      : "🟡";
+
+
+    html+=
+      `${names[tf]} ${icon} ${x.trend}<br>`;
+
+  }
+
+
+  return html;
+}
+
+
+/* =================================================
+   تحلیل دستی
+   ================================================= */
 
 async function analyzeSymbol(){
 
-  const input =
+  const input=
     document.getElementById(
       "symbol"
     );
 
-
-  const manual =
+  const manual=
     document.getElementById(
       "manual"
     );
 
-
-  const status =
+  const status=
     document.getElementById(
       "status"
     );
 
 
-  const symbol =
+  const symbol=
     input.value
       .trim()
       .toUpperCase();
@@ -1975,7 +1425,7 @@ async function analyzeSymbol(){
 
   if(!symbol){
 
-    status.textContent =
+    status.textContent=
       "❌ نماد را وارد کن.";
 
     return;
@@ -1983,49 +1433,38 @@ async function analyzeSymbol(){
   }
 
 
-  manual.innerHTML = `
-    <div class="empty">
-      ⏳ در حال تحلیل ${symbol}...
-    </div>
-  `;
-
-
-  status.textContent =
-    `⏳ تحلیل ${symbol} در 1m / 3m / 5m...`;
+  manual.innerHTML=
+    `<div class="empty">
+      ⏳ تحلیل ${symbol}
+      در 1m / 3m / 5m...
+    </div>`;
 
 
   try{
 
-    const result =
+    const result=
       await fullAnalyze(
         symbol
       );
 
 
-    manual.innerHTML =
-      renderSignal(
-        result
-      );
+    manual.innerHTML=
+      renderSignal(result);
 
 
-    status.textContent =
-      `✅ تحلیل ${symbol} کامل شد.`;
+    status.textContent=
+      `✅ ${symbol} تحلیل شد.`;
 
   }
   catch(error){
 
-    console.error(error);
-
-
-    manual.innerHTML = `
-      <div class="empty">
+    manual.innerHTML=
+      `<div class="empty">
         ❌ خطا<br><br>
         ${error.message}
-      </div>
-    `;
+      </div>`;
 
-
-    status.textContent =
+    status.textContent=
       "❌ تحلیل انجام نشد.";
 
   }
@@ -2033,57 +1472,39 @@ async function analyzeSymbol(){
 }
 
 
-/*
-==================================================
-اسکن سریع بازار
-==================================================
-*/
+/* =================================================
+   اسکن بازار سریع
+   ================================================= */
 
 async function scanMarket(){
 
-  const resultsBox =
+  const resultsBox=
     document.getElementById(
       "results"
     );
 
-
-  const status =
+  const status=
     document.getElementById(
       "status"
     );
 
 
-  const progressBar =
-    document.getElementById(
-      "progressBar"
-    );
-
-
-  resultsBox.innerHTML = `
-    <div class="empty">
-      ⏳ دریافت لیست فیوچرز Bybit...
-    </div>
-  `;
-
-
-  progressBar.style.width =
-    "0%";
+  resultsBox.innerHTML=
+    `<div class="empty">
+      ⏳ دریافت لیست فیوچرز...
+    </div>`;
 
 
   try{
 
-    /*
-    دریافت ارزها
-    */
-
-    const response =
+    const response=
       await fetch(
-        API_BASE +
+        API_BASE+
         "/api/futures"
       );
 
 
-    const data =
+    const data=
       await response.json();
 
 
@@ -2091,204 +1512,76 @@ async function scanMarket(){
 
       throw new Error(
         data.error ||
-        "دریافت لیست ارزها ناموفق بود."
+        "دریافت لیست ناموفق بود."
       );
 
     }
 
 
-    const symbols =
-      (data.futures || [])
-        .filter(
-          s =>
-            s.endsWith("USDT") &&
-            !s.includes("-")
-        );
+    let symbols=
+      data.futures||[];
+
+
+    symbols=
+      symbols.filter(
+        s=>
+          s.endsWith("USDT") &&
+          !s.includes("-")
+      );
 
 
     /*
-    ==========================================
-    مرحله 1:
-    فقط 5m
-    ==========================================
-    */
+     * برای سرعت بیشتر:
+     * حداکثر 150 ارز
+     *
+     * ترتیب لیست Bybit حفظ می‌شود.
+     */
 
-    const candidates = [];
+    const limited=
+      symbols.slice(0,150);
 
 
-    const batchSize = 25;
+    status.textContent=
+      `⏳ بررسی 0 از ${limited.length} ارز...`;
+
+
+    const results=[];
+
+
+    /*
+     * هر بار 10 ارز
+     */
+
+    const batchSize=10;
 
 
     for(
-      let i = 0;
-      i < symbols.length;
-      i += batchSize
+      let i=0;
+      i<limited.length;
+      i+=batchSize
     ){
 
-      const batch =
-        symbols.slice(
+      const batch=
+        limited.slice(
           i,
-          i + batchSize
+          i+batchSize
         );
 
 
-      const batchResults =
+      const batchResults=
         await Promise.all(
 
           batch.map(
-            async symbol => {
+            async symbol=>{
 
               try{
 
-                const rows =
-                  await getKlines(
-                    symbol,
-                    "5"
-                  );
-
-
-                const x =
-                  analyzeTF(
-                    rows
-                  );
-
-
-                if(!x){
-
-                  return null;
-
-                }
-
-
-                /*
-                جهت
-                */
-
-                const direction =
-                  determineDirection(
-                    x
-                  );
-
-
-                if(
-                  direction === "WAIT"
-                ){
-
-                  return null;
-
-                }
-
-
-                /*
-                امتیاز اولیه 5m
-                */
-
-                let score = 0;
-
-
-                if(
-                  direction === "LONG" &&
-                  x.trend === "BULLISH"
-                ){
-
-                  score += 20;
-
-                }
-
-
-                if(
-                  direction === "SHORT" &&
-                  x.trend === "BEARISH"
-                ){
-
-                  score += 20;
-
-                }
-
-
-                if(
-                  direction === "LONG" &&
-                  x.slope.direction === "UP"
-                ){
-
-                  score += 15;
-
-                }
-
-
-                if(
-                  direction === "SHORT" &&
-                  x.slope.direction === "DOWN"
-                ){
-
-                  score += 15;
-
-                }
-
-
-                if(
-                  direction === "LONG" &&
-                  x.structure === "BULLISH"
-                ){
-
-                  score += 15;
-
-                }
-
-
-                if(
-                  direction === "SHORT" &&
-                  x.structure === "BEARISH"
-                ){
-
-                  score += 15;
-
-                }
-
-
-                if(
-                  direction === "LONG" &&
-                  x.fvg.type === "BULLISH"
-                ){
-
-                  score += 10;
-
-                }
-
-
-                if(
-                  direction === "SHORT" &&
-                  x.fvg.type === "BEARISH"
-                ){
-
-                  score += 10;
-
-                }
-
-
-                if(
-                  x.volume.spike
-                ){
-
-                  score += 10;
-
-                }
-
-
-                return {
-
-                  symbol,
-
-                  direction,
-
-                  x,
-
-                  score
-
-                };
+                return await fullAnalyze(
+                  symbol
+                );
 
               }
-              catch(e){
+              catch(error){
 
                 return null;
 
@@ -2301,11 +1594,15 @@ async function scanMarket(){
 
 
       batchResults.forEach(
-        r => {
+        r=>{
 
-          if(r){
+          if(
+            r &&
+            r.direction!=="WAIT" &&
+            r.score>=45
+          ){
 
-            candidates.push(r);
+            results.push(r);
 
           }
 
@@ -2313,548 +1610,85 @@ async function scanMarket(){
       );
 
 
-      const done =
-        Math.min(
-          i + batchSize,
-          symbols.length
-        );
+      /*
+       * مرتب‌سازی موقت
+       */
+
+      results.sort(
+        (a,b)=>
+          b.score-a.score
+      );
 
 
-      const pct =
-        Math.round(
-          done /
-          symbols.length *
-          100
-        );
+      status.textContent=
+        `⏳ بررسی ${Math.min(
+          i+batchSize,
+          limited.length
+        )} از ${limited.length}...`;
 
 
-      progressBar.style.width =
-        pct + "%";
+      /*
+       * اگر 10 سیگنال خیلی خوب پیدا شد
+       * می‌توانیم زودتر پایان دهیم.
+       */
 
+      if(
+        results.length>=10 &&
+        results[9].score>=80
+      ){
 
-      status.textContent =
-        `⏳ مرحله اول 5m: ${done} از ${symbols.length}...`;
+        break;
+
+      }
 
     }
 
 
-    /*
-    ==========================================
-    بهترین‌های 5m
-    ==========================================
-    */
-
-    candidates.sort(
-      (a,b) =>
-        b.score - a.score
+    results.sort(
+      (a,b)=>
+        b.score-a.score
     );
 
 
-    /*
-    فقط 30 کاندید
-    برای 1m و 3m
-    */
+    const top10=
+      results.slice(0,10);
 
-    const shortlist =
-      candidates.slice(
-        0,
-        30
-      );
 
+    if(!top10.length){
 
-    status.textContent =
-      `⏳ ${shortlist.length} کاندید قوی؛ بررسی 1m و 3m...`;
-
-
-    const finalResults = [];
-
-
-    /*
-    ==========================================
-    مرحله دوم
-    1m + 3m
-    ==========================================
-    */
-
-    for(
-      let i = 0;
-      i < shortlist.length;
-      i++
-    ){
-
-      const candidate =
-        shortlist[i];
-
-
-      try{
-
-        const rows1 =
-          await getKlines(
-            candidate.symbol,
-            "1"
-          );
-
-
-        const rows3 =
-          await getKlines(
-            candidate.symbol,
-            "3"
-          );
-
-
-        const x1 =
-          analyzeTF(
-            rows1
-          );
-
-
-        const x3 =
-          analyzeTF(
-            rows3
-          );
-
-
-        if(
-          !x1 ||
-          !x3
-        ){
-
-          continue;
-
-        }
-
-
-        const direction =
-          candidate.direction;
-
-
-        let score =
-          candidate.score;
-
-
-        let confirmations = 0;
-
-
-        /*
-        ==================================
-        1m Trend
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x1.trend === "BULLISH"
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x1.trend === "BEARISH"
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        /*
-        ==================================
-        3m Trend
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x3.trend === "BULLISH"
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x3.trend === "BEARISH"
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        /*
-        ==================================
-        MA20 Slope 1m
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x1.slope.direction === "UP"
-        ){
-
-          score += 5;
-
-          confirmations++;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x1.slope.direction === "DOWN"
-        ){
-
-          score += 5;
-
-          confirmations++;
-
-        }
-
-
-        /*
-        ==================================
-        MA20 Slope 3m
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x3.slope.direction === "UP"
-        ){
-
-          score += 5;
-
-          confirmations++;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x3.slope.direction === "DOWN"
-        ){
-
-          score += 5;
-
-          confirmations++;
-
-        }
-
-
-        /*
-        ==================================
-        MA20 Touch + Reaction
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x1.longTouch &&
-          x1.longReaction
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x1.shortTouch &&
-          x1.shortReaction
-        ){
-
-          score += 10;
-
-          confirmations++;
-
-        }
-
-
-        /*
-        ==================================
-        ساختار 1m
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x1.structure === "BULLISH"
-        ){
-
-          score += 5;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x1.structure === "BEARISH"
-        ){
-
-          score += 5;
-
-        }
-
-
-        /*
-        ==================================
-        ساختار 3m
-        ==================================
-        */
-
-        if(
-          direction === "LONG" &&
-          x3.structure === "BULLISH"
-        ){
-
-          score += 5;
-
-        }
-
-
-        if(
-          direction === "SHORT" &&
-          x3.structure === "BEARISH"
-        ){
-
-          score += 5;
-
-        }
-
-
-        /*
-        ==================================
-        حجم
-        ==================================
-        */
-
-        if(
-          x1.volume.spike
-        ){
-
-          score += 5;
-
-        }
-
-
-        if(
-          x3.volume.spike
-        ){
-
-          score += 5;
-
-        }
-
-
-        score =
-          Math.min(
-            100,
-            Math.round(score)
-          );
-
-
-        /*
-        حداقل دو تأیید
-        */
-
-        if(
-          confirmations < 2
-        ){
-
-          continue;
-
-        }
-
-
-        /*
-        اهداف
-        */
-
-        const targets =
-          calculateTargets(
-            candidate.x,
-            direction
-          );
-
-
-        finalResults.push({
-
-          symbol:
-            candidate.symbol,
-
-          direction,
-
-          score,
-
-          confirmations,
-
-          main:
-            candidate.x,
-
-          targets,
-
-          analyses:{
-
-            "1":x1,
-
-            "3":x3,
-
-            "5":candidate.x
-
-          }
-
-        });
-
-
-      }
-      catch(e){
-
-        console.log(
-          candidate.symbol,
-          e
-        );
-
-      }
-
-
-      const pct =
-        Math.round(
-          (
-            i + 1
-          ) /
-          shortlist.length *
-          100
-        );
-
-
-      progressBar.style.width =
-        pct + "%";
-
-
-      status.textContent =
-        `⏳ مرحله دوم 1m+3m: ${
-          i + 1
-        } از ${
-          shortlist.length
-        }...`;
-
-    }
-
-
-    /*
-    ==========================================
-    رتبه بندی
-    ==========================================
-    */
-
-    finalResults.sort(
-      (a,b) => {
-
-        if(
-          b.score !== a.score
-        ){
-
-          return (
-            b.score -
-            a.score
-          );
-
-        }
-
-
-        return (
-          b.confirmations -
-          a.confirmations
-        );
-
-      }
-    );
-
-
-    /*
-    ==========================================
-    فقط 10 مورد
-    ==========================================
-    */
-
-    const top10 =
-      finalResults.slice(
-        0,
-        10
-      );
-
-
-    if(
-      !top10.length
-    ){
-
-      resultsBox.innerHTML = `
-        <div class="empty">
-          🟡 فعلاً موقعیت
-          تأییدشده‌ای پیدا نشد.
-        </div>
-      `;
+      resultsBox.innerHTML=
+        `<div class="empty">
+          🟡 فعلاً سیگنال قوی پیدا نشد.
+        </div>`;
 
     }
     else{
 
-      resultsBox.innerHTML =
+      resultsBox.innerHTML=
         top10
           .map(
-            r =>
-              renderSignal(r)
+            r=>renderSignal(r)
           )
           .join("");
 
     }
 
 
-    progressBar.style.width =
-      "100%";
-
-
-    status.textContent =
-      `✅ اسکن تمام شد — ${
-        top10.length
-      } موقعیت برتر پیدا شد.`;
+    status.textContent=
+      `✅ اسکن تمام شد — ${top10.length} موقعیت برتر از ${limited.length} ارز.`;
 
   }
   catch(error){
 
     console.error(error);
 
-
-    resultsBox.innerHTML = `
-      <div class="empty">
-
-        ❌ خطا:
-
-        <br><br>
-
+    resultsBox.innerHTML=
+      `<div class="empty">
+        ❌ خطا:<br><br>
         ${error.message}
+      </div>`;
 
-      </div>
-    `;
-
-
-    status.textContent =
+    status.textContent=
       "❌ اسکن بازار انجام نشد.";
 
   }
@@ -2864,5 +1698,4 @@ async function scanMarket(){
 </script>
 
 </body>
-
 </html>
