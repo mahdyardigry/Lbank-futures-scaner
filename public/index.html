@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>LBank Futures Scanner V1</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0f14;
+  color: #ffffff;
+  font-family: Arial, Tahoma, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  padding: 14px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 8px 0 18px;
+}
+
+.card {
+  background: #151b23;
+  border: 1px solid #293241;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button,
+input,
+select {
+  min-height: 44px;
+  border-radius: 9px;
+  border: 1px solid #394555;
+  padding: 9px 12px;
+  font-size: 15px;
+  background: #0b0f14;
+  color: white;
+}
+
+input {
+  flex: 1;
+  min-width: 150px;
+}
+
+select {
+  min-width: 110px;
+}
+
+button {
+  background: #238636;
+  border: none;
+  font-weight: bold;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.red {
+  background: #da3633;
+}
+
+.blue {
+  background: #1f6feb;
+}
+
+.status {
+  margin-top: 12px;
+  color: #8b949e;
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.box {
+  background: #0b0f14;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+}
+
+.label {
+  color: #8b949e;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.value {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.green {
+  color: #3fb950;
+}
+
+.redText {
+  color: #f85149;
+}
+
+.yellow {
+  color: #d29922;
+}
+
+.signal {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 12px;
+  background: #0b0f14;
+  margin-top: 12px;
+}
+
+.small {
+  color: #8b949e;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th,
+td {
+  padding: 9px 5px;
+  border-bottom: 1px solid #293241;
+  text-align: center;
+  font-size: 13px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 500px) {
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  button {
+    flex: 1;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>
+📊 LBank Futures Scanner V1
+</h1>
+
+
+<!-- LBank -->
+
+<div class="card">
+
+<div class="title">
+🔄 لیست Futures LBank
+</div>
+
+<div class="row">
+
+<button onclick="loadFutures()">
+دریافت لیست
+</button>
+
+<button
+  class="blue"
+  onclick="saveFutures()"
+>
+💾 ذخیره
+</button>
+
+<button
+  class="red"
+  onclick="clearFutures()"
+>
+پاک کردن
+</button>
+
+</div>
+
+<div id="status" class="status">
+آماده بررسی
+</div>
+
+<div class="grid" style="margin-top:10px">
+
+<div class="box">
+
+<div class="label">
+تعداد نمادها
+</div>
+
+<div
+  id="futuresCount"
+  class="value"
+>
+0
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+آخرین ذخیره
+</div>
+
+<div
+  id="savedTime"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Scanner -->
+
+<div class="card">
+
+<div class="title">
+🔎 اسکن بازار
+</div>
+
+<div class="row">
+
+<input
+  id="symbol"
+  value="BTCUSDT"
+  placeholder="مثلاً BTCUSDT"
+>
+
+<select id="timeframe">
+
+<option value="1">
+1 دقیقه
+</option>
+
+<option value="3">
+3 دقیقه
+</option>
+
+<option value="5">
+5 دقیقه
+</option>
+
+<option value="15" selected>
+15 دقیقه
+</option>
+
+<option value="30">
+30 دقیقه
+</option>
+
+<option value="60">
+1 ساعت
+</option>
+
+<option value="120">
+2 ساعت
+</option>
+
+<option value="240">
+4 ساعت
+</option>
+
+<option value="D">
+1 روز
+</option>
+
+</select>
+
+<button onclick="scanMarket()">
+📈 Scan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- Results -->
+
+<div class="card">
+
+<div class="title">
+📊 نتیجه تحلیل
+</div>
+
+<div class="grid">
+
+<div class="box">
+
+<div class="label">
+قیمت
+</div>
+
+<div
+  id="price"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+MA7
+</div>
+
+<div
+  id="ma7"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+MA20
+</div>
+
+<div
+  id="ma20"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+Trend
+</div>
+
+<div
+  id="trend"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+Range
+</div>
+
+<div
+  id="range"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="label">
+Pullback
+</div>
+
+<div
+  id="pullback"
+  class="value"
+>
+-
+</div>
+
+</div>
+
+</div>
+
+
+<div
+  id="signal"
+  class="signal"
+>
+WAIT
+</div>
+
+<p
+  id="analysis"
+  class="small"
+>
+هنوز تحلیلی انجام نشده است.
+</p>
+
+</div>
+
+
+<!-- Timeframes -->
+
+<div class="card">
+
+<div class="title">
+⏱ تایم‌فریم‌ها
+</div>
+
+<p class="small">
+
+1m · 3m · 5m · 15m · 30m ·
+1H · 2H · 4H · 1D
+
+</p>
+
+</div>
+
+
+<!-- Future scanner -->
+
+<div class="card">
+
+<div class="title">
+📋 لیست نمادهای دریافت‌شده
+</div>
+
+<div
+  id="futureList"
+  class="small"
+>
+لیست هنوز دریافت نشده است.
+</div>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+const STORAGE_KEY =
+"lbank_futures_scanner_v1";
+
+
+function setStatus(text) {
+
+  document.getElementById(
+    "status"
+  ).textContent = text;
+
+}
+
+
+function formatNumber(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    Number.isNaN(value)
+  ) {
+
+    return "-";
+
+  }
+
+  return Number(value).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits: 8
+    }
+  );
+
+}
+
+
+function showFutures(list) {
+
+  document.getElementById(
+    "futuresCount"
+  ).textContent = list.length;
+
+
+  const container =
+    document.getElementById(
+      "futureList"
+    );
+
+
+  if (!list.length) {
+
+    container.textContent =
+      "لیست خالی است.";
+
+    return;
+
+  }
+
+
+  const maxDisplay = 100;
+
+
+  container.innerHTML =
+    list
+      .slice(0, maxDisplay)
+      .map(symbol =>
+        `<span style="
+          display:inline-block;
+          background:#0b0f14;
+          border-radius:7px;
+          padding:6px 8px;
+          margin:3px;
+        ">${symbol}</span>`
+      )
+      .join("");
+
+
+  if (list.length > maxDisplay) {
+
+    container.innerHTML +=
+      `<div style="margin-top:8px">
+        + ${list.length - maxDisplay}
+        نماد دیگر
+      </div>`;
+
+  }
+
+}
+
+
+function loadLocalFutures() {
+
+  try {
+
+    const data =
+      JSON.parse(
+        localStorage.getItem(
+          STORAGE_KEY
+        ) || "[]"
+      );
+
+
+    showFutures(data);
+
+
+    if (data.length) {
+
+      document.getElementById(
+        "savedTime"
+      ).textContent =
+        "ذخیره شده";
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+
+}
+
+
+async function loadFutures() {
+
+  setStatus(
+    "⏳ در حال دریافت Futures از LBank..."
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/futures"
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.ok) {
+
+      throw new Error(
+        data.error ||
+        "خطای LBank"
+      );
+
+    }
+
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(
+        data.futures
+      )
+    );
+
+
+    showFutures(
+      data.futures
+    );
+
+
+    document.getElementById(
+      "savedTime"
+    ).textContent =
+      new Date().toLocaleTimeString();
+
+
+    setStatus(
+      `✅ ${data.count} نماد دریافت شد`
+    );
+
+
+  } catch (error) {
+
+    setStatus(
+      "❌ خطا: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+async function saveFutures() {
+
+  const data =
+    JSON.parse(
+      localStorage.getItem(
+        STORAGE_KEY
+      ) || "[]"
+    );
+
+
+  if (!data.length) {
+
+    setStatus(
+      "⚠️ ابتدا لیست Futures را دریافت کن."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/save",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            futures: data
+          })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.ok) {
+
+      throw new Error(
+        "ذخیره انجام نشد"
+      );
+
+    }
+
+
+    setStatus(
+      `💾 ${result.count} نماد ذخیره شد`
+    );
+
+
+  } catch (error) {
+
+    setStatus(
+      "❌ " +
+      error.message
+    );
+
+  }
+
+}
+
+
+function clearFutures() {
+
+  localStorage.removeItem(
+    STORAGE_KEY
+  );
+
+
+  showFutures([]);
+
+
+  document.getElementById(
+    "savedTime"
+  ).textContent = "-";
+
+
+  setStatus(
+    "🗑 لیست پاک شد"
+  );
+
+}
+
+
+function SMA(data, period) {
+
+  if (
+    data.length <
+    period
+  ) {
+
+    return null;
+
+  }
+
+
+  const slice =
+    data.slice(
+      data.length - period
+    );
+
+
+  const sum =
+    slice.reduce(
+      (a, b) => a + b,
+      0
+    );
+
+
+  return sum / period;
+
+}
+
+
+function detectPullback(
+  closes,
+  ma7,
+  trend
+) {
+
+  if (
+    closes.length < 3 ||
+    ma7 === null
+  ) {
+
+    return false;
+
+  }
+
+
+  const current =
+    closes[closes.length - 1];
+
+  const previous =
+    closes[closes.length - 2];
+
+
+  if (trend === "BULLISH") {
+
+    return (
+      previous <= ma7 &&
+      current > ma7
+    );
+
+  }
+
+
+  if (trend === "BEARISH") {
+
+    return (
+      previous >= ma7 &&
+      current < ma7
+    );
+
+  }
+
+
+  return false;
+
+}
+
+
+function detectRange(
+  ma7,
+  ma20
+) {
+
+  if (
+    ma7 === null ||
+    ma20 === null
+  ) {
+
+    return false;
+
+  }
+
+
+  const distance =
+    Math.abs(
+      ma7 - ma20
+    ) / ma20;
+
+
+  return distance < 0.0015;
+
+}
+
+
+async function scanMarket() {
+
+  const symbol =
+    document
+      .getElementById(
+        "symbol"
+      )
+      .value
+      .trim()
+      .toUpperCase();
+
+
+  const timeframe =
+    document
+      .getElementById(
+        "timeframe"
+      )
+      .value;
+
+
+  if (!symbol) {
+
+    alert(
+      "نماد را وارد کن"
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    "signal"
+  ).textContent =
+    "⏳ در حال بررسی...";
+
+
+  try {
+
+    const url =
+      `/api/kline?symbol=${
+        encodeURIComponent(symbol)
+      }&interval=${
+        encodeURIComponent(timeframe)
+      }&limit=100`;
+
+
+    const response =
+      await fetch(url);
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.ok) {
+
+      throw new Error(
+        data.error ||
+        "خطای Bybit"
+      );
+
+    }
+
+
+    if (
+      !data.rows ||
+      data.rows.length < 20
+    ) {
+
+      throw new Error(
+        "داده کافی نیست"
+      );
+
+    }
+
+
+    const closes =
+      data.rows.map(
+        candle =>
+          candle.close
+      );
+
+
+    const price =
+      closes[closes.length - 1];
+
+
+    const ma7 =
+      SMA(
+        closes,
+        7
+      );
+
+
+    const ma20 =
+      SMA(
+        closes,
+        20
+      );
+
+
+    let trend =
+      "RANGE";
+
+
+    if (ma7 > ma20) {
+
+      trend =
+        "BULLISH";
+
+    }
+
+
+    if (ma7 < ma20) {
+
+      trend =
+        "BEARISH";
+
+    }
+
+
+    const range =
+      detectRange(
+        ma7,
+        ma20
+      );
+
+
+    const pullback =
+      detectPullback(
+        closes,
+        ma7,
+        trend
+      );
+
+
+    let signal =
+      "🟡 WAIT";
+
+
+    if (
+      !range &&
+      trend === "BULLISH" &&
+      price > ma7
+    ) {
+
+      signal =
+        "🟢 LONG BIAS";
+
+    }
+
+
+    if (
+      !range &&
+      trend === "BEARISH" &&
+      price < ma7
+    ) {
+
+      signal =
+        "🔴 SHORT BIAS";
+
+    }
+
+
+    if (range) {
+
+      signal =
+        "🟡 RANGE / WAIT";
+
+    }
+
+
+    if (pullback) {
+
+      signal +=
+        " + PULLBACK";
+
+    }
+
+
+    document.getElementById(
+      "price"
+    ).textContent =
+      formatNumber(price);
+
+
+    document.getElementById(
+      "ma7"
+    ).textContent =
+      formatNumber(ma7);
+
+
+    document.getElementById(
+      "ma20"
+    ).textContent =
+      formatNumber(ma20);
+
+
+    document.getElementById(
+      "trend"
+    ).textContent =
+      trend;
+
+
+    document.getElementById(
+      "range"
+    ).textContent =
+      range
+        ? "YES"
+        : "NO";
+
+
+    document.getElementById(
+      "pullback"
+    ).textContent =
+      pullback
+        ? "YES"
+        : "NO";
+
+
+    document.getElementById(
+      "signal"
+    ).textContent =
+      signal;
+
+
+    document.getElementById(
+      "analysis"
+    ).textContent =
+      `${symbol} | ${timeframe} | ` +
+      `کندل‌ها: ${data.rows.length} | ` +
+      `ق
