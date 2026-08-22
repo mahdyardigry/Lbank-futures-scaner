@@ -40,6 +40,10 @@ font-size:17px;
 margin:5px 0 12px
 }
 
+h3{
+margin:5px 0 12px
+}
+
 .row{
 display:flex;
 gap:8px;
@@ -118,9 +122,17 @@ font-size:13px;
 line-height:1.8
 }
 
-.good{color:#3fb950}
-.bad{color:#f85149}
-.warn{color:#d29922}
+.good{
+color:#3fb950
+}
+
+.bad{
+color:#f85149
+}
+
+.warn{
+color:#d29922
+}
 
 .tf{
 display:flex;
@@ -174,6 +186,10 @@ color:#8b949e
 
 <h1>📊 Bybit Futures Scanner V6</h1>
 
+<!-- =========================
+     MANUAL SEARCH
+========================= -->
+
 <div class="card">
 
 <h2>🔎 تحلیل دستی ارز</h2>
@@ -186,6 +202,7 @@ value="BTCUSDT"
 placeholder="مثلاً BTCUSDT">
 
 <select id="tf">
+
 <option value="1">1 دقیقه</option>
 <option value="3">3 دقیقه</option>
 <option value="5">5 دقیقه</option>
@@ -195,6 +212,7 @@ placeholder="مثلاً BTCUSDT">
 <option value="120">2 ساعت</option>
 <option value="240">4 ساعت</option>
 <option value="D">1 روز</option>
+
 </select>
 
 <button onclick="analyzeSymbol()">
@@ -209,6 +227,10 @@ placeholder="مثلاً BTCUSDT">
 
 </div>
 
+
+<!-- =========================
+     AUTO SCANNER
+========================= -->
 
 <div class="card">
 
@@ -227,7 +249,12 @@ placeholder="مثلاً BTCUSDT">
 </div>
 
 
+<!-- =========================
+     ANALYSIS
+========================= -->
+
 <div id="analysisBox" class="hidden">
+
 
 <div class="card">
 
@@ -284,6 +311,10 @@ WAIT
 </div>
 
 
+<!-- =========================
+     ENTRY / SL / TP
+========================= -->
+
 <div class="card">
 
 <h2>🎯 معامله پیشنهادی</h2>
@@ -316,18 +347,22 @@ WAIT
 </div>
 
 <div class="box">
-<div class="label">Risk/Reward</div>
+<div class="label">Risk / Reward</div>
 <div id="rr" class="value">-</div>
 </div>
 
 </div>
 
 <p class="info">
-⚠️ Entry / SL / TP محاسباتی هستند و سیگنال قطعی معامله نیستند.
+⚠️ Entry / SL / TP محاسباتی هستند و به معنی تضمین معامله نیستند.
 </p>
 
 </div>
 
+
+<!-- =========================
+     STRUCTURE
+========================= -->
 
 <div class="card">
 
@@ -364,6 +399,10 @@ FVG: -
 </div>
 
 
+<!-- =========================
+     MULTI TIMEFRAME
+========================= -->
+
 <div class="card">
 
 <h2>🌐 تأیید چندتایم‌فریمی</h2>
@@ -374,6 +413,10 @@ FVG: -
 
 </div>
 
+
+<!-- =========================
+     SCORES
+========================= -->
 
 <div class="card">
 
@@ -406,6 +449,10 @@ FVG: -
 </div>
 
 
+<!-- =========================
+     REASONS
+========================= -->
+
 <div class="card">
 
 <h2>🧠 دلیل سیگنال</h2>
@@ -423,142 +470,196 @@ FVG: -
 
 <script>
 
-const API_BASE = "";
+/* ==========================================
+   تنظیمات
+========================================== */
 
 const TIMEFRAMES = [
-"1","3","5","15","30","60","120","240","D"
+"1",
+"3",
+"5",
+"15",
+"30",
+"60",
+"120",
+"240",
+"D"
 ];
 
 
+/* ==========================================
+   تبدیل عدد
+========================================== */
+
 function n(v){
 
-if(v === null || v === undefined || Number.isNaN(Number(v)))
+if(
+v === null ||
+v === undefined ||
+Number.isNaN(Number(v))
+){
 return "-";
+}
 
-return Number(v).toLocaleString("en-US",{
+return Number(v).toLocaleString(
+"en-US",
+{
 maximumFractionDigits:8
-});
+}
+);
 
 }
 
 
-function pct(v){
-
-return Number(v).toFixed(2)+"%";
-
-}
-
+/* ==========================================
+   نمایش روند
+========================================== */
 
 function getTrend(t){
 
-if(!t) return "RANGE";
+if(!t){
+return "🟡 رنج";
+}
 
-if(t==="BULLISH") return "🟢 صعودی";
+if(t === "BULLISH"){
+return "🟢 صعودی";
+}
 
-if(t==="BEARISH") return "🔴 نزولی";
+if(t === "BEARISH"){
+return "🔴 نزولی";
+}
 
 return "🟡 رنج";
 
 }
 
 
+/* ==========================================
+   API
+========================================== */
+
 async function api(path){
 
-const r = await fetch(path);
+const response =
+await fetch(path);
 
-const text = await r.text();
+const text =
+await response.text();
 
 let data;
 
 try{
 
-data = JSON.parse(text);
+data =
+JSON.parse(text);
 
-}catch(e){
+}
+catch(error){
 
 throw new Error(
-"پاسخ سرور JSON نیست: "+
-text.substring(0,100)
+"پاسخ سرور JSON نیست: " +
+text.substring(0,150)
 );
 
 }
 
-if(!r.ok)
-throw new Error(data.error || "Server Error");
+if(!response.ok){
 
-if(data.ok === false)
-throw new Error(data.error || data.detail || "API Error");
+throw new Error(
+data.error ||
+data.detail ||
+"خطای سرور"
+);
+
+}
+
+if(data.ok === false){
+
+throw new Error(
+data.error ||
+data.detail ||
+"خطای API"
+);
+
+}
 
 return data;
 
 }
 
 
-/*
---------------------------------------------------
-تحلیل دستی
---------------------------------------------------
-*/
+/* ==========================================
+   تحلیل دستی
+========================================== */
 
 async function analyzeSymbol(){
 
-let symbol =
-document.getElementById("symbol")
+const symbol =
+document
+.getElementById("symbol")
 .value
 .trim()
 .toUpperCase();
 
 if(!symbol){
 
-document.getElementById("status")
-.textContent="❌ نماد را وارد کن.";
+document
+.getElementById("status")
+.textContent =
+"❌ نماد را وارد کن.";
 
 return;
 
 }
 
-document.getElementById("status")
-.textContent=
-"⏳ در حال تحلیل "+symbol+" ...";
+document
+.getElementById("analysisBox")
+.classList
+.remove("hidden");
 
-document.getElementById("analysisBox")
-.classList.remove("hidden");
+document
+.getElementById("status")
+.textContent =
+"⏳ در حال تحلیل " +
+symbol +
+" ...";
 
 try{
 
 const data =
 await api(
-"/api/analyze?symbol="+
+"/api/analyze?symbol=" +
 encodeURIComponent(symbol)
 );
 
 renderAnalysis(data);
 
-document.getElementById("status")
-.textContent=
-"✅ تحلیل "+symbol+" انجام شد.";
+document
+.getElementById("status")
+.textContent =
+"✅ تحلیل " +
+symbol +
+" با موفقیت انجام شد.";
 
-}catch(e){
+}
+catch(error){
 
-document.getElementById("status")
-.textContent=
-"❌ "+e.message;
+document
+.getElementById("status")
+.textContent =
+"❌ " +
+error.message;
 
 }
 
 }
 
 
-/*
---------------------------------------------------
-نمایش تحلیل
---------------------------------------------------
-*/
+/* ==========================================
+   نمایش تحلیل
+========================================== */
 
 function renderAnalysis(data){
-
-const symbol =
-data.symbol || "";
 
 const price =
 Number(data.price || 0);
@@ -569,8 +670,634 @@ Number(data.ma7 || 0);
 const ma20 =
 Number(data.ma20 || 0);
 
-document.getElementById("price")
-.textContent=n(price);
 
-document.getElementById("ma7")
-.textContent=n(ma
+/* وضعیت بازار */
+
+document
+.getElementById("price")
+.textContent =
+n(price);
+
+document
+.getElementById("ma7")
+.textContent =
+n(ma7);
+
+document
+.getElementById("ma20")
+.textContent =
+n(ma20);
+
+document
+.getElementById("trend")
+.textContent =
+getTrend(data.trend);
+
+document
+.getElementById("ma20Touch")
+.textContent =
+data.ma20Touch
+? "YES"
+: "NO";
+
+document
+.getElementById("pullback")
+.textContent =
+data.pullback
+? "YES"
+: "NO";
+
+document
+.getElementById("volume")
+.textContent =
+n(data.volume);
+
+document
+.getElementById("volumeMA20")
+.textContent =
+n(data.volumeMA20);
+
+
+/* سیگنال */
+
+document
+.getElementById("signal")
+.textContent =
+data.signal ||
+"🟡 WAIT";
+
+
+/* ساختار */
+
+document
+.getElementById("structure")
+.textContent =
+data.structure ||
+"-";
+
+document
+.getElementById("bos")
+.textContent =
+data.bos ||
+"NONE";
+
+document
+.getElementById("choch")
+.textContent =
+data.choch ||
+"NONE";
+
+document
+.getElementById("fvg")
+.textContent =
+data.fvg ||
+"NONE";
+
+
+/* FVG */
+
+if(data.fvgZone){
+
+document
+.getElementById("fvgZone")
+.textContent =
+"FVG: " +
+n(data.fvgZone.bottom) +
+" تا " +
+n(data.fvgZone.top);
+
+}
+else{
+
+document
+.getElementById("fvgZone")
+.textContent =
+"FVG: ندارد";
+
+}
+
+
+/* ==========================================
+   Entry / SL / TP
+========================================== */
+
+const entry =
+Number(
+data.entry ||
+price
+);
+
+const sl =
+Number(
+data.sl ||
+0
+);
+
+const tp1 =
+Number(
+data.tp1 ||
+0
+);
+
+const tp2 =
+Number(
+data.tp2 ||
+0
+);
+
+const tp3 =
+Number(
+data.tp3 ||
+0
+);
+
+
+document
+.getElementById("entry")
+.textContent =
+n(entry);
+
+document
+.getElementById("sl")
+.textContent =
+n(sl);
+
+document
+.getElementById("tp1")
+.textContent =
+n(tp1);
+
+document
+.getElementById("tp2")
+.textContent =
+n(tp2);
+
+document
+.getElementById("tp3")
+.textContent =
+n(tp3);
+
+
+/* Risk Reward */
+
+if(
+sl > 0 &&
+tp2 > 0
+){
+
+const risk =
+Math.abs(
+entry - sl
+);
+
+const reward =
+Math.abs(
+tp2 - entry
+);
+
+if(risk > 0){
+
+document
+.getElementById("rr")
+.textContent =
+"1 : " +
+(reward / risk)
+.toFixed(2);
+
+}
+
+}
+
+
+/* ==========================================
+   امتیاز
+========================================== */
+
+const scores =
+data.scores || {};
+
+document
+.getElementById("longScore")
+.textContent =
+scores.long ?? "-";
+
+document
+.getElementById("shortScore")
+.textContent =
+scores.short ?? "-";
+
+document
+.getElementById("finalScore")
+.textContent =
+scores.final ?? "-";
+
+
+const bullish =
+data.bullishTimeframes || 0;
+
+const bearish =
+data.bearishTimeframes || 0;
+
+document
+.getElementById("confirmation")
+.textContent =
+bullish +
+" 🟢 / " +
+bearish +
+" 🔴";
+
+
+/* ==========================================
+   تایم‌فریم‌ها
+========================================== */
+
+let html = "";
+
+if(data.timeframes){
+
+for(
+const tf of TIMEFRAMES
+){
+
+const x =
+data.timeframes[tf];
+
+if(!x){
+continue;
+}
+
+let name;
+
+if(tf === "D"){
+name = "1 روز";
+}
+else if(tf === "60"){
+name = "1 ساعت";
+}
+else if(tf === "120"){
+name = "2 ساعت";
+}
+else if(tf === "240"){
+name = "4 ساعت";
+}
+else{
+name = tf + " دقیقه";
+}
+
+html += `
+
+<div class="tf">
+
+<span>
+${name}
+</span>
+
+<span>
+${getTrend(x.trend)}
+</span>
+
+</div>
+
+`;
+
+}
+
+}
+
+document
+.getElementById("timeframes")
+.innerHTML =
+html ||
+"اطلاعات تایم‌فریم موجود نیست.";
+
+
+/* ==========================================
+   دلایل
+========================================== */
+
+let reasons = [];
+
+
+if(data.trend){
+
+reasons.push(
+"روند اصلی: " +
+getTrend(data.trend)
+);
+
+}
+
+
+if(data.ma20Touch){
+
+reasons.push(
+"قیمت به MA20 برخورد یا نزدیک شده است."
+);
+
+}
+
+
+if(data.pullback){
+
+reasons.push(
+"پولبک شناسایی شده است."
+);
+
+}
+
+
+if(data.structure){
+
+reasons.push(
+"ساختار: " +
+data.structure
+);
+
+}
+
+
+if(
+data.bos &&
+data.bos !== "NONE"
+){
+
+reasons.push(
+"BOS: " +
+data.bos
+);
+
+}
+
+
+if(
+data.choch &&
+data.choch !== "NONE"
+){
+
+reasons.push(
+"CHoCH: " +
+data.choch
+);
+
+}
+
+
+if(
+data.fvg &&
+data.fvg !== "NONE"
+){
+
+reasons.push(
+"FVG: " +
+data.fvg
+);
+
+}
+
+
+if(data.volumeSpike){
+
+reasons.push(
+"جهش حجم مشاهده شده است."
+);
+
+}
+
+
+if(bullish >= 6){
+
+reasons.push(
+"تأیید صعودی چندتایم‌فریمی قوی است."
+);
+
+}
+
+
+if(bearish >= 6){
+
+reasons.push(
+"تأیید نزولی چندتایم‌فریمی قوی است."
+);
+
+}
+
+
+document
+.getElementById("reasons")
+.innerHTML =
+reasons.length
+? reasons
+.map(x => "• " + x)
+.join("<br>")
+: "تأیید کافی وجود ندارد.";
+
+}
+
+
+/* ==========================================
+   اسکن بازار
+========================================== */
+
+async function scanMarket(){
+
+const results =
+document
+.getElementById("results");
+
+const status =
+document
+.getElementById("scanStatus");
+
+
+results.innerHTML =
+`
+<div class="loading">
+⏳ در حال دریافت و بررسی فیوچرز Bybit...
+</div>
+`;
+
+
+status.textContent =
+"در حال اسکن بازار...";
+
+
+try{
+
+const data =
+await api("/api/scan");
+
+
+if(
+!data.results ||
+!data.results.length
+){
+
+results.innerHTML =
+`
+<div class="info">
+🟡 فعلاً سیگنال تأییدشده‌ای پیدا نشد.
+</div>
+`;
+
+status.textContent =
+"اسکن تمام شد.";
+
+return;
+
+}
+
+
+status.textContent =
+"✅ " +
+data.results.length +
+" سیگنال پیدا شد.";
+
+
+results.innerHTML = "";
+
+
+data.results.forEach(
+(x,index) => {
+
+const div =
+document.createElement("div");
+
+div.className =
+"result";
+
+
+div.innerHTML = `
+
+<h3>
+${index + 1}.
+${x.symbol || "-"}
+</h3>
+
+<div class="grid">
+
+<div class="box">
+<div class="label">قیمت</div>
+<div class="value">
+${n(x.price)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">Entry</div>
+<div class="value">
+${n(x.entry)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">SL</div>
+<div class="value bad">
+${n(x.sl)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">TP1</div>
+<div class="value good">
+${n(x.tp1)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">TP2</div>
+<div class="value good">
+${n(x.tp2)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">TP3</div>
+<div class="value good">
+${n(x.tp3)}
+</div>
+</div>
+
+<div class="box">
+<div class="label">امتیاز</div>
+<div class="value">
+${x.score ?? "-"} / 100
+</div>
+</div>
+
+<div class="box">
+<div class="label">روند</div>
+<div class="value">
+${getTrend(x.trend)}
+</div>
+</div>
+
+</div>
+
+<p class="info">
+${x.reason || ""}
+</p>
+
+<button
+onclick="quickAnalyze('${x.symbol}')">
+📊 تحلیل کامل ${x.symbol}
+</button>
+
+`;
+
+
+results.appendChild(div);
+
+}
+);
+
+
+}
+catch(error){
+
+results.innerHTML =
+`
+<div class="info bad">
+
+❌ خطا در اسکن:
+
+<br><br>
+
+${error.message}
+
+</div>
+`;
+
+status.textContent =
+"❌ اسکن ناموفق بود.";
+
+}
+
+}
+
+
+/* ==========================================
+   تحلیل مستقیم از نتایج
+========================================== */
+
+function quickAnalyze(symbol){
+
+document
+.getElementById("symbol")
+.value =
+symbol;
+
+
+analyzeSymbol();
+
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+
+</script>
+
+</body>
+</html>
