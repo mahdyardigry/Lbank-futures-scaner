@@ -1,61 +1,98 @@
-const BYBIT = "https://api.bybit.com";
+const BYBIT_BASE = "https://api.bybit.com";
+
+const TIMEFRAMES = [
+  { key: "1", label: "1m" },
+  { key: "3", label: "3m" },
+  { key: "5", label: "5m" },
+  { key: "15", label: "15m" },
+  { key: "30", label: "30m" },
+  { key: "60", label: "1H" },
+  { key: "120", label: "2H" },
+  { key: "240", label: "4H" },
+  { key: "D", label: "1D" }
+];
+
+const cors = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type"
+};
 
 export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    const cors = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
-    };
-
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: cors });
+      return new Response(null, {
+        status: 204,
+        headers: cors
+      });
     }
 
     try {
-
-      // =========================
-      // SYMBOLS
-      // =========================
-      if (url.pathname === "/api/symbols") {
-
-        const symbols = await getSymbols();
-
-        return json({
-          ok: true,
-          source: "Bybit Futures",
-          count: symbols.length,
-          futures: symbols
-        }, cors);
-      }
-
 
       // =========================
       // CHECK SYMBOL
       // =========================
       if (url.pathname === "/api/check") {
 
-        let symbol =
-          (url.searchParams.get("symbol") || "")
-          .trim()
-          .toUpperCase();
+        const symbol = normalizeSymbol(
+          url.searchParams.get("symbol")
+        );
 
-        if (!symbol.endsWith("USDT")) {
-          symbol += "USDT";
+        if (!symbol) {
+          return json({
+            ok: false,
+            error: "symbol required"
+          }, 400);
         }
 
-        const symbols = await getSymbols();
+        const data = await bybit(
+          "/v5/market/instruments-info?category=linear&limit=1000"
+        );
 
-        const exists = symbols.includes(symbol);
+        const list = data.result?.list || [];
+
+        const found = list.find(
+          x => x.symbol === symbol &&
+          x.status === "Trading"
+        );
 
         return json({
           ok: true,
-          exists,
+          exists: !!found,
           symbol,
           market: "Bybit Futures"
-        }, cors);
+        });
+      }
+
+
+      // =========================
+      // FUTURES LIST
+      // =========================
+      if (url.pathname === "/api/futures") {
+
+        const data = await bybit(
+          "/v5/market/instruments-info?category=linear&limit=1000"
+        );
+
+        const list = data.result?.list || [];
+
+        const futures = list
+          .filter(x =>
+            x.status === "Trading" &&
+            x.quoteCoin === "USDT" &&
+            !x.symbol.includes("-")
+          )
+          .map(x => x.symbol)
+          .sort();
+
+        return json({
+          ok: true,
+          source: "Bybit Futures",
+          count: futures.length,
+          futures
+        });
       }
 
 
@@ -64,32 +101,48 @@ export default {
       // =========================
       if (url.pathname === "/api/kline") {
 
-        const symbol =
-          (url.searchParams.get("symbol") || "")
-          .trim()
-          .toUpperCase();
+        const symbol = normalizeSymbol(
+          url.searchParams.get("symbol")
+        );
 
         const interval =
           url.searchParams.get("interval") || "15";
 
-        const limit =
-          Math.min(
-            Math.max(
-              Number(url.searchParams.get("limit") || 100),
-              20
-            ),
-            200
-          );
+        let limit = Number(
+          url.searchParams.get("limit") || 100
+        );
+
+        limit = Math.max(
+          20,
+          Math.min(limit, 200)
+        );
 
         if (!symbol) {
           return json({
             ok: false,
             error: "symbol required"
-          }, cors, 400);
+          }, 400);
         }
 
+        const data = await bybit(
+          "/v5/market/kline" +
+          "?category=linear" +
+          "&symbol=" + encodeURIComponent(symbol) +
+          "&interval=" + encodeURIComponent(interval) +
+          "&limit=" + limit
+        );
+
         const rows =
-          await getKline(symbol, interval, limit);
+          (data.result?.list || [])
+            .reverse()
+            .map(x => ({
+              time: Number(x[0]),
+              open: Number(x[1]),
+              high: Number(x[2]),
+              low: Number(x[3]),
+              close: Number(x[4]),
+              volume: Number(x[5])
+            }));
 
         return json({
           ok: true,
@@ -97,36 +150,110 @@ export default {
           symbol,
           interval,
           rows
-        }, cors);
+        });
       }
 
 
       // =========================
-      // ANALYZE
+      // ANALYZE SYMBOL
       // =========================
       if (url.pathname === "/api/analyze") {
 
-        let symbol =
-          (url.searchParams.get("symbol") || "")
-          .trim()
-          .toUpperCase();
+        const symbol = normalizeSymbol(
+          url.searchParams.get("symbol")
+        );
 
-        if (!symbol.endsWith("USDT")) {
-          symbol += "USDT";
+        if (!symbol) {
+          return json({
+            ok: false,
+            error: "symbol required"
+          }, 400);
         }
 
         const result =
           await analyzeSymbol(symbol);
 
-        return json(result, cors);
+        return json({
+          ok: true,
+          ...result
+        });
+      }
+
+
+      // =========================
+      // AUTO SCAN
+      // =========================
+      if (url.pathname === "/api/scan") {
+
+        const data = await bybit(
+          "/v5/market/instruments-info?category=linear&limit=1000"
+        );
+
+        const instruments =
+          data.result?.list || [];
+
+        const symbols =
+          instruments
+            .filter(x =>
+              x.status === "Trading" &&
+              x.quoteCoin === "USDT" &&
+              !x.symbol.includes("-")
+            )
+            .map(x => x.symbol);
+
+        const results = [];
+
+        /*
+         * برای اینکه Worker بیش از حد
+         * درخواست نفرستد، فعلاً تعداد
+         * ارزهای اسکن شده محدود است.
+         *
+         * بعداً می‌توانیم اسکن هوشمند
+         * بر اساس volume اضافه کنیم.
+         */
+
+        const limited =
+          symbols.slice(0, 120);
+
+        for (const symbol of limited) {
+
+          try {
+
+            const result =
+              await analyzeSymbol(symbol);
+
+            if (
+              result.signal !== "WAIT"
+            ) {
+              results.push(result);
+            }
+
+          } catch (e) {
+            // یک ارز خراب نباید کل اسکن را متوقف کند
+          }
+        }
+
+        results.sort(
+          (a, b) =>
+            b.score.final -
+            a.score.final
+        );
+
+        return json({
+          ok: true,
+          source: "Bybit Futures",
+          scanned: limited.length,
+          found: results.length,
+          results
+        });
       }
 
 
       return json({
         ok: false,
-        error: "Endpoint not found",
+        error: "API endpoint not found",
         path: url.pathname
-      }, cors, 404);
+      }, 404);
 
     } catch (error) {
 
@@ -134,178 +261,206 @@ export default {
         ok: false,
         error: "Worker error",
         detail: error?.message || String(error)
-      }, cors, 500);
+      }, 500);
     }
   }
 };
 
 
-// =====================================================
-// SYMBOLS
-// =====================================================
+// =================================================
+// ANALYZE ALL TIMEFRAMES
+// =================================================
 
-async function getSymbols() {
+async function analyzeSymbol(symbol) {
 
-  const response =
-    await fetch(
-      BYBIT +
-      "/v5/market/instruments-info" +
-      "?category=linear" +
-      "&limit=1000"
-    );
+  const timeframes = {};
 
-  const data = await response.json();
+  for (const tf of TIMEFRAMES) {
 
-  if (data.retCode !== 0) {
-    throw new Error(
-      data.retMsg || "Bybit symbols error"
-    );
-  }
+    try {
 
-  return (data.result?.list || [])
-    .filter(x =>
-      x.quoteCoin === "USDT" &&
-      x.status === "Trading" &&
-      x.contractType === "LinearPerpetual"
-    )
-    .map(x => x.symbol)
-    .sort();
-}
-
-
-// =====================================================
-// KLINE
-// =====================================================
-
-async function getKline(
-  symbol,
-  interval,
-  limit = 100
-) {
-
-  const response =
-    await fetch(
-      BYBIT +
-      "/v5/market/kline" +
-      "?category=linear" +
-      "&symbol=" +
-      encodeURIComponent(symbol) +
-      "&interval=" +
-      encodeURIComponent(interval) +
-      "&limit=" +
-      limit
-    );
-
-  const data = await response.json();
-
-  if (data.retCode !== 0) {
-    throw new Error(
-      data.retMsg || "Bybit Kline error"
-    );
-  }
-
-  return (data.result?.list || [])
-    .reverse()
-    .map(x => ({
-      time: Number(x[0]),
-      open: Number(x[1]),
-      high: Number(x[2]),
-      low: Number(x[3]),
-      close: Number(x[4]),
-      volume: Number(x[5])
-    }));
-}
-
-
-// =====================================================
-// SMA
-// =====================================================
-
-function sma(values, period) {
-
-  if (values.length < period) {
-    return null;
-  }
-
-  const part =
-    values.slice(
-      values.length - period
-    );
-
-  return (
-    part.reduce(
-      (a, b) => a + b,
-      0
-    ) / period
-  );
-}
-
-
-// =====================================================
-// ATR
-// =====================================================
-
-function atr(rows, period = 14) {
-
-  if (rows.length < period + 1) {
-    return null;
-  }
-
-  const trs = [];
-
-  for (let i = 1; i < rows.length; i++) {
-
-    const current = rows[i];
-    const previous = rows[i - 1];
-
-    const tr =
-      Math.max(
-        current.high - current.low,
-        Math.abs(
-          current.high - previous.close
-        ),
-        Math.abs(
-          current.low - previous.close
-        )
+      const data = await getKlines(
+        symbol,
+        tf.key,
+        100
       );
 
-    trs.push(tr);
+      timeframes[tf.key] =
+        analyzeTimeframe(data);
+
+    } catch (e) {
+
+      timeframes[tf.key] = {
+        error: e.message
+      };
+    }
   }
 
-  const part =
-    trs.slice(trs.length - period);
+  const main =
+    timeframes["15"];
 
-  return (
-    part.reduce(
-      (a, b) => a + b,
-      0
-    ) / part.length
-  );
+  let bullish = 0;
+  let bearish = 0;
+
+  for (const tf of TIMEFRAMES) {
+
+    const x = timeframes[tf.key];
+
+    if (!x || x.error) continue;
+
+    if (x.trend === "BULLISH") bullish++;
+    if (x.trend === "BEARISH") bearish++;
+  }
+
+  let longScore = 0;
+  let shortScore = 0;
+
+  for (const tf of TIMEFRAMES) {
+
+    const x = timeframes[tf.key];
+
+    if (!x || x.error) continue;
+
+    if (x.touchMA20) {
+
+      if (x.confirmation === "LONG") {
+        longScore += tfWeight(tf.key);
+      }
+
+      if (x.confirmation === "SHORT") {
+        shortScore += tfWeight(tf.key);
+      }
+    }
+  }
+
+  // روندهای تایم بالاتر
+  if (
+    ["60", "240", "D"].some(tf =>
+      timeframes[tf]?.trend === "BULLISH"
+    )
+  ) {
+    longScore += 10;
+  }
+
+  if (
+    ["60", "240", "D"].some(tf =>
+      timeframes[tf]?.trend === "BEARISH"
+    )
+  ) {
+    shortScore += 10;
+  }
+
+  let signal = "WAIT";
+
+  if (
+    longScore >= 30 &&
+    longScore > shortScore
+  ) {
+    signal = "LONG";
+  }
+
+  if (
+    shortScore >= 30 &&
+    shortScore > longScore
+  ) {
+    signal = "SHORT";
+  }
+
+  const entry =
+    main?.close || null;
+
+  let sl = null;
+  let tp1 = null;
+  let tp2 = null;
+  let tp3 = null;
+
+  if (signal === "LONG" && entry) {
+
+    sl = main.swingLow;
+
+    if (sl && sl >= entry) {
+      sl = entry * 0.99;
+    }
+
+    const risk = entry - sl;
+
+    tp1 = entry + risk * 1.5;
+    tp2 = entry + risk * 2;
+    tp3 = entry + risk * 3;
+  }
+
+  if (signal === "SHORT" && entry) {
+
+    sl = main.swingHigh;
+
+    if (sl && sl <= entry) {
+      sl = entry * 1.01;
+    }
+
+    const risk = sl - entry;
+
+    tp1 = entry - risk * 1.5;
+    tp2 = entry - risk * 2;
+    tp3 = entry - risk * 3;
+  }
+
+  return {
+
+    source: "Bybit Futures",
+
+    symbol,
+
+    mainTimeframe: "15",
+
+    price: main?.close || null,
+
+    signal,
+
+    score: {
+      long: longScore,
+      short: shortScore,
+      final: Math.max(
+        longScore,
+        shortScore
+      )
+    },
+
+    bullishTimeframes: bullish,
+
+    bearishTimeframes: bearish,
+
+    entry,
+
+    sl,
+
+    tp1,
+    tp2,
+    tp3,
+
+    timeframes
+
+  };
 }
 
 
-// =====================================================
-// ANALYZE TIMEFRAME
-// =====================================================
+// =================================================
+// TIMEFRAME ANALYSIS
+// =================================================
 
-async function analyzeTF(
-  symbol,
-  interval
-) {
+function analyzeTimeframe(rows) {
 
-  const rows =
-    await getKline(
-      symbol,
-      interval,
-      100
+  if (!rows || rows.length < 30) {
+
+    throw new Error(
+      "Not enough candles"
     );
-
-  if (rows.length < 30) {
-    return null;
   }
 
   const closes =
     rows.map(x => x.close);
+
+  const volumes =
+    rows.map(x => x.volume);
 
   const price =
     closes[closes.length - 1];
@@ -316,36 +471,17 @@ async function analyzeTF(
   const ma20 =
     sma(closes, 20);
 
-  const current =
-    rows[rows.length - 1];
+  const volumeMA7 =
+    sma(volumes, 7);
+
+  const volumeMA20 =
+    sma(volumes, 20);
 
   const previous =
     rows[rows.length - 2];
 
-  const volume =
-    current.volume;
-
-  const volumeMA7 =
-    sma(
-      rows.map(x => x.volume),
-      7
-    );
-
-  const volumeMA20 =
-    sma(
-      rows.map(x => x.volume),
-      20
-    );
-
-  const atrValue =
-    atr(rows, 14);
-
-  const distance =
-    Math.abs(price - ma20) /
-    ma20;
-
-  const nearMA20 =
-    distance <= 0.003;
+  const current =
+    rows[rows.length - 1];
 
   let trend = "RANGE";
 
@@ -357,409 +493,30 @@ async function analyzeTF(
     trend = "BEARISH";
   }
 
-  // ----------------------------------
-  // MA20 TOUCH + REJECTION
-  // ----------------------------------
+  const distance =
+    Math.abs(ma7 - ma20) / ma20;
 
-  const bullishTouch =
+  const range =
+    distance < 0.0015;
+
+  // ==================================
+  // MA20 TOUCH
+  // ==================================
+
+  const touchMA20 =
     current.low <= ma20 &&
-    current.close > ma20;
+    current.high >= ma20;
 
-  const bearishTouch =
-    current.high >= ma20 &&
-    current.close < ma20;
+  // ==================================
+  // CONFIRMATION
+  // ==================================
 
-  const bullishConfirm =
-    bullishTouch &&
-    current.close > current.open &&
-    current.close > previous.close;
-
-  const bearishConfirm =
-    bearishTouch &&
-    current.close < current.open &&
-    current.close < previous.close;
-
-  // ----------------------------------
-  // VOLUME
-  // ----------------------------------
-
-  const volumeConfirm =
-    volumeMA20 &&
-    volume > volumeMA20 * 1.15;
-
-  // ----------------------------------
-  // STRUCTURE
-  // ----------------------------------
-
-  const recentHigh =
-    Math.max(
-      ...rows
-        .slice(-10, -1)
-        .map(x => x.high)
-    );
-
-  const recentLow =
-    Math.min(
-      ...rows
-        .slice(-10, -1)
-        .map(x => x.low)
-    );
-
-  let bos = "NONE";
-
-  if (price > recentHigh) {
-    bos = "BULLISH BOS";
-  }
-
-  if (price < recentLow) {
-    bos = "BEARISH BOS";
-  }
-
-  // ----------------------------------
-  // FVG
-  // ----------------------------------
-
-  let fvg = "NONE";
-  let fvgZone = null;
-
-  if (rows.length >= 3) {
-
-    const a = rows[rows.length - 3];
-    const c = rows[rows.length - 1];
-
-    if (c.low > a.high) {
-
-      fvg = "BULLISH";
-
-      fvgZone = {
-        bottom: a.high,
-        top: c.low
-      };
-    }
-
-    if (c.high < a.low) {
-
-      fvg = "BEARISH";
-
-      fvgZone = {
-        bottom: c.high,
-        top: a.low
-      };
-    }
-  }
-
-  // ----------------------------------
-  // SCORE
-  // ----------------------------------
-
-  let longScore = 0;
-  let shortScore = 0;
-
-  if (trend === "BULLISH")
-    longScore += 20;
-
-  if (trend === "BEARISH")
-    shortScore += 20;
-
-  if (bullishConfirm)
-    longScore += 30;
-
-  if (bearishConfirm)
-    shortScore += 30;
-
-  if (volumeConfirm) {
-
-    if (bullishConfirm)
-      longScore += 15;
-
-    if (bearishConfirm)
-      shortScore += 15;
-  }
-
-  if (bos === "BULLISH BOS")
-    longScore += 20;
-
-  if (bos === "BEARISH BOS")
-    shortScore += 20;
-
-  if (fvg === "BULLISH")
-    longScore += 15;
-
-  if (fvg === "BEARISH")
-    shortScore += 15;
-
-
-  let direction = "WAIT";
+  let confirmation = "NONE";
 
   if (
-    bullishConfirm &&
-    longScore >= 55
+    trend === "BULLISH" &&
+    touchMA20 &&
+    current.close > ma20 &&
+    current.close > current.open
   ) {
-    direction = "LONG";
-  }
-
-  if (
-    bearishConfirm &&
-    shortScore >= 55
-  ) {
-    direction = "SHORT";
-  }
-
-
-  // ----------------------------------
-  // SL / TP
-  // ----------------------------------
-
-  let entry = price;
-  let sl = null;
-  let tp1 = null;
-  let tp2 = null;
-  let tp3 = null;
-  let rr = null;
-
-  if (
-    direction === "LONG" &&
-    atrValue
-  ) {
-
-    const swingLow =
-      Math.min(
-        ...rows
-          .slice(-8)
-          .map(x => x.low)
-      );
-
-    sl =
-      Math.min(
-        swingLow,
-        ma20 - atrValue * 0.35
-      );
-
-    const risk =
-      entry - sl;
-
-    tp1 =
-      entry + risk * 1;
-
-    tp2 =
-      entry + risk * 2;
-
-    tp3 =
-      entry + risk * 3;
-
-    rr = 3;
-  }
-
-
-  if (
-    direction === "SHORT" &&
-    atrValue
-  ) {
-
-    const swingHigh =
-      Math.max(
-        ...rows
-          .slice(-8)
-          .map(x => x.high)
-      );
-
-    sl =
-      Math.max(
-        swingHigh,
-        ma20 + atrValue * 0.35
-      );
-
-    const risk =
-      sl - entry;
-
-    tp1 =
-      entry - risk * 1;
-
-    tp2 =
-      entry - risk * 2;
-
-    tp3 =
-      entry - risk * 3;
-
-    rr = 3;
-  }
-
-
-  return {
-
-    interval,
-
-    price,
-
-    ma7,
-    ma20,
-
-    trend,
-
-    nearMA20,
-
-    touch:
-      bullishTouch ||
-      bearishTouch,
-
-    confirmation:
-      bullishConfirm ||
-      bearishConfirm,
-
-    volume,
-    volumeMA7,
-    volumeMA20,
-    volumeConfirm,
-
-    structure: bos,
-
-    fvg,
-    fvgZone,
-
-    longScore,
-    shortScore,
-
-    direction,
-
-    entry,
-    sl,
-    tp1,
-    tp2,
-    tp3,
-    rr
-  };
-}
-
-
-// =====================================================
-// FULL ANALYSIS
-// =====================================================
-
-async function analyzeSymbol(symbol) {
-
-  const symbols =
-    await getSymbols();
-
-  if (!symbols.includes(symbol)) {
-
-    return {
-      ok: true,
-      exists: false,
-      symbol,
-      market: "Bybit Futures"
-    };
-  }
-
-
-  const timeframes = [
-    "1",
-    "3",
-    "5",
-    "15",
-    "30",
-    "60",
-    "120",
-    "240",
-    "D"
-  ];
-
-
-  const results = {};
-
-  for (const tf of timeframes) {
-
-    try {
-
-      results[tf] =
-        await analyzeTF(
-          symbol,
-          tf
-        );
-
-    } catch (e) {
-
-      results[tf] = {
-        error: e.message
-      };
-    }
-  }
-
-
-  // ----------------------------------
-  // SELECT BEST SIGNAL
-  // ----------------------------------
-
-  let best = null;
-
-  for (const tf of timeframes) {
-
-    const r = results[tf];
-
-    if (!r || r.error) continue;
-
-    if (
-      r.direction === "LONG" ||
-      r.direction === "SHORT"
-    ) {
-
-      if (
-        !best ||
-        Math.max(
-          r.longScore,
-          r.shortScore
-        ) >
-        Math.max(
-          best.longScore,
-          best.shortScore
-        )
-      ) {
-
-        best = r;
-      }
-    }
-  }
-
-
-  return {
-
-    ok: true,
-
-    exists: true,
-
-    source: "Bybit Futures",
-
-    symbol,
-
-    signal: best
-      ? best.direction
-      : "WAIT",
-
-    best,
-
-    timeframes: results
-  };
-}
-
-
-// =====================================================
-// JSON
-// =====================================================
-
-function json(
-  data,
-  headers,
-  status = 200
-) {
-
-  return new Response(
-    JSON.stringify(data),
-    {
-      status,
-      headers: {
-        "Content-Type":
-          "application/json; charset=UTF-8",
-        ...headers
-      }
-    }
-  );
-}
+    confirmation = "
