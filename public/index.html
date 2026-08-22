@@ -6,11 +6,11 @@
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width,initial-scale=1"
+  name="viewport"
+  content="width=device-width,initial-scale=1"
 >
 
-<title>Bybit Futures Scanner V10</title>
+<title>Bybit Futures Scanner</title>
 
 <style>
 
@@ -75,12 +75,12 @@ button.scan{
 background:#2563eb
 }
 
-button.mute{
-background:#8b1e1e
+button.alert{
+background:#b8860b
 }
 
-button.soundOn{
-background:#238636
+button.alert.off{
+background:#555
 }
 
 .status{
@@ -93,7 +93,8 @@ line-height:1.8
 .tf{
 display:flex;
 gap:6px;
-margin-top:10px
+margin-top:10px;
+flex-wrap:wrap
 }
 
 .tf span{
@@ -214,21 +215,14 @@ color:#ffd740
 color:#8b949e
 }
 
-.alertBox{
-background:#11161d;
-border:1px solid #394555;
-border-radius:10px;
-padding:10px;
+.alertbox{
 margin-top:10px;
-line-height:1.8
-}
-
-.alertActive{
-border-color:#00e676
-}
-
-.alertMuted{
-border-color:#ff5252
+padding:10px;
+border-radius:10px;
+background:#11161d;
+border:1px solid #303947;
+line-height:1.8;
+font-size:13px
 }
 
 @media(max-width:600px){
@@ -248,13 +242,10 @@ grid-template-columns:1fr 1fr
 
 <div class="container">
 
-
 <h1>
 📊 اسکنر فیوچرز Bybit
 </h1>
 
-
-<!-- CONTROL -->
 
 <div class="card">
 
@@ -266,9 +257,7 @@ value="BTCUSDT"
 placeholder="مثلاً BTCUSDT"
 >
 
-<button
-onclick="analyzeSymbol()"
->
+<button onclick="analyzeSymbol()">
 🔎 تحلیل ارز
 </button>
 
@@ -284,40 +273,45 @@ onclick="scanMarket()"
 
 <div class="tf">
 
-<span>۱ دقیقه (1m)</span>
+<span>
+۱ دقیقه (1m)
+</span>
 
-<span>۳ دقیقه (3m)</span>
+<span>
+۳ دقیقه (3m)
+</span>
 
-<span>۵ دقیقه (5m)</span>
-
-</div>
-
-
-<div class="alertBox alertActive" id="alertBox">
-
-<div>
-
-<b>
-🔔 هشدار صوتی
-</b>
+<span>
+۵ دقیقه (5m)
+</span>
 
 </div>
 
-<div
-class="status"
-id="alertStatus"
->
-هشدار فعال است.
-</div>
+
+<div class="row" style="margin-top:10px">
 
 <button
-class="soundOn"
-id="soundButton"
-onclick="toggleSound()"
+id="alertButton"
+class="alert"
+onclick="toggleAlerts()"
 >
-🔔 قطع هشدار
+🔔 هشدار صوتی
 </button>
 
+<button
+onclick="stopAlert()"
+>
+🔕 قطع هشدار
+</button>
+
+</div>
+
+
+<div
+id="alertStatus"
+class="status"
+>
+هشدار فعال است.
 </div>
 
 
@@ -325,19 +319,18 @@ onclick="toggleSound()"
 id="status"
 class="status"
 >
-آماده اسکن Bybit Futures
+آماده اسکن Bybit
 </div>
 
 </div>
 
-
-<!-- RESULTS -->
 
 <div class="card">
 
 <div class="top">
 🏆 ۱۰ موقعیت برتر
 </div>
+
 
 <div id="results">
 
@@ -350,13 +343,12 @@ class="status"
 </div>
 
 
-<!-- MANUAL -->
-
 <div class="card">
 
 <div class="top">
 🔎 نتیجه تحلیل دستی
 </div>
+
 
 <div id="manual">
 
@@ -368,1033 +360,1174 @@ class="status"
 
 </div>
 
-
 </div>
 
 
 <script>
 
 
-// =================================================
+// ============================================================
 // SETTINGS
-// =================================================
+// ============================================================
 
-let soundEnabled = true;
-
-let lastAlertSymbols = new Set();
+const API_BASE = "";
 
 
-// =================================================
+// ============================================================
+// ALERT STATE
+// ============================================================
+
+let alertEnabled =
+  localStorage.getItem(
+    "bybit_alert_enabled"
+  ) !== "false";
+
+
+let audioContext = null;
+
+let alertTimer = null;
+
+let lastAlertKey =
+  localStorage.getItem(
+    "bybit_last_alert_key"
+  ) || "";
+
+
+// ============================================================
+// AUDIO
+// ============================================================
+
+function createAudio(){
+
+  try{
+
+    if(!audioContext){
+
+      audioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+    if(
+      audioContext.state ===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
+  }catch(e){
+
+    console.log(
+      "Audio error",
+      e
+    );
+
+  }
+
+}
+
+
+function beep(){
+
+  if(!alertEnabled)
+    return;
+
+
+  createAudio();
+
+
+  if(!audioContext)
+    return;
+
+
+  try{
+
+    const osc =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+
+    osc.connect(gain);
+
+    gain.connect(
+      audioContext.destination
+    );
+
+
+    osc.frequency.value =
+      880;
+
+    osc.type =
+      "sine";
+
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      audioContext.currentTime
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.25,
+      audioContext.currentTime + 0.02
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      audioContext.currentTime + 0.30
+    );
+
+
+    osc.start();
+
+    osc.stop(
+      audioContext.currentTime +
+      0.32
+    );
+
+
+  }catch(e){
+
+    console.log(e);
+
+  }
+
+}
+
+
+function playSignalAlert(){
+
+  if(!alertEnabled)
+    return;
+
+
+  stopAlert();
+
+
+  beep();
+
+
+  alertTimer =
+    setTimeout(
+      beep,
+      450
+    );
+
+
+  alertTimer =
+    setTimeout(
+      beep,
+      900
+    );
+
+}
+
+
+// ============================================================
+// ALERT CONTROL
+// ============================================================
+
+function toggleAlerts(){
+
+  alertEnabled =
+    !alertEnabled;
+
+
+  localStorage.setItem(
+    "bybit_alert_enabled",
+    String(alertEnabled)
+  );
+
+
+  const button =
+    document.getElementById(
+      "alertButton"
+    );
+
+
+  const status =
+    document.getElementById(
+      "alertStatus"
+    );
+
+
+  if(alertEnabled){
+
+    button.textContent =
+      "🔔 هشدار صوتی: فعال";
+
+    button.classList.remove(
+      "off"
+    );
+
+    status.textContent =
+      "🔔 هشدار فعال است.";
+
+    // برای اجازه مرورگر
+    createAudio();
+
+  }else{
+
+    button.textContent =
+      "🔕 هشدار صوتی: خاموش";
+
+    button.classList.add(
+      "off"
+    );
+
+    status.textContent =
+      "🔕 هشدار صوتی خاموش است.";
+
+    stopAlert();
+
+  }
+
+}
+
+
+function stopAlert(){
+
+  if(alertTimer){
+
+    clearTimeout(
+      alertTimer
+    );
+
+    alertTimer = null;
+
+  }
+
+}
+
+
+// ============================================================
+// INIT ALERT UI
+// ============================================================
+
+function initAlerts(){
+
+  const button =
+    document.getElementById(
+      "alertButton"
+    );
+
+
+  const status =
+    document.getElementById(
+      "alertStatus"
+    );
+
+
+  if(alertEnabled){
+
+    button.textContent =
+      "🔔 هشدار صوتی: فعال";
+
+    button.classList.remove(
+      "off"
+    );
+
+    status.textContent =
+      "🔔 هشدار فعال است.";
+
+  }else{
+
+    button.textContent =
+      "🔕 هشدار صوتی: خاموش";
+
+    button.classList.add(
+      "off"
+    );
+
+    status.textContent =
+      "🔕 هشدار صوتی خاموش است.";
+
+  }
+
+}
+
+
+// ============================================================
+// ALERT CHECK
+// ============================================================
+
+function checkForAlerts(list){
+
+  if(!alertEnabled)
+    return;
+
+
+  if(!Array.isArray(list))
+    return;
+
+
+  const confirmed =
+    list.filter(
+      x =>
+        x &&
+        (
+          x.signal ===
+            "CONFIRMED LONG" ||
+          x.signal ===
+            "CONFIRMED SHORT"
+        )
+    );
+
+
+  if(!confirmed.length)
+    return;
+
+
+  const best =
+    confirmed[0];
+
+
+  const key =
+    [
+      best.symbol,
+      best.signal,
+      Math.floor(
+        Number(best.score || 0) /
+        5
+      )
+    ].join("|");
+
+
+  // ----------------------------------------------------------
+  // اگر همان سیگنال قبلاً هشدار داده شده، دوباره زنگ نزن
+  // ----------------------------------------------------------
+
+  if(key === lastAlertKey)
+    return;
+
+
+  lastAlertKey =
+    key;
+
+
+  localStorage.setItem(
+    "bybit_last_alert_key",
+    key
+  );
+
+
+  playSignalAlert();
+
+}
+
+
+// ============================================================
 // NUMBER
-// =================================================
+// ============================================================
 
 function num(v){
 
-if(
-v===null ||
-v===undefined ||
-Number.isNaN(Number(v))
-)
-return "-";
+  if(
+    v === null ||
+    v === undefined ||
+    Number.isNaN(Number(v))
+  )
+    return "-";
 
-return Number(v).toLocaleString(
-"en-US",
-{
-maximumFractionDigits:8
+
+  return Number(v)
+    .toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:8
+      }
+    );
 }
-);
-
-}
 
 
-// =================================================
+// ============================================================
 // PERCENT
-// =================================================
+// ============================================================
 
 function pct(v){
 
-if(
-v===null ||
-v===undefined ||
-Number.isNaN(Number(v))
-)
-return "-";
+  if(
+    v === null ||
+    v === undefined ||
+    Number.isNaN(Number(v))
+  )
+    return "-";
 
-return Number(v).toFixed(2)+"%";
 
+  return Number(v)
+    .toFixed(2) +
+    "%";
 }
 
 
-// =================================================
+// ============================================================
 // TRANSLATIONS
-// =================================================
+// ============================================================
 
 function trendFA(v){
 
-if(v==="BULLISH")
-return "🟢 صعودی (BULLISH)";
+  if(v === "BULLISH")
+    return "🟢 صعودی (BULLISH)";
 
-if(v==="BEARISH")
-return "🔴 نزولی (BEARISH)";
+  if(v === "BEARISH")
+    return "🔴 نزولی (BEARISH)";
 
-return "🟡 رنج (RANGE)";
-
+  return "🟡 رنج (RANGE)";
 }
 
 
 function slopeFA(v){
 
-if(v==="UP")
-return "🟢 صعودی (UP)";
+  if(v === "UP")
+    return "🟢 صعودی (UP)";
 
-if(v==="DOWN")
-return "🔴 نزولی (DOWN)";
+  if(v === "DOWN")
+    return "🔴 نزولی (DOWN)";
 
-return "🟡 خنثی (FLAT)";
-
+  return "🟡 خنثی (FLAT)";
 }
 
 
 function structureFA(v){
 
-if(v==="BULLISH")
-return "🟢 صعودی (BULLISH)";
+  if(v === "BULLISH")
+    return "🟢 صعودی (BULLISH)";
 
-if(v==="BEARISH")
-return "🔴 نزولی (BEARISH)";
+  if(v === "BEARISH")
+    return "🔴 نزولی (BEARISH)";
 
-return "⚪ بدون ساختار (NONE)";
-
+  return "⚪ بدون ساختار (NONE)";
 }
 
 
 function fvgFA(v){
 
-if(v==="BULLISH")
-return "🟢 صعودی (BULLISH)";
+  if(v === "BULLISH")
+    return "🟢 صعودی (BULLISH)";
 
-if(v==="BEARISH")
-return "🔴 نزولی (BEARISH)";
+  if(v === "BEARISH")
+    return "🔴 نزولی (BEARISH)";
 
-return "⚪ ندارد (NONE)";
-
+  return "⚪ ندارد (NONE)";
 }
 
 
 function directionFA(v){
 
-if(v==="LONG")
-return "🟢 خرید (LONG)";
+  if(v === "LONG")
+    return "🟢 خرید (LONG)";
 
-if(v==="SHORT")
-return "🔴 فروش (SHORT)";
+  if(v === "SHORT")
+    return "🔴 فروش (SHORT)";
 
-return "🟡 انتظار (WAIT)";
-
+  return "🟡 انتظار (WAIT)";
 }
 
 
 function scoreClass(score){
 
-if(score>=75)
-return "green";
+  if(score >= 75)
+    return "green";
 
-if(score>=50)
-return "yellow";
+  if(score >= 50)
+    return "yellow";
 
-return "gray";
-
+  return "gray";
 }
 
 
-// =================================================
-// SOUND
-// =================================================
-
-function playAlert(){
-
-if(!soundEnabled)
-return;
-
-try{
-
-const AudioContext =
-window.AudioContext ||
-window.webkitAudioContext;
-
-if(!AudioContext)
-return;
-
-const ctx =
-new AudioContext();
-
-const oscillator =
-ctx.createOscillator();
-
-const gain =
-ctx.createGain();
-
-
-oscillator.type = "sine";
-
-oscillator.frequency.setValueAtTime(
-880,
-ctx.currentTime
-);
-
-oscillator.frequency.setValueAtTime(
-660,
-ctx.currentTime + 0.18
-);
-
-oscillator.frequency.setValueAtTime(
-880,
-ctx.currentTime + 0.36
-);
-
-
-gain.gain.setValueAtTime(
-0.001,
-ctx.currentTime
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.35,
-ctx.currentTime + 0.03
-);
-
-gain.gain.exponentialRampToValueAtTime(
-0.001,
-ctx.currentTime + 0.55
-);
-
-
-oscillator.connect(gain);
-
-gain.connect(ctx.destination);
-
-oscillator.start();
-
-oscillator.stop(
-ctx.currentTime + 0.6
-);
-
-}
-catch(e){
-
-console.log(
-"Audio error",
-e
-);
-
-}
-
-}
-
-
-// =================================================
-// TOGGLE SOUND
-// =================================================
-
-function toggleSound(){
-
-soundEnabled =
-!soundEnabled;
-
-const button =
-document.getElementById(
-"soundButton"
-);
-
-const box =
-document.getElementById(
-"alertBox"
-);
-
-const status =
-document.getElementById(
-"alertStatus"
-);
-
-
-if(soundEnabled){
-
-button.textContent =
-"🔔 قطع هشدار";
-
-button.className =
-"soundOn";
-
-box.className =
-"alertBox alertActive";
-
-status.textContent =
-"هشدار صوتی فعال است.";
-
-}
-else{
-
-button.textContent =
-"🔕 فعال‌کردن هشدار";
-
-button.className =
-"mute";
-
-box.className =
-"alertBox alertMuted";
-
-status.textContent =
-"هشدار صوتی قطع شده است.";
-
-}
-
-}
-
-
-// =================================================
-// CHECK ALERTS
-// =================================================
-
-function checkAlerts(list){
-
-if(!Array.isArray(list))
-return;
-
-
-const current =
-new Set();
-
-
-for(const r of list){
-
-if(
-r.signal === "CONFIRMED LONG" ||
-r.signal === "CONFIRMED SHORT"
-){
-
-current.add(r.symbol);
-
-
-if(
-!lastAlertSymbols.has(r.symbol)
-){
-
-playAlert();
-
-}
-
-}
-
-}
-
-
-lastAlertSymbols =
-current;
-
-}
-
-
-// =================================================
+// ============================================================
 // FOOTPRINT
-// =================================================
+// ============================================================
 
 function renderFootprint(fp){
 
-if(!fp){
+  if(!fp){
 
-return `
-<div class="empty">
-فوت‌پرینت در اسکن بازار دریافت نمی‌شود.
-<br>
-در تحلیل دستی دریافت می‌شود.
-</div>
-`;
+    return `
+      <div class="empty">
+      فوت‌پرینت در اسکن بازار دریافت نشده.
+      <br>
+      در تحلیل دستی دریافت می‌شود.
+      </div>
+    `;
 
-}
-
-
-if(fp.error){
-
-return `
-<div class="empty">
-خطای فوت‌پرینت:
-${fp.error}
-</div>
-`;
-
-}
+  }
 
 
-return `
+  if(fp.error){
 
-<div class="section">
-👣 فوت‌پرینت واقعی
-</div>
+    return `
+      <div class="empty">
+      خطای فوت‌پرینت:
+      ${fp.error}
+      </div>
+    `;
 
-<div class="grid">
-
-<div class="box">
-
-<div class="label">
-حجم خرید
-</div>
-
-<div class="value green">
-${num(fp.buyVolume)}
-</div>
-
-</div>
+  }
 
 
-<div class="box">
+  return `
 
-<div class="label">
-حجم فروش
-</div>
+  <div class="section">
+  👣 فوت‌پرینت واقعی
+  </div>
 
-<div class="value red">
-${num(fp.sellVolume)}
-</div>
+  <div class="grid">
 
-</div>
+  <div class="box">
+  <div class="label">
+  حجم خرید
+  </div>
+  <div class="value green">
+  ${num(fp.buyVolume)}
+  </div>
+  </div>
 
+  <div class="box">
+  <div class="label">
+  حجم فروش
+  </div>
+  <div class="value red">
+  ${num(fp.sellVolume)}
+  </div>
+  </div>
 
-<div class="box">
+  <div class="box">
+  <div class="label">
+  دلتا
+  </div>
+  <div class="value ${
+    fp.delta >= 0
+      ? "green"
+      : "red"
+  }">
+  ${num(fp.delta)}
+  </div>
+  </div>
 
-<div class="label">
-دلتا
-</div>
+  <div class="box">
+  <div class="label">
+  دلتا درصد
+  </div>
+  <div class="value ${
+    fp.deltaPercent >= 0
+      ? "green"
+      : "red"
+  }">
+  ${pct(fp.deltaPercent)}
+  </div>
+  </div>
 
-<div class="value ${
-fp.delta>=0
-?"green"
-:"red"
-}">
-${num(fp.delta)}
-</div>
+  <div class="box">
+  <div class="label">
+  نسبت خرید
+  </div>
+  <div class="value">
+  ${pct(fp.buyRatio)}
+  </div>
+  </div>
 
-</div>
+  <div class="box">
+  <div class="label">
+  نسبت فروش
+  </div>
+  <div class="value">
+  ${pct(fp.sellRatio)}
+  </div>
+  </div>
 
+  <div class="box">
+  <div class="label">
+  معاملات
+  </div>
+  <div class="value">
+  ${num(fp.trades)}
+  </div>
+  </div>
 
-<div class="box">
+  <div class="box">
+  <div class="label">
+  معامله بزرگ
+  </div>
+  <div class="value ${
+    fp.largeTrade
+      ? "yellow"
+      : "gray"
+  }">
+  ${
+    fp.largeTrade
+      ? "💥 بله"
+      : "❌ خیر"
+  }
+  </div>
+  </div>
 
-<div class="label">
-دلتا درصد
-</div>
+  </div>
 
-<div class="value ${
-fp.deltaPercent>=0
-?"green"
-:"red"
-}">
-${pct(fp.deltaPercent)}
-</div>
+  <div class="confirm">
 
-</div>
+  <b>
+  نتیجه Footprint:
+  </b>
 
+  <br>
 
-<div class="box">
+  ${
+    fp.delta > 0
+      ? "🟢 فشار خرید بیشتر است"
+      : fp.delta < 0
+      ? "🔴 فشار فروش بیشتر است"
+      : "🟡 تعادل خرید و فروش"
+  }
 
-<div class="label">
-نسبت خرید
-</div>
+  <br>
 
-<div class="value">
-${pct(fp.buyRatio)}
-</div>
+  بزرگ‌ترین معامله:
+  ${num(fp.largeTradeNotional)}
 
-</div>
+  </div>
 
-
-<div class="box">
-
-<div class="label">
-نسبت فروش
-</div>
-
-<div class="value">
-${pct(fp.sellRatio)}
-</div>
-
-</div>
-
-
-<div class="box">
-
-<div class="label">
-معاملات
-</div>
-
-<div class="value">
-${num(fp.trades)}
-</div>
-
-</div>
-
-
-<div class="box">
-
-<div class="label">
-معامله بزرگ
-</div>
-
-<div class="value ${
-fp.largeTrade
-?"yellow"
-:"gray"
-}">
-${
-fp.largeTrade
-?"💥 بله"
-:"❌ خیر"
-}
-</div>
-
-</div>
-
-</div>
-
-
-<div class="confirm">
-
-<b>
-نتیجه Footprint:
-</b>
-
-<br>
-
-${
-fp.delta>0
-?"🟢 فشار خرید بیشتر است"
-:
-fp.delta<0
-?"🔴 فشار فروش بیشتر است"
-:
-"🟡 تعادل خرید و فروش"
-}
-
-<br>
-
-بزرگ‌ترین معامله:
-${num(fp.largeTradeNotional)}
-
-</div>
-
-`;
+  `;
 
 }
 
 
-// =================================================
-// RENDER SIGNAL
-// =================================================
+// ============================================================
+// SIGNAL
+// ============================================================
 
 function renderSignal(r){
 
-const cls =
-r.direction==="LONG"
-?"long"
-:
-r.direction==="SHORT"
-?"short"
-:
-"wait";
+  const cls =
+    r.direction === "LONG"
+      ? "long"
+      : r.direction === "SHORT"
+      ? "short"
+      : "wait";
+
+
+  const reasons =
+    Array.isArray(r.reasons) &&
+    r.reasons.length
+      ? `
+        <div class="alertbox">
+        ⚠️ نکات:
+        <br>
+        ${r.reasons
+          .map(x => "• " + x)
+          .join("<br>")}
+        </div>
+      `
+      : "";
+
+
+  return `
 
+  <div class="signal ${cls}">
 
-return `
+  <div class="header">
 
-<div class="signal ${cls}">
+  <div>
 
-<div class="header">
+  <div class="title">
 
-<div>
+  ${directionFA(r.direction)}
+  &nbsp;
+  ${r.symbol}
 
-<div class="title">
+  </div>
 
-${directionFA(r.direction)}
-&nbsp;
-${r.symbol}
+  <div class="meta">
 
-</div>
+  تایم‌فریم:
+  ۱ دقیقه / ۳ دقیقه / ۵ دقیقه
 
-<div class="meta">
+  </div>
 
-تایم‌فریم:
-۱ دقیقه / ۳ دقیقه / ۵ دقیقه
+  </div>
 
-</div>
+  <div class="score ${
+    scoreClass(r.score)
+  }">
 
-</div>
+  ${r.score}/100
 
+  </div>
 
-<div class="score ${scoreClass(r.score)}">
+  </div>
 
-${r.score}/100
 
-</div>
+  <div class="grid">
 
-</div>
+  <div class="box">
+  <div class="label">
+  قیمت فعلی
+  </div>
+  <div class="value">
+  ${num(r.price)}
+  </div>
+  </div>
 
+  <div class="box">
+  <div class="label">
+  ورود
+  </div>
+  <div class="value">
+  ${num(r.entry)}
+  </div>
+  </div>
 
-<div class="grid">
+  <div class="box">
+  <div class="label">
+  حد ضرر
+  </div>
+  <div class="value red">
+  ${num(r.sl)}
+  </div>
+  </div>
 
+  <div class="box">
+  <div class="label">
+  هدف ۱
+  </div>
+  <div class="value green">
+  ${num(r.tp1)}
+  </div>
+  </div>
 
-<div class="box">
+  <div class="box">
+  <div class="label">
+  هدف ۲
+  </div>
+  <div class="value green">
+  ${num(r.tp2)}
+  </div>
+  </div>
 
-<div class="label">
-قیمت فعلی
-</div>
+  <div class="box">
+  <div class="label">
+  هدف ۳
+  </div>
+  <div class="value green">
+  ${num(r.tp3)}
+  </div>
+  </div>
 
-<div class="value">
-${num(r.price)}
-</div>
+  </div>
 
-</div>
 
+  <div class="confirm">
 
-<div class="box">
+  <b>
+  تأییدها:
+  </b>
 
-<div class="label">
-ورود
-</div>
+  ${r.confirmations}
 
-<div class="value">
-${num(r.entry)}
-</div>
+  <br>
 
-</div>
+  <b>
+  تایم‌فریم‌های صعودی:
+  </b>
 
+  ${r.bullishTimeframes}/3
 
-<div class="box">
+  <br>
 
-<div class="label">
-حد ضرر
-</div>
+  <b>
+  تایم‌فریم‌های نزولی:
+  </b>
 
-<div class="value red">
-${num(r.sl)}
-</div>
+  ${r.bearishTimeframes}/3
 
-</div>
+  </div>
 
 
-<div class="box">
+  <div class="confirm">
 
-<div class="label">
-هدف ۱
-</div>
+  <div class="section">
+  📈 ۱ دقیقه
+  </div>
 
-<div class="value green">
-${num(r.tp1)}
-</div>
+  ${renderTF(
+    r.timeframes?.["1"]
+  )}
 
-</div>
 
+  <div class="section">
+  📈 ۳ دقیقه
+  </div>
 
-<div class="box">
+  ${renderTF(
+    r.timeframes?.["3"]
+  )}
 
-<div class="label">
-هدف ۲
-</div>
 
-<div class="value green">
-${num(r.tp2)}
-</div>
+  <div class="section">
+  📈 ۵ دقیقه
+  </div>
 
-</div>
+  ${renderTF(
+    r.timeframes?.["5"]
+  )}
 
+  </div>
 
-<div class="box">
 
-<div class="label">
-هدف ۳
-</div>
+  ${renderFootprint(
+    r.footprint
+  )}
 
-<div class="value green">
-${num(r.tp3)}
-</div>
 
-</div>
+  ${reasons}
 
-</div>
+  </div>
 
-
-<div class="confirm">
-
-<b>
-تأییدها:
-</b>
-
-${r.confirmations}
-
-<br>
-
-<b>
-تایم‌فریم‌های صعودی:
-</b>
-
-${r.bullishTimeframes}/3
-
-<br>
-
-<b>
-تایم‌فریم‌های نزولی:
-</b>
-
-${r.bearishTimeframes}/3
-
-</div>
-
-
-<div class="confirm">
-
-<div class="section">
-📈 ۱ دقیقه
-</div>
-
-${renderTF(r.timeframes["1"])}
-
-
-<div class="section">
-📈 ۳ دقیقه
-</div>
-
-${renderTF(r.timeframes["3"])}
-
-
-<div class="section">
-📈 ۵ دقیقه
-</div>
-
-${renderTF(r.timeframes["5"])}
-
-</div>
-
-
-${renderFootprint(r.footprint)}
-
-
-${
-r.reasons && r.reasons.length
-?
-`
-<div class="confirm">
-
-<b>
-⚠️ نکات:
-</b>
-
-<br>
-
-${r.reasons
-.map(x => "• "+x)
-.join("<br>")}
-
-</div>
-`
-:
-""
-}
-
-
-</div>
-
-`;
+  `;
 
 }
 
 
-// =================================================
-// RENDER TF
-// =================================================
+// ============================================================
+// TIMEFRAME RENDER
+// ============================================================
 
 function renderTF(x){
 
-if(!x)
-return "❌ اطلاعات دریافت نشد.";
+  if(!x){
 
-if(x.error)
-return "❌ "+x.error;
+    return "❌ اطلاعات دریافت نشد.";
+
+  }
 
 
-return `
+  if(x.error){
 
-روند:
-${trendFA(x.trend)}
+    return "❌ " + x.error;
 
-<br>
+  }
 
-شیب MA20:
-${slopeFA(x.maSlope)}
 
-<br>
+  return `
 
-MA7:
-${num(x.ma7)}
+  روند:
+  ${trendFA(x.trend)}
 
-<br>
+  <br>
 
-MA20:
-${num(x.ma20)}
+  شیب MA20:
+  ${slopeFA(x.maSlope)}
 
-<br>
+  <br>
 
-تماس با MA20:
-${x.touchMA20?"✅ بله":"❌ خیر"}
+  MA7:
+  ${num(x.ma7)}
 
-<br>
+  <br>
 
-ساختار:
-${structureFA(x.structure)}
+  MA20:
+  ${num(x.ma20)}
 
-<br>
+  <br>
 
-FVG:
-${fvgFA(x.fvg?.type)}
+  تماس با MA20:
+  ${x.touchMA20 ? "✅ بله" : "❌ خیر"}
 
-<br>
+  <br>
 
-حجم فعلی:
-${num(x.volume?.current)}
+  ساختار:
+  ${structureFA(x.structure)}
 
-<br>
+  <br>
 
-میانگین حجم 7:
-${num(x.volume?.ma7)}
+  FVG:
+  ${fvgFA(x.fvg?.type)}
 
-<br>
+  <br>
 
-میانگین حجم 20:
-${num(x.volume?.ma20)}
+  حجم فعلی:
+  ${num(x.volume?.current)}
 
-<br>
+  <br>
 
-جهش حجم:
-${x.volume?.spike?"🔥 بله":"❌ خیر"}
+  میانگین حجم 7:
+  ${num(x.volume?.ma7)}
 
-`;
+  <br>
+
+  میانگین حجم 20:
+  ${num(x.volume?.ma20)}
+
+  <br>
+
+  جهش حجم:
+  ${
+    x.volume?.spike
+      ? "🔥 بله"
+      : "❌ خیر"
+  }
+
+  `;
 
 }
 
 
-// =================================================
+// ============================================================
 // GET JSON
-// =================================================
+// ============================================================
 
 async function getJSON(url){
 
-const response =
-await fetch(url);
+  const response =
+    await fetch(url);
 
-const data =
-await response.json();
 
-if(!data.ok){
+  const data =
+    await response.json();
 
-throw new Error(
-data.error ||
-data.detail ||
-"خطای دریافت اطلاعات"
-);
+
+  if(!data.ok){
+
+    throw new Error(
+      data.error ||
+      data.detail ||
+      "خطای دریافت اطلاعات"
+    );
+
+  }
+
+
+  return data;
 
 }
 
-return data;
 
-}
-
-
-// =================================================
+// ============================================================
 // MANUAL ANALYZE
-// =================================================
+// ============================================================
 
 async function analyzeSymbol(){
 
-const symbol =
-document
-.getElementById("symbol")
-.value
-.trim()
-.toUpperCase();
+  createAudio();
 
 
-const manual =
-document.getElementById("manual");
-
-const status =
-document.getElementById("status");
-
-
-if(!symbol){
-
-status.textContent =
-"❌ نماد را وارد کن.";
-
-return;
-
-}
+  const symbol =
+    document
+      .getElementById("symbol")
+      .value
+      .trim()
+      .toUpperCase();
 
 
-manual.innerHTML =
-`
-<div class="empty">
-
-⏳ در حال تحلیل
-${symbol}
-
-</div>
-`;
+  const manual =
+    document.getElementById(
+      "manual"
+    );
 
 
-status.textContent =
-`⏳ تحلیل ${symbol} در ۱، ۳ و ۵ دقیقه...`;
+  const status =
+    document.getElementById(
+      "status"
+    );
 
 
-try{
+  if(!symbol){
 
-const data =
-await getJSON(
-"/api/analyze?symbol="+
-encodeURIComponent(symbol)
-);
+    status.textContent =
+      "❌ نماد را وارد کن.";
 
+    return;
 
-manual.innerHTML =
-renderSignal(data);
+  }
 
 
-status.textContent =
-`✅ تحلیل ${symbol} کامل شد.`;
+  manual.innerHTML = `
+    <div class="empty">
+    ⏳ در حال تحلیل
+    ${symbol}...
+    </div>
+  `;
 
 
-// کاربر با کلیک تحلیل دستی
-// تعامل صوتی را فعال کرده است.
+  status.textContent =
+    `⏳ تحلیل ${symbol}...`;
 
-}
-catch(e){
 
-manual.innerHTML =
-`
-<div class="empty">
+  try{
 
-❌ خطا
+    const data =
+      await getJSON(
+        API_BASE +
+        "/api/analyze?symbol=" +
+        encodeURIComponent(symbol)
+      );
 
-<br><br>
 
-${e.message}
+    manual.innerHTML =
+      renderSignal(data);
 
-</div>
-`;
 
-status.textContent =
-"❌ تحلیل انجام نشد.";
+    status.textContent =
+      `✅ تحلیل ${symbol} کامل شد.`;
 
-}
+
+  }catch(e){
+
+    manual.innerHTML = `
+      <div class="empty">
+      ❌ خطا
+      <br><br>
+      ${e.message}
+      </div>
+    `;
+
+
+    status.textContent =
+      "❌ تحلیل انجام نشد.";
+
+  }
 
 }
 
 
-// =================================================
-// SCAN MARKET
-// =================================================
+// ============================================================
+// MARKET SCAN
+// ============================================================
 
 async function scanMarket(){
 
-const results =
-document.getElementById(
-"results"
+  createAudio();
+
+
+  const results =
+    document.getElementById(
+      "results"
+    );
+
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+
+  results.innerHTML = `
+    <div class="empty">
+    ⏳ در حال بررسی ۲۰۰ ارز...
+    <br>
+    ابتدا ۲۰۰ ارز اولویت‌دار Bybit
+    انتخاب می‌شوند.
+    <br>
+    سپس بهترین موقعیت‌ها
+    تحلیل عمیق می‌شوند.
+    </div>
+  `;
+
+
+  status.textContent =
+    "⏳ دریافت ۲۰۰ ارز Bybit...";
+
+
+  try{
+
+    const data =
+      await getJSON(
+        API_BASE +
+        "/api/scan"
+      );
+
+
+    const list =
+      data.results || [];
+
+
+    if(!list.length){
+
+      results.innerHTML = `
+        <div class="empty">
+
+        🟡 فعلاً سیگنال
+        تأییدشده‌ای پیدا نشد.
+
+        <br><br>
+
+        ${data.scanned || 0}
+        ارز بررسی اولیه شدند.
+
+        <br>
+
+        ${data.deepScanned || 0}
+        ارز تحلیل عمیق شدند.
+
+        </div>
+      `;
+
+    }else{
+
+      results.innerHTML =
+        list
+          .map(renderSignal)
+          .join("");
+
+    }
+
+
+    status.textContent =
+      `✅ اسکن کامل شد — ${
+        data.scanned || 0
+      } ارز بررسی شدند و ${
+        data.deepScanned || 0
+      } ارز تحلیل عمیق شدند.`;
+
+
+    // بررسی هشدار
+    checkForAlerts(list);
+
+
+  }catch(e){
+
+    results.innerHTML = `
+      <div class="empty">
+
+      ❌ خطا
+
+      <br><br>
+
+      ${e.message}
+
+      </div>
+    `;
+
+
+    status.textContent =
+      "❌ اسکن بازار انجام نشد.";
+
+  }
+
+}
+
+
+// ============================================================
+// INIT
+// ============================================================
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    initAlerts();
+
+  }
 );
-
-const status =
-document.getElementById(
-"status"
-);
-
-
-results.innerHTML =
-`
-<div class="empty">
-
-⏳ در حال بررسی ۲۰۰ ارز اولویت‌دار Bybit...
-
-<br><br>
-
-این عملیات ممکن است کمی زمان ببرد.
-
-</div>
-`;
-
-
-status.textContent =
-"⏳ بررسی ۲۰۰ ارز Bybit Futures...";
-
-
-try{
-
-const data =
-await getJSON(
-"/api/scan"
-);
-
-
-const list =
-data.results || [];
-
-
-if(!list.length){
-
-results.innerHTML =
-`
-<div class="empty">
-
-🟡 فعلاً سیگنال تأییدشده‌ای پیدا نشد.
-
-<br><br>
-
-۲۰۰ ارز بررسی شدند.
-
-</div>
-`;
-
-}
-else{
-
-results.innerHTML =
-list
-.map(renderSignal)
-.join("");
-
-}
-
-
-checkAlerts(list);
-
-
-status.textContent =
-`✅ اسکن کامل شد — ${list.length} موقعیت برتر از ${data.scanned} ارز بررسی‌شده.`;
-
-}
-catch(e){
-
-results.innerHTML =
-`
-<div class="empty">
-
-❌ خطا
-
-<br><br>
-
-${e.message}
-
-</div>
-`;
-
-status.textContent =
-"❌ اسکن بازار انجام نشد.";
-
-}
-
-}
 
 </script>
 
