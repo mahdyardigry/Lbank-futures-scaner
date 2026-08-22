@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Bybit Futures Scanner V8</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1"
+>
+
+<title>Bybit Futures Scanner V10</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box
+}
 
 body{
 margin:0;
@@ -66,6 +75,14 @@ button.scan{
 background:#2563eb
 }
 
+button.mute{
+background:#8b1e1e
+}
+
+button.soundOn{
+background:#238636
+}
+
 .status{
 color:#9aa4b2;
 font-size:13px;
@@ -107,9 +124,17 @@ margin-top:10px;
 border-right:4px solid #777
 }
 
-.signal.long{border-right-color:#00c853}
-.signal.short{border-right-color:#ff3d00}
-.signal.wait{border-right-color:#ffc107}
+.signal.long{
+border-right-color:#00c853
+}
+
+.signal.short{
+border-right-color:#ff3d00
+}
+
+.signal.wait{
+border-right-color:#ffc107
+}
 
 .header{
 display:flex;
@@ -173,24 +198,63 @@ font-weight:bold;
 color:#ffd740
 }
 
-.green{color:#00e676}
-.red{color:#ff5252}
-.yellow{color:#ffd740}
-.gray{color:#8b949e}
+.green{
+color:#00e676
+}
+
+.red{
+color:#ff5252
+}
+
+.yellow{
+color:#ffd740
+}
+
+.gray{
+color:#8b949e
+}
+
+.alertBox{
+background:#11161d;
+border:1px solid #394555;
+border-radius:10px;
+padding:10px;
+margin-top:10px;
+line-height:1.8
+}
+
+.alertActive{
+border-color:#00e676
+}
+
+.alertMuted{
+border-color:#ff5252
+}
 
 @media(max-width:600px){
+
 .grid{
 grid-template-columns:1fr 1fr
 }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
 <div class="container">
 
-<h1>📊 اسکنر فیوچرز Bybit</h1>
+
+<h1>
+📊 اسکنر فیوچرز Bybit
+</h1>
+
+
+<!-- CONTROL -->
 
 <div class="card">
 
@@ -199,30 +263,75 @@ grid-template-columns:1fr 1fr
 <input
 id="symbol"
 value="BTCUSDT"
-placeholder="مثلاً BTCUSDT">
+placeholder="مثلاً BTCUSDT"
+>
 
-<button onclick="analyzeSymbol()">
+<button
+onclick="analyzeSymbol()"
+>
 🔎 تحلیل ارز
 </button>
 
-<button class="scan" onclick="scanMarket()">
-🚨 اسکن بازار
+<button
+class="scan"
+onclick="scanMarket()"
+>
+🚨 اسکن ۲۰۰ ارز
 </button>
 
 </div>
 
+
 <div class="tf">
+
 <span>۱ دقیقه (1m)</span>
+
 <span>۳ دقیقه (3m)</span>
+
 <span>۵ دقیقه (5m)</span>
+
 </div>
 
-<div id="status" class="status">
+
+<div class="alertBox alertActive" id="alertBox">
+
+<div>
+
+<b>
+🔔 هشدار صوتی
+</b>
+
+</div>
+
+<div
+class="status"
+id="alertStatus"
+>
+هشدار فعال است.
+</div>
+
+<button
+class="soundOn"
+id="soundButton"
+onclick="toggleSound()"
+>
+🔔 قطع هشدار
+</button>
+
+</div>
+
+
+<div
+id="status"
+class="status"
+>
 آماده اسکن Bybit Futures
 </div>
 
 </div>
 
+
+<!-- RESULTS -->
 
 <div class="card">
 
@@ -231,13 +340,17 @@ placeholder="مثلاً BTCUSDT">
 </div>
 
 <div id="results">
+
 <div class="empty">
 هنوز اسکن انجام نشده.
 </div>
-</div>
 
 </div>
 
+</div>
+
+
+<!-- MANUAL -->
 
 <div class="card">
 
@@ -246,49 +359,75 @@ placeholder="مثلاً BTCUSDT">
 </div>
 
 <div id="manual">
+
 <div class="empty">
 یک ارز وارد کن و تحلیل ارز را بزن.
 </div>
+
 </div>
 
 </div>
+
 
 </div>
 
 
 <script>
 
-const API_BASE = "";
 
+// =================================================
+// SETTINGS
+// =================================================
+
+let soundEnabled = true;
+
+let lastAlertSymbols = new Set();
+
+
+// =================================================
+// NUMBER
+// =================================================
 
 function num(v){
 
 if(
-v===null||
-v===undefined||
+v===null ||
+v===undefined ||
 Number.isNaN(Number(v))
-)return "-";
+)
+return "-";
 
 return Number(v).toLocaleString(
 "en-US",
-{maximumFractionDigits:8}
+{
+maximumFractionDigits:8
+}
 );
 
 }
 
 
+// =================================================
+// PERCENT
+// =================================================
+
 function pct(v){
 
 if(
-v===null||
-v===undefined||
+v===null ||
+v===undefined ||
 Number.isNaN(Number(v))
-)return "-";
+)
+return "-";
 
 return Number(v).toFixed(2)+"%";
 
 }
 
+
+// =================================================
+// TRANSLATIONS
+// =================================================
 
 function trendFA(v){
 
@@ -357,12 +496,207 @@ return "🟡 انتظار (WAIT)";
 
 function scoreClass(score){
 
-if(score>=75)return "green";
-if(score>=50)return "yellow";
+if(score>=75)
+return "green";
+
+if(score>=50)
+return "yellow";
+
 return "gray";
 
 }
 
+
+// =================================================
+// SOUND
+// =================================================
+
+function playAlert(){
+
+if(!soundEnabled)
+return;
+
+try{
+
+const AudioContext =
+window.AudioContext ||
+window.webkitAudioContext;
+
+if(!AudioContext)
+return;
+
+const ctx =
+new AudioContext();
+
+const oscillator =
+ctx.createOscillator();
+
+const gain =
+ctx.createGain();
+
+
+oscillator.type = "sine";
+
+oscillator.frequency.setValueAtTime(
+880,
+ctx.currentTime
+);
+
+oscillator.frequency.setValueAtTime(
+660,
+ctx.currentTime + 0.18
+);
+
+oscillator.frequency.setValueAtTime(
+880,
+ctx.currentTime + 0.36
+);
+
+
+gain.gain.setValueAtTime(
+0.001,
+ctx.currentTime
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.35,
+ctx.currentTime + 0.03
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.001,
+ctx.currentTime + 0.55
+);
+
+
+oscillator.connect(gain);
+
+gain.connect(ctx.destination);
+
+oscillator.start();
+
+oscillator.stop(
+ctx.currentTime + 0.6
+);
+
+}
+catch(e){
+
+console.log(
+"Audio error",
+e
+);
+
+}
+
+}
+
+
+// =================================================
+// TOGGLE SOUND
+// =================================================
+
+function toggleSound(){
+
+soundEnabled =
+!soundEnabled;
+
+const button =
+document.getElementById(
+"soundButton"
+);
+
+const box =
+document.getElementById(
+"alertBox"
+);
+
+const status =
+document.getElementById(
+"alertStatus"
+);
+
+
+if(soundEnabled){
+
+button.textContent =
+"🔔 قطع هشدار";
+
+button.className =
+"soundOn";
+
+box.className =
+"alertBox alertActive";
+
+status.textContent =
+"هشدار صوتی فعال است.";
+
+}
+else{
+
+button.textContent =
+"🔕 فعال‌کردن هشدار";
+
+button.className =
+"mute";
+
+box.className =
+"alertBox alertMuted";
+
+status.textContent =
+"هشدار صوتی قطع شده است.";
+
+}
+
+}
+
+
+// =================================================
+// CHECK ALERTS
+// =================================================
+
+function checkAlerts(list){
+
+if(!Array.isArray(list))
+return;
+
+
+const current =
+new Set();
+
+
+for(const r of list){
+
+if(
+r.signal === "CONFIRMED LONG" ||
+r.signal === "CONFIRMED SHORT"
+){
+
+current.add(r.symbol);
+
+
+if(
+!lastAlertSymbols.has(r.symbol)
+){
+
+playAlert();
+
+}
+
+}
+
+}
+
+
+lastAlertSymbols =
+current;
+
+}
+
+
+// =================================================
+// FOOTPRINT
+// =================================================
 
 function renderFootprint(fp){
 
@@ -370,7 +704,9 @@ if(!fp){
 
 return `
 <div class="empty">
-فوت‌پرینت دریافت نشده.
+فوت‌پرینت در اسکن بازار دریافت نمی‌شود.
+<br>
+در تحلیل دستی دریافت می‌شود.
 </div>
 `;
 
@@ -381,7 +717,8 @@ if(fp.error){
 
 return `
 <div class="empty">
-خطای فوت‌پرینت: ${fp.error}
+خطای فوت‌پرینت:
+${fp.error}
 </div>
 `;
 
@@ -391,105 +728,149 @@ return `
 return `
 
 <div class="section">
-👣 فوت‌پرینت واقعی (Real Footprint)
+👣 فوت‌پرینت واقعی
 </div>
 
 <div class="grid">
 
 <div class="box">
+
 <div class="label">
-حجم خرید (Buy Volume)
+حجم خرید
 </div>
+
 <div class="value green">
 ${num(fp.buyVolume)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-حجم فروش (Sell Volume)
+حجم فروش
 </div>
+
 <div class="value red">
 ${num(fp.sellVolume)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-دلتا (Delta)
+دلتا
 </div>
+
 <div class="value ${
-fp.delta>=0?"green":"red"
+fp.delta>=0
+?"green"
+:"red"
 }">
 ${num(fp.delta)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-دلتا درصد (Delta %)
+دلتا درصد
 </div>
+
 <div class="value ${
-fp.deltaPercent>=0?"green":"red"
+fp.deltaPercent>=0
+?"green"
+:"red"
 }">
 ${pct(fp.deltaPercent)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-نسبت خرید (Buy Ratio)
+نسبت خرید
 </div>
+
 <div class="value">
 ${pct(fp.buyRatio)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-نسبت فروش (Sell Ratio)
+نسبت فروش
 </div>
+
 <div class="value">
 ${pct(fp.sellRatio)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-معاملات بررسی‌شده (Trades)
+معاملات
 </div>
+
 <div class="value">
 ${num(fp.trades)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-معامله بزرگ (Large Trade)
+معامله بزرگ
 </div>
+
 <div class="value ${
-fp.largeTrade?"yellow":"gray"
+fp.largeTrade
+?"yellow"
+:"gray"
 }">
 ${
 fp.largeTrade
-?"💥 بله (YES)"
-:"❌ خیر (NO)"
+?"💥 بله"
+:"❌ خیر"
 }
-</div>
 </div>
 
 </div>
+
+</div>
+
 
 <div class="confirm">
 
-<b>نتیجه Footprint:</b><br>
+<b>
+نتیجه Footprint:
+</b>
+
+<br>
 
 ${
 fp.delta>0
-?"🟢 فشار خرید بیشتر است (Positive Delta)"
-:fp.delta<0
-?"🔴 فشار فروش بیشتر است (Negative Delta)"
-:"🟡 تعادل خرید و فروش"
+?"🟢 فشار خرید بیشتر است"
+:
+fp.delta<0
+?"🔴 فشار فروش بیشتر است"
+:
+"🟡 تعادل خرید و فروش"
 }
 
 <br>
@@ -504,14 +885,20 @@ ${num(fp.largeTradeNotional)}
 }
 
 
+// =================================================
+// RENDER SIGNAL
+// =================================================
+
 function renderSignal(r){
 
 const cls =
 r.direction==="LONG"
 ?"long"
-:r.direction==="SHORT"
+:
+r.direction==="SHORT"
 ?"short"
-:"wait";
+:
+"wait";
 
 
 return `
@@ -523,21 +910,27 @@ return `
 <div>
 
 <div class="title">
+
 ${directionFA(r.direction)}
 &nbsp;
 ${r.symbol}
+
 </div>
 
 <div class="meta">
-تایم‌فریم تحلیل:
+
+تایم‌فریم:
 ۱ دقیقه / ۳ دقیقه / ۵ دقیقه
-(1m / 3m / 5m)
+
 </div>
 
 </div>
+
 
 <div class="score ${scoreClass(r.score)}">
+
 ${r.score}/100
+
 </div>
 
 </div>
@@ -545,58 +938,82 @@ ${r.score}/100
 
 <div class="grid">
 
+
 <div class="box">
+
 <div class="label">
-قیمت فعلی (Price)
+قیمت فعلی
 </div>
+
 <div class="value">
 ${num(r.price)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-نقطه ورود (Entry)
+ورود
 </div>
+
 <div class="value">
 ${num(r.entry)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-حد ضرر (SL)
+حد ضرر
 </div>
+
 <div class="value red">
 ${num(r.sl)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-هدف ۱ (TP1)
+هدف ۱
 </div>
+
 <div class="value green">
 ${num(r.tp1)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-هدف ۲ (TP2)
+هدف ۲
 </div>
+
 <div class="value green">
 ${num(r.tp2)}
 </div>
+
 </div>
 
+
 <div class="box">
+
 <div class="label">
-هدف ۳ (TP3)
+هدف ۳
 </div>
+
 <div class="value green">
 ${num(r.tp3)}
 </div>
+
 </div>
 
 </div>
@@ -605,7 +1022,7 @@ ${num(r.tp3)}
 <div class="confirm">
 
 <b>
-تأییدها (Confirmations):
+تأییدها:
 </b>
 
 ${r.confirmations}
@@ -613,15 +1030,17 @@ ${r.confirmations}
 <br>
 
 <b>
-تعداد تایم‌فریم‌های صعودی:
+تایم‌فریم‌های صعودی:
 </b>
+
 ${r.bullishTimeframes}/3
 
 <br>
 
 <b>
-تعداد تایم‌فریم‌های نزولی:
+تایم‌فریم‌های نزولی:
 </b>
+
 ${r.bearishTimeframes}/3
 
 </div>
@@ -630,19 +1049,21 @@ ${r.bearishTimeframes}/3
 <div class="confirm">
 
 <div class="section">
-📈 وضعیت ۱ دقیقه (1m)
+📈 ۱ دقیقه
 </div>
 
 ${renderTF(r.timeframes["1"])}
 
+
 <div class="section">
-📈 وضعیت ۳ دقیقه (3m)
+📈 ۳ دقیقه
 </div>
 
 ${renderTF(r.timeframes["3"])}
 
+
 <div class="section">
-📈 وضعیت ۵ دقیقه (5m)
+📈 ۵ دقیقه
 </div>
 
 ${renderTF(r.timeframes["5"])}
@@ -652,6 +1073,30 @@ ${renderTF(r.timeframes["5"])}
 
 ${renderFootprint(r.footprint)}
 
+
+${
+r.reasons && r.reasons.length
+?
+`
+<div class="confirm">
+
+<b>
+⚠️ نکات:
+</b>
+
+<br>
+
+${r.reasons
+.map(x => "• "+x)
+.join("<br>")}
+
+</div>
+`
+:
+""
+}
+
+
 </div>
 
 `;
@@ -659,20 +1104,17 @@ ${renderFootprint(r.footprint)}
 }
 
 
+// =================================================
+// RENDER TF
+// =================================================
+
 function renderTF(x){
 
-if(!x){
-
+if(!x)
 return "❌ اطلاعات دریافت نشد.";
 
-}
-
-
-if(x.error){
-
+if(x.error)
 return "❌ "+x.error;
-
-}
 
 
 return `
@@ -702,38 +1144,42 @@ ${x.touchMA20?"✅ بله":"❌ خیر"}
 
 <br>
 
-ساختار بازار:
+ساختار:
 ${structureFA(x.structure)}
 
 <br>
 
 FVG:
-${fvgFA(x.fvg.type)}
+${fvgFA(x.fvg?.type)}
 
 <br>
 
 حجم فعلی:
-${num(x.volume.current)}
+${num(x.volume?.current)}
 
 <br>
 
 میانگین حجم 7:
-${num(x.volume.ma7)}
+${num(x.volume?.ma7)}
 
 <br>
 
 میانگین حجم 20:
-${num(x.volume.ma20)}
+${num(x.volume?.ma20)}
 
 <br>
 
 جهش حجم:
-${x.volume.spike?"🔥 بله":"❌ خیر"}
+${x.volume?.spike?"🔥 بله":"❌ خیر"}
 
 `;
 
 }
 
+
+// =================================================
+// GET JSON
+// =================================================
 
 async function getJSON(url){
 
@@ -758,6 +1204,10 @@ return data;
 }
 
 
+// =================================================
+// MANUAL ANALYZE
+// =================================================
+
 async function analyzeSymbol(){
 
 const symbol =
@@ -766,6 +1216,7 @@ document
 .value
 .trim()
 .toUpperCase();
+
 
 const manual =
 document.getElementById("manual");
@@ -785,9 +1236,14 @@ return;
 
 
 manual.innerHTML =
-`<div class="empty">
-⏳ در حال تحلیل ${symbol}...
-</div>`;
+`
+<div class="empty">
+
+⏳ در حال تحلیل
+${symbol}
+
+</div>
+`;
 
 
 status.textContent =
@@ -798,7 +1254,6 @@ try{
 
 const data =
 await getJSON(
-API_BASE+
 "/api/analyze?symbol="+
 encodeURIComponent(symbol)
 );
@@ -811,14 +1266,25 @@ renderSignal(data);
 status.textContent =
 `✅ تحلیل ${symbol} کامل شد.`;
 
+
+// کاربر با کلیک تحلیل دستی
+// تعامل صوتی را فعال کرده است.
+
 }
 catch(e){
 
 manual.innerHTML =
-`<div class="empty">
-❌ خطا<br><br>
+`
+<div class="empty">
+
+❌ خطا
+
+<br><br>
+
 ${e.message}
-</div>`;
+
+</div>
+`;
 
 status.textContent =
 "❌ تحلیل انجام نشد.";
@@ -828,32 +1294,46 @@ status.textContent =
 }
 
 
+// =================================================
+// SCAN MARKET
+// =================================================
+
 async function scanMarket(){
 
 const results =
-document.getElementById("results");
+document.getElementById(
+"results"
+);
 
 const status =
-document.getElementById("status");
+document.getElementById(
+"status"
+);
 
 
 results.innerHTML =
-`<div class="empty">
-⏳ در حال اسکن سریع بازار...
-<br>
-ابتدا ارزهای فعال‌تر انتخاب می‌شوند.
-</div>`;
+`
+<div class="empty">
+
+⏳ در حال بررسی ۲۰۰ ارز اولویت‌دار Bybit...
+
+<br><br>
+
+این عملیات ممکن است کمی زمان ببرد.
+
+</div>
+`;
 
 
 status.textContent =
-"⏳ دریافت بازار Bybit...";
+"⏳ بررسی ۲۰۰ ارز Bybit Futures...";
 
 
 try{
 
 const data =
 await getJSON(
-API_BASE+"/api/scan"
+"/api/scan"
 );
 
 
@@ -864,9 +1344,17 @@ data.results || [];
 if(!list.length){
 
 results.innerHTML =
-`<div class="empty">
+`
+<div class="empty">
+
 🟡 فعلاً سیگنال تأییدشده‌ای پیدا نشد.
-</div>`;
+
+<br><br>
+
+۲۰۰ ارز بررسی شدند.
+
+</div>
+`;
 
 }
 else{
@@ -879,6 +1367,9 @@ list
 }
 
 
+checkAlerts(list);
+
+
 status.textContent =
 `✅ اسکن کامل شد — ${list.length} موقعیت برتر از ${data.scanned} ارز بررسی‌شده.`;
 
@@ -886,10 +1377,17 @@ status.textContent =
 catch(e){
 
 results.innerHTML =
-`<div class="empty">
-❌ خطا<br><br>
+`
+<div class="empty">
+
+❌ خطا
+
+<br><br>
+
 ${e.message}
-</div>`;
+
+</div>
+`;
 
 status.textContent =
 "❌ اسکن بازار انجام نشد.";
@@ -901,4 +1399,5 @@ status.textContent =
 </script>
 
 </body>
+
 </html>
