@@ -1,15 +1,13 @@
 const BYBIT_BASE = "https://api.bybit.com";
 
 const TIMEFRAMES = [
-  { key: "1", label: "1m", weight: 1 },
-  { key: "3", label: "3m", weight: 1 },
-  { key: "5", label: "5m", weight: 2 },
-  { key: "15", label: "15m", weight: 3 },
-  { key: "60", label: "1H", weight: 4 }
+  { key: "1", label: "1m", weight: 20 },
+  { key: "3", label: "3m", weight: 30 },
+  { key: "5", label: "5m", weight: 50 }
 ];
 
-const SCAN_LIMIT = 60;
-const QUICK_LIMIT = 40;
+const MIN_TARGET_PERCENT = 30;
+const MAX_FULL_ANALYSIS = 40;
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -32,46 +30,25 @@ export default {
     try {
 
       // =========================
-      // CHECK
-      // =========================
-
-      if (url.pathname === "/api/check") {
-
-        const symbol =
-          normalizeSymbol(
-            url.searchParams.get("symbol")
-          );
-
-        if (!symbol) {
-          return json({
-            ok: false,
-            error: "symbol required"
-          }, 400);
-        }
-
-        const list =
-          await getFuturesList();
-
-        const exists =
-          list.includes(symbol);
-
-        return json({
-          ok: true,
-          exists,
-          symbol,
-          market: "Bybit Futures"
-        });
-      }
-
-
-      // =========================
-      // FUTURES
+      // FUTURES LIST
       // =========================
 
       if (url.pathname === "/api/futures") {
 
-        const futures =
-          await getFuturesList();
+        const data = await bybit(
+          "/v5/market/instruments-info?category=linear&limit=1000"
+        );
+
+        const list = data.result?.list || [];
+
+        const futures = list
+          .filter(x =>
+            x.status === "Trading" &&
+            x.quoteCoin === "USDT" &&
+            !x.symbol.includes("-")
+          )
+          .map(x => x.symbol)
+          .sort();
 
         return json({
           ok: true,
@@ -108,14 +85,16 @@ export default {
           );
 
         if (!symbol) {
+
           return json({
             ok: false,
             error: "symbol required"
           }, 400);
+
         }
 
-        const rows =
-          await getKlines(
+        const data =
+          await getKline(
             symbol,
             interval,
             limit
@@ -126,13 +105,13 @@ export default {
           source: "Bybit Futures",
           symbol,
           interval,
-          rows
+          rows: data
         });
       }
 
 
       // =========================
-      // MANUAL ANALYSIS
+      // MANUAL ANALYZE
       // =========================
 
       if (url.pathname === "/api/analyze") {
@@ -143,10 +122,12 @@ export default {
           );
 
         if (!symbol) {
+
           return json({
             ok: false,
             error: "symbol required"
           }, 400);
+
         }
 
         const result =
@@ -165,62 +146,96 @@ export default {
 
       if (url.pathname === "/api/scan") {
 
-        const futures =
-          await getFuturesList();
+        const data =
+          await bybit(
+            "/v5/market/instruments-info?category=linear&limit=1000"
+          );
+
+        const instruments =
+          data.result?.list || [];
+
+        const symbols =
+          instruments
+            .filter(x =>
+              x.status === "Trading" &&
+              x.quoteCoin === "USDT" &&
+              !x.symbol.includes("-")
+            )
+            .map(x => x.symbol);
 
         /*
          * مرحله اول:
-         * فقط 1H و 15m برای غربالگری سریع
+         * فقط 5m برای غربالگری
          */
 
         const candidates = [];
 
-        const batchSize = 10;
+        const batchSize = 20;
 
         for (
           let i = 0;
-          i < futures.length;
+          i < symbols.length;
           i += batchSize
         ) {
 
           const batch =
-            futures.slice(
+            symbols.slice(
               i,
               i + batchSize
             );
 
-          const quick =
+          const batchResults =
             await Promise.all(
               batch.map(
                 async symbol => {
 
                   try {
 
-                    return await quickScan(
-                      symbol
-                    );
+                    const rows =
+                      await getKline(
+                        symbol,
+                        "5",
+                        60
+                      );
 
-                  } catch {
+                    const quick =
+                      quickFilter(rows);
+
+                    if (quick) {
+
+                      return {
+                        symbol,
+                        ...quick
+                      };
+
+                    }
+
+                  } catch (e) {
+
                     return null;
+
                   }
+
+                  return null;
 
                 }
               )
             );
 
-          quick.forEach(x => {
+          for (
+            const item of batchResults
+          ) {
 
-            if (x) {
-              candidates.push(x);
+            if (item) {
+              candidates.push(item);
             }
 
-          });
-
+          }
         }
 
 
         /*
-         * بهترین‌ها را انتخاب می‌کنیم
+         * بهترین کاندیدها اول
          */
 
         candidates.sort(
@@ -230,18 +245,16 @@ export default {
         );
 
 
+        /*
+         * فقط 40 ارز وارد تحلیل کامل
+         */
+
         const selected =
           candidates.slice(
             0,
-            SCAN_LIMIT
+            MAX_FULL_ANALYSIS
           );
 
-
-        /*
-         * مرحله دوم:
-         * تحلیل کامل فقط برای
-         * ارزهای انتخاب‌شده
-         */
 
         const results = [];
 
@@ -264,14 +277,11 @@ export default {
 
                   try {
 
-                    const result =
-                      await analyzeSymbol(
-                        candidate.symbol
-                      );
+                    return await analyzeSymbol(
+                      candidate.symbol
+                    );
 
-                    return result;
-
-                  } catch {
+                  } catch (e) {
 
                     return null;
 
@@ -281,31 +291,57 @@ export default {
               )
             );
 
-          analyzed.forEach(result => {
+          for (
+            const result of analyzed
+          ) {
+
+            if (!result) continue;
+
+            /*
+             * فقط سیگنال‌هایی که
+             * فضای حداقل 30 درصدی دارند
+             */
 
             if (
-              result &&
               result.signal !== "WAIT" &&
-              result.score.final >= 55
+              result.potentialPercent >=
+                MIN_TARGET_PERCENT
             ) {
 
               results.push(result);
 
             }
 
-          });
+          }
 
         }
 
 
         /*
-         * مرتب‌سازی نهایی
+         * قوی‌ترین سیگنال‌ها
          */
 
         results.sort(
-          (a, b) =>
-            b.score.final -
-            a.score.final
+          (a, b) => {
+
+            if (
+              b.score.final !==
+              a.score.final
+            ) {
+
+              return (
+                b.score.final -
+                a.score.final
+              );
+
+            }
+
+            return (
+              b.potentialPercent -
+              a.potentialPercent
+            );
+
+          }
         );
 
 
@@ -320,17 +356,23 @@ export default {
           source:
             "Bybit Futures",
 
-          totalFutures:
-            futures.length,
+          totalSymbols:
+            symbols.length,
 
-          quickCandidates:
+          candidates:
             candidates.length,
 
-          fullyAnalyzed:
+          fullAnalysis:
             selected.length,
 
           found:
+            results.length,
+
+          returned:
             top10.length,
+
+          minimumPotential:
+            MIN_TARGET_PERCENT,
 
           results:
             top10
@@ -345,16 +387,19 @@ export default {
         error: "API endpoint not found"
       }, 404);
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
       return json({
+
         ok: false,
-        error: "Worker error",
+
+        error:
+          "Worker error",
+
         detail:
           error?.message ||
           String(error)
+
       }, 500);
 
     }
@@ -363,377 +408,131 @@ export default {
 };
 
 
-// =================================================
-// FUTURES LIST
-// =================================================
-
-async function getFuturesList() {
-
-  const data =
-    await bybit(
-      "/v5/market/instruments-info" +
-      "?category=linear" +
-      "&limit=1000"
-    );
-
-  const list =
-    data.result?.list || [];
-
-  return list
-    .filter(x =>
-      x.status === "Trading" &&
-      x.quoteCoin === "USDT" &&
-      !x.symbol.includes("-")
-    )
-    .map(x => x.symbol)
-    .sort();
-}
-
-
-// =================================================
-// QUICK SCAN
-// =================================================
-
-async function quickScan(symbol) {
-
-  const [rows15, rows60] =
-    await Promise.all([
-
-      getKlines(
-        symbol,
-        "15",
-        QUICK_LIMIT
-      ),
-
-      getKlines(
-        symbol,
-        "60",
-        QUICK_LIMIT
-      )
-
-    ]);
-
-  const a15 =
-    analyzeTimeframe(rows15);
-
-  const a60 =
-    analyzeTimeframe(rows60);
-
-  let score = 0;
-
-  /*
-   * 15m
-   */
-
-  if (
-    a15.trend === "BULLISH" ||
-    a15.trend === "BEARISH"
-  ) {
-    score += 10;
-  }
-
-  if (
-    a15.touchMA20
-  ) {
-    score += 15;
-  }
-
-  if (
-    a15.maSlopeStrength > 0.03
-  ) {
-    score += 10;
-  }
-
-  if (
-    a15.volumeSpike
-  ) {
-    score += 5;
-  }
-
-
-  /*
-   * 1H
-   */
-
-  if (
-    a60.trend === "BULLISH" ||
-    a60.trend === "BEARISH"
-  ) {
-    score += 10;
-  }
-
-  if (
-    a60.maSlopeStrength > 0.03
-  ) {
-    score += 10;
-  }
-
-
-  /*
-   * هماهنگی جهت
-   */
-
-  if (
-    a15.trend !== "RANGE" &&
-    a15.trend === a60.trend
-  ) {
-    score += 20;
-  }
-
-
-  return {
-    symbol,
-    quickScore: score
-  };
-}
-
-
-// =================================================
-// FULL ANALYSIS
-// =================================================
+// =====================================================
+// ANALYZE SYMBOL
+// =====================================================
 
 async function analyzeSymbol(symbol) {
 
   const timeframes = {};
 
-  /*
-   * دریافت 5 تایم‌فریم
-   * به صورت موازی
-   */
-
-  const data =
-    await Promise.all(
-      TIMEFRAMES.map(
-        async tf => {
-
-          try {
-
-            const rows =
-              await getKlines(
-                symbol,
-                tf.key,
-                100
-              );
-
-            return {
-              key: tf.key,
-              analysis:
-                analyzeTimeframe(rows)
-            };
-
-          } catch (e) {
-
-            return {
-              key: tf.key,
-              analysis: {
-                error: e.message
-              }
-            };
-
-          }
-
-        }
-      )
-    );
-
-
-  data.forEach(x => {
-
-    timeframes[x.key] =
-      x.analysis;
-
-  });
-
-
-  const main =
-    timeframes["15"];
-
-
-  if (
-    !main ||
-    main.error
+  for (
+    const tf of TIMEFRAMES
   ) {
 
-    throw new Error(
-      "15m data unavailable"
-    );
+    try {
+
+      const rows =
+        await getKline(
+          symbol,
+          tf.key,
+          100
+        );
+
+      timeframes[tf.key] =
+        analyzeTimeframe(rows);
+
+    } catch (e) {
+
+      timeframes[tf.key] = {
+        error: e.message
+      };
+
+    }
 
   }
 
 
-  let bullish = 0;
-  let bearish = 0;
-
-  TIMEFRAMES.forEach(tf => {
-
-    const x =
-      timeframes[tf.key];
-
-    if (!x || x.error) return;
-
-    if (
-      x.trend === "BULLISH"
-    ) bullish++;
-
-    if (
-      x.trend === "BEARISH"
-    ) bearish++;
-
-  });
-
-
-  /*
-   * LONG / SHORT امتیاز
-   */
-
   let longScore = 0;
   let shortScore = 0;
 
+  let bullish = 0;
+  let bearish = 0;
 
-  TIMEFRAMES.forEach(tf => {
+
+  for (
+    const tf of TIMEFRAMES
+  ) {
 
     const x =
       timeframes[tf.key];
 
-    if (!x || x.error) return;
+    if (
+      !x ||
+      x.error
+    ) continue;
 
 
     if (
-      x.confirmation === "LONG"
+      x.trend === "BULLISH"
+    ) {
+
+      bullish++;
+
+    }
+
+
+    if (
+      x.trend === "BEARISH"
+    ) {
+
+      bearish++;
+
+    }
+
+
+    if (
+      x.direction === "LONG"
     ) {
 
       longScore +=
-        tf.weight * 10;
+        tf.weight;
 
     }
 
 
     if (
-      x.confirmation === "SHORT"
+      x.direction === "SHORT"
     ) {
 
       shortScore +=
-        tf.weight * 10;
+        tf.weight;
 
     }
 
-
-    /*
-     * شیب MA20
-     */
-
-    if (
-      x.maSlopeDirection === "UP"
-    ) {
-
-      longScore +=
-        tf.weight * 2;
-
-    }
-
-    if (
-      x.maSlopeDirection === "DOWN"
-    ) {
-
-      shortScore +=
-        tf.weight * 2;
-
-    }
-
-
-    /*
-     * ساختار
-     */
-
-    if (
-      x.structure === "BULLISH"
-    ) {
-
-      longScore +=
-        tf.weight * 3;
-
-    }
-
-    if (
-      x.structure === "BEARISH"
-    ) {
-
-      shortScore +=
-        tf.weight * 3;
-
-    }
-
-
-    /*
-     * FVG
-     */
-
-    if (
-      x.fvg === "BULLISH"
-    ) {
-
-      longScore +=
-        tf.weight * 2;
-
-    }
-
-    if (
-      x.fvg === "BEARISH"
-    ) {
-
-      shortScore +=
-        tf.weight * 2;
-
-    }
-
-
-    /*
-     * Volume
-     */
-
-    if (x.volumeSpike) {
-
-      if (
-        x.trend === "BULLISH"
-      ) {
-
-        longScore +=
-          tf.weight * 2;
-
-      }
-
-      if (
-        x.trend === "BEARISH"
-      ) {
-
-        shortScore +=
-          tf.weight * 2;
-
-      }
-
-    }
-
-  });
+  }
 
 
   /*
    * تأیید چندتایم‌فریمی
    */
 
-  if (bullish >= 3) {
-    longScore += 10;
+  if (
+    bullish >= 2
+  ) {
+
+    longScore += 15;
+
   }
-
-  if (bearish >= 3) {
-    shortScore += 10;
-  }
-
-
-  let signal = "WAIT";
 
 
   if (
-    longScore >= 30 &&
+    bearish >= 2
+  ) {
+
+    shortScore += 15;
+
+  }
+
+
+  /*
+   * تعیین سیگنال
+   */
+
+  let signal = "WAIT";
+
+  if (
+    longScore >= 60 &&
     longScore > shortScore
   ) {
 
@@ -743,7 +542,7 @@ async function analyzeSymbol(symbol) {
 
 
   if (
-    shortScore >= 30 &&
+    shortScore >= 60 &&
     shortScore > longScore
   ) {
 
@@ -752,19 +551,22 @@ async function analyzeSymbol(symbol) {
   }
 
 
-  const finalScore =
-    Math.min(
-      100,
-      Math.max(
-        longScore,
-        shortScore
-      )
+  /*
+   * تایم‌فریم اصلی 5 دقیقه
+   */
+
+  const main =
+    timeframes["5"];
+
+
+  if (!main) {
+
+    throw new Error(
+      "5m data unavailable"
     );
 
+  }
 
-  /*
-   * Entry / SL / TP
-   */
 
   const entry =
     main.close;
@@ -776,68 +578,111 @@ async function analyzeSymbol(symbol) {
   let tp3 = null;
 
 
+  /*
+   * LONG
+   */
+
   if (
     signal === "LONG"
   ) {
 
     sl =
-      main.swingLow;
-
-    if (
-      !sl ||
-      sl >= entry
-    ) {
-
-      sl =
-        entry * 0.99;
-
-    }
+      calculateLongSL(
+        main
+      );
 
     const risk =
       entry - sl;
 
     tp1 =
-      entry + risk;
+      entry +
+      risk * 2;
 
     tp2 =
-      entry + risk * 2;
+      entry +
+      risk * 4;
 
     tp3 =
-      entry + risk * 3;
+      entry +
+      risk * 6;
 
   }
 
+
+  /*
+   * SHORT
+   */
 
   if (
     signal === "SHORT"
   ) {
 
     sl =
-      main.swingHigh;
-
-    if (
-      !sl ||
-      sl <= entry
-    ) {
-
-      sl =
-        entry * 1.01;
-
-    }
+      calculateShortSL(
+        main
+      );
 
     const risk =
       sl - entry;
 
     tp1 =
-      entry - risk;
+      entry -
+      risk * 2;
 
     tp2 =
-      entry - risk * 2;
+      entry -
+      risk * 4;
 
     tp3 =
-      entry - risk * 3;
+      entry -
+      risk * 6;
 
   }
+
+
+  let potentialPercent = 0;
+
+
+  if (
+    signal === "LONG" &&
+    tp3
+  ) {
+
+    potentialPercent =
+      (
+        (tp3 - entry) /
+        entry
+      ) * 100;
+
+  }
+
+
+  if (
+    signal === "SHORT" &&
+    tp3
+  ) {
+
+    potentialPercent =
+      (
+        (entry - tp3) /
+        entry
+      ) * 100;
+
+  }
+
+
+  /*
+   * امتیاز نهایی
+   */
+
+  const finalScore =
+    Math.min(
+      100,
+      Math.max(
+        longScore,
+        shortScore
+      )
+    );
 
 
   return {
@@ -847,27 +692,36 @@ async function analyzeSymbol(symbol) {
 
     symbol,
 
+    signal,
+
     mainTimeframe:
-      "15",
+      "5m",
 
     price:
-      main.close,
+      entry,
 
-    signal,
+    entry,
+
+    sl,
+
+    tp1,
+
+    tp2,
+
+    tp3,
+
+    potentialPercent:
+      Number(
+        potentialPercent.toFixed(2)
+      ),
 
     score: {
 
       long:
-        Math.min(
-          100,
-          longScore
-        ),
+        longScore,
 
       short:
-        Math.min(
-          100,
-          shortScore
-        ),
+        shortScore,
 
       final:
         finalScore
@@ -880,15 +734,6 @@ async function analyzeSymbol(symbol) {
     bearishTimeframes:
       bearish,
 
-    entry,
-    sl,
-    tp1,
-    tp2,
-    tp3,
-
-    rr:
-      "1:3",
-
     timeframes
 
   };
@@ -896,9 +741,9 @@ async function analyzeSymbol(symbol) {
 }
 
 
-// =================================================
+// =====================================================
 // TIMEFRAME ANALYSIS
-// =================================================
+// =====================================================
 
 function analyzeTimeframe(rows) {
 
@@ -919,6 +764,7 @@ function analyzeTimeframe(rows) {
       x => x.close
     );
 
+
   const volumes =
     rows.map(
       x => x.volume
@@ -926,10 +772,15 @@ function analyzeTimeframe(rows) {
 
 
   const current =
-    rows[rows.length - 1];
+    rows[
+      rows.length - 1
+    ];
+
 
   const previous =
-    rows[rows.length - 2];
+    rows[
+      rows.length - 2
+    ];
 
 
   const price =
@@ -950,16 +801,9 @@ function analyzeTimeframe(rows) {
     );
 
 
-  const previousCloses =
-    closes.slice(
-      0,
-      -1
-    );
-
-
   const previousMA20 =
     sma(
-      previousCloses,
+      closes.slice(0, -1),
       20
     );
 
@@ -968,47 +812,31 @@ function analyzeTimeframe(rows) {
    * شیب MA20
    */
 
-  let maSlopeDirection =
+  const slopePercent =
+    (
+      (ma20 - previousMA20) /
+      previousMA20
+    ) * 100;
+
+
+  let slope =
     "FLAT";
 
 
-  let maSlope =
-    0;
-
-
   if (
-    previousMA20
+    slopePercent > 0.03
   ) {
 
-    maSlope =
-      (
-        (ma20 - previousMA20) /
-        previousMA20
-      ) * 100;
-
-
-    if (
-      maSlope > 0.02
-    ) {
-
-      maSlopeDirection =
-        "UP";
-
-    }
-    else if (
-      maSlope < -0.02
-    ) {
-
-      maSlopeDirection =
-        "DOWN";
-
-    }
+    slope = "UP";
 
   }
+  else if (
+    slopePercent < -0.03
+  ) {
 
+    slope = "DOWN";
 
-  const maSlopeStrength =
-    Math.abs(maSlope);
+  }
 
 
   /*
@@ -1020,8 +848,7 @@ function analyzeTimeframe(rows) {
 
 
   if (
-    ma7 > ma20 &&
-    maSlopeDirection !== "DOWN"
+    ma7 > ma20
   ) {
 
     trend =
@@ -1029,8 +856,7 @@ function analyzeTimeframe(rows) {
 
   }
   else if (
-    ma7 < ma20 &&
-    maSlopeDirection !== "UP"
+    ma7 < ma20
   ) {
 
     trend =
@@ -1040,7 +866,7 @@ function analyzeTimeframe(rows) {
 
 
   /*
-   * MA20 Touch
+   * لمس MA20
    */
 
   const touchMA20 =
@@ -1049,45 +875,33 @@ function analyzeTimeframe(rows) {
 
 
   /*
+   * فاصله قیمت از MA20
+   */
+
+  const distancePercent =
+    Math.abs(
+      price - ma20
+    ) /
+    ma20 *
+    100;
+
+
+  /*
    * واکنش کندل
    */
 
-  const bullishCandle =
+  const bullishReaction =
     current.close >
-    current.open;
+    current.open &&
+    current.close >
+    ma20;
 
 
-  const bearishCandle =
+  const bearishReaction =
     current.close <
-    current.open;
-
-
-  let confirmation =
-    "NONE";
-
-
-  if (
-    trend === "BULLISH" &&
-    touchMA20 &&
-    bullishCandle
-  ) {
-
-    confirmation =
-      "LONG";
-
-  }
-
-
-  if (
-    trend === "BEARISH" &&
-    touchMA20 &&
-    bearishCandle
-  ) {
-
-    confirmation =
-      "SHORT";
-
-  }
+    current.open &&
+    current.close <
+    ma20;
 
 
   /*
@@ -1111,7 +925,7 @@ function analyzeTimeframe(rows) {
 
 
   /*
-   * Volume
+   * حجم
    */
 
   const volumeMA20 =
@@ -1131,71 +945,401 @@ function analyzeTimeframe(rows) {
 
 
   /*
-   * Swing
+   * جهت
    */
 
-  const swingLow =
-    findSwingLow(
-      rows
-    );
+  let direction =
+    "NONE";
 
 
-  const swingHigh =
-    findSwingHigh(
-      rows
-    );
+  if (
+    trend === "BULLISH" &&
+    slope === "UP" &&
+    touchMA20 &&
+    bullishReaction
+  ) {
+
+    direction =
+      "LONG";
+
+  }
+
+
+  if (
+    trend === "BEARISH" &&
+    slope === "DOWN" &&
+    touchMA20 &&
+    bearishReaction
+  ) {
+
+    direction =
+      "SHORT";
+
+  }
+
+
+  /*
+   * اگر FVG هم‌جهت باشد
+   * قدرت تأیید بیشتر است.
+   */
+
+  if (
+    direction === "LONG" &&
+    fvg.type === "BULLISH"
+  ) {
+
+    direction =
+      "LONG";
+
+  }
+
+
+  if (
+    direction === "SHORT" &&
+    fvg.type === "BEARISH"
+  ) {
+
+    direction =
+      "SHORT";
+
+  }
 
 
   return {
 
+    price,
+
     close:
       price,
+
+    open:
+      current.open,
+
+    high:
+      current.high,
+
+    low:
+      current.low,
 
     ma7,
 
     ma20,
 
-    maSlope,
+    slope,
 
-    maSlopeDirection,
+    slopePercent,
 
-    maSlopeStrength,
+    distancePercent,
 
     trend,
 
     touchMA20,
 
-    confirmation,
+    bullishReaction,
+
+    bearishReaction,
 
     structure,
 
     fvg,
 
-    volume:
-      currentVolume,
+    volume: {
 
-    volumeMA20,
+      current:
+        currentVolume,
 
-    volumeSpike,
+      ma20:
+        volumeMA20,
 
-    swingLow,
+      spike:
+        volumeSpike
 
-    swingHigh
+    },
+
+    direction,
+
+    swingLow:
+      findSwingLow(rows),
+
+    swingHigh:
+      findSwingHigh(rows)
 
   };
 
 }
 
 
-// =================================================
+// =====================================================
+// QUICK FILTER
+// =====================================================
+
+function quickFilter(rows) {
+
+  if (
+    !rows ||
+    rows.length < 30
+  ) {
+
+    return null;
+
+  }
+
+
+  const closes =
+    rows.map(
+      x => x.close
+    );
+
+
+  const volumes =
+    rows.map(
+      x => x.volume
+    );
+
+
+  const price =
+    closes[
+      closes.length - 1
+    ];
+
+
+  const ma20 =
+    sma(
+      closes,
+      20
+    );
+
+
+  const volumeMA20 =
+    sma(
+      volumes,
+      20
+    );
+
+
+  const distance =
+    Math.abs(
+      price - ma20
+    ) /
+    ma20;
+
+
+  /*
+   * فقط ارزهایی که
+   * نسبتاً نزدیک MA20 هستند
+   */
+
+  if (
+    distance > 0.08
+  ) {
+
+    return null;
+
+  }
+
+
+  let score = 0;
+
+
+  if (
+    distance < 0.02
+  ) {
+
+    score += 40;
+
+  }
+  else if (
+    distance < 0.05
+  ) {
+
+    score += 25;
+
+  }
+  else {
+
+    score += 10;
+
+  }
+
+
+  if (
+    volumes[
+      volumes.length - 1
+    ] >
+    volumeMA20 * 1.3
+  ) {
+
+    score += 30;
+
+  }
+
+
+  const ma7 =
+    sma(
+      closes,
+      7
+    );
+
+
+  if (
+    ma7 > ma20 ||
+    ma7 < ma20
+  ) {
+
+    score += 20;
+
+  }
+
+
+  return {
+
+    quickScore:
+      score,
+
+    price,
+
+    ma20,
+
+    distancePercent:
+      distance * 100
+
+  };
+
+}
+
+
+// =====================================================
+// SL
+// =====================================================
+
+function calculateLongSL(x) {
+
+  let sl =
+    x.swingLow;
+
+
+  if (
+    !sl ||
+    sl >= x.price
+  ) {
+
+    sl =
+      x.price * 0.97;
+
+  }
+
+
+  return sl;
+
+}
+
+
+function calculateShortSL(x) {
+
+  let sl =
+    x.swingHigh;
+
+
+  if (
+    !sl ||
+    sl <= x.price
+  ) {
+
+    sl =
+      x.price * 1.03;
+
+  }
+
+
+  return sl;
+
+}
+
+
+// =====================================================
+// SWING
+// =====================================================
+
+function findSwingLow(rows) {
+
+  const start =
+    Math.max(
+      0,
+      rows.length - 10
+    );
+
+
+  let low =
+    rows[start].low;
+
+
+  for (
+    let i = start;
+    i < rows.length;
+    i++
+  ) {
+
+    if (
+      rows[i].low < low
+    ) {
+
+      low =
+        rows[i].low;
+
+    }
+
+  }
+
+
+  return low;
+
+}
+
+
+function findSwingHigh(rows) {
+
+  const start =
+    Math.max(
+      0,
+      rows.length - 10
+    );
+
+
+  let high =
+    rows[start].high;
+
+
+  for (
+    let i = start;
+    i < rows.length;
+    i++
+  ) {
+
+    if (
+      rows[i].high > high
+    ) {
+
+      high =
+        rows[i].high;
+
+    }
+
+  }
+
+
+  return high;
+
+}
+
+
+// =====================================================
 // STRUCTURE
-// =================================================
+// =====================================================
 
 function detectStructure(closes) {
 
   if (
-    !closes ||
-    closes.length < 12
+    closes.length < 10
   ) {
 
     return "NONE";
@@ -1210,8 +1354,10 @@ function detectStructure(closes) {
   const a =
     closes[n - 7];
 
+
   const b =
     closes[n - 4];
+
 
   const c =
     closes[n - 1];
@@ -1222,7 +1368,7 @@ function detectStructure(closes) {
     b > a
   ) {
 
-    return "BULLISH";
+    return "BULLISH BOS";
 
   }
 
@@ -1232,7 +1378,7 @@ function detectStructure(closes) {
     b < a
   ) {
 
-    return "BEARISH";
+    return "BEARISH BOS";
 
   }
 
@@ -1242,9 +1388,9 @@ function detectStructure(closes) {
 }
 
 
-// =================================================
+// =====================================================
 // FVG
-// =================================================
+// =====================================================
 
 function detectFVG(rows) {
 
@@ -1252,145 +1398,107 @@ function detectFVG(rows) {
     rows.length < 3
   ) {
 
-    return "NONE";
+    return {
+      type: "NONE",
+      bottom: null,
+      top: null
+    };
 
   }
 
 
   const a =
-    rows[rows.length - 3];
+    rows[
+      rows.length - 3
+    ];
+
 
   const c =
-    rows[rows.length - 1];
+    rows[
+      rows.length - 1
+    ];
 
 
   if (
-    c.low >
-    a.high
+    c.low > a.high
   ) {
 
-    return "BULLISH";
+    return {
+
+      type:
+        "BULLISH",
+
+      bottom:
+        a.high,
+
+      top:
+        c.low
+
+    };
 
   }
 
 
   if (
-    c.high <
-    a.low
+    c.high < a.low
   ) {
 
-    return "BEARISH";
+    return {
+
+      type:
+        "BEARISH",
+
+      bottom:
+        c.high,
+
+      top:
+        a.low
+
+    };
 
   }
 
 
-  return "NONE";
+  return {
+
+    type:
+      "NONE",
+
+    bottom:
+      null,
+
+    top:
+      null
+
+  };
 
 }
 
 
-// =================================================
-// SWING LOW
-// =================================================
+// =====================================================
+// KLINE
+// =====================================================
 
-function findSwingLow(rows) {
-
-  const start =
-    Math.max(
-      0,
-      rows.length - 10
-    );
-
-
-  let low =
-    Infinity;
-
-
-  for (
-    let i = start;
-    i < rows.length;
-    i++
-  ) {
-
-    low =
-      Math.min(
-        low,
-        rows[i].low
-      );
-
-  }
-
-
-  return (
-    low === Infinity
-      ? null
-      : low
-  );
-
-}
-
-
-// =================================================
-// SWING HIGH
-// =================================================
-
-function findSwingHigh(rows) {
-
-  const start =
-    Math.max(
-      0,
-      rows.length - 10
-    );
-
-
-  let high =
-    -Infinity;
-
-
-  for (
-    let i = start;
-    i < rows.length;
-    i++
-  ) {
-
-    high =
-      Math.max(
-        high,
-        rows[i].high
-      );
-
-  }
-
-
-  return (
-    high === -Infinity
-      ? null
-      : high
-  );
-
-}
-
-
-// =================================================
-// GET KLINES
-// =================================================
-
-async function getKlines(
+async function getKline(
   symbol,
   interval,
   limit = 100
 ) {
 
+  const endpoint =
+    "/v5/market/kline" +
+    "?category=linear" +
+    "&symbol=" +
+    encodeURIComponent(symbol) +
+    "&interval=" +
+    encodeURIComponent(interval) +
+    "&limit=" +
+    limit;
+
+
   const data =
     await bybit(
-      "/v5/market/kline" +
-      "?category=linear" +
-      "&symbol=" +
-      encodeURIComponent(symbol) +
-      "&interval=" +
-      encodeURIComponent(interval) +
-      "&limit=" +
-      limit
+      endpoint
     );
 
 
@@ -1425,24 +1533,15 @@ async function getKlines(
 }
 
 
-// =================================================
-// BYBIT REQUEST
-// =================================================
+// =====================================================
+// BYBIT
+// =====================================================
 
 async function bybit(path) {
 
   const response =
     await fetch(
-      BYBIT_BASE + path,
-      {
-        method:
-          "GET",
-
-        headers: {
-          "Accept":
-            "application/json"
-        }
-      }
+      BYBIT_BASE + path
     );
 
 
@@ -1477,9 +1576,25 @@ async function bybit(path) {
 }
 
 
-// =================================================
-// SMA
-// =================================================
+// =====================================================
+// HELPERS
+// =====================================================
+
+function normalizeSymbol(symbol) {
+
+  if (!symbol) {
+    return "";
+  }
+
+  return symbol
+    .toUpperCase()
+    .replace(
+      /[^A-Z0-9]/g,
+      ""
+    );
+
+}
+
 
 function sma(
   data,
@@ -1496,63 +1611,22 @@ function sma(
   }
 
 
-  let sum = 0;
-
-
-  for (
-    let i =
-      data.length - period;
-    i < data.length;
-    i++
-  ) {
-
-    sum +=
-      Number(data[i]);
-
-  }
+  const part =
+    data.slice(
+      data.length - period
+    );
 
 
   return (
-    sum / period
+    part.reduce(
+      (a, b) => a + b,
+      0
+    ) /
+    period
   );
 
 }
 
-
-// =================================================
-// SYMBOL NORMALIZER
-// =================================================
-
-function normalizeSymbol(
-  symbol
-) {
-
-  if (!symbol) {
-    return "";
-  }
-
-
-  let s =
-    symbol
-      .trim()
-      .toUpperCase();
-
-
-  s =
-    s.replace(
-      /[^A-Z0-9]/g,
-      ""
-    );
-
-
-  return s;
-
-}
-
-
-// =================================================
-// JSON RESPONSE
-// =================================================
 
 function json(
   data,
@@ -1560,16 +1634,22 @@ function json(
 ) {
 
   return new Response(
-    JSON.stringify(data),
+    JSON.stringify(
+      data
+    ),
     {
+
       status,
 
       headers: {
-        ...cors,
 
         "Content-Type":
-          "application/json; charset=utf-8"
+          "application/json; charset=utf-8",
+
+        ...cors
+
       }
+
     }
   );
 
