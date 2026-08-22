@@ -7,10 +7,10 @@
 
 <meta
 name="viewport"
-content="width=device-width,initial-scale=1"
+content="width=device-width,initial-scale=1,maximum-scale=1"
 >
 
-<title>Bybit Futures Scanner V10</title>
+<title>Bybit Futures Scanner V11</title>
 
 <style>
 
@@ -68,7 +68,8 @@ min-width:150px
 button{
 background:#238636;
 border:0;
-font-weight:bold
+font-weight:bold;
+cursor:pointer
 }
 
 button.scan{
@@ -77,6 +78,14 @@ background:#2563eb
 
 button.stop{
 background:#b91c1c
+}
+
+button.alertStart{
+background:#238636
+}
+
+button:active{
+transform:scale(.98)
 }
 
 .status{
@@ -231,6 +240,20 @@ color:#ff5252;
 font-weight:bold
 }
 
+.alertLocked{
+color:#ffd740;
+font-weight:bold
+}
+
+.scanBadge{
+display:inline-block;
+background:#2563eb;
+padding:5px 9px;
+border-radius:8px;
+font-size:12px;
+margin-top:5px
+}
+
 @media(max-width:600px){
 
 .grid{
@@ -308,14 +331,21 @@ class="alertOn"
 </span>
 </div>
 
+<div
+id="alertHelp"
+class="status"
+>
+برای آماده‌سازی صدای هشدار، یک بار روی صفحه لمس کن.
+</div>
+
 <div class="row">
 
 <button
 id="alertButton"
-class="stop"
+class="alertStart"
 onclick="toggleAlert()"
 >
-🔕 قطع هشدار
+🔔 فعال‌سازی هشدار
 </button>
 
 </div>
@@ -384,17 +414,37 @@ class="status"
 <script>
 
 
+// =================================================
+// CONFIG
+// =================================================
+
 const API_BASE = "";
 
+const ALERT_KEY = "bybit_scanner_alert_enabled";
+
+const LAST_ALERT_KEY = "bybit_scanner_last_alert";
+
+const AUTO_SCAN = true;
+
 
 // =================================================
-// ALERT
+// ALERT STATE
 // =================================================
 
-let soundEnabled = true;
+let soundEnabled =
+localStorage.getItem(ALERT_KEY) !== "false";
 
 let audioContext = null;
 
+let audioReady = false;
+
+let lastAlertSignature =
+localStorage.getItem(LAST_ALERT_KEY) || "";
+
+
+// =================================================
+// AUDIO INITIALIZE
+// =================================================
 
 function initAudio(){
 
@@ -413,13 +463,29 @@ window.webkitAudioContext
 if(
 audioContext.state === "suspended"
 ){
+
 audioContext.resume();
-}
-
-}catch(e){}
 
 }
 
+audioReady = true;
+
+updateAlertUI();
+
+}catch(e){
+
+audioReady = false;
+
+updateAlertUI();
+
+}
+
+}
+
+
+// =================================================
+// BEEP
+// =================================================
 
 function beep(){
 
@@ -428,7 +494,26 @@ return;
 
 try{
 
+if(!audioContext){
+
 initAudio();
+
+}
+
+if(!audioContext)
+return;
+
+if(
+audioContext.state === "suspended"
+){
+
+audioContext.resume();
+
+}
+
+const now =
+audioContext.currentTime;
+
 
 const osc =
 audioContext.createOscillator();
@@ -436,11 +521,41 @@ audioContext.createOscillator();
 const gain =
 audioContext.createGain();
 
+
 osc.type = "sine";
 
-osc.frequency.value = 880;
 
-gain.gain.value = 0.15;
+osc.frequency.setValueAtTime(
+880,
+now
+);
+
+osc.frequency.setValueAtTime(
+1100,
+now + 0.18
+);
+
+osc.frequency.setValueAtTime(
+880,
+now + 0.36
+);
+
+
+gain.gain.setValueAtTime(
+0.001,
+now
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.18,
+now + 0.03
+);
+
+gain.gain.exponentialRampToValueAtTime(
+0.001,
+now + 0.45
+);
+
 
 osc.connect(gain);
 
@@ -448,31 +563,52 @@ gain.connect(
 audioContext.destination
 );
 
-osc.start();
 
-setTimeout(
-()=>{
-osc.frequency.value = 1100;
-},
-150
+osc.start(now);
+
+osc.stop(
+now + 0.46
 );
 
-setTimeout(
-()=>{
-osc.stop();
-},
-400
-);
 
-}catch(e){}
+// لرزش گوشی
+
+if(
+navigator.vibrate
+){
+
+navigator.vibrate([
+180,
+100,
+180,
+100,
+300
+]);
 
 }
 
 
-function toggleAlert(){
+audioReady = true;
 
-soundEnabled =
-!soundEnabled;
+}catch(e){
+
+console.log(
+"Audio error:",
+e
+);
+
+audioReady = false;
+
+}
+
+}
+
+
+// =================================================
+// ALERT UI
+// =================================================
+
+function updateAlertUI(){
 
 const status =
 document.getElementById(
@@ -484,19 +620,13 @@ document.getElementById(
 "alertButton"
 );
 
+const help =
+document.getElementById(
+"alertHelp"
+);
 
-if(soundEnabled){
 
-status.textContent =
-"فعال";
-
-status.className =
-"alertOn";
-
-button.textContent =
-"🔕 قطع هشدار";
-
-}else{
+if(!soundEnabled){
 
 status.textContent =
 "خاموش";
@@ -507,7 +637,177 @@ status.className =
 button.textContent =
 "🔔 فعال کردن هشدار";
 
+button.className =
+"alertStart";
+
+help.textContent =
+"هشدار صوتی خاموش است.";
+
+return;
+
 }
+
+
+status.textContent =
+"فعال";
+
+status.className =
+"alertOn";
+
+button.textContent =
+audioReady
+?"🔕 قطع هشدار"
+:"🔔 آماده‌سازی هشدار";
+
+button.className =
+audioReady
+?"stop"
+:"alertStart";
+
+
+if(audioReady){
+
+help.textContent =
+"هشدار صوتی آماده است.";
+
+}else{
+
+help.textContent =
+"یک بار روی صفحه یا دکمه فعال‌سازی لمس کن تا صدای هشدار آماده شود.";
+
+}
+
+}
+
+
+// =================================================
+// TOGGLE ALERT
+// =================================================
+
+function toggleAlert(){
+
+if(!soundEnabled){
+
+soundEnabled = true;
+
+localStorage.setItem(
+ALERT_KEY,
+"true"
+);
+
+initAudio();
+
+beep();
+
+}else{
+
+soundEnabled = false;
+
+localStorage.setItem(
+ALERT_KEY,
+"false"
+);
+
+}
+
+updateAlertUI();
+
+}
+
+
+// =================================================
+// ARM AUDIO BY USER TOUCH
+// =================================================
+
+function armAudio(){
+
+if(!soundEnabled)
+return;
+
+initAudio();
+
+}
+
+
+// =================================================
+// ALERT SIGNAL
+// =================================================
+
+function signalSignature(list){
+
+if(!list || !list.length)
+return "";
+
+return list
+.slice(0,10)
+.map(r => {
+
+return (
+(r.symbol || "") +
+"_" +
+(r.direction || "") +
+"_" +
+String(r.score || 0)
+);
+
+})
+.join("|");
+
+}
+
+
+function alertForSignals(list){
+
+if(!soundEnabled)
+return;
+
+if(!list || !list.length)
+return;
+
+
+// سیگنال فعلی
+
+const signature =
+signalSignature(list);
+
+
+// اگر همان سیگنال قبلاً هشدار داده شده
+// دوباره پشت سر هم زنگ نزن
+
+if(
+signature &&
+signature === lastAlertSignature
+){
+
+return;
+
+}
+
+
+lastAlertSignature =
+signature;
+
+
+localStorage.setItem(
+LAST_ALERT_KEY,
+signature
+);
+
+
+// هشدار
+
+beep();
+
+
+// تغییر وضعیت صفحه
+
+const status =
+document.getElementById(
+"status"
+);
+
+status.textContent =
+"🚨 هشدار! سیگنال جدید پیدا شد.";
 
 }
 
@@ -923,19 +1223,19 @@ ${r.bearishTimeframes}/3
 📈 وضعیت ۱ دقیقه
 </div>
 
-${renderTF(r.timeframes["1"])}
+${renderTF(r.timeframes?.["1"])}
 
 <div class="section">
 📈 وضعیت ۳ دقیقه
 </div>
 
-${renderTF(r.timeframes["3"])}
+${renderTF(r.timeframes?.["3"])}
 
 <div class="section">
 📈 وضعیت ۵ دقیقه
 </div>
 
-${renderTF(r.timeframes["5"])}
+${renderTF(r.timeframes?.["5"])}
 
 </div>
 
@@ -1020,27 +1320,27 @@ ${structureFA(x.structure)}
 <br>
 
 FVG:
-${fvgFA(x.fvg.type)}
+${fvgFA(x.fvg?.type)}
 
 <br>
 
 حجم فعلی:
-${num(x.volume.current)}
+${num(x.volume?.current)}
 
 <br>
 
 میانگین حجم 7:
-${num(x.volume.ma7)}
+${num(x.volume?.ma7)}
 
 <br>
 
 میانگین حجم 20:
-${num(x.volume.ma20)}
+${num(x.volume?.ma20)}
 
 <br>
 
 جهش حجم:
-${x.volume.spike?"🔥 بله":"❌ خیر"}
+${x.volume?.spike?"🔥 بله":"❌ خیر"}
 
 `;
 
@@ -1054,10 +1354,26 @@ ${x.volume.spike?"🔥 بله":"❌ خیر"}
 async function getJSON(url){
 
 const response =
-await fetch(url);
+await fetch(
+url,
+{
+cache:"no-store"
+}
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"HTTP "+response.status
+);
+
+}
+
 
 const data =
 await response.json();
+
 
 if(!data.ok){
 
@@ -1068,6 +1384,7 @@ data.detail ||
 );
 
 }
+
 
 return data;
 
@@ -1080,7 +1397,7 @@ return data;
 
 async function analyzeSymbol(){
 
-initAudio();
+armAudio();
 
 const symbol =
 document
@@ -1157,12 +1474,13 @@ status.textContent =
 
 
 // =================================================
-// SCAN
+// SCAN MARKET
 // =================================================
 
 async function scanMarket(){
 
-initAudio();
+armAudio();
+
 
 const results =
 document.getElementById(
@@ -1188,11 +1506,13 @@ results.innerHTML =
 
 <br>
 
-۲۰۰ ارز بررسی اولیه می‌شوند.
+<span class="scanBadge">
+۲۰۰ ارز بررسی اولیه
+</span>
 
-<br>
+<br><br>
 
-از بین آنها ۲۰ ارز تحلیل عمیق می‌شوند.
+از بین آن‌ها ۲۰ ارز تحلیل عمیق می‌شوند.
 
 </div>
 `;
@@ -1214,10 +1534,23 @@ const list =
 data.results || [];
 
 
+const initial =
+data.initialScanned ||
+data.totalScanned ||
+200;
+
+
+const deep =
+data.deepScanned ||
+20;
+
+
 scanInfo.innerHTML =
 `
-۲۰۰ ارز بررسی اولیه شدند.
-${data.deepScanned || 20}
+${initial}
+ارز بررسی اولیه شدند.
+<br>
+${deep}
 ارز تحلیل عمیق شدند.
 `;
 
@@ -1230,35 +1563,43 @@ results.innerHTML =
 
 🟡 فعلاً سیگنال تأییدشده‌ای پیدا نشد.
 
+<br><br>
+
+از ${deep} ارز تحلیل‌شده،
+هیچ موقعیت بالاتر از حد تأیید پیدا نشد.
+
 </div>
+`;
+
+
+// وقتی سیگنال وجود ندارد، هشدار نمی‌زنیم
+
+status.textContent =
+`
+✅ اسکن کامل شد —
+0 موقعیت برتر از ${deep}
+ارز تحلیل عمیق.
 `;
 
 }else{
 
 results.innerHTML =
 list
+.slice(0,10)
 .map(renderSignal)
 .join("");
 
 
-if(soundEnabled){
-
-beep();
-
-}
-
-}
-
-
 status.textContent =
 `
-✅ اسکن کامل شد —
-${list.length}
-موقعیت برتر از
-${data.deepScanned || 20}
-ارز تحلیل عمیق.
+🚨 ${list.length}
+موقعیت برتر پیدا شد.
 `;
 
+
+alertForSignals(list);
+
+}
 
 }catch(e){
 
@@ -1284,14 +1625,68 @@ status.textContent =
 
 
 // =================================================
-// AUTO INIT
+// AUTO SCAN AFTER REFRESH
+// =================================================
+
+function autoStart(){
+
+updateAlertUI();
+
+
+if(!AUTO_SCAN)
+return;
+
+
+setTimeout(
+()=>{
+
+scanMarket();
+
+},
+800
+);
+
+}
+
+
+// =================================================
+// USER INTERACTION
 // =================================================
 
 document.addEventListener(
 "click",
-initAudio,
-{once:true}
+function(){
+
+armAudio();
+
+},
+{
+passive:true
+}
 );
+
+
+// لمس صفحه برای آماده کردن صدا
+
+document.addEventListener(
+"touchstart",
+function(){
+
+armAudio();
+
+},
+{
+passive:true
+}
+);
+
+
+// =================================================
+// START
+// =================================================
+
+autoStart();
+
 
 </script>
 
