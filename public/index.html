@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Bybit Smart Money Radar</title>
+<title>Bybit Smart Money Scanner</title>
 
 <style>
 
@@ -13,24 +11,18 @@
   box-sizing:border-box;
 }
 
-html{
-  scroll-behavior:smooth;
-}
-
 body{
   margin:0;
   background:#080c12;
-  color:#eaf0f7;
-  font-family:
-    Tahoma,
-    Arial,
-    sans-serif;
-  line-height:1.7;
+  color:#e8edf5;
+  font-family:Tahoma,Arial,sans-serif;
+  font-size:14px;
 }
 
 button,
-input{
-  font-family:inherit;
+input,
+select{
+  font:inherit;
 }
 
 button{
@@ -38,83 +30,56 @@ button{
 }
 
 .container{
-  width:min(1100px,96%);
+  width:100%;
+  max-width:1100px;
   margin:auto;
-  padding:14px 0 60px;
+  padding:12px;
 }
 
 .header{
-  background:
-    linear-gradient(
-      135deg,
-      #111a25,
-      #0c121b
-    );
-
-  border:1px solid #1d2b3a;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:14px;
+  background:#101722;
+  border:1px solid #263244;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
 }
 
 .header h1{
-  margin:0 0 4px;
-  font-size:23px;
+  margin:0 0 8px;
+  font-size:20px;
 }
 
-.header p{
-  margin:0;
-  color:#8fa3b8;
-  font-size:13px;
+.subtitle{
+  color:#9eabbc;
+  line-height:1.8;
 }
 
 .status{
-  margin-top:12px;
-  padding:10px 12px;
+  margin-top:10px;
+  padding:9px 12px;
   border-radius:10px;
-  background:#0b1511;
-  border:1px solid #173b28;
-  color:#6ee7a2;
-  font-size:13px;
+  background:#0d2a20;
+  color:#50e39a;
 }
 
 .section{
-  background:#0d131b;
-  border:1px solid #1c2937;
+  background:#101722;
+  border:1px solid #263244;
   border-radius:16px;
-  margin-bottom:14px;
-  overflow:hidden;
-}
-
-.section-header{
-  padding:14px 15px;
-  border-bottom:1px solid #1b2734;
+  padding:14px;
+  margin-bottom:12px;
 }
 
 .section-title{
   font-size:17px;
   font-weight:bold;
+  margin-bottom:5px;
 }
 
-.section-sub{
-  color:#7f93a8;
+.section-note{
+  color:#8d9aac;
   font-size:12px;
-  margin-top:2px;
-}
-
-.section-body{
-  padding:14px;
-}
-
-/* ================================
-   MANUAL
-================================ */
-
-.manual-box{
-  background:#0a1017;
-  border:1px solid #263849;
-  border-radius:13px;
-  padding:13px;
+  margin-bottom:12px;
 }
 
 .search-row{
@@ -125,463 +90,327 @@ button{
 .search-row input{
   flex:1;
   min-width:0;
-  background:#111923;
-  color:white;
-  border:1px solid #2b3b4d;
+  background:#080c12;
+  color:#fff;
+  border:1px solid #344157;
   border-radius:10px;
-  padding:11px;
-  outline:none;
+  padding:12px;
   direction:ltr;
   text-align:left;
-}
-
-.search-row input:focus{
-  border-color:#4b8dff;
 }
 
 .btn{
   border:0;
   border-radius:10px;
-  padding:10px 15px;
-  color:white;
-  background:#1769d5;
-  font-weight:bold;
+  padding:11px 15px;
+  background:#246bfd;
+  color:#fff;
 }
 
-.btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
+.btn.secondary{
+  background:#273449;
 }
 
-.btn-secondary{
-  background:#202d3b;
+.btn.green{
+  background:#087b52;
 }
 
-.error{
-  background:#241015;
-  border:1px solid #64232d;
-  color:#ff8996;
-  padding:10px;
-  border-radius:10px;
-  margin-top:10px;
-  font-size:13px;
+.btn.red{
+  background:#8e2932;
 }
 
-.loading{
-  color:#9bb0c5;
-  padding:12px 0;
-  text-align:center;
+.btn.orange{
+  background:#8b5b12;
 }
 
-/* ================================
-   SIGNALS
-================================ */
-
-.signal-list{
-  display:flex;
-  flex-direction:column;
-  gap:9px;
+.manual-result{
+  margin-top:12px;
 }
 
-.signal-card{
-  background:#0a1017;
-  border:1px solid #223344;
-  border-radius:12px;
-  padding:12px;
-  transition:.2s;
-}
-
-.signal-card:hover{
-  border-color:#3d607e;
-}
-
-.signal-top{
+.symbol-head{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:8px;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .symbol{
+  font-size:19px;
   font-weight:bold;
   direction:ltr;
-  text-align:left;
 }
 
 .badge{
   display:inline-block;
-  border-radius:20px;
-  padding:2px 8px;
+  padding:5px 9px;
+  border-radius:8px;
   font-size:11px;
-  font-weight:bold;
+  background:#273449;
 }
 
-.badge-long{
-  background:#0c3824;
-  color:#62e6a0;
+.long{
+  color:#39e58c;
 }
 
-.badge-short{
-  background:#43141c;
-  color:#ff7e8c;
+.short{
+  color:#ff6672;
 }
 
-.badge-wait{
-  background:#332c12;
-  color:#e8cb69;
+.wait{
+  color:#ffc857;
 }
 
 .score{
-  font-size:21px;
+  font-size:28px;
   font-weight:bold;
 }
 
-.signal-meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:7px;
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:8px;
 }
 
-.meta{
-  background:#111a24;
-  border:1px solid #1e2d3c;
-  padding:3px 8px;
-  border-radius:7px;
-  font-size:11px;
-  color:#a8b8c8;
-}
-
-.open-analysis{
-  margin-top:9px;
-  width:100%;
-  background:#172536;
-  color:#d9e9f8;
-  border:1px solid #29445e;
-  border-radius:9px;
-  padding:8px;
-}
-
-/* ================================
-   RADAR
-================================ */
-
-.radar-tabs{
-  display:flex;
-  gap:7px;
-  margin-bottom:10px;
-}
-
-.radar-tab{
-  flex:1;
-  border:1px solid #263746;
-  background:#101923;
-  color:#9fb1c2;
-  border-radius:9px;
-  padding:8px 4px;
-}
-
-.radar-tab.active{
-  background:#1a2b3c;
-  color:white;
-  border-color:#3b607d;
-}
-
-.radar-card{
-  background:#0a1017;
-  border:1px solid #223344;
+.card{
+  background:#0b111a;
+  border:1px solid #263244;
   border-radius:12px;
   padding:11px;
-  margin-bottom:8px;
 }
 
-.radar-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.card-title{
+  color:#93a1b5;
+  font-size:11px;
+  margin-bottom:5px;
 }
 
-.radar-score{
+.card-value{
   font-size:18px;
   font-weight:bold;
 }
 
-/* ================================
-   DEEP ANALYSIS
-================================ */
-
-.deep{
-  margin-top:14px;
-  background:#080d13;
-  border:1px solid #263746;
-  border-radius:15px;
-  overflow:hidden;
+.clickable{
+  cursor:pointer;
+  transition:.15s;
 }
 
-.deep-head{
-  padding:14px;
-  background:#101923;
-  border-bottom:1px solid #223140;
+.clickable:hover{
+  border-color:#4d72aa;
 }
 
-.deep-symbol{
-  font-size:20px;
-  font-weight:bold;
-  direction:ltr;
-  text-align:left;
+.expand{
+  display:none;
+  margin-top:10px;
+  padding:11px;
+  border-radius:10px;
+  background:#080d14;
+  border-top:1px solid #27364b;
+  line-height:1.9;
 }
 
-.deep-price{
-  color:#a9b8c7;
-  font-size:13px;
+.expand.open{
+  display:block;
 }
 
-.deep-grid{
+.reason{
+  padding:6px 8px;
+  margin:4px 0;
+  background:#121b28;
+  border-radius:7px;
+}
+
+.reason.long{
+  border-right:3px solid #28d982;
+}
+
+.reason.short{
+  border-right:3px solid #ff5361;
+}
+
+.grid2{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(145px,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:8px;
+}
+
+@media(max-width:650px){
+  .grid2{
+    grid-template-columns:1fr;
+  }
+}
+
+.method-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:7px;
+}
+
+.method{
+  background:#0b111a;
+  border:1px solid #2a374b;
+  border-radius:10px;
+  padding:9px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.method input{
+  accent-color:#2777ff;
+}
+
+.method.active{
+  border-color:#2777ff;
+}
+
+.settings-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.signal-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.signal-item{
+  background:#0b111a;
+  border:1px solid #263244;
+  border-radius:13px;
   padding:12px;
 }
 
-.metric{
-  background:#0e151e;
-  border:1px solid #1e2c3a;
-  border-radius:10px;
-  padding:9px;
-}
-
-.metric-title{
-  color:#8295a8;
-  font-size:11px;
-}
-
-.metric-value{
-  margin-top:2px;
-  font-weight:bold;
-  font-size:15px;
-}
-
-.green{
-  color:#5ee49a;
-}
-
-.red{
-  color:#ff7584;
-}
-
-.yellow{
-  color:#e7cc69;
-}
-
-.blue{
-  color:#71aaff;
-}
-
-.gray{
-  color:#a2afbb;
-}
-
-/* ================================
-   ACCORDION
-================================ */
-
-.accordion{
-  margin:8px 12px;
-  border:1px solid #202f3e;
-  border-radius:11px;
-  overflow:hidden;
-  background:#0b1118;
-}
-
-.accordion-head{
-  padding:11px 12px;
+.signal-top{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
-  cursor:pointer;
-  background:#101923;
 }
 
-.accordion-title{
+.signal-symbol{
+  font-weight:bold;
+  font-size:16px;
+  direction:ltr;
+}
+
+.signal-score{
+  font-size:22px;
   font-weight:bold;
 }
 
-.accordion-status{
-  font-size:12px;
-  color:#7fa0ba;
+.mini-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-top:9px;
 }
 
-.arrow{
-  transition:.2s;
+@media(max-width:600px){
+  .mini-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
 }
 
-.accordion.open .arrow{
-  transform:rotate(180deg);
-}
-
-.accordion-body{
-  display:none;
-  padding:11px;
-  border-top:1px solid #1d2b38;
-}
-
-.accordion.open .accordion-body{
-  display:block;
-}
-
-/* ================================
-   DETAIL
-================================ */
-
-.detail{
-  background:#0e151e;
-  border:1px solid #1e2c39;
-  border-radius:9px;
-  padding:9px;
-  margin-bottom:7px;
-}
-
-.detail-title{
-  color:#94a8ba;
-  font-size:11px;
-}
-
-.detail-main{
-  font-weight:bold;
-  margin-top:2px;
-}
-
-.reason{
-  background:#101a23;
-  border-right:3px solid #315b7e;
-  padding:7px 9px;
-  border-radius:6px;
-  margin-top:5px;
-  font-size:12px;
-}
-
-.list{
-  margin:6px 0 0;
-  padding-right:18px;
-}
-
-.list li{
-  margin-bottom:4px;
-  color:#c0ccd7;
-  font-size:12px;
-}
-
-/* ================================
-   TABLE
-================================ */
-
-.data-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:11px;
-}
-
-.data-table th,
-.data-table td{
-  border-bottom:1px solid #1d2935;
-  padding:7px 5px;
+.mini{
+  background:#111925;
+  padding:7px;
+  border-radius:8px;
   text-align:center;
 }
 
-.data-table th{
-  color:#8194a7;
-  font-weight:normal;
+.mini small{
+  display:block;
+  color:#8795a9;
 }
 
-.data-table td{
-  color:#c9d4de;
-}
-
-/* ================================
-   STYLE CARDS
-================================ */
-
-.style-grid{
+.radar-grid{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(3,1fr);
   gap:8px;
 }
 
-.style-card{
-  background:#0d151e;
-  border:1px solid #223242;
-  border-radius:10px;
-  overflow:hidden;
+@media(max-width:700px){
+  .radar-grid{
+    grid-template-columns:1fr;
+  }
 }
 
-.style-head{
-  padding:10px;
+.radar-box{
+  background:#0b111a;
+  border:1px solid #263244;
+  border-radius:13px;
+  padding:11px;
+}
+
+.radar-title{
+  font-weight:bold;
+  margin-bottom:9px;
+}
+
+.radar-row{
+  padding:8px;
+  border-bottom:1px solid #202b3b;
   cursor:pointer;
 }
 
-.style-body{
-  display:none;
-  border-top:1px solid #20303e;
+.radar-row:last-child{
+  border-bottom:0;
+}
+
+.detail-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px solid #1c2635;
+}
+
+.detail-row:last-child{
+  border-bottom:0;
+}
+
+.ltr{
+  direction:ltr;
+  text-align:left;
+}
+
+.loading{
+  padding:20px;
+  text-align:center;
+  color:#93a1b5;
+}
+
+.error{
+  background:#35151a;
+  border:1px solid #74303a;
+  color:#ff8c95;
   padding:10px;
+  border-radius:10px;
+  margin-top:10px;
 }
 
-.style-card.open .style-body{
-  display:block;
+.success{
+  background:#102c22;
+  border:1px solid #245c48;
+  color:#64e7a7;
+  padding:10px;
+  border-radius:10px;
 }
 
-/* ================================
-   SEPARATOR
-================================ */
-
-.divider{
+.separator{
   height:1px;
-  background:#1b2733;
+  background:#273244;
   margin:12px 0;
 }
 
-.small{
-  color:#75899b;
-  font-size:11px;
-}
-
-.center{
-  text-align:center;
-}
-
-/* ================================
-   RESPONSIVE
-================================ */
-
-@media(max-width:600px){
-
-  .container{
-    width:97%;
-  }
-
-  .header h1{
-    font-size:19px;
-  }
-
-  .search-row{
-    flex-direction:column;
-  }
-
-  .btn{
-    width:100%;
-  }
-
-  .deep-grid{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
-
-  .radar-tabs{
-    flex-direction:column;
-  }
-
+.lock-note{
+  color:#ffca58;
+  font-size:12px;
+  margin-top:8px;
 }
 
 </style>
@@ -591,497 +420,529 @@ button{
 
 <div class="container">
 
-<!-- =========================================
-     HEADER
-========================================= -->
+<!-- =====================================================
+HEADER
+===================================================== -->
 
 <div class="header">
 
-  <h1>📊 اسکنر هوشمند فیوچرز Bybit</h1>
+<h1>📊 اسکنر هوشمند فیوچرز Bybit</h1>
 
-  <p>
-    تحلیل چندسبکی:
-    مووینگ میانگین، اسمارت مانی، ICT،
-    حجم، جریان سفارش و نقدینگی
-  </p>
+<div class="subtitle">
+تحلیل چندسبکی:
+مووینگ میانگین، اسمارت مانی، ICT، MACD، RSI،
+واگرایی، ایچیموکو، حجم، جریان سفارش و نقدینگی
+</div>
 
-  <div id="connectionStatus"
-       class="status">
-    ⏳ در حال بررسی اتصال...
-  </div>
+<div id="connectionStatus" class="status">
+🟡 در حال بررسی اتصال...
+</div>
 
 </div>
 
 
-<!-- =========================================
-     MANUAL SEARCH - کاملاً مستقل
-========================================= -->
+<!-- =====================================================
+MANUAL SEARCH
+===================================================== -->
 
-<section class="section">
+<div class="section">
 
-  <div class="section-header">
-
-    <div class="section-title">
-      🔎 بررسی دستی ارز
-    </div>
-
-    <div class="section-sub">
-      این بخش کاملاً مستقل از اسکن خودکار و رادار است
-    </div>
-
-  </div>
-
-  <div class="section-body">
-
-    <div class="manual-box">
-
-      <div class="search-row">
-
-        <input
-          id="manualSymbol"
-          type="text"
-          placeholder="مثلاً ALICEUSDT"
-          autocomplete="off"
-          spellcheck="false"
-        >
-
-        <button
-          id="manualButton"
-          class="btn">
-          بررسی
-        </button>
-
-      </div>
-
-      <div id="manualResult"></div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================
-     SIGNALS - مستقل
-========================================= -->
-
-<section class="section">
-
-  <div class="section-header">
-
-    <div class="section-title">
-      🚨 سیگنال‌های تأییدشده
-    </div>
-
-    <div class="section-sub">
-      فقط سیگنال‌های سخت‌گیرانه — حداقل امتیاز
-      <span id="minimumScore">75</span>
-    </div>
-
-  </div>
-
-  <div class="section-body">
-
-    <div id="signalList"
-         class="signal-list">
-
-      <div class="loading">
-        ⏳ هنوز سیگنال تأییدشده‌ای دریافت نشده...
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================
-     RADAR - مستقل
-========================================= -->
-
-<section class="section">
-
-  <div class="section-header">
-
-    <div class="section-title">
-      📡 رادار بازار
-    </div>
-
-    <div class="section-sub">
-      مستقل از بررسی دستی و سیگنال‌ها
-    </div>
-
-  </div>
-
-  <div class="section-body">
-
-    <div class="radar-tabs">
-
-      <button
-        class="radar-tab active"
-        data-radar="pump">
-        🚀 پامپ
-      </button>
-
-      <button
-        class="radar-tab"
-        data-radar="dump">
-        🔻 دامپ
-      </button>
-
-      <button
-        class="radar-tab"
-        data-radar="reversal">
-        🔄 برگشت
-      </button>
-
-    </div>
-
-    <div id="radarList">
-
-      <div class="loading">
-        ⏳ در حال دریافت رادار...
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<div class="small center">
-  داده‌ها از Bybit دریافت می‌شوند.
-  هیچ مقدار ساختگی برای لیکوئیدیشن نمایش داده نمی‌شود.
+<div class="section-title">
+🔎 بررسی دستی ارز
 </div>
+
+<div class="section-note">
+این قسمت کاملاً مستقل است و با اسکن خودکار تداخل ندارد.
+</div>
+
+<div class="search-row">
+
+<input
+id="symbolInput"
+placeholder="مثلاً BTCUSDT"
+autocomplete="off"
+>
+
+<select id="category">
+<option value="linear">فیوچرز</option>
+<option value="spot">اسپات</option>
+</select>
+
+<button
+class="btn"
+onclick="manualAnalyze()">
+بررسی
+</button>
+
+</div>
+
+<div id="manualResult"></div>
+
+</div>
+
+
+<!-- =====================================================
+SIGNAL METHODS
+===================================================== -->
+
+<div class="section">
+
+<div class="section-title">
+🎯 انتخاب روش‌های سیگنال‌گیری
+</div>
+
+<div class="section-note">
+فقط روش‌هایی که انتخاب می‌کنی در امتیاز سیگنال لحاظ می‌شوند.
+برای سیگنال سخت‌گیرانه، چند تأیید هم‌زمان لازم است.
+</div>
+
+<div class="method-grid" id="methodGrid">
+
+<label class="method active">
+<input type="checkbox" value="MA" checked>
+مووینگ میانگین
+</label>
+
+<label class="method active">
+<input type="checkbox" value="SMC" checked>
+اسمارت مانی
+</label>
+
+<label class="method active">
+<input type="checkbox" value="ICT" checked>
+ICT
+</label>
+
+<label class="method">
+<input type="checkbox" value="MACD">
+MACD
+</label>
+
+<label class="method">
+<input type="checkbox" value="RSI">
+RSI
+</label>
+
+<label class="method">
+<input type="checkbox" value="DIVERGENCE">
+واگرایی
+</label>
+
+<label class="method">
+<input type="checkbox" value="ICHIMOKU">
+ایچیموکو
+</label>
+
+<label class="method active">
+<input type="checkbox" value="VOLUME" checked>
+حجم
+</label>
+
+<label class="method active">
+<input type="checkbox" value="ORDERFLOW" checked>
+جریان سفارش
+</label>
+
+<label class="method active">
+<input type="checkbox" value="LIQUIDITY" checked>
+نقدینگی
+</label>
+
+<label class="method">
+<input type="checkbox" value="FVG">
+FVG
+</label>
+
+<label class="method">
+<input type="checkbox" value="BOS">
+BOS
+</label>
+
+<label class="method">
+<input type="checkbox" value="CHOCH">
+CHoCH
+</label>
+
+<label class="method">
+<input type="checkbox" value="ORDERBLOCK">
+Order Block
+</label>
+
+<label class="method">
+<input type="checkbox" value="SR">
+حمایت / مقاومت
+</label>
+
+<label class="method">
+<input type="checkbox" value="OI">
+OI
+</label>
+
+<label class="method">
+<input type="checkbox" value="FUNDING">
+Funding
+</label>
+
+</div>
+
+<div class="settings-actions">
+
+<button class="btn green" onclick="selectRecommended()">
+⭐ حالت پیشنهادی
+</button>
+
+<button class="btn secondary" onclick="selectAllMethods()">
+انتخاب همه
+</button>
+
+<button class="btn red" onclick="clearMethods()">
+پاک کردن
+</button>
+
+</div>
+
+<div class="separator"></div>
+
+<div class="grid2">
+
+<div class="card clickable" onclick="toggleBox('strictInfo')">
+
+<div class="card-title">
+🔒 سخت‌گیری سیگنال
+</div>
+
+<div class="card-value">
+حداقل امتیاز 75
+</div>
+
+<div id="strictInfo" class="expand">
+
+<b>سیگنال سخت‌گیرانه:</b>
+
+<br>
+
+سیگنال فقط زمانی صادر می‌شود که امتیاز به حداقل
+۷۵ برسد و جهت LONG یا SHORT برتری مشخص داشته باشد.
+
+<br><br>
+
+در حالت چندروشی، تأییدهای مستقل وزن بیشتری می‌گیرند.
+
+<br><br>
+
+یعنی صرفاً لمس یک MA یا یک کندل به‌تنهایی نباید سیگنال نهایی ایجاد کند.
+
+</div>
+
+</div>
+
+<div class="card clickable" onclick="toggleBox('qualityInfo')">
+
+<div class="card-title">
+🎯 کیفیت سیگنال
+</div>
+
+<div class="card-value">
+چند تأییدی
+</div>
+
+<div id="qualityInfo" class="expand">
+
+سیگنال با ترکیب موارد انتخاب‌شده بررسی می‌شود:
+
+<br>
+MA + ساختار بازار + حجم + نقدینگی + Order Flow
+و در صورت انتخاب کاربر MACD، RSI، واگرایی و Ichimoku.
+
+<br><br>
+
+هرچه تأییدهای مستقل بیشتری هم‌جهت باشند،
+کیفیت Setup بالاتر می‌رود.
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+AUTOMATIC SIGNALS
+===================================================== -->
+
+<div class="section">
+
+<div class="section-title">
+🚨 سیگنال‌های تأییدشده
+</div>
+
+<div class="section-note">
+این بخش مستقل از بررسی دستی است.
+برای مطالعه، نتایج تا زمانی که خودت Refresh نکنی باقی می‌مانند.
+</div>
+
+<button class="btn" onclick="loadSignals()">
+🔄 دریافت سیگنال‌ها
+</button>
+
+<div id="signals" class="signal-list" style="margin-top:10px">
+<div class="loading">
+برای دریافت سیگنال‌ها روی دکمه بالا بزن.
+</div>
+</div>
+
+</div>
+
+
+<!-- =====================================================
+RADAR
+===================================================== -->
+
+<div class="section">
+
+<div class="section-title">
+📡 رادار بازار
+</div>
+
+<div class="section-note">
+رادار مستقل است و روی بررسی دستی یا سیگنال‌ها اثر ندارد.
+</div>
+
+<div class="radar-grid">
+
+<div class="radar-box">
+
+<div class="radar-title">
+🚀 پامپ
+</div>
+
+<div id="pumpRadar">
+برای دریافت رادار، دکمه زیر را بزن.
+</div>
+
+</div>
+
+<div class="radar-box">
+
+<div class="radar-title">
+🔻 دامپ
+</div>
+
+<div id="dumpRadar">
+برای دریافت رادار، دکمه زیر را بزن.
+</div>
+
+</div>
+
+<div class="radar-box">
+
+<div class="radar-title">
+🔄 برگشت
+</div>
+
+<div id="reversalRadar">
+برای دریافت رادار، دکمه زیر را بزن.
+</div>
+
+</div>
+
+</div>
+
+<button
+class="btn orange"
+style="margin-top:10px"
+onclick="loadRadar()">
+📡 دریافت رادار
+</button>
+
+</div>
+
+
+<!-- =====================================================
+GLOBAL MESSAGE
+===================================================== -->
+
+<div id="globalMessage"></div>
 
 </div>
 
 
 <script>
 
-/* =========================================================
-   GLOBAL STATE
-========================================================= */
+/* =====================================================
+STATE
+===================================================== */
 
-const state = {
+let signalData=[];
+let radarData=null;
 
-  scanOffset:0,
-
-  radarOffset:0,
-
-  currentRadar:"pump",
-
-  scanBusy:false,
-
-  radarBusy:false,
-
-  manualBusy:false,
-
-  currentDeep:null
-
-};
+let currentManual=null;
 
 
-/* =========================================================
-   SAFE API FETCH
-========================================================= */
+/* =====================================================
+HELPERS
+===================================================== */
 
-async function apiFetch(
-  url,
-  options={},
-  retries=2
-){
+function esc(v){
 
-  let lastError=null;
-
-  for(
-    let attempt=0;
-    attempt<=retries;
-    attempt++
-  ){
-
-    try{
-
-      const response=
-        await fetch(
-          url,
-          {
-            ...options,
-
-            cache:"no-store",
-
-            headers:{
-              "Accept":
-                "application/json",
-              ...(options.headers||{})
-            }
-          }
-        );
-
-      const text=
-        await response.text();
-
-      const contentType=
-        response.headers.get(
-          "content-type"
-        ) || "";
-
-      /*
-       * مهم:
-       * اگر Worker به جای JSON،
-       * index.html برگرداند
-       * اینجا گیر می‌کنیم و
-       * دیگر JSON.parse روی HTML
-       * انجام نمی‌دهیم.
-       */
-
-      if(
-        !contentType
-          .toLowerCase()
-          .includes("application/json")
-      ){
-
-        throw new Error(
-          "Worker به‌جای JSON پاسخ HTML ارسال کرد"
-        );
-      }
-
-      let data;
-
-      try{
-
-        data=
-          JSON.parse(text);
-
-      }catch(e){
-
-        throw new Error(
-          "پاسخ Worker JSON معتبر نیست"
-        );
-      }
-
-      if(
-        !response.ok ||
-        data.ok===false
-      ){
-
-        throw new Error(
-          data.error ||
-          `HTTP ${response.status}`
-        );
-      }
-
-      return data;
-
-    }catch(error){
-
-      lastError=error;
-
-      if(
-        attempt<retries
-      ){
-
-        await sleep(
-          1000*(attempt+1)
-        );
-
-      }
-
-    }
-
-  }
-
-  throw lastError ||
-    new Error("خطای ناشناخته");
+  return String(v ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
 
-/* =========================================================
-   HELPERS
-========================================================= */
+function num(v,d=0){
 
-function sleep(ms){
+  const x=Number(v);
 
-  return new Promise(
-    resolve=>setTimeout(
-      resolve,
-      ms
-    )
-  );
-
+  return Number.isFinite(x)?x:d;
 }
 
 
-function esc(value){
+function fmt(v,d=2){
 
-  return String(
-    value ?? ""
-  )
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+  const x=num(v);
 
-}
-
-
-function num(
-  value,
-  digits=2
-){
-
-  const n=
-    Number(value);
-
-  if(
-    !Number.isFinite(n)
-  ){
-    return "-";
-  }
-
-  return n.toLocaleString(
+  return x.toLocaleString(
     "en-US",
     {
-      maximumFractionDigits:digits
+      maximumFractionDigits:d
     }
   );
-
 }
 
 
-function pct(
-  value,
-  digits=2
-){
+function pct(v){
 
-  const n=
-    Number(value);
+  return `${fmt(v,2)}%`;
+}
 
-  if(
-    !Number.isFinite(n)
-  ){
+
+function price(v){
+
+  if(!Number.isFinite(Number(v))){
     return "-";
   }
 
-  return (
-    n>0 ? "+" : ""
-  )+
-  n.toFixed(digits)+
-  "%";
-
+  return Number(v).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:8
+    }
+  );
 }
 
 
-function directionText(
-  direction
-){
+function directionFa(d){
 
-  if(
-    direction==="LONG"
-  ){
-    return `
-      <span class="badge badge-long">
-        🟢 صعودی / خرید
-      </span>
-    `;
+  if(d==="LONG"){
+    return "🟢 صعودی";
   }
 
-  if(
-    direction==="SHORT"
-  ){
-    return `
-      <span class="badge badge-short">
-        🔴 نزولی / فروش
-      </span>
-    `;
+  if(d==="SHORT"){
+    return "🔴 نزولی";
   }
 
-  return `
-    <span class="badge badge-wait">
-      🟡 انتظار
-    </span>
-  `;
+  return "🟡 انتظار";
+}
+
+
+function signalLevelFa(x){
+
+  if(x==="VERY_STRONG"){
+    return "🔥 بسیار قوی";
+  }
+
+  if(x==="CONFIRMED"){
+    return "✅ تأییدشده";
+  }
+
+  if(x==="WATCH"){
+    return "👀 تحت نظر";
+  }
+
+  return "⏳ بدون سیگنال";
+}
+
+
+function safeJsonText(data){
+
+  try{
+    return JSON.stringify(data);
+  }catch(e){
+    return "";
+  }
 
 }
 
 
-function statusText(
-  value
-){
+/* =====================================================
+API
+===================================================== */
 
-  const map={
+async function api(path){
 
-    BULLISH:"صعودی",
+  const r=await fetch(path,{
+    cache:"no-store",
+    headers:{
+      "Accept":"application/json"
+    }
+  });
 
-    BEARISH:"نزولی",
+  const text=await r.text();
 
-    RANGE:"رنج",
+  if(!text){
 
-    ACTIVE:"فعال",
+    throw new Error(
+      "پاسخ خالی از Worker دریافت شد."
+    );
+  }
 
-    TRANSITION:"در حال تغییر",
+  let data;
 
-    UP:"صعودی",
+  try{
 
-    DOWN:"نزولی",
+    data=JSON.parse(text);
 
-    FLAT:"خنثی",
+  }catch(e){
 
-    NONE:"ندارد",
+    if(
+      text.trim().startsWith("<")
+    ){
 
-    LONG:"صعودی / خرید",
+      throw new Error(
+        "Worker به‌جای JSON، صفحه HTML برگرداند. مسیر Worker یا تنظیم Assets باید بررسی شود."
+      );
 
-    SHORT:"نزولی / فروش",
+    }
 
-    NORMAL:"عادی",
+    throw new Error(
+      "پاسخ Worker معتبر نیست."
+    );
+  }
 
-    PUMP:"پامپ",
+  if(!r.ok || data.ok===false){
 
-    DUMP:"دامپ",
+    throw new Error(
+      data.error ||
+      `خطای HTTP ${r.status}`
+    );
+  }
 
-    VERY_STRONG:"بسیار قوی",
-
-    CONFIRMED:"تأییدشده",
-
-    WATCH:"مراقبت",
-
-    WAIT:"انتظار"
-
-  };
-
-  return map[value] ||
-    value ||
-    "-";
-
+  return data;
 }
 
 
-function signalClass(
-  direction
-){
+/* =====================================================
+CONNECTION
+===================================================== */
 
-  if(
-    direction==="LONG"
-  ) return "green";
-
-  if(
-    direction==="SHORT"
-  ) return "red";
-
-  return "yellow";
-
-}
-
-
-/* =========================================================
-   CONNECTION
-========================================================= */
-
-async function checkHealth(){
+async function checkConnection(){
 
   const el=
     document.getElementById(
@@ -1090,159 +951,219 @@ async function checkHealth(){
 
   try{
 
-    const data=
-      await apiFetch(
-        "/api/health"
-      );
+    const d=
+      await api("/api/health");
+
+    el.className="status";
 
     el.innerHTML=
-      `🟢 اتصال برقرار است —
-       حداقل امتیاز سیگنال:
-       <b>${esc(data.minimumSignalScore)}</b>
-       — اسکن چرخشی فعال`;
-
-    document.getElementById(
-      "minimumScore"
-    ).textContent=
-      data.minimumSignalScore || 75;
+      `🟢 اتصال برقرار است — حداقل امتیاز سیگنال: ${d.minimumSignalScore} — اسکن چرخشی فعال`;
 
   }catch(e){
 
+    el.className="error";
+
     el.innerHTML=
-      `🔴 اتصال Worker مشکل دارد —
-       ${esc(e.message)}`;
-
+      `❌ خطا در اتصال به Worker<br>${esc(e.message)}`;
   }
-
 }
 
 
-/* =========================================================
-   MANUAL ANALYSIS
-========================================================= */
+/* =====================================================
+METHODS
+===================================================== */
+
+function selectedMethods(){
+
+  return [
+    ...document.querySelectorAll(
+      "#methodGrid input:checked"
+    )
+  ].map(x=>x.value);
+}
+
+
+function updateMethodVisual(){
+
+  document
+    .querySelectorAll(
+      "#methodGrid .method"
+    )
+    .forEach(label=>{
+
+      const input=
+        label.querySelector("input");
+
+      label.classList.toggle(
+        "active",
+        input.checked
+      );
+
+    });
+}
+
+
+document
+  .querySelectorAll(
+    "#methodGrid input"
+  )
+  .forEach(x=>{
+
+    x.addEventListener(
+      "change",
+      updateMethodVisual
+    );
+
+  });
+
+
+function selectRecommended(){
+
+  const recommended=[
+    "MA",
+    "SMC",
+    "ICT",
+    "VOLUME",
+    "ORDERFLOW",
+    "LIQUIDITY",
+    "FVG",
+    "BOS",
+    "CHOCH",
+    "ORDERBLOCK",
+    "SR",
+    "OI",
+    "FUNDING"
+  ];
+
+  document
+    .querySelectorAll(
+      "#methodGrid input"
+    )
+    .forEach(x=>{
+      x.checked=
+        recommended.includes(
+          x.value
+        );
+    });
+
+  updateMethodVisual();
+}
+
+
+function selectAllMethods(){
+
+  document
+    .querySelectorAll(
+      "#methodGrid input"
+    )
+    .forEach(x=>{
+      x.checked=true;
+    });
+
+  updateMethodVisual();
+}
+
+
+function clearMethods(){
+
+  document
+    .querySelectorAll(
+      "#methodGrid input"
+    )
+    .forEach(x=>{
+      x.checked=false;
+    });
+
+  updateMethodVisual();
+}
+
+
+/* =====================================================
+EXPAND
+===================================================== */
+
+function toggleBox(id){
+
+  const el=
+    document.getElementById(id);
+
+  if(el){
+    el.classList.toggle("open");
+  }
+}
+
+
+/* =====================================================
+MANUAL ANALYSIS
+===================================================== */
 
 async function manualAnalyze(){
 
-  if(
-    state.manualBusy
-  ) return;
-
   const input=
-    document.getElementById(
-      "manualSymbol"
-    );
+    document
+      .getElementById("symbolInput")
+      .value
+      .trim();
 
-  const result=
-    document.getElementById(
-      "manualResult"
-    );
+  const category=
+    document
+      .getElementById("category")
+      .value;
 
-  const symbol=
-    input.value.trim().toUpperCase();
+  const box=
+    document
+      .getElementById("manualResult");
 
-  if(!symbol){
+  if(!input){
 
-    result.innerHTML=
+    box.innerHTML=
       `<div class="error">
-        ❌ لطفاً نماد ارز را وارد کن.
+      لطفاً نماد ارز را وارد کن.
       </div>`;
 
     return;
   }
 
-  state.manualBusy=true;
-
-  const button=
-    document.getElementById(
-      "manualButton"
-    );
-
-  button.disabled=true;
-
-  /*
-   * فقط manualResult تغییر می‌کند.
-   * سیگنال و رادار دست‌نخورده باقی می‌مانند.
-   */
-
-  result.innerHTML=
+  box.innerHTML=
     `<div class="loading">
-      ⏳ در حال تحلیل عمیق ${esc(symbol)} ...
-      <br>
-      چند تایم‌فریم، MA، SMC، ICT،
-      حجم، Order Flow و نقدینگی در حال بررسی است.
+    ⏳ در حال تحلیل عمیق ${esc(input)}...
     </div>`;
 
   try{
 
-    const data=
-      await apiFetch(
-        `/api/analyze?symbol=${encodeURIComponent(symbol)}&category=linear`
+    const d=
+      await api(
+        `/api/analyze?symbol=${encodeURIComponent(input)}&category=${encodeURIComponent(category)}`
       );
 
-    result.innerHTML=
-      renderDeepAnalysis(
-        data,
-        true
-      );
+    currentManual=d;
 
-    /*
-     * اسکرول فقط به تحلیل دستی
-     */
-
-    setTimeout(()=>{
-
-      result.scrollIntoView({
-        behavior:"smooth",
-        block:"start"
-      });
-
-    },100);
+    renderManual(d);
 
   }catch(e){
 
-    result.innerHTML=
+    box.innerHTML=
       `<div class="error">
-        ❌ خطا در بررسی ${esc(symbol)}
-        <br>
-        ${esc(e.message)}
-        <br><br>
-        <span class="small">
-        اگر مشکل موقت Bybit یا Worker باشد،
-        دوباره بررسی را بزن.
-        </span>
+      ❌ خطا در تحلیل<br>
+      ${esc(e.message)}
       </div>`;
-
-  }finally{
-
-    state.manualBusy=false;
-
-    button.disabled=false;
-
   }
-
 }
 
 
-/* =========================================================
-   DEEP ANALYSIS RENDER
-========================================================= */
+/* =====================================================
+MANUAL RENDER
+===================================================== */
 
-function renderDeepAnalysis(
-  d,
-  manual=false
-){
+function renderManual(d){
 
-  const direction=
-    d.direction || "WAIT";
+  const box=
+    document.getElementById(
+      "manualResult"
+    );
 
-  const score=
-    Number(d.score)||0;
-
-  const styles=
-    d.styles || {};
-
-  const movement=
-    d.movement || {};
+  const t1=
+    d.timeframes?.["1"] || {};
 
   const market=
     d.market || {};
@@ -1250,2775 +1171,1494 @@ function renderDeepAnalysis(
   const fp=
     d.footprint || {};
 
-  const walls=
+  const wall=
     d.walls || {};
 
-  const sr=
-    d.supportResistance || {};
+  const styles=
+    d.styles || {};
 
-  const tf=
-    d.timeframes || {};
+  box.innerHTML=`
 
-  const converted=
-    d.convertedMA1m || {};
+  <div class="separator"></div>
 
-  const reversal=
-    d.reversal || {};
+  <div class="symbol-head">
 
-  const title=
-    manual
-      ? "📌 تحلیل دستی عمیق"
-      : "🔬 تحلیل عمیق";
-
-  let html=`
-
-  <div class="deep">
-
-    <div class="deep-head">
-
-      <div class="deep-symbol">
+    <div>
+      <div class="symbol">
         ${esc(d.symbol)}
       </div>
 
-      <div>
-        ${directionText(direction)}
-        <span class="score">
-          ${score}/100
-        </span>
-      </div>
-
-      <div class="deep-price">
-        قیمت:
-        ${num(d.price,8)}
-      </div>
-
+      <span class="badge">
+        ${d.category==="linear"?"فیوچرز":"اسپات"}
+      </span>
     </div>
 
-
-    <!-- خلاصه -->
-
-    <div class="deep-grid">
-
-      <div class="metric">
-
-        <div class="metric-title">
-          وضعیت نهایی
-        </div>
-
-        <div class="metric-value ${signalClass(direction)}">
-          ${statusText(direction)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          امتیاز خرید
-        </div>
-
-        <div class="metric-value green">
-          ${num(d.longScore,0)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          امتیاز فروش
-        </div>
-
-        <div class="metric-value red">
-          ${num(d.shortScore,0)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          سطح سیگنال
-        </div>
-
-        <div class="metric-value">
-          ${statusText(d.signalLevel)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          پامپ
-        </div>
-
-        <div class="metric-value">
-          ${num(d.pumpScore,0)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          دامپ
-        </div>
-
-        <div class="metric-value">
-          ${num(d.dumpScore,0)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- سبک های معاملاتی -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          📚 سبک‌های معاملاتی
-        </div>
-
-        <span class="arrow">
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderStyles(
-          d,
-          styles
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- مووینگ -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          📈 مووینگ میانگین — MA
-        </div>
-
-        <span>
-          ${statusText(
-            tf["1"]?.trend
-          )}
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderMA(
-          tf,
-          converted
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- SMART MONEY -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          🧠 اسمارت مانی — Smart Money
-        </div>
-
-        <span>
-          ${statusText(
-            tf["1"]?.trend
-          )}
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderSMC(
-          tf["1"]
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- ICT -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          🎯 ICT
-        </div>
-
-        <span>
-          ${styles.ICT || 50}/100
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderICT(
-          tf["1"]
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- VOLUME -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          📊 حجم — Volume
-        </div>
-
-        <span>
-          ${num(
-            tf["1"]?.volume?.ratio20,
-            2
-          )}x
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderVolume(
-          tf["1"]
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- ORDER FLOW -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          🔄 جریان سفارش — Order Flow
-        </div>
-
-        <span>
-          ${num(
-            fp.deltaPercent,
-            1
-          )}%
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderOrderFlow(fp)}
-
-      </div>
-
-    </div>
-
-
-    <!-- LIQUIDITY -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          💧 نقدینگی و دیوارها
-        </div>
-
-        <span>
-          Buy / Sell Wall
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderLiquidity(
-          walls,
-          sr
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- OI FUNDING -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          📉 OI و Funding
-        </div>
-
-        <span>
-          Futures
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderMarket(
-          market
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- PUMP DUMP -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          🚨 پامپ / دامپ / برگشت
-        </div>
-
-        <span>
-          ${statusText(
-            d.pumpDumpStatus
-          )}
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderMovement(
-          d
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- TIMEFRAMES -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          ⏱ تحلیل تایم‌فریم‌ها
-        </div>
-
-        <span>
-          1m → 1h
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderTimeframes(
-          tf
-        )}
-
-      </div>
-
-    </div>
-
-
-    <!-- REASONS -->
-
-    <div class="accordion">
-
-      <div
-        class="accordion-head"
-        onclick="toggleAccordion(this)"
-      >
-
-        <div>
-          📝 دلایل امتیاز
-        </div>
-
-        <span>
-          ${(
-            d.reasons||[]
-          ).length}
-          دلیل
-          ▼
-        </span>
-
-      </div>
-
-      <div class="accordion-body">
-
-        ${renderReasons(
-          d.reasons
-        )}
-
-      </div>
-
+    <div class="${d.direction==="LONG"?"long":d.direction==="SHORT"?"short":"wait"}">
+      ${directionFa(d.direction)}
     </div>
 
   </div>
 
-  `;
+  <div class="cards" style="margin-top:10px">
 
-  return html;
-
-}
-
-
-/* =========================================================
-   STYLES
-========================================================= */
-
-function renderStyles(
-  d,
-  styles
-){
-
-  const items=[
-
-    [
-      "🧠 اسمارت مانی",
-      "SMC",
-      styles.SMC,
-      "تحلیل ساختار بازار، نقدینگی، BOS، CHoCH، Hunt و Order Block."
-    ],
-
-    [
-      "🎯 ICT",
-      "ICT",
-      styles.ICT,
-      "تحلیل FVG، نقدینگی، ساختار و رفتار قیمت."
-    ],
-
-    [
-      "📈 مووینگ میانگین",
-      "MA",
-      styles.MA,
-      "تحلیل MA7، MA20، شیب، برخورد، شکست و تأیید حجم."
-    ],
-
-    [
-      "📊 حجم",
-      "Volume",
-      styles.Volume,
-      "بررسی Volume Spike و نسبت حجم به میانگین."
-    ],
-
-    [
-      "🕯 کندل",
-      "Candles",
-      styles.Candles,
-      "تحلیل Hammer، Shooting Star، Engulfing و Doji."
-    ],
-
-    [
-      "🔄 جریان سفارش",
-      "OrderFlow",
-      styles.OrderFlow,
-      "بررسی Buy/Sell Volume و Delta معاملات اخیر."
-    ],
-
-    [
-      "💧 نقدینگی",
-      "Liquidity",
-      styles.Liquidity,
-      "بررسی Buy Wall و Sell Wall نزدیک قیمت."
-    ]
-
-  ];
-
-  return `
-
-  <div class="style-grid">
-
-    ${items.map(
-      x=>`
-
-      <div
-        class="style-card"
-        onclick="toggleStyle(this)"
-      >
-
-        <div class="style-head">
-
-          <b>
-            ${x[0]}
-          </b>
-
-          <div class="small">
-            امتیاز ${num(x[2],0)}/100
-            —
-            ${styleStatus(x[2])}
-            ▼
-          </div>
-
-        </div>
-
-        <div class="style-body">
-
-          <div class="detail">
-
-            <div class="detail-title">
-              وضعیت
-            </div>
-
-            <div class="detail-main">
-              ${styleStatus(x[2])}
-            </div>
-
-          </div>
-
-          <div class="detail">
-
-            <div class="detail-title">
-              این سبک چه چیزی را بررسی می‌کند؟
-            </div>
-
-            <div>
-              ${x[3]}
-            </div>
-
-          </div>
-
-          <div class="small">
-            برای جزئیات دقیق، بخش‌های اختصاصی
-            تحلیل عمیق را نیز باز کن.
-          </div>
-
-        </div>
-
+    <div class="card">
+      <div class="card-title">قیمت</div>
+      <div class="card-value ltr">
+        ${price(d.price)}
       </div>
+    </div>
 
-      `
+    <div class="card">
+      <div class="card-title">امتیاز</div>
+      <div class="score">
+        ${fmt(d.score,0)}/100
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">وضعیت</div>
+      <div class="card-value">
+        ${signalLevelFa(d.signalLevel)}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">پامپ / دامپ</div>
+      <div class="card-value">
+        ${fmt(d.pumpScore,0)} / ${fmt(d.dumpScore,0)}
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- METHODS -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    🧠 سبک‌های معاملاتی
+  </div>
+
+  <div class="cards">
+
+    ${styleCard(
+      "MA",
+      "📈 مووینگ میانگین",
+      styles.MA,
+      getMAInfo(d)
+    )}
+
+    ${styleCard(
+      "SMC",
+      "🧠 اسمارت مانی",
+      styles.SMC,
+      getSMCInfo(d)
+    )}
+
+    ${styleCard(
+      "ICT",
+      "🎯 ICT",
+      styles.ICT,
+      getICTInfo(d)
+    )}
+
+    ${styleCard(
+      "VOLUME",
+      "📊 حجم",
+      styles.Volume,
+      getVolumeInfo(d)
+    )}
+
+    ${styleCard(
+      "ORDERFLOW",
+      "⚡ جریان سفارش",
+      styles.OrderFlow,
+      getOrderFlowInfo(d)
+    )}
+
+    ${styleCard(
+      "LIQUIDITY",
+      "💧 نقدینگی",
+      styles.Liquidity,
+      getLiquidityInfo(d)
+    )}
+
+  </div>
+
+
+  <!-- MARKET -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    📊 اطلاعات بازار
+  </div>
+
+  <div class="cards">
+
+    ${simpleCard(
+      "OI",
+      "Open Interest",
+      market.openInterest
+        ? fmt(market.openInterest,2)
+        : "-"
+    )}
+
+    ${simpleCard(
+      "Funding",
+      "فاندینگ",
+      market.fundingRate!==null &&
+      market.fundingRate!==undefined
+        ? pct(market.fundingRate*100)
+        : "-"
+    )}
+
+    ${simpleCard(
+      "تغییر 24ساعت",
+      "تغییر قیمت",
+      pct(market.change24h)
+    )}
+
+    ${simpleCard(
+      "Order Flow",
+      "Delta",
+      fp.error
+        ? "خطا"
+        : pct(fp.deltaPercent)
+    )}
+
+  </div>
+
+
+  <!-- STRUCTURE -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    🧱 ساختار بازار
+  </div>
+
+  <div class="cards">
+
+    ${detailCard(
+      "BOS / شکست ساختار",
+      faStructure(
+        t1.bos
+      )
+    )}
+
+    ${detailCard(
+      "CHoCH / تغییر شخصیت",
+      faStructure(
+        t1.choch
+      )
+    )}
+
+    ${detailCard(
+      "Hunt / شکار نقدینگی",
+      t1.hunt?.confirmed
+        ? t1.hunt.side==="LONG"
+          ? "🟢 شکار نقدینگی فروشندگان"
+          : "🔴 شکار نقدینگی خریداران"
+        : "⚪ مشاهده نشد"
+    )}
+
+    ${detailCard(
+      "FVG",
+      t1.fvg?.type==="BULLISH"
+        ? "🟢 شکاف ارزش منصفانه صعودی"
+        : t1.fvg?.type==="BEARISH"
+          ? "🔴 شکاف ارزش منصفانه نزولی"
+          : "⚪ FVG مشاهده نشد"
+    )}
+
+  </div>
+
+
+  <!-- CANDLE -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    🕯 تحلیل کندل
+  </div>
+
+  ${clickDetail(
+    "candleDetails",
+    "تحلیل کامل کندل",
+    `
+    <div class="detail-row">
+      <span>نوع کندل</span>
+      <b>${candleFa(t1.candle)}</b>
+    </div>
+
+    <div class="detail-row">
+      <span>بدنه</span>
+      <b>${fmt(t1.candleDetails?.bodyRatio*100,2)}%</b>
+    </div>
+
+    <div class="detail-row">
+      <span>سایه بالا</span>
+      <b>${price(t1.candleDetails?.upperWick)}</b>
+    </div>
+
+    <div class="detail-row">
+      <span>سایه پایین</span>
+      <b>${price(t1.candleDetails?.lowerWick)}</b>
+    </div>
+    `
+  )}
+
+
+  <!-- WALLS -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    🧱 حمایت، مقاومت و دیوار نقدینگی
+  </div>
+
+  <div class="cards">
+
+    ${detailCard(
+      "Buy Wall",
+      wall.buy
+        ? `${price(wall.buy.price)} — ${fmt(wall.buyStrength,0)}/100`
+        : "مشاهده نشد"
+    )}
+
+    ${detailCard(
+      "Sell Wall",
+      wall.sell
+        ? `${price(wall.sell.price)} — ${fmt(wall.sellStrength,0)}/100`
+        : "مشاهده نشد"
+    )}
+
+    ${detailCard(
+      "حمایت نزدیک",
+      d.supportResistance?.nearestSupport
+        ? price(
+            d.supportResistance.nearestSupport.price
+          )
+        : "-"
+    )}
+
+    ${detailCard(
+      "مقاومت نزدیک",
+      d.supportResistance?.nearestResistance
+        ? price(
+            d.supportResistance.nearestResistance.price
+          )
+        : "-"
+    )}
+
+  </div>
+
+
+  <!-- REASONS -->
+
+  <div class="separator"></div>
+
+  ${clickDetail(
+    "reasons",
+    "📋 دلایل امتیاز نهایی",
+    reasonsHTML(d.reasons)
+  )}
+
+
+  <!-- TIMEFRAMES -->
+
+  <div class="separator"></div>
+
+  <div class="section-title">
+    ⏱ تحلیل تایم‌فریم‌ها
+  </div>
+
+  <div class="cards">
+
+    ${Object.entries(
+      d.timeframes || {}
+    ).map(
+      ([key,x])=>
+        timeframeCard(
+          key,
+          x
+        )
     ).join("")}
 
   </div>
 
+
+  <!-- CONVERTED MA -->
+
+  <div class="separator"></div>
+
+  ${clickDetail(
+    "converted",
+    "🔄 MAهای تبدیل‌شده به 1 دقیقه",
+    convertedHTML(
+      d.convertedMA1m
+    )
+  )}
+
+
+  <!-- REVERSAL -->
+
+  <div class="separator"></div>
+
+  ${clickDetail(
+    "reversal",
+    "🔄 تحلیل احتمال برگشت",
+    `
+    <div class="detail-row">
+      <span>برگشت بعد از پامپ</span>
+      <b>${fmt(d.reversal?.pumpScore,0)}/100</b>
+    </div>
+
+    <div class="detail-row">
+      <span>برگشت بعد از دامپ</span>
+      <b>${fmt(d.reversal?.dumpScore,0)}/100</b>
+    </div>
+
+    <br>
+
+    ${reasonsHTML(
+      d.reversal?.pumpReasons || []
+    )}
+
+    ${reasonsHTML(
+      d.reversal?.dumpReasons || []
+    )}
+    `
+  )}
+
   `;
-
 }
 
 
-function styleStatus(
-  score
+/* =====================================================
+STYLE CARDS
+===================================================== */
+
+function styleCard(
+  id,
+  title,
+  score,
+  info
 ){
-
-  score=
-    Number(score)||0;
-
-  if(score>=75)
-    return "قوی";
-
-  if(score>=60)
-    return "نسبتاً قوی";
-
-  return "خنثی";
-
-}
-
-
-/* =========================================================
-   MA
-========================================================= */
-
-function renderMA(
-  tf,
-  converted
-){
-
-  const one=
-    tf["1"] || {};
-
-  let rows="";
-
-  for(
-    const key of
-    ["1","3","5","15","60"]
-  ){
-
-    const x=
-      tf[key];
-
-    if(!x || x.error)
-      continue;
-
-    rows+=`
-
-      <tr>
-
-        <td>
-          ${key==="60"
-            ? "1 ساعت"
-            : key+" دقیقه"}
-        </td>
-
-        <td>
-          ${num(x.ma7,8)}
-        </td>
-
-        <td>
-          ${num(x.ma20,8)}
-        </td>
-
-        <td class="${signalClass(
-          x.trend==="BULLISH"
-            ? "LONG"
-            : x.trend==="BEARISH"
-              ? "SHORT"
-              : "WAIT"
-        )}">
-          ${statusText(x.trend)}
-        </td>
-
-        <td>
-          ${statusText(x.maSlope)}
-        </td>
-
-        <td>
-          ${x.touchMA20
-            ? "بله"
-            : "خیر"}
-        </td>
-
-      </tr>
-
-    `;
-
-  }
-
-  let convertedHtml="";
-
-  for(
-    const e of
-    (converted.events||[])
-  ){
-
-    if(
-      e.type==="NONE"
-    ) continue;
-
-    convertedHtml+=`
-
-      <div class="detail">
-
-        <div class="detail-title">
-
-          MA تبدیل‌شده
-
-        </div>
-
-        <div class="detail-main">
-
-          ${esc(e.source)}
-          →
-          MA${esc(e.ma)}
-          →
-          ${esc(e.period1m)} کندل یک‌دقیقه‌ای
-
-        </div>
-
-        <div class="small">
-
-          وضعیت:
-          ${statusText(e.type)}
-          |
-          جهت:
-          ${statusText(e.direction)}
-          |
-          شیب:
-          ${statusText(e.slope)}
-          |
-          فاصله:
-          ${pct(e.distancePct)}
-
-        </div>
-
-        <div class="small">
-
-          حجم تأیید:
-          ${e.volumeConfirmed
-            ? "✅ بله"
-            : "❌ خیر"}
-
-        </div>
-
-        <div class="small">
-
-          تأیید نهایی:
-          ${
-            e.confirmation==="CONFIRMED_LONG"
-              ? "🟢 خرید تأییدشده"
-              : e.confirmation==="CONFIRMED_SHORT"
-                ? "🔴 فروش تأییدشده"
-                : "🟡 انتظار"
-          }
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-  if(!convertedHtml){
-
-    convertedHtml=
-      `<div class="small">
-        فعلاً برخورد یا Trigger قابل توجهی ثبت نشده.
-      </div>`;
-
-  }
 
   return `
 
-    <div class="detail">
+  <div class="card clickable"
+       onclick="toggleBox('${id}')">
 
-      <div class="detail-title">
-        وضعیت MA در یک دقیقه
-      </div>
+    <div class="card-title">
+      ${title}
+    </div>
 
-      <div class="detail-main">
-        ${statusText(one.trend)}
-      </div>
+    <div class="card-value">
+      ${fmt(score,0)}/100
+    </div>
 
-      <div class="small">
+    <div
+      id="${id}"
+      class="expand"
+      onclick="event.stopPropagation()">
+
+      ${info}
+
+    </div>
+
+  </div>
+
+  `;
+}
+
+
+function simpleCard(
+  title,
+  subtitle,
+  value
+){
+
+  return `
+
+  <div class="card">
+
+    <div class="card-title">
+      ${esc(title)}
+    </div>
+
+    <div class="card-value">
+      ${esc(value)}
+    </div>
+
+    <div style="color:#78869a;font-size:10px;margin-top:4px">
+      ${esc(subtitle)}
+    </div>
+
+  </div>
+
+  `;
+}
+
+
+function detailCard(
+  title,
+  value
+){
+
+  return `
+
+  <div class="card">
+
+    <div class="card-title">
+      ${esc(title)}
+    </div>
+
+    <div class="card-value">
+      ${esc(value)}
+    </div>
+
+  </div>
+
+  `;
+}
+
+
+function clickDetail(
+  id,
+  title,
+  content
+){
+
+  return `
+
+  <div class="card clickable"
+       onclick="toggleBox('${id}')">
+
+    <div class="card-value">
+      ${title}
+    </div>
+
+    <div
+      id="${id}"
+      class="expand"
+      onclick="event.stopPropagation()">
+
+      ${content}
+
+    </div>
+
+  </div>
+
+  `;
+}
+
+
+/* =====================================================
+STYLE INFORMATION
+===================================================== */
+
+function getMAInfo(d){
+
+  const t=
+    d.timeframes || {};
+
+  return `
+
+  <b>تحلیل مووینگ میانگین</b>
+
+  <br><br>
+
+  ${Object.entries(t).map(
+    ([key,x])=>{
+
+      if(x?.error) return "";
+
+      return `
+
+      <div class="reason">
+
+        <b>${esc(key)} دقیقه:</b>
+
+        <br>
+
+        وضعیت:
+        ${x.trend==="BULLISH"
+          ?"🟢 صعودی"
+          :x.trend==="BEARISH"
+            ?"🔴 نزولی"
+            :"🟡 رنج"}
+
+        <br>
 
         MA7:
-        ${num(one.ma7,8)}
+        ${price(x.ma7)}
 
-        |
+        <br>
+
         MA20:
-        ${num(one.ma20,8)}
+        ${price(x.ma20)}
 
-        |
+        <br>
+
         شیب:
-        ${statusText(one.maSlope)}
+        ${x.maSlope==="UP"
+          ?"🟢 صعودی"
+          :x.maSlope==="DOWN"
+            ?"🔴 نزولی"
+            :"⚪ خنثی"}
+
+        <br>
+
+        برخورد MA20:
+        ${x.touchMA20
+          ?"✅ دارد"
+          :"❌ ندارد"}
 
       </div>
 
-    </div>
+      `;
+    }
+  ).join("")}
+
+  <br>
+
+  <b>نتیجه:</b>
+
+  ${
+    d.direction==="LONG"
+      ?"🟢 ساختار میانگین‌ها بیشتر صعودی است."
+      :d.direction==="SHORT"
+        ?"🔴 ساختار میانگین‌ها بیشتر نزولی است."
+        :"🟡 میانگین‌ها تأیید کافی برای ورود ندارند."
+  }
+
+  `;
+}
 
 
-    <div class="detail">
+function getSMCInfo(d){
 
-      <div class="detail-title">
-        زمان آخرین برخورد
-      </div>
+  const x=
+    d.timeframes?.["1"] || {};
 
-      <div class="detail-main">
+  return `
 
-        ${
-          one.timestamp
-            ? new Date(
-                Number(one.timestamp)
-              ).toLocaleString(
-                "fa-IR"
-              )
-            : "-"
-        }
+  <b>اسمارت مانی</b>
 
-      </div>
+  <br><br>
 
-    </div>
+  BOS:
+  ${faStructure(x.bos)}
+
+  <br>
+
+  CHoCH:
+  ${faStructure(x.choch)}
+
+  <br>
+
+  Hunt:
+  ${
+    x.hunt?.confirmed
+      ? x.hunt.side==="LONG"
+        ? "🟢 شکار نقدینگی فروشندگان"
+        : "🔴 شکار نقدینگی خریداران"
+      : "⚪ مشاهده نشد"
+  }
+
+  <br>
+
+  Order Block:
+  ${
+    x.orderBlock?.type==="BULLISH"
+      ?"🟢 صعودی"
+      :x.orderBlock?.type==="BEARISH"
+        ?"🔴 نزولی"
+        :"⚪ ندارد"
+  }
+
+  <br>
+
+  FVG:
+  ${
+    x.fvg?.type==="BULLISH"
+      ?"🟢 صعودی"
+      :x.fvg?.type==="BEARISH"
+        ?"🔴 نزولی"
+        :"⚪ ندارد"
+  }
+
+  <br><br>
+
+  <b>نتیجه:</b>
+  اسمارت مانی بر اساس ساختار،
+  نقدینگی، Order Block، FVG و شکست ساختار بررسی شده است.
+
+  `;
+}
 
 
-    <div class="detail">
+function getICTInfo(d){
 
-      <div class="detail-title">
-        MAهای تبدیل‌شده
-      </div>
+  const x=
+    d.timeframes?.["1"] || {};
 
-      ${convertedHtml}
+  return `
 
-    </div>
+  <b>تحلیل ICT</b>
 
+  <br><br>
 
-    <table class="data-table">
+  Liquidity Sweep:
+  ${
+    x.hunt?.confirmed
+      ?"✅ تأیید شده"
+      :"❌ مشاهده نشد"
+  }
 
-      <thead>
+  <br>
 
-        <tr>
+  FVG:
+  ${
+    x.fvg?.type==="BULLISH"
+      ?"🟢 صعودی"
+      :x.fvg?.type==="BEARISH"
+        ?"🔴 نزولی"
+        :"⚪ ندارد"
+  }
 
-          <th>تایم</th>
-          <th>MA7</th>
-          <th>MA20</th>
-          <th>روند</th>
-          <th>شیب</th>
-          <th>برخورد MA20</th>
+  <br>
 
-        </tr>
+  CHoCH:
+  ${faStructure(x.choch)}
 
-      </thead>
+  <br>
 
-      <tbody>
+  BOS:
+  ${faStructure(x.bos)}
 
-        ${rows}
+  <br>
 
-      </tbody>
-
-    </table>
+  Order Block:
+  ${
+    x.orderBlock?.type==="BULLISH"
+      ?"🟢 صعودی"
+      :x.orderBlock?.type==="BEARISH"
+        ?"🔴 نزولی"
+        :"⚪ ندارد"
+  }
 
   `;
 
 }
 
 
-/* =========================================================
-   SMC
-========================================================= */
+function getVolumeInfo(d){
 
-function renderSMC(
+  const x=
+    d.timeframes?.["1"] || {};
+
+  const v=x.volume || {};
+
+  return `
+
+  <b>تحلیل حجم</b>
+
+  <br><br>
+
+  حجم فعلی:
+  ${fmt(v.current,2)}
+
+  <br>
+
+  میانگین 7:
+  ${fmt(v.ma7,2)}
+
+  <br>
+
+  میانگین 20:
+  ${fmt(v.ma20,2)}
+
+  <br>
+
+  نسبت به میانگین:
+  ${fmt(v.ratio20,2)} برابر
+
+  <br>
+
+  Spike:
+  ${
+    v.spike
+      ?"🔥 حجم غیرعادی"
+      :"⚪ عادی"
+  }
+
+  `;
+}
+
+
+function getOrderFlowInfo(d){
+
+  const x=
+    d.footprint || {};
+
+  if(x.error){
+    return `
+    ❌ داده جریان سفارش در دسترس نیست.
+    <br><br>
+    ${esc(x.error)}
+    `;
+  }
+
+  return `
+
+  <b>جریان سفارش</b>
+
+  <br><br>
+
+  حجم خرید:
+  ${fmt(x.buyVolume,2)}
+
+  <br>
+
+  حجم فروش:
+  ${fmt(x.sellVolume,2)}
+
+  <br>
+
+  Delta:
+  ${fmt(x.delta,2)}
+
+  <br>
+
+  Delta درصدی:
+  ${pct(x.deltaPercent)}
+
+  <br>
+
+  بزرگ‌ترین معامله:
+  ${fmt(x.largeTradeNotional,2)}
+
+  <br><br>
+
+  ${
+    x.deltaPercent>=8
+      ?"🟢 فشار خرید قابل توجه"
+      :x.deltaPercent<=-8
+        ?"🔴 فشار فروش قابل توجه"
+        :"🟡 تعادل نسبی"
+  }
+
+  `;
+}
+
+
+function getLiquidityInfo(d){
+
+  const w=
+    d.walls || {};
+
+  return `
+
+  <b>تحلیل نقدینگی</b>
+
+  <br><br>
+
+  Buy Wall:
+  ${
+    w.buy
+      ? `${price(w.buy.price)} — ${fmt(w.buyStrength,0)}/100`
+      :"مشاهده نشد"
+  }
+
+  <br>
+
+  Sell Wall:
+  ${
+    w.sell
+      ? `${price(w.sell.price)} — ${fmt(w.sellStrength,0)}/100`
+      :"مشاهده نشد"
+  }
+
+  <br><br>
+
+  سهم نقدینگی خرید:
+  ${fmt(w.buyShare,2)}%
+
+  <br>
+
+  سهم نقدینگی فروش:
+  ${fmt(w.sellShare,2)}%
+
+  <br><br>
+
+  <b>توجه:</b>
+
+  Order Book نقدینگی قابل مشاهده فعلی را نشان می‌دهد
+  و سفارش‌ها ممکن است قبل از رسیدن قیمت حذف یا جابه‌جا شوند.
+
+  `;
+}
+
+
+/* =====================================================
+STRUCTURE FA
+===================================================== */
+
+function faStructure(x){
+
+  if(x==="BULLISH"){
+    return "🟢 صعودی — شکست/تغییر ساختار به سمت بالا";
+  }
+
+  if(x==="BEARISH"){
+    return "🔴 نزولی — شکست/تغییر ساختار به سمت پایین";
+  }
+
+  return "⚪ مشاهده نشد";
+}
+
+
+function candleFa(x){
+
+  const map={
+
+    HAMMER:
+      "🔨 چکش — احتمال واکنش صعودی",
+
+    SHOOTING_STAR:
+      "☄️ شوتینگ استار — احتمال واکنش نزولی",
+
+    BULLISH_ENGULFING:
+      "🟢 پوشای صعودی",
+
+    BEARISH_ENGULFING:
+      "🔴 پوشای نزولی",
+
+    DOJI:
+      "⚪ دوجی — بلاتکلیفی",
+
+    NORMAL:
+      "کندل عادی"
+
+  };
+
+  return map[x] || "نامشخص";
+}
+
+
+/* =====================================================
+REASONS
+===================================================== */
+
+function reasonsHTML(arr){
+
+  if(!arr || !arr.length){
+
+    return `
+    <div class="reason">
+      دلیل مشخصی ثبت نشده است.
+    </div>
+    `;
+  }
+
+  return arr.map(
+    x=>
+      `<div class="reason">
+      ${esc(x)}
+      </div>`
+  ).join("");
+}
+
+
+/* =====================================================
+TIMEFRAME
+===================================================== */
+
+function timeframeCard(
+  key,
   x
 ){
 
-  if(!x){
+  if(!x || x.error){
 
     return `
-      <div class="small">
-        اطلاعات اسمارت مانی موجود نیست.
+    <div class="card">
+      <div class="card-title">
+        ${esc(key)} دقیقه
       </div>
+      <div>
+        ❌ داده در دسترس نیست
+      </div>
+    </div>
     `;
-
   }
 
   return `
 
-    <div class="detail">
+  <div class="card clickable"
+       onclick="toggleBox('tf_${esc(key)}')">
 
-      <div class="detail-title">
-        روند
-      </div>
-
-      <div class="detail-main">
-        ${statusText(x.trend)}
-      </div>
-
+    <div class="card-title">
+      تایم ${esc(key)} دقیقه
     </div>
 
-
-    <div class="detail">
-
-      <div class="detail-title">
-        شکست ساختار — BOS
-      </div>
-
-      <div class="detail-main">
-        ${statusText(x.bos)}
-      </div>
-
-      <div class="small">
-
-        ${
-          x.bos==="BULLISH"
-            ? "قیمت آخرین سقف ساختاری را شکسته و ساختار به سمت بالا فشار آورده است."
-            : x.bos==="BEARISH"
-              ? "قیمت آخرین کف ساختاری را شکسته و ساختار به سمت پایین فشار آورده است."
-              : "شکست ساختار معتبر در آخرین داده مشاهده نشد."
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        تغییر شخصیت بازار — CHoCH
-      </div>
-
-      <div class="detail-main">
-        ${statusText(x.choch)}
-      </div>
-
-      <div class="small">
-
-        ${
-          x.choch==="BULLISH"
-            ? "نشانه تغییر ساختار از فشار نزولی به صعودی."
-            : x.choch==="BEARISH"
-              ? "نشانه تغییر ساختار از فشار صعودی به نزولی."
-              : "تغییر شخصیت بازار هنوز تأیید نشده."
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        شکار نقدینگی — Hunt / Sweep
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          x.hunt?.confirmed
-            ? statusText(x.hunt.side)
-            : "تأیید نشده"
-        }
-
-      </div>
-
-      <div class="small">
-
-        ${
-          x.hunt?.confirmed
-            ? `
-              سطح:
-              ${num(x.hunt.level,8)}
-              |
-              سایه:
-              ${num(x.hunt.wickPct,1)}%
-              |
-              حجم:
-              ${x.hunt.volumeConfirmed
-                ? "تأیید"
-                : "بدون تأیید"}
-            `
-            : "Sweep معتبر در آخرین کندل مشاهده نشد."
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        Order Block — بلوک سفارش
-      </div>
-
-      <div class="detail-main">
-
-        ${statusText(
-          x.orderBlock?.type
-        )}
-
-      </div>
-
+    <div class="card-value">
       ${
-        x.orderBlock?.type!=="NONE"
-          ? `
-            <div class="small">
+        x.trend==="BULLISH"
+          ?"🟢 صعودی"
+          :x.trend==="BEARISH"
+            ?"🔴 نزولی"
+            :"🟡 رنج"
+      }
+    </div>
 
-              محدوده:
-              ${num(x.orderBlock.low,8)}
-              تا
-              ${num(x.orderBlock.high,8)}
+    <div
+      id="tf_${esc(key)}"
+      class="expand"
+      onclick="event.stopPropagation()">
 
-            </div>
-          `
-          : ""
+      MA7:
+      ${price(x.ma7)}
+
+      <br>
+
+      MA20:
+      ${price(x.ma20)}
+
+      <br>
+
+      شیب:
+      ${
+        x.maSlope==="UP"
+          ?"🟢 صعودی"
+          :x.maSlope==="DOWN"
+            ?"🔴 نزولی"
+            :"⚪ خنثی"
       }
 
-    </div>
+      <br>
 
-  `;
-
-}
-
-
-/* =========================================================
-   ICT
-========================================================= */
-
-function renderICT(
-  x
-){
-
-  if(!x)
-    return `<div class="small">اطلاعات ICT موجود نیست.</div>`;
-
-  const fvg=
-    x.fvg || {};
-
-  return `
-
-    <div class="detail">
-
-      <div class="detail-title">
-        Fair Value Gap — شکاف ارزش منصفانه
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          fvg.type==="BULLISH"
-            ? "🟢 FVG صعودی"
-            : fvg.type==="BEARISH"
-              ? "🔴 FVG نزولی"
-              : "بدون FVG جدید"
-        }
-
-      </div>
-
+      برخورد MA20:
       ${
-        fvg.type!=="NONE"
-          ? `
-            <div class="small">
-
-              محدوده:
-              ${num(fvg.low,8)}
-              تا
-              ${num(fvg.high,8)}
-
-              |
-              اندازه:
-              ${num(fvg.size,8)}
-
-            </div>
-          `
-          : ""
+        x.touchMA20
+          ?"✅ دارد"
+          :"❌ ندارد"
       }
 
+      <br>
+
+      برخورد MA7:
+      ${
+        x.touchMA7
+          ?"✅ دارد"
+          :"❌ ندارد"
+      }
+
+      <br>
+
+      Hunt:
+      ${
+        x.hunt?.confirmed
+          ?"✅"
+          :"❌"
+      }
+
+      <br>
+
+      FVG:
+      ${
+        x.fvg?.type==="BULLISH"
+          ?"🟢 صعودی"
+          :x.fvg?.type==="BEARISH"
+            ?"🔴 نزولی"
+            :"⚪"
+      }
+
+      <br>
+
+      BOS:
+      ${faStructure(x.bos)}
+
+      <br>
+
+      CHoCH:
+      ${faStructure(x.choch)}
+
     </div>
 
-
-    <div class="detail">
-
-      <div class="detail-title">
-        نقدینگی
-      </div>
-
-      <div>
-        ${
-          x.hunt?.confirmed
-            ? `Sweep ${statusText(x.hunt.side)} تأیید شده`
-            : "Sweep معتبر تأیید نشده"
-        }
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        ساختار ICT
-      </div>
-
-      <div>
-        BOS:
-        <b>${statusText(x.bos)}</b>
-      </div>
-
-      <div>
-        CHoCH:
-        <b>${statusText(x.choch)}</b>
-      </div>
-
-    </div>
+  </div>
 
   `;
-
 }
 
 
-/* =========================================================
-   VOLUME
-========================================================= */
+/* =====================================================
+CONVERTED MA
+===================================================== */
 
-function renderVolume(
-  x
-){
+function convertedHTML(d){
 
-  if(!x || !x.volume)
-    return `<div class="small">اطلاعات حجم موجود نیست.</div>`;
-
-  const v=
-    x.volume;
-
-  return `
-
-    <div class="detail">
-
-      <div class="detail-title">
-        حجم فعلی
-      </div>
-
-      <div class="detail-main">
-        ${num(v.current,2)}
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        نسبت به میانگین 20
-      </div>
-
-      <div class="detail-main">
-
-        ${num(v.ratio20,2)}x
-
-        ${
-          v.spike
-            ? " 🔥 Volume Spike"
-            : " — عادی"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        نتیجه
-      </div>
-
-      <div>
-
-        ${
-          v.spike
-            ? "حجم به اندازه کافی افزایش یافته و می‌تواند اعتبار حرکت را بیشتر کند."
-            : "افزایش حجمی غیرعادی در آخرین کندل دیده نشد."
-        }
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   ORDER FLOW
-========================================================= */
-
-function renderOrderFlow(
-  fp
-){
-
-  if(
-    !fp ||
-    fp.error
-  ){
+  if(!d?.events?.length){
 
     return `
-      <div class="error">
-        ❌ داده جریان سفارش در دسترس نیست.
-        <br>
-        ${esc(fp?.error || "")}
-      </div>
+    داده MA تبدیل‌شده موجود نیست.
     `;
-
   }
 
-  const delta=
-    Number(fp.deltaPercent)||0;
-
-  return `
-
-    <div class="deep-grid">
-
-      <div class="metric">
-
-        <div class="metric-title">
-          حجم خرید
-        </div>
-
-        <div class="metric-value green">
-          ${num(fp.buyVolume,2)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          حجم فروش
-        </div>
-
-        <div class="metric-value red">
-          ${num(fp.sellVolume,2)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Delta
-        </div>
-
-        <div class="metric-value ${
-          delta>=0
-            ? "green"
-            : "red"
-        }">
-
-          ${pct(delta,1)}
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          تعداد معاملات
-        </div>
-
-        <div class="metric-value">
-          ${num(fp.trades,0)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        برداشت جریان سفارش
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          delta>=8
-            ? "🟢 فشار خرید قابل توجه"
-            : delta<=-8
-              ? "🔴 فشار فروش قابل توجه"
-              : "🟡 جریان سفارش متعادل"
-        }
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   LIQUIDITY
-========================================================= */
-
-function renderLiquidity(
-  w,
-  sr
-){
-
-  if(
-    !w ||
-    w.error
-  ){
-
-    return `
-      <div class="error">
-        ❌ Order Book در دسترس نیست.
-        <br>
-        ${esc(w?.error || "")}
-      </div>
-    `;
-
-  }
-
-  return `
-
-    <div class="deep-grid">
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Buy Wall
-        </div>
-
-        <div class="metric-value green">
-
-          ${
-            w.buy
-              ? num(w.buy.notional,0)
-              : "-"
-          }
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Sell Wall
-        </div>
-
-        <div class="metric-value red">
-
-          ${
-            w.sell
-              ? num(w.sell.notional,0)
-              : "-"
-          }
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          سهم خرید
-        </div>
-
-        <div class="metric-value green">
-          ${pct(w.buyShare,1)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          سهم فروش
-        </div>
-
-        <div class="metric-value red">
-          ${pct(w.sellShare,1)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        نزدیک‌ترین حمایت
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          sr?.nearestSupport
-            ? `
-              ${num(
-                sr.nearestSupport.price,
-                8
-              )}
-
-              —
-              ${esc(
-                sr.nearestSupport.type
-              )}
-            `
-            : "-"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        نزدیک‌ترین مقاومت
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          sr?.nearestResistance
-            ? `
-              ${num(
-                sr.nearestResistance.price,
-                8
-              )}
-
-              —
-              ${esc(
-                sr.nearestResistance.type
-              )}
-            `
-            : "-"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        قوی‌ترین حمایت
-      </div>
-
-      <div>
-
-        ${
-          sr?.strongestSupport
-            ? num(
-                sr.strongestSupport.price,
-                8
-              )
-            : "-"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        قوی‌ترین مقاومت
-      </div>
-
-      <div>
-
-        ${
-          sr?.strongestResistance
-            ? num(
-                sr.strongestResistance.price,
-                8
-              )
-            : "-"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="small">
-
-      ⚠️ دیوارهای Order Book سفارش‌های قابل مشاهده فعلی هستند
-      و ممکن است قبل از رسیدن قیمت حذف یا جابه‌جا شوند.
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   MARKET
-========================================================= */
-
-function renderMarket(
-  m
-){
-
-  if(
-    !m ||
-    m.error
-  ){
-
-    return `
-      <div class="error">
-        ❌ اطلاعات بازار موجود نیست.
-        <br>
-        ${esc(m?.error || "")}
-      </div>
-    `;
-
-  }
-
-  return `
-
-    <div class="deep-grid">
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Open Interest
-        </div>
-
-        <div class="metric-value">
-          ${num(m.openInterest,2)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Funding Rate
-        </div>
-
-        <div class="metric-value">
-
-          ${pct(
-            Number(m.fundingRate)*100,
-            4
-          )}
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          تغییر 24 ساعت
-        </div>
-
-        <div class="metric-value ${
-          Number(m.change24h)>=0
-            ? "green"
-            : "red"
-        }">
-
-          ${pct(m.change24h,2)}
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          Turnover 24h
-        </div>
-
-        <div class="metric-value">
-          ${num(m.turnover24h,0)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        قیمت Mark
-      </div>
-
-      <div class="detail-main">
-        ${num(m.markPrice,8)}
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        قیمت Index
-      </div>
-
-      <div class="detail-main">
-        ${num(m.indexPrice,8)}
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   MOVEMENT
-========================================================= */
-
-function renderMovement(
-  d
-){
-
-  const m=
-    d.movement || {};
-
-  const r=
-    d.reversal || {};
-
-  return `
-
-    <div class="deep-grid">
-
-      <div class="metric">
-
-        <div class="metric-title">
-          تغییر 15 دقیقه
-        </div>
-
-        <div class="metric-value ${
-          Number(m.change15m)>=0
-            ? "green"
-            : "red"
-        }">
-
-          ${pct(m.change15m)}
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          تغییر 30 دقیقه
-        </div>
-
-        <div class="metric-value">
-
-          ${pct(m.change30m)}
-
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          پامپ
-        </div>
-
-        <div class="metric-value">
-          ${num(m.pumpScore,0)}
-        </div>
-
-      </div>
-
-
-      <div class="metric">
-
-        <div class="metric-title">
-          دامپ
-        </div>
-
-        <div class="metric-value">
-          ${num(m.dumpScore,0)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        دلایل پامپ
-      </div>
-
-      ${
-        renderReasonList(
-          m.pumpReasons
-        )
-      }
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        دلایل دامپ
-      </div>
-
-      ${
-        renderReasonList(
-          m.dumpReasons
-        )
-      }
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        🔄 برگشت بعد از پامپ
-      </div>
-
-      <div class="detail-main">
-
-        ${num(
-          r.pumpScore,
-          0
-        )}/100
-
-      </div>
-
-      ${
-        renderReasonList(
-          r.pumpReasons
-        )
-      }
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        🔄 برگشت بعد از دامپ
-      </div>
-
-      <div class="detail-main">
-
-        ${num(
-          r.dumpScore,
-          0
-        )}/100
-
-      </div>
-
-      ${
-        renderReasonList(
-          r.dumpReasons
-        )
-      }
-
-    </div>
-
-
-    <div class="detail">
-
-      <div class="detail-title">
-        هشدار
-      </div>
-
-      <div class="detail-main">
-
-        ${
-          r.alert==="PUMP_REVERSAL_CONFIRMED"
-            ? "🔴 برگشت نزولی بعد از پامپ تأیید شده"
-            : r.alert==="DUMP_REVERSAL_CONFIRMED"
-              ? "🟢 برگشت صعودی بعد از دامپ تأیید شده"
-              : r.alert==="PUMP_REVERSAL_WATCH"
-                ? "🟡 احتمال برگشت بعد از پامپ"
-                : r.alert==="DUMP_REVERSAL_WATCH"
-                  ? "🟡 احتمال برگشت بعد از دامپ"
-                  : "بدون هشدار برگشت"
-        }
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   TIMEFRAMES
-========================================================= */
-
-function renderTimeframes(
-  tf
-){
-
-  let html="";
-
-  for(
-    const key of
-    ["1","3","5","15","60"]
-  ){
-
-    const x=
-      tf[key];
-
-    if(!x || x.error)
-      continue;
-
-    html+=`
-
-      <div class="detail">
-
-        <div class="detail-title">
-
-          ${
-            key==="60"
-              ? "1 ساعت"
-              : key+" دقیقه"
-          }
-
-        </div>
-
-        <div class="detail-main">
-
-          ${statusText(x.trend)}
-
-        </div>
-
-        <div class="small">
-
-          MA7:
-          ${num(x.ma7,8)}
-
-          |
-          MA20:
-          ${num(x.ma20,8)}
-
-          |
-          شیب:
-          ${statusText(x.maSlope)}
-
-          |
-          برخورد MA7:
-          ${x.touchMA7?"بله":"خیر"}
-
-          |
-          برخورد MA20:
-          ${x.touchMA20?"بله":"خیر"}
-
-        </div>
-
-        <div class="small">
-
-          Hunt:
-          ${
-            x.hunt?.confirmed
-              ? statusText(x.hunt.side)
-              : "ندارد"
-          }
-
-          |
-          BOS:
-          ${statusText(x.bos)}
-
-          |
-          CHoCH:
-          ${statusText(x.choch)}
-
-          |
-          FVG:
-          ${statusText(x.fvg?.type)}
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-  return html ||
-    `<div class="small">
-      اطلاعات تایم‌فریم موجود نیست.
-    </div>`;
-
-}
-
-
-/* =========================================================
-   REASONS
-========================================================= */
-
-function renderReasons(
-  reasons
-){
-
-  if(
-    !reasons ||
-    !reasons.length
-  ){
-
-    return `
-      <div class="small">
-        دلیل کافی برای سیگنال ثبت نشده است.
-      </div>
-    `;
-
-  }
-
-  return reasons.map(
+  return d.events.map(
     x=>`
-      <div class="reason">
-        ${esc(x)}
-      </div>
+
+    <div class="reason">
+
+      <b>
+        ${esc(x.source)}
+        —
+        ${esc(x.ma)}
+      </b>
+
+      <br>
+
+      معادل در 1 دقیقه:
+      MA${fmt(x.period1m,0)}
+
+      <br>
+
+      وضعیت:
+      ${
+        x.confirmation==="CONFIRMED_LONG"
+          ?"🟢 سیگنال صعودی تأییدشده"
+          :x.confirmation==="CONFIRMED_SHORT"
+            ?"🔴 سیگنال نزولی تأییدشده"
+            :x.type==="REJECTION"
+              ?"⚠️ واکنش"
+              :x.type==="BREAK"
+                ?"⚡ شکست"
+                :"⏳ انتظار"
+      }
+
+      <br>
+
+      فاصله قیمت:
+      ${pct(x.distancePct)}
+
+      <br>
+
+      شیب:
+      ${
+        x.slope==="UP"
+          ?"🟢 صعودی"
+          :x.slope==="DOWN"
+            ?"🔴 نزولی"
+            :"⚪ خنثی"
+      }
+
+      <br>
+
+      تأیید حجم:
+      ${x.volumeConfirmed?"✅":"❌"}
+
+    </div>
+
     `
   ).join("");
-
 }
 
 
-function renderReasonList(
-  list
-){
-
-  if(
-    !list ||
-    !list.length
-  ){
-
-    return `
-      <div class="small">
-        مورد قابل توجهی ثبت نشده.
-      </div>
-    `;
-
-  }
-
-  return `
-    <ul class="list">
-
-      ${list.map(
-        x=>`
-          <li>
-            ${esc(x)}
-          </li>
-        `
-      ).join("")}
-
-    </ul>
-  `;
-
-}
-
-
-/* =========================================================
-   ACCORDION
-========================================================= */
-
-function toggleAccordion(
-  head
-){
-
-  const box=
-    head.parentElement;
-
-  box.classList.toggle(
-    "open"
-  );
-
-}
-
-
-/* =========================================================
-   STYLE ACCORDION
-========================================================= */
-
-function toggleStyle(
-  card
-){
-
-  card.classList.toggle(
-    "open"
-  );
-
-}
-
-
-/* =========================================================
-   SIGNAL SCAN
-========================================================= */
+/* =====================================================
+SIGNALS
+===================================================== */
 
 async function loadSignals(){
 
-  /*
-   * اگر کاربر در حال مشاهده تحلیل دستی است،
-   * این تابع فقط signalList را تغییر می‌دهد.
-   */
+  const box=
+    document.getElementById(
+      "signals"
+    );
 
-  if(
-    state.scanBusy
-  ) return;
-
-  state.scanBusy=true;
+  box.innerHTML=
+    `<div class="loading">
+    ⏳ در حال دریافت سیگنال‌های سخت‌گیرانه...
+    </div>`;
 
   try{
 
-    const data=
-      await apiFetch(
-        `/api/scan?offset=${state.scanOffset}`
+    const d=
+      await api(
+        "/api/scan?offset=0"
       );
 
-    state.scanOffset=
-      Number(
-        data.nextOffset
-      ) || 0;
-
-    const results=
-      Array.isArray(
-        data.results
-      )
-        ? data.results
-        : [];
+    signalData=
+      d.results || [];
 
     /*
-     * فقط سیگنال سخت‌گیرانه
-     */
+      نکته:
+      فقط سیگنال‌های واقعاً سخت‌گیرانه
+      نمایش داده می‌شوند.
+    */
 
-    const signals=
-      results
-        .filter(
-          x=>
-            (
-              x.direction==="LONG" ||
-              x.direction==="SHORT"
-            ) &&
-            Number(x.score)>=75
+    const strict=
+      signalData.filter(
+        x=>
+          x.score>=75 &&
+          (
+            x.direction==="LONG" ||
+            x.direction==="SHORT"
+          )
+      );
+
+    if(!strict.length){
+
+      box.innerHTML=
+        `<div class="loading">
+        🟡 در این چرخه سیگنال سخت‌گیرانه‌ای پیدا نشد.
+        </div>`;
+
+      return;
+    }
+
+    box.innerHTML=
+      strict
+        .map(
+          (x,i)=>
+            signalHTML(
+              x,
+              i
+            )
         )
-        .sort(
-          (a,b)=>
-            Number(b.score)-
-            Number(a.score)
-        );
-
-    renderSignals(
-      signals
-    );
+        .join("");
 
   }catch(e){
 
-    /*
-     * خطای رادار/اسکن نباید
-     * کادر بررسی دستی را تغییر دهد.
-     */
-
-    const el=
-      document.getElementById(
-        "signalList"
-      );
-
-    el.innerHTML=
+    box.innerHTML=
       `<div class="error">
-        ❌ خطا در دریافت سیگنال‌ها
-        <br>
-        ${esc(e.message)}
+      ❌ خطا در دریافت سیگنال<br>
+      ${esc(e.message)}
       </div>`;
-
-  }finally{
-
-    state.scanBusy=false;
-
   }
-
 }
 
 
-/* =========================================================
-   RENDER SIGNALS
-========================================================= */
+/* =====================================================
+SIGNAL HTML
+===================================================== */
 
-function renderSignals(
-  list
+function signalHTML(
+  x,
+  index
 ){
 
-  const el=
-    document.getElementById(
-      "signalList"
-    );
+  const id=
+    `signal_${index}`;
 
-  if(!list.length){
+  return `
 
-    el.innerHTML=
-      `<div class="loading">
-        🟡 در این چرخه سیگنال سخت‌گیرانه‌ای
-        با امتیاز 75 یا بیشتر پیدا نشد.
-      </div>`;
+  <div class="signal-item clickable"
+       onclick="toggleBox('${id}')">
 
-    return;
-  }
+    <div class="signal-top">
 
-  el.innerHTML=
-    list.map(
-      x=>`
+      <div>
 
-      <div class="signal-card">
-
-        <div class="signal-top">
-
-          <div class="symbol">
-            ${esc(x.symbol)}
-          </div>
-
-          <div>
-            ${directionText(
-              x.direction
-            )}
-          </div>
-
+        <div class="signal-symbol">
+          ${esc(x.symbol)}
         </div>
 
+        <div class="${
+          x.direction==="LONG"
+            ?"long"
+            :"short"
+        }">
 
-        <div class="signal-meta">
-
-          <span class="meta">
-            امتیاز
-            <b>
-              ${num(x.score,0)}/100
-            </b>
-          </span>
-
-          <span class="meta">
-            خرید:
-            ${num(x.longScore,0)}
-          </span>
-
-          <span class="meta">
-            فروش:
-            ${num(x.shortScore,0)}
-          </span>
-
-          <span class="meta">
-            پامپ:
-            ${num(x.pumpScore,0)}
-          </span>
-
-          <span class="meta">
-            دامپ:
-            ${num(x.dumpScore,0)}
-          </span>
+          ${directionFa(x.direction)}
 
         </div>
-
-
-        <button
-          class="open-analysis"
-          onclick="openSignalAnalysis('${esc(x.symbol)}')">
-
-          👆 لمس کن →
-          تحلیل عمیق ${esc(x.symbol)}
-
-        </button>
 
       </div>
 
-      `
-    ).join("");
+      <div style="text-align:center">
 
+        <div class="signal-score">
+          ${fmt(x.score,0)}
+        </div>
+
+        <small>
+          ${signalLevelFa(x.signalLevel)}
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="mini-grid">
+
+      <div class="mini">
+        <small>خرید</small>
+        ${fmt(x.longScore,0)}
+      </div>
+
+      <div class="mini">
+        <small>فروش</small>
+        ${fmt(x.shortScore,0)}
+      </div>
+
+      <div class="mini">
+        <small>پامپ</small>
+        ${fmt(x.pumpScore,0)}
+      </div>
+
+      <div class="mini">
+        <small>دامپ</small>
+        ${fmt(x.dumpScore,0)}
+      </div>
+
+    </div>
+
+
+    <div
+      id="${id}"
+      class="expand"
+      onclick="event.stopPropagation()">
+
+      <b>📋 دلایل سیگنال</b>
+
+      <br><br>
+
+      ${reasonsHTML(x.reasons)}
+
+      <br>
+
+      <button
+        class="btn"
+        onclick="
+          event.stopPropagation();
+          openDeepFromSignal('${esc(x.symbol)}')
+        ">
+
+        🔬 تحلیل عمیق ${esc(x.symbol)}
+
+      </button>
+
+    </div>
+
+  </div>
+
+  `;
 }
 
 
-/* =========================================================
-   OPEN SIGNAL DEEP ANALYSIS
-========================================================= */
+/* =====================================================
+OPEN DEEP
+===================================================== */
 
-async function openSignalAnalysis(
-  symbol
-){
+function openDeepFromSignal(symbol){
 
-  /*
-   * تحلیل سیگنال در همان کادر سیگنال باز می‌شود
-   * و بخش manual را دست نمی‌زند.
-   */
+  document
+    .getElementById(
+      "symbolInput"
+    )
+    .value=symbol;
 
-  const cards=
-    document.querySelectorAll(
-      ".signal-card"
-    );
+  document
+    .getElementById(
+      "category"
+    )
+    .value="linear";
 
-  let target=null;
+  manualAnalyze();
 
-  cards.forEach(
-    card=>{
+  window.scrollTo({
+    top:
+      document
+        .getElementById(
+          "manualResult"
+        )
+        .getBoundingClientRect()
+        .top+
+      window.scrollY-
+      20,
 
-      if(
-        card
-          .querySelector(".symbol")
-          ?.textContent
-          .trim()===symbol
-      ){
-
-        target=card;
-
-      }
-
-    }
-  );
-
-  if(!target)
-    return;
-
-  let old=
-    target.querySelector(
-      ".inline-analysis"
-    );
-
-  if(old){
-
-    old.remove();
-
-    return;
-
-  }
-
-  const box=
-    document.createElement(
-      "div"
-    );
-
-  box.className=
-    "inline-analysis";
-
-  box.innerHTML=
-    `<div class="loading">
-      ⏳ تحلیل عمیق در حال دریافت...
-    </div>`;
-
-  target.appendChild(
-    box
-  );
-
-  try{
-
-    const data=
-      await apiFetch(
-        `/api/analyze?symbol=${encodeURIComponent(symbol)}&category=linear`
-      );
-
-    box.innerHTML=
-      renderDeepAnalysis(
-        data,
-        false
-      );
-
-  }catch(e){
-
-    box.innerHTML=
-      `<div class="error">
-        ❌ خطا در تحلیل عمیق
-        <br>
-        ${esc(e.message)}
-      </div>`;
-
-  }
-
+    behavior:"smooth"
+  });
 }
 
 
-/* =========================================================
-   RADAR
-========================================================= */
+/* =====================================================
+RADAR
+===================================================== */
 
 async function loadRadar(){
 
-  if(
-    state.radarBusy
-  ) return;
+  document.getElementById(
+    "pumpRadar"
+  ).innerHTML=
+    "⏳ در حال دریافت...";
 
-  state.radarBusy=true;
+  document.getElementById(
+    "dumpRadar"
+  ).innerHTML=
+    "⏳ در حال دریافت...";
+
+  document.getElementById(
+    "reversalRadar"
+  ).innerHTML=
+    "⏳ در حال دریافت...";
 
   try{
 
-    const data=
-      await apiFetch(
-        `/api/radar?offset=${state.radarOffset}`
+    const d=
+      await api(
+        "/api/radar?offset=0"
       );
 
-    state.radarOffset=
-      Number(
-        data.nextOffset
-      ) || 0;
+    radarData=d;
 
-    state.radarData=
-      data;
+    renderRadarList(
+      "pumpRadar",
+      d.pump || [],
+      "pump"
+    );
 
-    renderRadar();
+    renderRadarList(
+      "dumpRadar",
+      d.dump || [],
+      "dump"
+    );
+
+    renderRadarList(
+      "reversalRadar",
+      d.reversal || [],
+      "reversal"
+    );
 
   }catch(e){
 
-    document.getElementById(
-      "radarList"
-    ).innerHTML=
+    const msg=
       `<div class="error">
-        ❌ خطا در دریافت رادار
-        <br>
-        ${esc(e.message)}
+      ❌ ${esc(e.message)}
       </div>`;
 
-  }finally{
+    document.getElementById(
+      "pumpRadar"
+    ).innerHTML=msg;
 
-    state.radarBusy=false;
+    document.getElementById(
+      "dumpRadar"
+    ).innerHTML=msg;
 
+    document.getElementById(
+      "reversalRadar"
+    ).innerHTML=msg;
   }
-
 }
 
 
-/* =========================================================
-   RENDER RADAR
-========================================================= */
+function renderRadarList(
+  id,
+  arr,
+  type
+){
 
-function renderRadar(){
+  const box=
+    document.getElementById(id);
 
-  const el=
-    document.getElementById(
-      "radarList"
-    );
+  if(!arr.length){
 
-  const data=
-    state.radarData;
-
-  if(!data){
-
-    el.innerHTML=
+    box.innerHTML=
       `<div class="loading">
-        هنوز داده رادار دریافت نشده.
+      مورد قابل توجهی پیدا نشد.
       </div>`;
 
     return;
-
   }
 
-  let list=
-    data[
-      state.currentRadar
-    ] || [];
+  box.innerHTML=
+    arr
+      .slice(0,5)
+      .map(
+        (x,i)=>{
 
-  if(!Array.isArray(list))
-    list=[];
+          let value;
 
-  if(!list.length){
-
-    el.innerHTML=
-      `<div class="loading">
-        🟡 مورد قابل توجهی در این بخش پیدا نشد.
-      </div>`;
-
-    return;
-
-  }
-
-  el.innerHTML=
-    list.map(
-      x=>{
-
-        let score=0;
-
-        let label="";
-
-        if(
-          state.currentRadar==="pump"
-        ){
-
-          score=
-            x.pumpScore;
-
-          label=
-            "🚀 پامپ";
-
-        }else if(
-          state.currentRadar==="dump"
-        ){
-
-          score=
-            x.dumpScore;
-
-          label=
-            "🔻 دامپ";
-
-        }else{
-
-          score=
-            Math.max(
+          if(type==="pump"){
+            value=x.pumpScore;
+          }else if(type==="dump"){
+            value=x.dumpScore;
+          }else{
+            value=Math.max(
               x.reversal?.pumpScore||0,
               x.reversal?.dumpScore||0
             );
+          }
 
-          label=
-            "🔄 برگشت";
+          return `
 
-        }
+          <div
+            class="radar-row"
+            onclick="
+              openDeepFromSignal(
+                '${esc(x.symbol)}'
+              )
+            ">
 
-        return `
+            <b class="ltr">
+              ${esc(x.symbol)}
+            </b>
 
-          <div class="radar-card">
+            <br>
 
-            <div class="radar-row">
+            امتیاز:
+            <b>${fmt(value,0)}</b>
 
-              <div class="symbol">
-                ${esc(x.symbol)}
-              </div>
+            <br>
 
-              <div class="radar-score">
-                ${num(score,0)}/100
-              </div>
-
-            </div>
-
-            <div class="signal-meta">
-
-              <span class="meta">
-                ${label}
-              </span>
-
-              <span class="meta">
-                حرکت:
-                ${pct(
-                  x.movement?.change15m
-                )}
-              </span>
-
-              <span class="meta">
-                حجم:
-                ${num(
-                  x.movement?.volumeRatio,
-                  2
-                )}x
-              </span>
-
-            </div>
-
-            <button
-              class="open-analysis"
-              onclick="openRadarAnalysis('${esc(x.symbol)}')">
-
-              👆 لمس کن →
-              تحلیل عمیق
-
-            </button>
+            ${
+              type==="pump"
+                ?"🚀 پامپ"
+                :type==="dump"
+                  ?"🔻 دامپ"
+                  :"🔄 برگشت"
+            }
 
           </div>
 
-        `;
-
-      }
-    ).join("");
-
-}
-
-
-/* =========================================================
-   OPEN RADAR ANALYSIS
-========================================================= */
-
-async function openRadarAnalysis(
-  symbol
-){
-
-  /*
-   * تحلیل رادار مستقل است.
-   */
-
-  const cards=
-    document.querySelectorAll(
-      ".radar-card"
-    );
-
-  let target=null;
-
-  cards.forEach(
-    card=>{
-
-      if(
-        card
-          .querySelector(".symbol")
-          ?.textContent
-          .trim()===symbol
-      ){
-
-        target=card;
-
-      }
-
-    }
-  );
-
-  if(!target)
-    return;
-
-  let old=
-    target.querySelector(
-      ".inline-analysis"
-    );
-
-  if(old){
-
-    old.remove();
-
-    return;
-
-  }
-
-  const box=
-    document.createElement(
-      "div"
-    );
-
-  box.className=
-    "inline-analysis";
-
-  box.innerHTML=
-    `<div class="loading">
-      ⏳ تحلیل عمیق...
-    </div>`;
-
-  target.appendChild(
-    box
-  );
-
-  try{
-
-    const data=
-      await apiFetch(
-        `/api/analyze?symbol=${encodeURIComponent(symbol)}&category=linear`
-      );
-
-    box.innerHTML=
-      renderDeepAnalysis(
-        data,
-        false
-      );
-
-  }catch(e){
-
-    box.innerHTML=
-      `<div class="error">
-        ❌ خطا در تحلیل
-        <br>
-        ${esc(e.message)}
-      </div>`;
-
-  }
-
-}
-
-
-/* =========================================================
-   RADAR TABS
-========================================================= */
-
-document
-  .querySelectorAll(
-    ".radar-tab"
-  )
-  .forEach(
-    button=>{
-
-      button.addEventListener(
-        "click",
-        ()=>{
-
-          document
-            .querySelectorAll(
-              ".radar-tab"
-            )
-            .forEach(
-              x=>
-                x.classList.remove(
-                  "active"
-                )
-            );
-
-          button.classList.add(
-            "active"
-          );
-
-          state.currentRadar=
-            button.dataset.radar;
-
-          renderRadar();
-
+          `;
         }
-      );
+      )
+      .join("");
+}
 
-    }
-  );
 
-
-/* =========================================================
-   MANUAL BUTTON
-========================================================= */
-
-document
-  .getElementById(
-    "manualButton"
-  )
-  .addEventListener(
-    "click",
-    manualAnalyze
-  );
-
+/* =====================================================
+KEYBOARD
+===================================================== */
 
 document
   .getElementById(
-    "manualSymbol"
+    "symbolInput"
   )
   .addEventListener(
     "keydown",
     e=>{
 
-      if(
-        e.key==="Enter"
-      ){
-
-        e.preventDefault();
-
+      if(e.key==="Enter"){
         manualAnalyze();
-
       }
 
     }
   );
 
 
-/* =========================================================
-   INITIAL LOAD
-========================================================= */
+/* =====================================================
+START
+===================================================== */
 
-async function start(){
-
-  await checkHealth();
-
-  /*
-   * اول بررسی دستی/صفحه آماده می‌شود.
-   * سپس اسکن و رادار جداگانه شروع می‌شوند.
-   */
-
-  setTimeout(
-    loadSignals,
-    800
-  );
-
-  setTimeout(
-    loadRadar,
-    2500
-  );
-
-}
-
-
-/* =========================================================
-   ROTATING SCAN
-   فاصله زیادتر تا اطلاعات کاربر نپرد
-========================================================= */
-
-setInterval(
-  ()=>{
-
-    if(
-      !state.scanBusy
-    ){
-
-      loadSignals();
-
-    }
-
-  },
-  45000
-);
-
-
-/* =========================================================
-   RADAR REFRESH
-========================================================= */
-
-setInterval(
-  ()=>{
-
-    if(
-      !state.radarBusy
-    ){
-
-      loadRadar();
-
-    }
-
-  },
-  60000
-);
-
-
-/* =========================================================
-   START
-========================================================= */
-
-start();
+checkConnection();
 
 </script>
 
