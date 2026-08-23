@@ -80,7 +80,7 @@ throw new Error(`Bybit HTTP ${r.status}`);
 const d = await r.json();
 
 if(d.retCode !== 0){
-throw new Error(d.retMsg || Bybit ${d.retCode});
+throw new Error(d.retMsg || `Bybit ${d.retCode}`);
 }
 
 return d;
