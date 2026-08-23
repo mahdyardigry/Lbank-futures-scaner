@@ -119,7 +119,7 @@ const k=2/(p+1);
 let x=a[0];
 
 for(let i=1;i<a.length;i++){
-x=a[i]k+x(1-k);
+x=a[i]*k+x(1-k);
 }
 
 return x;
