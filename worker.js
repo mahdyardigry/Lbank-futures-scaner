@@ -74,7 +74,7 @@ headers:{accept:"application/json"}
 });
 
 if(!r.ok){
-throw new Error(Bybit HTTP ${r.status});
+throw new Error(`Bybit HTTP ${r.status}`);
 }
 
 const d = await r.json();
