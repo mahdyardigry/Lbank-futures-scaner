@@ -16,49 +16,68 @@ body{
   font-size:14px;
 }
 
-button,input,select{font-family:inherit}
-button{cursor:pointer}
+button,input{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+  border:0;
+  border-radius:8px;
+  padding:10px 14px;
+  background:#1769aa;
+  color:#fff;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+button.green{background:#087f5b}
+button.red{background:#a61e4d}
+button.gray{background:#343a40}
 
 .header{
-  padding:16px;
+  padding:15px;
   background:#0d131c;
   border-bottom:1px solid #202a36;
   text-align:center;
 }
 
 .header h1{
-  margin:0 0 7px;
+  margin:0 0 6px;
   font-size:21px;
 }
 
 .header p{
   margin:0;
-  color:#8e9aaa;
+  color:#8491a1;
+  font-size:12px;
 }
 
 .container{
   max-width:1250px;
   margin:auto;
-  padding:12px;
+  padding:10px;
 }
 
 .card{
   background:#0d131c;
   border:1px solid #202a36;
   border-radius:12px;
-  padding:13px;
-  margin-bottom:12px;
+  padding:12px;
+  margin-bottom:10px;
 }
 
 .card-title{
-  font-size:16px;
+  font-size:15px;
   font-weight:bold;
-  margin-bottom:12px;
+  margin-bottom:10px;
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:8px;
-  flex-wrap:wrap;
 }
 
 .row{
@@ -67,7 +86,9 @@ button{cursor:pointer}
   flex-wrap:wrap;
 }
 
-input,select{
+input{
+  flex:1;
+  min-width:150px;
   background:#080c12;
   color:#fff;
   border:1px solid #303b49;
@@ -76,54 +97,57 @@ input,select{
   outline:none;
 }
 
-input{
-  flex:1;
-  min-width:160px;
-}
-
-button{
-  border:0;
-  border-radius:8px;
-  padding:10px 14px;
-  background:#1769aa;
-  color:white;
-  font-weight:bold;
-}
-
-button:hover{opacity:.9}
-button.green{background:#087f5b}
-button.red{background:#a61e4d}
-button.gray{background:#343a40}
-
 .status{
   padding:8px 10px;
   border-radius:8px;
   background:#111923;
   color:#8e9aaa;
-  margin-top:10px;
+  margin-top:8px;
+}
+
+.success{
+  background:#073d2e;
+  border:1px solid #087f5b;
+  color:#6ee7b7;
+}
+
+.error{
+  background:#421721;
+  border:1px solid #8d2638;
+  color:#ff9aa8;
+  padding:10px;
+  border-radius:8px;
+}
+
+.loading{
+  text-align:center;
+  padding:22px;
+  color:#8491a1;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  gap:8px;
 }
 
 .grid3{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:10px;
+  gap:8px;
 }
 
-@media(max-width:800px){
-  .grid,.grid3{grid-template-columns:1fr}
+@media(max-width:700px){
+  .grid,.grid3{
+    grid-template-columns:1fr;
+  }
 }
 
 .metric{
   background:#101721;
   border:1px solid #222e3b;
-  border-radius:10px;
-  padding:11px;
+  border-radius:9px;
+  padding:10px;
 }
 
 .metric small{
@@ -132,7 +156,9 @@ button.gray{background:#343a40}
   margin-bottom:5px;
 }
 
-.metric strong{font-size:18px}
+.metric strong{
+  font-size:17px;
+}
 
 .long{color:#35d07f!important}
 .short{color:#ff5c70!important}
@@ -140,44 +166,62 @@ button.gray{background:#343a40}
 .blue{color:#54b4ff!important}
 .muted{color:#8491a1}
 
-.signal{
-  padding:14px;
-  border-radius:10px;
-  background:#101721;
-  border:1px solid #283442;
-  margin-bottom:8px;
+.coin-title{
+  font-size:22px;
+  font-weight:bold;
 }
 
-.signal.long{border-color:#087f5b}
-.signal.short{border-color:#a61e4d}
+.pill{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  background:#17212d;
+  margin:3px;
+}
 
 .scorebar{
-  height:9px;
+  height:8px;
   border-radius:20px;
   background:#1b2430;
   overflow:hidden;
-  margin-top:7px;
+  margin-top:6px;
 }
 
 .scorefill{
   height:100%;
-  width:0%;
   background:#35d07f;
 }
 
-.scorefill.red{background:#ff5c70}
+.scorefill.red{
+  background:#ff5c70;
+}
 
 details{
   background:#101721;
   border:1px solid #25313e;
-  border-radius:10px;
-  margin-top:9px;
+  border-radius:9px;
+  margin-top:8px;
 }
 
 summary{
   cursor:pointer;
-  padding:11px;
+  padding:10px;
   font-weight:bold;
+  list-style:none;
+}
+
+summary::-webkit-details-marker{
+  display:none;
+}
+
+summary:before{
+  content:"＋";
+  margin-left:7px;
+  color:#54b4ff;
+}
+
+details[open]>summary:before{
+  content:"−";
 }
 
 .details-body{
@@ -194,15 +238,155 @@ summary{
   color:#bdc8d4;
 }
 
-.tag.long{background:#073d2e}
-.tag.short{background:#4b1525}
+.tag.long{
+  background:#073d2e;
+}
 
-.table-wrap{overflow:auto}
+.tag.short{
+  background:#4b1525;
+}
+
+.section-title{
+  color:#54b4ff;
+  font-weight:bold;
+  margin:10px 0 6px;
+}
+
+.method-box{
+  background:#0b1119;
+  border:1px solid #222e3b;
+  border-radius:8px;
+  padding:9px;
+  margin-bottom:7px;
+}
+
+.method-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+
+.method-name{
+  font-weight:bold;
+}
+
+.reason{
+  margin-top:7px;
+  color:#aeb9c5;
+  line-height:1.8;
+}
+
+.signal-card{
+  background:#101721;
+  border:1px solid #283442;
+  border-radius:10px;
+  margin-top:8px;
+  overflow:hidden;
+}
+
+.signal-head{
+  padding:11px;
+  cursor:pointer;
+}
+
+.signal-head.long{
+  border-right:4px solid #087f5b;
+}
+
+.signal-head.short{
+  border-right:4px solid #a61e4d;
+}
+
+.signal-body{
+  padding:10px;
+  border-top:1px solid #25313e;
+}
+
+.big-score{
+  font-size:24px;
+  font-weight:bold;
+}
+
+.level-box{
+  background:#101721;
+  border:1px solid #283442;
+  border-radius:9px;
+  padding:10px;
+  margin-top:8px;
+}
+
+.level-grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:5px;
+  margin-top:8px;
+}
+
+@media(max-width:700px){
+  .level-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+.level{
+  text-align:center;
+  padding:7px 3px;
+  border-radius:6px;
+  background:#17212d;
+  font-size:11px;
+  color:#8491a1;
+}
+
+.level.active{
+  background:#1769aa;
+  color:#fff;
+  font-weight:bold;
+}
+
+.level.current{
+  outline:2px solid #ffc857;
+}
+
+.checkbox-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+}
+
+@media(max-width:650px){
+  .checkbox-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+.check{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#0b1119;
+  padding:8px;
+  border-radius:7px;
+  border:1px solid #222e3b;
+}
+
+.check input{
+  flex:none;
+  min-width:auto;
+}
+
+.scan-controls{
+  margin-top:8px;
+}
+
+.table-wrap{
+  overflow:auto;
+}
 
 table{
   width:100%;
   border-collapse:collapse;
-  min-width:650px;
+  min-width:700px;
 }
 
 th,td{
@@ -216,137 +400,15 @@ th{
   background:#111923;
 }
 
-.section-title{
-  color:#54b4ff;
-  font-weight:bold;
-  margin:14px 0 8px;
-}
-
-.checkbox-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
-}
-
-@media(max-width:650px){
-  .checkbox-grid{grid-template-columns:repeat(2,1fr)}
-}
-
-.check{
-  display:flex;
-  gap:7px;
-  align-items:center;
-  background:#0b1119;
-  padding:8px;
-  border-radius:7px;
-  border:1px solid #222e3b;
-}
-
-.check input{
-  min-width:auto;
-  flex:none;
-}
-
-.hidden{display:none!important}
-
-.coin-title{
-  font-size:22px;
-  font-weight:bold;
-}
-
-.pill{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  background:#17212d;
-  margin:3px;
-}
-
-.loading{
-  text-align:center;
-  padding:25px;
-  color:#8e9aaa;
-}
-
-.error{
-  background:#421721;
-  border:1px solid #8d2638;
-  padding:10px;
-  border-radius:8px;
-  color:#ff9aa8;
-}
-
-.success{
-  background:#073d2e;
-  border:1px solid #087f5b;
-  padding:10px;
-  border-radius:8px;
-  color:#6ee7b7;
-}
-
-.radar-item{
-  background:#101721;
-  border:1px solid #25313e;
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:7px;
-}
-
-.big-score{
-  font-size:25px;
-  font-weight:bold;
-}
-
-.level-box{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:7px;
-  margin-top:10px;
-}
-
-@media(max-width:650px){
-  .level-box{grid-template-columns:repeat(2,1fr)}
-}
-
-.level-btn{
-  background:#101721;
-  border:1px solid #303b49;
-  color:#bdc8d4;
-  padding:10px 7px;
-  border-radius:8px;
-  text-align:center;
-}
-
-.level-btn.active{
-  background:#1769aa;
-  border-color:#54b4ff;
-  color:#fff;
-}
-
-.level-description{
-  margin-top:10px;
-  padding:10px;
-  background:#111923;
-  border-radius:8px;
-  color:#bdc8d4;
-}
-
-.level-badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:20px;
-  background:#17212d;
-  color:#ffc857;
-  font-weight:bold;
-}
-
 hr{
   border:0;
   border-top:1px solid #202a36;
-  margin:12px 0;
+  margin:10px 0;
 }
 
-small{color:#8491a1}
+.hidden{
+  display:none!important;
+}
 </style>
 </head>
 
@@ -354,15 +416,14 @@ small{color:#8491a1}
 
 <div class="header">
   <h1>📊 اسکنر هوشمند Bybit</h1>
-  <p>
-    Smart Money • SMC • ICT • MA • MACD • RSI • Ichimoku •
-    Footprint • Liquidity • Pump/Dump
-  </p>
+  <p>Smart Money • SMC • ICT • MA • Footprint • Liquidity • Pump/Dump</p>
 </div>
 
 <div class="container">
 
-<!-- SEARCH -->
+<!-- =====================================================
+     SEARCH
+===================================================== -->
 
 <div class="card">
 
@@ -378,122 +439,126 @@ small{color:#8491a1}
       autocomplete="off"
     >
 
-    <select id="manualMarket">
-      <option value="auto">🔄 کل بازار</option>
-      <option value="linear">📈 Futures</option>
-      <option value="spot">💰 Spot</option>
-    </select>
-
     <button onclick="manualAnalyze()">
       بررسی
     </button>
 
   </div>
 
-  <div class="status" id="searchStatus">
-    اگر ارز در Futures نباشد، نسخه Spot آن بررسی می‌شود.
+  <div id="searchStatus" class="status">
+    نام ارز را وارد کن.
   </div>
+
+  <div id="manualResult"></div>
 
 </div>
 
 
-<!-- SIGNAL LEVEL -->
+<!-- =====================================================
+     ROTATING SCANNER + STRICTNESS
+===================================================== -->
 
 <div class="card">
 
   <div class="card-title">
-
-    <span>
-      🎯 سطح سخت‌گیری واقعی سیگنال
-    </span>
-
-    <span
-      id="levelBadge"
-      class="level-badge"
-    >
-      زیاد
-    </span>
-
+    🔄 اسکن چرخشی بازار
+    <button onclick="runScan()">اسکن ۱۰ ارز</button>
   </div>
 
-  <div class="level-box">
-
-    <button
-      class="level-btn"
-      data-level="VERY_LOW"
-      onclick="setSignalLevel('VERY_LOW')"
-    >
-      خیلی کم
-    </button>
-
-    <button
-      class="level-btn"
-      data-level="LOW"
-      onclick="setSignalLevel('LOW')"
-    >
-      کم
-    </button>
-
-    <button
-      class="level-btn"
-      data-level="MEDIUM"
-      onclick="setSignalLevel('MEDIUM')"
-    >
-      متوسط
-    </button>
-
-    <button
-      class="level-btn active"
-      data-level="HIGH"
-      onclick="setSignalLevel('HIGH')"
-    >
-      زیاد
-    </button>
-
-    <button
-      class="level-btn"
-      data-level="VERY_HIGH"
-      onclick="setSignalLevel('VERY_HIGH')"
-    >
-      خیلی زیاد
-    </button>
-
-    <button
-      class="level-btn"
-      data-level="EXTREME"
-      onclick="setSignalLevel('EXTREME')"
-    >
-      فوق‌العاده سخت
-    </button>
-
-  </div>
-
-  <div
-    id="levelDescription"
-    class="level-description"
-  >
-    حداقل امتیاز بالا و نیازمند تأیید چندگانه است.
-  </div>
-
-  <div class="status">
-    این سطح فقط ظاهر رابط نیست؛ Worker نیز سطح انتخاب‌شده را برای فیلتر واقعی سیگنال استفاده می‌کند.
-  </div>
-
-</div>
-
-
-<!-- METHODS -->
-
-<div class="card">
-
-  <div class="card-title">
-    ⚙️ روش‌های مورد استفاده برای سیگنال
-  </div>
+  <!-- STRICTNESS -->
 
   <details open>
 
     <summary>
-      انتخاب اندیکاتورها و روش‌های تحلیل
+      🎚 درجه سخت‌گیری سیگنال
+    </summary>
+
+    <div class="details-body">
+
+      <div class="level-box">
+
+        <div>
+          سطح فعلی:
+          <b id="strictLabel" class="yellow">
+            زیاد
+          </b>
+        </div>
+
+        <div class="muted" style="margin-top:5px">
+          هرچه سطح بالاتر باشد، برای صادر شدن سیگنال
+          شواهد و امتیاز بیشتری لازم است.
+        </div>
+
+        <div class="level-grid">
+
+          <div
+            class="level"
+            data-level="0"
+            onclick="setStrict(0)"
+          >
+            خیلی کم
+          </div>
+
+          <div
+            class="level"
+            data-level="1"
+            onclick="setStrict(1)"
+          >
+            کم
+          </div>
+
+          <div
+            class="level"
+            data-level="2"
+            onclick="setStrict(2)"
+          >
+            متوسط
+          </div>
+
+          <div
+            class="level"
+            data-level="3"
+            onclick="setStrict(3)"
+          >
+            زیاد
+          </div>
+
+          <div
+            class="level"
+            data-level="4"
+            onclick="setStrict(4)"
+          >
+            خیلی زیاد
+          </div>
+
+          <div
+            class="level"
+            data-level="5"
+            onclick="setStrict(5)"
+          >
+            فوق‌العاده سخت
+          </div>
+
+        </div>
+
+        <div
+          id="strictInfo"
+          class="status"
+        ></div>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <!-- METHODS -->
+
+  <details>
+
+    <summary>
+      🎯 روش‌های مختلف سیگنال‌گیری
     </summary>
 
     <div class="details-body">
@@ -527,7 +592,7 @@ small{color:#8491a1}
 
         <label class="check">
           <input type="checkbox" value="smc" checked>
-          SMC
+          Smart Money
         </label>
 
         <label class="check">
@@ -572,7 +637,7 @@ small{color:#8491a1}
 
         <label class="check">
           <input type="checkbox" value="oi" checked>
-          OI
+          Open Interest
         </label>
 
         <label class="check">
@@ -582,7 +647,7 @@ small{color:#8491a1}
 
       </div>
 
-      <div style="margin-top:10px">
+      <div style="margin-top:8px">
 
         <button
           class="green"
@@ -604,34 +669,13 @@ small{color:#8491a1}
 
   </details>
 
-</div>
 
-
-<!-- MANUAL RESULT -->
-
-<div id="manualResult"></div>
-
-
-<!-- SCANNER -->
-
-<div class="card">
-
-  <div class="card-title">
-
-    <span>
-      🔄 اسکن چرخشی بازار
-    </span>
-
-    <button onclick="runScan()">
-      اسکن ۲۰ ارز
-    </button>
-
-  </div>
+  <!-- SCAN RESULT -->
 
   <div id="scanResult">
 
-    <div class="muted">
-      برای بررسی بازار روی «اسکن ۲۰ ارز» بزن.
+    <div class="muted" style="margin-top:10px">
+      برای شروع روی «اسکن ۱۰ ارز» بزن.
     </div>
 
   </div>
@@ -639,31 +683,23 @@ small{color:#8491a1}
 </div>
 
 
-<!-- RADAR -->
+<!-- =====================================================
+     RADAR
+===================================================== -->
 
 <div class="card">
 
   <div class="card-title">
-
-    <span>
-      🚨 رادار Pump / Dump / Reversal
-    </span>
-
+    🚨 رادار Pump / Dump / Reversal
     <button onclick="runRadar()">
-      اجرای رادار
+      اجرا
     </button>
-
-  </div>
-
-  <div class="status">
-    رادار حرکت کوتاه‌مدت، حجم، Hunt، ساختار، MA،
-    Order Book، Footprint و برگشت احتمالی بعد از Pump/Dump را بررسی می‌کند.
   </div>
 
   <div id="radarResult">
 
     <div class="muted">
-      هنوز رادار اجرا نشده است.
+      هنوز اجرا نشده است.
     </div>
 
   </div>
@@ -671,7 +707,9 @@ small{color:#8491a1}
 </div>
 
 
-<!-- HEALTH -->
+<!-- =====================================================
+     HEALTH
+===================================================== -->
 
 <div class="card">
 
@@ -697,202 +735,134 @@ small{color:#8491a1}
 
 <script>
 
+/* =====================================================
+   GLOBAL SETTINGS
+===================================================== */
+
 let scanOffset=0;
 let radarOffset=0;
 
-
-/* =====================================================
-   SIGNAL LEVEL
-===================================================== */
-
-const SIGNAL_LEVELS={
-
-  VERY_LOW:{
-    label:"خیلی کم",
-    description:
-      "شرایط آسان‌تر است؛ سیگنال بیشتری نمایش داده می‌شود و برای شروع مناسب است."
+const STRICT_LEVELS=[
+  {
+    name:"خیلی کم",
+    score:45,
+    evidence:2,
+    text:"سیگنال‌های اولیه با حداقل شواهد."
   },
-
-  LOW:{
-    label:"کم",
-    description:
-      "فیلتر کمی سخت‌تر است و باید شواهد بیشتری برای سیگنال وجود داشته باشد."
+  {
+    name:"کم",
+    score:55,
+    evidence:3,
+    text:"حداقل سه تأیید برای عبور سیگنال."
   },
-
-  MEDIUM:{
-    label:"متوسط",
-    description:
-      "برای سیگنال معتبر، ساختار بازار نیز باید تأیید شود."
+  {
+    name:"متوسط",
+    score:65,
+    evidence:4,
+    text:"ساختار بازار باید هم‌جهت سیگنال باشد."
   },
-
-  HIGH:{
-    label:"زیاد",
-    description:
-      "امتیاز بالا و تأیید HTF، ساختار، جریان سفارش و حجم لازم است."
+  {
+    name:"زیاد",
+    score:75,
+    evidence:5,
+    text:"ساختار، جریان سفارش و حجم باید تأیید کنند."
   },
-
-  VERY_HIGH:{
-    label:"خیلی زیاد",
-    description:
-      "فیلتر بسیار سخت است؛ فقط موقعیت‌هایی با شواهد متعدد عبور می‌کنند."
+  {
+    name:"خیلی زیاد",
+    score:85,
+    evidence:6,
+    text:"تأیید چندلایه و تایم‌فریم بالاتر لازم است."
   },
-
-  EXTREME:{
-    label:"فوق‌العاده سخت",
-    description:
-      "سخت‌ترین حالت؛ تنها سیگنال‌هایی با بیشترین همگرایی شواهد نمایش داده می‌شوند."
+  {
+    name:"فوق‌العاده سخت",
+    score:92,
+    evidence:7,
+    text:"فقط سیگنال‌های بسیار قوی و چندلایه عبور می‌کنند."
   }
+];
 
-};
-
-
-let signalLevel=
-  localStorage.getItem("signalLevel")
-  || "HIGH";
-
-
-function setSignalLevel(level){
-
-  if(!SIGNAL_LEVELS[level]){
-    level="HIGH";
-  }
-
-  signalLevel=level;
-
-  localStorage.setItem(
-    "signalLevel",
-    level
-  );
-
-  updateLevelUI();
-
-}
-
-
-function updateLevelUI(){
-
-  const data=
-    SIGNAL_LEVELS[signalLevel]
-    || SIGNAL_LEVELS.HIGH;
-
-  const badge=
-    document.getElementById(
-      "levelBadge"
-    );
-
-  const desc=
-    document.getElementById(
-      "levelDescription"
-    );
-
-  if(badge){
-    badge.textContent=data.label;
-  }
-
-  if(desc){
-    desc.textContent=data.description;
-  }
-
-  document
-    .querySelectorAll(".level-btn")
-    .forEach(btn=>{
-
-      btn.classList.toggle(
-        "active",
-        btn.dataset.level===signalLevel
-      );
-
-    });
-
-}
+let strictLevel=3;
 
 
 /* =====================================================
    SETTINGS
 ===================================================== */
 
-function loadSettings(){
+function setStrict(level){
 
-  const savedLevel=
-    localStorage.getItem(
-      "signalLevel"
-    );
+  strictLevel=Number(level);
 
-  if(
-    savedLevel &&
-    SIGNAL_LEVELS[savedLevel]
-  ){
+  localStorage.setItem(
+    "strictLevel",
+    strictLevel
+  );
 
-    signalLevel=savedLevel;
-
-  }else{
-
-    signalLevel="HIGH";
-
-  }
-
-  updateLevelUI();
-
-
-  const methods=
-    JSON.parse(
-      localStorage.getItem(
-        "signalMethods"
-      ) || "null"
-    );
-
-
-  if(methods){
-
-    document
-      .querySelectorAll(
-        ".checkbox-grid input"
-      )
-      .forEach(x=>{
-
-        x.checked=
-          methods.includes(
-            x.value
-          );
-
-      });
-
-  }
-
+  updateStrictUI();
 }
 
+function updateStrictUI(){
 
-function getSignalLevel(){
+  const x=
+    STRICT_LEVELS[strictLevel];
 
-  return signalLevel;
+  document.getElementById(
+    "strictLabel"
+  ).textContent=x.name;
+
+  document.getElementById(
+    "strictInfo"
+  ).innerHTML=`
+    حداقل امتیاز:
+    <b class="yellow">${x.score}</b>
+    |
+    حداقل شواهد:
+    <b class="blue">${x.evidence}</b>
+    <br>
+    <span class="muted">${x.text}</span>
+  `;
+
+  document
+    .querySelectorAll(".level")
+    .forEach(el=>{
+
+      const n=
+        Number(el.dataset.level);
+
+      el.classList.toggle(
+        "active",
+        n<=strictLevel
+      );
+
+      el.classList.toggle(
+        "current",
+        n===strictLevel
+      );
+    });
+}
+
+function getStrictConfig(){
+  return STRICT_LEVELS[strictLevel];
 }
 
 
 function getMethods(){
 
-  const arr=[];
+  const result=[];
 
   document
     .querySelectorAll(
       ".checkbox-grid input:checked"
     )
     .forEach(x=>{
-
-      arr.push(
-        x.value
-      );
-
+      result.push(x.value);
     });
-
 
   localStorage.setItem(
     "signalMethods",
-    JSON.stringify(arr)
+    JSON.stringify(result)
   );
 
-
-  return arr;
-
+  return result;
 }
 
 
@@ -907,7 +877,6 @@ function selectAllMethods(){
     });
 
   getMethods();
-
 }
 
 
@@ -922,7 +891,48 @@ function clearMethods(){
     });
 
   getMethods();
+}
 
+
+function loadSettings(){
+
+  const savedLevel=
+    localStorage.getItem(
+      "strictLevel"
+    );
+
+  if(savedLevel!==null){
+
+    strictLevel=
+      Math.max(
+        0,
+        Math.min(
+          5,
+          Number(savedLevel)
+        )
+      );
+  }
+
+  const methods=
+    JSON.parse(
+      localStorage.getItem(
+        "signalMethods"
+      ) || "null"
+    );
+
+  if(methods){
+
+    document
+      .querySelectorAll(
+        ".checkbox-grid input"
+      )
+      .forEach(x=>{
+        x.checked=
+          methods.includes(x.value);
+      });
+  }
+
+  updateStrictUI();
 }
 
 
@@ -940,37 +950,25 @@ async function api(url){
       }
     );
 
-
   let d;
 
   try{
-
     d=await r.json();
-
-  }catch(e){
-
+  }catch{
     throw new Error(
-      "پاسخ سرور قابل خواندن نیست."
+      "پاسخ نامعتبر از Worker دریافت شد."
     );
-
   }
 
-
-  if(
-    !r.ok ||
-    d.ok===false
-  ){
+  if(!r.ok || d.ok===false){
 
     throw new Error(
       d.error ||
       "خطا در دریافت اطلاعات"
     );
-
   }
 
-
   return d;
-
 }
 
 
@@ -986,182 +984,89 @@ async function manualAnalyze(){
         "symbolInput"
       )
       .value
-      .trim();
-
+      .trim()
+      .toUpperCase();
 
   if(!input){
 
-    alert(
-      "نام ارز را وارد کن."
-    );
-
+    alert("نام ارز را وارد کن.");
     return;
-
   }
-
-
-  const market=
-    document
-      .getElementById(
-        "manualMarket"
-      )
-      .value;
-
 
   const box=
     document.getElementById(
       "manualResult"
     );
 
-
   const status=
     document.getElementById(
       "searchStatus"
     );
 
-
   box.innerHTML=`
-    <div class="card loading">
-      ⏳ در حال جستجوی
-      ${escapeHtml(input)}
-      در بازار...
+    <div class="loading">
+      ⏳ در حال تحلیل ${escapeHtml(input)}...
     </div>
   `;
 
-
   status.textContent=
-    "در حال جستجوی Spot و Futures...";
-
+    "در حال دریافت اطلاعات بازار و تحلیل...";
 
   try{
 
     const search=
       await api(
-        `/api/search?symbol=${
-          encodeURIComponent(input)
-        }`
+        "/api/search?symbol="+
+        encodeURIComponent(input)
       );
 
+    let chosen=
+      search.futures ||
+      search.spot;
 
-    let chosen=null;
-    let category=null;
+    if(!chosen){
 
-
-    if(market==="linear"){
-
-      if(search.futures){
-
-        chosen=search.futures;
-        category="linear";
-
-      }else{
-
-        throw new Error(
-          "این ارز در Futures پیدا نشد."
-        );
-
-      }
-
+      throw new Error(
+        "این ارز در بازار پیدا نشد."
+      );
     }
 
+    const category=
+      search.futures
+        ? "linear"
+        : "spot";
 
-    else if(market==="spot"){
-
-      if(search.spot){
-
-        chosen=search.spot;
-        category="spot";
-
-      }else{
-
-        throw new Error(
-          "این ارز در Spot پیدا نشد."
-        );
-
-      }
-
-    }
-
-
-    else{
-
-      if(search.futures){
-
-        chosen=search.futures;
-        category="linear";
-
-      }
-
-      else if(search.spot){
-
-        chosen=search.spot;
-        category="spot";
-
-      }
-
-      else{
-
-        throw new Error(
-          "این ارز در Spot و Futures پیدا نشد."
-        );
-
-      }
-
-    }
-
+    const d=
+      await api(
+        "/api/analyze?symbol="+
+        encodeURIComponent(
+          chosen.symbol
+        )+
+        "&category="+
+        category
+      );
 
     status.innerHTML=
-      category==="linear"
-      ? "🟢 ارز در Futures پیدا شد."
-      : "🟡 Futures موجود نیست؛ نسخه Spot نمایش داده شد. OI و Funding برای Spot موجود نیست.";
+      "🟢 تحلیل با موفقیت انجام شد.";
 
-
-    const level=
-      getSignalLevel();
-
-
-    const methods=
-      getMethods();
-
-
-    const data=
-      await api(
-        `/api/analyze?symbol=${
-          encodeURIComponent(chosen.symbol)
-        }&category=${category}&level=${
-          encodeURIComponent(level)
-        }&methods=${
-          encodeURIComponent(
-            methods.join(",")
-          )
-        }`
-      );
-
-
-    renderManual(
-      data
-    );
-
+    renderManual(d);
 
   }catch(e){
 
-    status.textContent=
-      e.message;
-
+    status.innerHTML=
+      "❌ "+escapeHtml(e.message);
 
     box.innerHTML=`
-      <div class="card error">
-        ❌ ${escapeHtml(e.message)}
+      <div class="error">
+        ${escapeHtml(e.message)}
       </div>
     `;
-
   }
-
 }
 
 
 /* =====================================================
-   MANUAL RENDER
+   MANUAL RESULT
 ===================================================== */
 
 function renderManual(d){
@@ -1171,348 +1076,934 @@ function renderManual(d){
       "manualResult"
     );
 
+  const cfg=
+    getStrictConfig();
 
-  const methods=
-    getMethods();
+  const longScore=
+    Number(d.longScore||0);
 
+  const shortScore=
+    Number(d.shortScore||0);
 
-  const level=
-    getSignalLevel();
+  const bestScore=
+    Math.max(
+      longScore,
+      shortScore
+    );
 
+  const passed=
+    bestScore>=cfg.score;
 
   let direction=
-    d.direction ||
-    "WAIT";
+    d.direction;
 
+  if(!passed){
+    direction="WAIT";
+  }
 
-  /*
-    Worker جدید باید direction نهایی را
-    براساس سطح واقعی سخت‌گیری تعیین کند.
-    اینجا دیگر threshold جعلی سمت UI نداریم.
-  */
-
-
-  const directionClass=
+  const cls=
     direction==="LONG"
-    ? "long"
-    : direction==="SHORT"
-      ? "short"
-      : "yellow";
-
+      ? "long"
+      : direction==="SHORT"
+        ? "short"
+        : "yellow";
 
   box.innerHTML=`
 
-  <div class="card">
+    <div class="card">
 
-    <div class="coin-title">
-      ${escapeHtml(d.symbol)}
-    </div>
+      <div class="coin-title">
+        ${escapeHtml(d.symbol)}
+      </div>
 
-    <div class="muted">
+      <div style="margin-top:8px">
 
-      ${
-        d.category==="linear"
-        ? "📈 Futures"
-        : "💰 Spot"
-      }
+        <span class="pill">
+          قیمت:
+          ${fmtPrice(d.price)}
+        </span>
 
-    </div>
+        <span class="pill">
+          وضعیت:
+          <b class="${cls}">
+            ${direction}
+          </b>
+        </span>
 
+        <span class="pill">
+          سطح:
+          ${cfg.name}
+        </span>
 
-    <div style="margin-top:10px">
+      </div>
 
-      <span class="pill">
-        قیمت:
-        ${fmtPrice(d.price)}
-      </span>
+      <div class="grid" style="margin-top:8px">
 
+        <div class="metric">
 
-      <span class="pill">
-        سیگنال:
+          <small>
+            Long Score
+          </small>
 
-        <b class="${directionClass}">
-          ${direction}
+          <strong class="long">
+            ${longScore}
+          </strong>
+
+          <div class="scorebar">
+
+            <div
+              class="scorefill"
+              style="width:${Math.min(
+                100,
+                longScore
+              )}%"
+            ></div>
+
+          </div>
+
+        </div>
+
+        <div class="metric">
+
+          <small>
+            Short Score
+          </small>
+
+          <strong class="short">
+            ${shortScore}
+          </strong>
+
+          <div class="scorebar">
+
+            <div
+              class="scorefill red"
+              style="width:${Math.min(
+                100,
+                shortScore
+              )}%"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="status">
+
+        ${passed
+          ? "🟢 سیگنال از فیلتر سخت‌گیری عبور کرده است."
+          : "🟡 شرایط هنوز به حد لازم برای این سطح سخت‌گیری نرسیده؛ نتیجه WAIT است."
+        }
+
+        <br>
+
+        حداقل امتیاز این سطح:
+        <b class="yellow">
+          ${cfg.score}
         </b>
 
-      </span>
-
-
-      <span class="pill">
-        سطح:
-        ${SIGNAL_LEVELS[level]?.label || level}
-      </span>
-
-
-      ${
-        d.signalLevel
-        ? `
-          <span class="pill">
-            سطح Worker:
-            ${escapeHtml(d.signalLevel)}
-          </span>
-        `
-        : ""
-      }
-
-    </div>
-
-  </div>
-
-
-  <div class="grid">
-
-    <div class="metric">
-
-      <small>
-        امتیاز Long
-      </small>
-
-      <strong class="long">
-        ${safeNumber(d.longScore)}
-      </strong>
-
-      <div class="scorebar">
-
-        <div
-          class="scorefill"
-          style="width:${scoreWidth(d.longScore)}%"
-        ></div>
-
       </div>
 
     </div>
 
 
-    <div class="metric">
+    <details>
 
-      <small>
-        امتیاز Short
-      </small>
+      <summary>
+        🔬 تحلیل عمیق ${escapeHtml(d.symbol)}
+      </summary>
 
-      <strong class="short">
-        ${safeNumber(d.shortScore)}
-      </strong>
+      <div class="details-body">
 
-      <div class="scorebar">
-
-        <div
-          class="scorefill red"
-          style="width:${scoreWidth(d.shortScore)}%"
-        ></div>
+        ${renderDeepAnalysis(d)}
 
       </div>
 
-    </div>
-
-
-    <div class="metric">
-
-      <small>
-        Pump
-      </small>
-
-      <strong class="long">
-        ${safeNumber(d.pumpScore)}
-      </strong>
-
-    </div>
-
-
-    <div class="metric">
-
-      <small>
-        Dump
-      </small>
-
-      <strong class="short">
-        ${safeNumber(d.dumpScore)}
-      </strong>
-
-    </div>
-
-  </div>
-
-
-  ${renderMarket(d)}
-
-  ${renderTimeframes(d)}
-
-  ${renderSignalMethods(d,methods)}
-
-  ${renderFootprint(d.footprint)}
-
-  ${renderWalls(d.walls)}
-
-  ${renderSupportResistance(d.supportResistance)}
-
-  ${renderMovement(d.movement)}
-
-  ${renderReversal(d.reversal)}
-
-  ${renderReasons(d.reasons)}
+    </details>
 
   `;
-
 }
 
 
 /* =====================================================
-   MARKET
+   DEEP ANALYSIS
 ===================================================== */
 
-function renderMarket(d){
+function renderDeepAnalysis(d){
 
-  const m=d.market || {};
+  const tf=
+    d.timeframes?.["1"] ||
+    {};
 
+  const methods=
+    getMethods();
 
   return `
 
-  <div class="card">
+    ${methodBox(
+      "📈 Moving Average",
+      methods.includes("ma"),
+      getMAStatus(tf),
+      getMAReason(tf)
+    )}
 
-    <div class="card-title">
-      💰 Futures Market Data
-    </div>
+    ${methodBox(
+      "📊 MACD",
+      methods.includes("macd"),
+      getIndicatorStatus(
+        d,
+        "macd"
+      ),
+      getIndicatorReason(
+        d,
+        "macd"
+      )
+    )}
 
+    ${methodBox(
+      "📉 RSI",
+      methods.includes("rsi"),
+      getIndicatorStatus(
+        d,
+        "rsi"
+      ),
+      getIndicatorReason(
+        d,
+        "rsi"
+      )
+    )}
 
-    <div class="grid3">
+    ${methodBox(
+      "☁️ Ichimoku",
+      methods.includes("ichimoku"),
+      getIndicatorStatus(
+        d,
+        "ichimoku"
+      ),
+      getIndicatorReason(
+        d,
+        "ichimoku"
+      )
+    )}
 
-      <div class="metric">
+    ${methodBox(
+      "🔀 Divergence",
+      methods.includes("divergence"),
+      getIndicatorStatus(
+        d,
+        "divergence"
+      ),
+      getIndicatorReason(
+        d,
+        "divergence"
+      )
+    )}
 
-        <small>
-          Open Interest
-        </small>
+    ${methodBox(
+      "🧠 Smart Money",
+      methods.includes("smc"),
+      getSMCStatus(d),
+      getSMCReason(d)
+    )}
 
-        <strong>
-          ${
-            m.openInterest==null
-            ? "-"
-            : fmtNum(m.openInterest)
-          }
-        </strong>
+    ${methodBox(
+      "🎯 ICT",
+      methods.includes("ict"),
+      getICTStatus(d),
+      getICTReason(d)
+    )}
 
-      </div>
+    ${methodBox(
+      "🪤 Liquidity Hunt",
+      methods.includes("hunt"),
+      tf.hunt?.side || "NONE",
+      getHuntReason(tf)
+    )}
 
+    ${methodBox(
+      "📐 FVG",
+      methods.includes("fvg"),
+      tf.fvg?.type || "NONE",
+      getFVGReason(tf)
+    )}
 
-      <div class="metric">
+    ${methodBox(
+      "🏗 BOS / CHoCH",
+      methods.includes("bos"),
+      getStructureStatus(tf),
+      getStructureReason(tf)
+    )}
 
-        <small>
-          Funding Rate
-        </small>
+    ${methodBox(
+      "🧱 Order Block",
+      methods.includes("ob"),
+      tf.orderBlock?.type || "NONE",
+      getOBReason(tf)
+    )}
 
-        <strong class="${
-          Number(m.fundingRate)>0
-          ? "long"
-          : Number(m.fundingRate)<0
-            ? "short"
-            : ""
-        }">
+    ${methodBox(
+      "📦 Volume",
+      methods.includes("volume"),
+      getVolumeStatus(d),
+      getVolumeReason(d)
+    )}
 
-          ${
-            m.fundingRate==null
-            ? "-"
-            : fmtPct(
-                Number(m.fundingRate)*100
-              )
-          }
+    ${methodBox(
+      "👣 Footprint",
+      methods.includes("footprint"),
+      getFootprintStatus(d),
+      getFootprintReason(d)
+    )}
 
-        </strong>
+    ${methodBox(
+      "🧱 Order Book",
+      methods.includes("orderbook"),
+      getOrderBookStatus(d),
+      getOrderBookReason(d)
+    )}
 
-      </div>
+    ${methodBox(
+      "📊 Open Interest",
+      methods.includes("oi"),
+      getOIStatus(d),
+      getOIReason(d)
+    )}
 
+    ${methodBox(
+      "💰 Funding",
+      methods.includes("funding"),
+      getFundingStatus(d),
+      getFundingReason(d)
+    )}
 
-      <div class="metric">
+    ${renderTimeframes(d)}
 
-        <small>
-          تغییر قیمت 24h
-        </small>
+    ${renderMarketData(d)}
 
-        <strong class="${
-          Number(m.change24h)>0
-          ? "long"
-          : Number(m.change24h)<0
-            ? "short"
-            : ""
-        }">
+    ${renderConvertedMA(d)}
 
-          ${
-            m.change24h==null
-            ? "-"
-            : fmtPct(m.change24h)
-          }
-
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <small>
-          Turnover 24h
-        </small>
-
-        <strong>
-          ${
-            m.turnover24h==null
-            ? "-"
-            : fmtNum(m.turnover24h)
-          }
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <small>
-          Mark Price
-        </small>
-
-        <strong>
-          ${
-            m.markPrice==null
-            ? "-"
-            : fmtPrice(m.markPrice)
-          }
-        </strong>
-
-      </div>
-
-
-      <div class="metric">
-
-        <small>
-          Index Price
-        </small>
-
-        <strong>
-          ${
-            m.indexPrice==null
-            ? "-"
-            : fmtPrice(m.indexPrice)
-          }
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    ${
-      d.category==="spot"
-      ? `
-        <div class="status">
-          ℹ️ این ارز فقط در Spot پیدا شد؛
-          OI و Funding برای آن نمایش داده نمی‌شود.
-        </div>
-      `
-      : ""
-    }
-
-  </div>
+    ${renderReasons(d.reasons)}
 
   `;
+}
 
+
+/* =====================================================
+   METHOD BOX
+===================================================== */
+
+function methodBox(
+  title,
+  enabled,
+  status,
+  reason
+){
+
+  if(!enabled){
+
+    return "";
+  }
+
+  const s=
+    String(status||"NONE")
+      .toUpperCase();
+
+  let cls="yellow";
+
+  if(
+    s.includes("LONG") ||
+    s.includes("BULL") ||
+    s.includes("UP") ||
+    s.includes("صعود")
+  ){
+    cls="long";
+  }
+
+  if(
+    s.includes("SHORT") ||
+    s.includes("BEAR") ||
+    s.includes("DOWN") ||
+    s.includes("نزول")
+  ){
+    cls="short";
+  }
+
+  return `
+
+    <details class="method-box">
+
+      <summary>
+
+        <span class="method-name">
+          ${title}
+        </span>
+
+        <span class="${cls}">
+          ${escapeHtml(status||"NONE")}
+        </span>
+
+      </summary>
+
+      <div class="details-body">
+
+        <div class="reason">
+          <b>دلیل:</b>
+          ${escapeHtml(
+            reason ||
+            "تأیید مشخصی برای این روش دریافت نشد."
+          )}
+        </div>
+
+      </div>
+
+    </details>
+
+  `;
+}
+
+
+/* =====================================================
+   INDICATOR HELPERS
+===================================================== */
+
+function getMAStatus(tf){
+
+  if(tf.trend==="BULLISH"){
+    return "LONG";
+  }
+
+  if(tf.trend==="BEARISH"){
+    return "SHORT";
+  }
+
+  return "NEUTRAL";
+}
+
+function getMAReason(tf){
+
+  if(!tf){
+    return "اطلاعات MA موجود نیست.";
+  }
+
+  return `
+    قیمت ${fmtPrice(tf.price)}
+    |
+    MA7 ${fmtPrice(tf.ma7)}
+    |
+    MA20 ${fmtPrice(tf.ma20)}
+    |
+    Trend ${tf.trend||"-"}
+    |
+    Slope ${tf.maSlope||"-"}
+  `;
+}
+
+
+function getIndicatorStatus(d,key){
+
+  const v=
+    d[key] ||
+    d.indicators?.[key] ||
+    d.analysis?.[key];
+
+  if(typeof v==="string"){
+    return v;
+  }
+
+  if(v?.signal){
+    return v.signal;
+  }
+
+  if(v?.direction){
+    return v.direction;
+  }
+
+  return "داده موجود نیست";
+}
+
+
+function getIndicatorReason(d,key){
+
+  const v=
+    d[key] ||
+    d.indicators?.[key] ||
+    d.analysis?.[key];
+
+  if(!v){
+    return "Worker برای این بخش داده‌ای برنگردانده است.";
+  }
+
+  if(typeof v==="string"){
+    return v;
+  }
+
+  return (
+    v.reason ||
+    v.reasons?.join(" | ") ||
+    JSON.stringify(v)
+  );
+}
+
+
+/* =====================================================
+   SMC / ICT
+===================================================== */
+
+function getSMCStatus(d){
+
+  const tf=
+    d.timeframes?.["1"] || {};
+
+  if(
+    tf.bos==="BULLISH" ||
+    tf.choch==="BULLISH" ||
+    tf.orderBlock?.type==="BULLISH"
+  ){
+    return "SMART MONEY صعودی";
+  }
+
+  if(
+    tf.bos==="BEARISH" ||
+    tf.choch==="BEARISH" ||
+    tf.orderBlock?.type==="BEARISH"
+  ){
+    return "SMART MONEY نزولی";
+  }
+
+  return "SMART MONEY خنثی";
+}
+
+
+function getSMCReason(d){
+
+  const tf=
+    d.timeframes?.["1"] || {};
+
+  return `
+    BOS: ${tf.bos||"-"}
+    |
+    CHoCH: ${tf.choch||"-"}
+    |
+    OB: ${tf.orderBlock?.type||"NONE"}
+    |
+    Hunt: ${tf.hunt?.side||"NONE"}
+  `;
+}
+
+
+function getICTStatus(d){
+
+  const tf=
+    d.timeframes?.["1"] || {};
+
+  if(
+    tf.fvg?.type ||
+    tf.hunt?.side ||
+    tf.choch
+  ){
+    return "ICT ACTIVE";
+  }
+
+  return "ICT خنثی";
+}
+
+
+function getICTReason(d){
+
+  const tf=
+    d.timeframes?.["1"] || {};
+
+  return `
+    FVG: ${tf.fvg?.type||"NONE"}
+    |
+    Hunt: ${tf.hunt?.side||"NONE"}
+    |
+    BOS: ${tf.bos||"-"}
+    |
+    CHoCH: ${tf.choch||"-"}
+  `;
+}
+
+
+/* =====================================================
+   STRUCTURE
+===================================================== */
+
+function getHuntReason(tf){
+
+  if(!tf.hunt?.side){
+    return "Liquidity Hunt شناسایی نشده است.";
+  }
+
+  return `
+    Hunt:
+    ${tf.hunt.side}
+    |
+    ساختار:
+    ${tf.bos||"-"}
+    /
+    ${tf.choch||"-"}
+  `;
+}
+
+
+function getFVGReason(tf){
+
+  if(!tf.fvg?.type){
+    return "FVG فعال شناسایی نشده است.";
+  }
+
+  return `
+    نوع FVG:
+    ${tf.fvg.type}
+  `;
+}
+
+
+function getStructureStatus(tf){
+
+  if(
+    tf.bos &&
+    tf.bos!=="NONE"
+  ){
+    return "BOS "+tf.bos;
+  }
+
+  if(
+    tf.choch &&
+    tf.choch!=="NONE"
+  ){
+    return "CHoCH "+tf.choch;
+  }
+
+  return "NO STRUCTURE";
+}
+
+
+function getStructureReason(tf){
+
+  return `
+    BOS: ${tf.bos||"-"}
+    |
+    CHoCH: ${tf.choch||"-"}
+  `;
+}
+
+
+function getOBReason(tf){
+
+  if(!tf.orderBlock){
+    return "Order Block شناسایی نشده است.";
+  }
+
+  return `
+    نوع:
+    ${tf.orderBlock.type||"NONE"}
+  `;
+}
+
+
+/* =====================================================
+   VOLUME / FOOTPRINT / BOOK / OI / FUNDING
+===================================================== */
+
+function getVolumeStatus(d){
+
+  const m=
+    d.movement || {};
+
+  const ratio=
+    Number(
+      m.volumeRatio||0
+    );
+
+  if(ratio>=2){
+    return "VOLUME قوی";
+  }
+
+  if(ratio>=1.2){
+    return "VOLUME فعال";
+  }
+
+  return "VOLUME معمولی";
+}
+
+
+function getVolumeReason(d){
+
+  const m=
+    d.movement || {};
+
+  return `
+    Volume Ratio:
+    ${Number(
+      m.volumeRatio||0
+    ).toFixed(2)}x
+    |
+    15m:
+    ${fmtPct(m.change15m)}
+    |
+    30m:
+    ${fmtPct(m.change30m)}
+  `;
+}
+
+
+function getFootprintStatus(d){
+
+  const fp=
+    d.footprint;
+
+  if(!fp){
+    return "NO DATA";
+  }
+
+  if(
+    Number(fp.delta)>0
+  ){
+    return "FOOTPRINT LONG";
+  }
+
+  if(
+    Number(fp.delta)<0
+  ){
+    return "FOOTPRINT SHORT";
+  }
+
+  return "FOOTPRINT NEUTRAL";
+}
+
+
+function getFootprintReason(d){
+
+  const fp=
+    d.footprint;
+
+  if(!fp){
+    return "Footprint داده‌ای ندارد.";
+  }
+
+  return `
+    Buy:
+    ${fmtNum(fp.buyVolume)}
+    |
+    Sell:
+    ${fmtNum(fp.sellVolume)}
+    |
+    Delta:
+    ${fmtNum(fp.delta)}
+    |
+    Delta %:
+    ${fmtPct(fp.deltaPercent)}
+  `;
+}
+
+
+function getOrderBookStatus(d){
+
+  const w=
+    d.walls;
+
+  if(!w){
+    return "NO DATA";
+  }
+
+  if(
+    w.buy &&
+    w.sell
+  ){
+
+    if(
+      Number(w.buy.notional) >
+      Number(w.sell.notional)
+    ){
+      return "ORDER BOOK LONG";
+    }
+
+    if(
+      Number(w.sell.notional) >
+      Number(w.buy.notional)
+    ){
+      return "ORDER BOOK SHORT";
+    }
+  }
+
+  return "ORDER BOOK NEUTRAL";
+}
+
+
+function getOrderBookReason(d){
+
+  const w=
+    d.walls;
+
+  if(!w){
+    return "Order Book داده‌ای ندارد.";
+  }
+
+  return `
+    Buy Wall:
+    ${w.buy ? fmtNum(w.buy.notional):"-"}
+    |
+    Sell Wall:
+    ${w.sell ? fmtNum(w.sell.notional):"-"}
+  `;
+}
+
+
+function getOIStatus(d){
+
+  const m=
+    d.market || {};
+
+  if(
+    m.openInterest==null
+  ){
+    return "OI موجود نیست";
+  }
+
+  return "OI ACTIVE";
+}
+
+
+function getOIReason(d){
+
+  const m=
+    d.market || {};
+
+  return `
+    Open Interest:
+    ${fmtNum(m.openInterest)}
+  `;
+}
+
+
+function getFundingStatus(d){
+
+  const m=
+    d.market || {};
+
+  if(
+    m.fundingRate==null
+  ){
+    return "Funding موجود نیست";
+  }
+
+  if(
+    Number(m.fundingRate)>0
+  ){
+    return "FUNDING مثبت";
+  }
+
+  if(
+    Number(m.fundingRate)<0
+  ){
+    return "FUNDING منفی";
+  }
+
+  return "FUNDING خنثی";
+}
+
+
+function getFundingReason(d){
+
+  const m=
+    d.market || {};
+
+  return `
+    Funding Rate:
+    ${
+      m.fundingRate==null
+        ? "-"
+        : fmtPct(
+            Number(
+              m.fundingRate
+            )*100
+          )
+    }
+  `;
+}
+
+
+/* =====================================================
+   MARKET DATA
+===================================================== */
+
+function renderMarketData(d){
+
+  const m=
+    d.market || {};
+
+  return `
+
+    <details>
+
+      <summary>
+        💰 اطلاعات بازار
+      </summary>
+
+      <div class="details-body">
+
+        <div class="grid3">
+
+          <div class="metric">
+            <small>Open Interest</small>
+            <strong>
+              ${fmtNum(m.openInterest)}
+            </strong>
+          </div>
+
+          <div class="metric">
+            <small>Funding</small>
+            <strong>
+              ${
+                m.fundingRate==null
+                  ? "-"
+                  : fmtPct(
+                      Number(
+                        m.fundingRate
+                      )*100
+                    )
+              }
+            </strong>
+          </div>
+
+          <div class="metric">
+            <small>24h Change</small>
+            <strong>
+              ${fmtPct(m.change24h)}
+            </strong>
+          </div>
+
+          <div class="metric">
+            <small>Turnover</small>
+            <strong>
+              ${fmtNum(m.turnover24h)}
+            </strong>
+          </div>
+
+          <div class="metric">
+            <small>Mark Price</small>
+            <strong>
+              ${fmtPrice(m.markPrice)}
+            </strong>
+          </div>
+
+          <div class="metric">
+            <small>Index Price</small>
+            <strong>
+              ${fmtPrice(m.indexPrice)}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+    </details>
+
+  `;
 }
 
 
@@ -1525,511 +2016,123 @@ function renderTimeframes(d){
   const tf=
     d.timeframes || {};
 
-
   let rows="";
 
+  Object
+    .entries(tf)
+    .forEach(([key,x])=>{
 
-  for(
-    const [key,x]
-    of Object.entries(tf)
-  ){
+      if(!x || x.error){
 
-    if(!x || x.error){
-
-      rows+=`
-        <tr>
-          <td>
-            ${key==="60" ? "1h" : key+"m"}
-          </td>
-
-          <td colspan="8">
-            ${escapeHtml(
-              x?.error || "-"
-            )}
-          </td>
-        </tr>
-      `;
-
-      continue;
-
-    }
-
-
-    rows+=`
-
-      <tr>
-
-        <td>
-          ${
-            key==="60"
-            ? "1h"
-            : key+"m"
-          }
-        </td>
-
-
-        <td>
-          ${fmtPrice(x.price)}
-        </td>
-
-
-        <td>
-          ${fmtPrice(x.ma7)}
-        </td>
-
-
-        <td>
-          ${fmtPrice(x.ma20)}
-        </td>
-
-
-        <td class="${
-          x.trend==="BULLISH"
-          ? "long"
-          : x.trend==="BEARISH"
-            ? "short"
-            : "yellow"
-        }">
-
-          ${escapeHtml(
-            x.trend || "-"
-          )}
-
-        </td>
-
-
-        <td>
-          ${escapeHtml(
-            x.maSlope || "-"
-          )}
-        </td>
-
-
-        <td>
-          ${escapeHtml(
-            x.bos || "-"
-          )}
-        </td>
-
-
-        <td>
-          ${escapeHtml(
-            x.choch || "-"
-          )}
-        </td>
-
-
-        <td>
-          ${escapeHtml(
-            x.hunt?.side || "-"
-          )}
-        </td>
-
-      </tr>
-
-    `;
-
-  }
-
-
-  return `
-
-  <div class="card">
-
-    <div class="card-title">
-      ⏱ تحلیل تایم‌فریم‌ها
-    </div>
-
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-
+        rows+=`
           <tr>
-
-            <th>TF</th>
-            <th>Price</th>
-            <th>MA7</th>
-            <th>MA20</th>
-            <th>Trend</th>
-            <th>Slope</th>
-            <th>BOS</th>
-            <th>CHoCH</th>
-            <th>Hunt</th>
-
+            <td>
+              ${key==="60"?"1h":key+"m"}
+            </td>
+            <td colspan="8">
+              ${escapeHtml(
+                x?.error||"-"
+              )}
+            </td>
           </tr>
+        `;
 
-        </thead>
-
-
-        <tbody>
-          ${rows}
-        </tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   SIGNAL METHODS
-===================================================== */
-
-function renderSignalMethods(d,methods){
-
-  const c=
-    d.timeframes?.["1"];
-
-
-  if(!c){
-    return "";
-  }
-
-
-  return `
-
-  <div class="card">
-
-    <div class="card-title">
-      🎯 تحلیل سیگنال
-    </div>
-
-
-    <div class="status">
-
-      روش‌های فعال:
-
-      ${
-        methods.length
-        ? methods.join(" • ")
-        : "هیچ روش انتخاب نشده"
+        return;
       }
 
-    </div>
+      rows+=`
 
+        <tr>
 
-    ${
-      d.evidenceCount!=null
-      ? `
-        <div class="status">
-          شواهد تأییدشده:
-          <b>
-            ${d.evidenceCount}
-          </b>
+          <td>
+            ${key==="60"?"1h":key+"m"}
+          </td>
 
-          ${
-            d.minEvidence!=null
-            ? `
-              |
-              حداقل لازم:
-              <b>
-                ${d.minEvidence}
-              </b>
-            `
-            : ""
-          }
+          <td>
+            ${fmtPrice(x.price)}
+          </td>
+
+          <td>
+            ${fmtPrice(x.ma7)}
+          </td>
+
+          <td>
+            ${fmtPrice(x.ma20)}
+          </td>
+
+          <td class="${
+            x.trend==="BULLISH"
+              ? "long"
+              : x.trend==="BEARISH"
+                ? "short"
+                : "yellow"
+          }">
+            ${x.trend||"-"}
+          </td>
+
+          <td>
+            ${x.maSlope||"-"}
+          </td>
+
+          <td>
+            ${x.bos||"-"}
+          </td>
+
+          <td>
+            ${x.choch||"-"}
+          </td>
+
+          <td>
+            ${x.hunt?.side||"-"}
+          </td>
+
+        </tr>
+      `;
+    });
+
+  return `
+
+    <details>
+
+      <summary>
+        ⏱ تایم‌فریم‌ها
+      </summary>
+
+      <div class="details-body">
+
+        <div class="table-wrap">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>TF</th>
+                <th>Price</th>
+                <th>MA7</th>
+                <th>MA20</th>
+                <th>Trend</th>
+                <th>Slope</th>
+                <th>BOS</th>
+                <th>CHoCH</th>
+                <th>Hunt</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+              ${rows}
+            </tbody>
+
+          </table>
+
         </div>
-      `
-      : ""
-    }
-
-
-    <details open>
-
-      <summary>
-        MA / MACD / RSI / Ichimoku / Divergence
-      </summary>
-
-      <div class="details-body">
-
-        ${renderIndicatorData(c,d)}
 
       </div>
 
     </details>
-
-
-    <details>
-
-      <summary>
-        SMC / ICT / FVG / BOS / CHoCH / OB
-      </summary>
-
-      <div class="details-body">
-
-        <span class="tag">
-          Trend:
-          ${escapeHtml(c.trend || "NONE")}
-        </span>
-
-        <span class="tag">
-          Slope:
-          ${escapeHtml(c.maSlope || "NONE")}
-        </span>
-
-        <span class="tag">
-          Hunt:
-          ${escapeHtml(
-            c.hunt?.side || "NONE"
-          )}
-        </span>
-
-        <span class="tag">
-          FVG:
-          ${escapeHtml(
-            c.fvg?.type || "NONE"
-          )}
-        </span>
-
-        <span class="tag">
-          BOS:
-          ${escapeHtml(c.bos || "NONE")}
-        </span>
-
-        <span class="tag">
-          CHoCH:
-          ${escapeHtml(c.choch || "NONE")}
-        </span>
-
-        <span class="tag">
-          OB:
-          ${escapeHtml(
-            c.orderBlock?.type || "NONE"
-          )}
-        </span>
-
-        <span class="tag">
-          Candle:
-          ${escapeHtml(
-            c.candle || "NORMAL"
-          )}
-        </span>
-
-      </div>
-
-    </details>
-
-
-    <details>
-
-      <summary>
-        🔀 Converted MA 1m
-      </summary>
-
-      <div class="details-body">
-
-        ${renderConvertedMA(
-          d.convertedMA1m
-        )}
-
-      </div>
-
-    </details>
-
-  </div>
 
   `;
-
-}
-
-
-function renderIndicatorData(c,d){
-
-  const macd=
-    c.macd ||
-    d.macd ||
-    null;
-
-  const rsi=
-    c.rsi ||
-    d.rsi ||
-    null;
-
-  const ichi=
-    c.ichimoku ||
-    d.ichimoku ||
-    null;
-
-  const div=
-    c.divergence ||
-    d.divergence ||
-    null;
-
-
-  let html="";
-
-
-  html+=`
-
-    <span class="tag">
-      MA7:
-      ${fmtPrice(c.ma7)}
-    </span>
-
-    <span class="tag">
-      MA20:
-      ${fmtPrice(c.ma20)}
-    </span>
-
-  `;
-
-
-  if(macd){
-
-    html+=`
-
-      <span class="tag ${
-        indicatorDirectionClass(
-          macd.direction
-        )
-      }">
-
-        MACD:
-        ${escapeHtml(
-          macd.signal ||
-          macd.direction ||
-          "-"
-        )}
-
-      </span>
-
-    `;
-
-  }else{
-
-    html+=`
-      <span class="tag">
-        MACD: -
-      </span>
-    `;
-
-  }
-
-
-  if(rsi){
-
-    html+=`
-
-      <span class="tag">
-
-        RSI:
-        ${
-          rsi.value!=null
-          ? Number(rsi.value).toFixed(2)
-          : "-"
-        }
-
-        ${
-          rsi.signal
-          ? " | "+escapeHtml(rsi.signal)
-          : ""
-        }
-
-      </span>
-
-    `;
-
-  }else{
-
-    html+=`
-      <span class="tag">
-        RSI: -
-      </span>
-    `;
-
-  }
-
-
-  if(ichi){
-
-    html+=`
-
-      <span class="tag">
-
-        Ichimoku:
-        ${escapeHtml(
-          ichi.signal ||
-          ichi.direction ||
-          "-"
-        )}
-
-      </span>
-
-    `;
-
-  }else{
-
-    html+=`
-      <span class="tag">
-        Ichimoku: -
-      </span>
-    `;
-
-  }
-
-
-  if(div){
-
-    html+=`
-
-      <span class="tag">
-
-        Divergence:
-        ${escapeHtml(
-          div.type ||
-          div.signal ||
-          "-"
-        )}
-
-      </span>
-
-    `;
-
-  }else{
-
-    html+=`
-      <span class="tag">
-        Divergence: -
-      </span>
-    `;
-
-  }
-
-
-  return html;
-
-}
-
-
-function indicatorDirectionClass(v){
-
-  const s=
-    String(v||"").toUpperCase();
-
-  if(
-    s.includes("LONG") ||
-    s.includes("BULL")
-  ){
-    return "long";
-  }
-
-  if(
-    s.includes("SHORT") ||
-    s.includes("BEAR")
-  ){
-    return "short";
-  }
-
-  return "";
-
 }
 
 
@@ -2037,814 +2140,79 @@ function indicatorDirectionClass(v){
    CONVERTED MA
 ===================================================== */
 
-function renderConvertedMA(x){
+function renderConvertedMA(d){
 
-  if(!x || !x.events){
+  const x=
+    d.convertedMA1m;
 
-    return `
-      <span class="muted">
-        داده‌ای موجود نیست.
-      </span>
-    `;
-
+  if(!x?.events?.length){
+    return "";
   }
 
+  return `
 
-  return x.events.map(e=>`
+    <details>
 
-    <div class="radar-item">
+      <summary>
+        🔄 MA تبدیل‌شده به 1m
+      </summary>
 
-      <b>
-        ${escapeHtml(
-          e.ma+" "+e.source
-        )}
-      </b>
+      <div class="details-body">
 
-
-      <div>
-        MA معادل:
-        <b>
-          ${e.period1m}
-          کندل 1m
-        </b>
-      </div>
-
-
-      <div>
-
-        وضعیت:
-
-        <span class="${
-          e.direction==="LONG"
-          ? "long"
-          : e.direction==="SHORT"
-            ? "short"
-            : "yellow"
-        }">
-
-          ${escapeHtml(
-            e.confirmation || "-"
-          )}
-
-        </span>
-
-      </div>
-
-
-      <div class="muted">
-
-        فاصله:
         ${
-          Number(
-            e.distancePct||0
-          ).toFixed(3)
-        }%
-
-        |
-
-        Slope:
-        ${escapeHtml(
-          e.slope || "-"
-        )}
-
-      </div>
-
-    </div>
-
-  `).join("");
-
-}
-
-
-/* =====================================================
-   FOOTPRINT
-===================================================== */
-
-function renderFootprint(fp){
-
-  if(!fp){
-    return "";
-  }
-
-
-  if(fp.error){
-
-    return `
-
-      <div class="card">
-
-        <div class="card-title">
-          👣 Footprint
-        </div>
-
-        <div class="error">
-          ${escapeHtml(fp.error)}
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-
-  return `
-
-    <div class="card">
-
-      <div class="card-title">
-        👣 Footprint / Recent Trades
-      </div>
-
-
-      <div class="grid3">
-
-        <div class="metric">
-
-          <small>
-            Buy Volume
-          </small>
-
-          <strong class="long">
-            ${fmtNum(fp.buyVolume)}
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Sell Volume
-          </small>
-
-          <strong class="short">
-            ${fmtNum(fp.sellVolume)}
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Delta
-          </small>
-
-          <strong class="${
-            Number(fp.delta)>=0
-            ? "long"
-            : "short"
-          }">
-
-            ${fmtNum(fp.delta)}
-
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Delta %
-          </small>
-
-          <strong class="${
-            Number(fp.deltaPercent)>=0
-            ? "long"
-            : "short"
-          }">
-
-            ${fmtPct(fp.deltaPercent)}
-
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Trades
-          </small>
-
-          <strong>
-            ${fmtNum(fp.trades)}
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Largest Trade
-          </small>
-
-          <strong>
-            ${fmtNum(
-              fp.largeTradeNotional
-            )}
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   ORDER BOOK
-===================================================== */
-
-function renderWalls(w){
-
-  if(!w || w.error){
-
-    return `
-
-      <div class="card">
-
-        <div class="card-title">
-          🧱 Order Book / Walls
-        </div>
-
-        <div class="muted">
-          ${escapeHtml(
-            w?.error ||
-            "داده‌ای موجود نیست"
-          )}
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-
-  return `
-
-    <div class="card">
-
-      <div class="card-title">
-        🧱 Order Book / Liquidity Walls
-      </div>
-
-
-      <div class="grid">
-
-        <div class="metric">
-
-          <small>
-            قوی‌ترین Buy Wall
-          </small>
-
-          ${
-            w.buy
-            ? `
-
-              <strong class="long">
-                ${fmtPrice(w.buy.price)}
-              </strong>
-
-              <div>
-                ${fmtNum(w.buy.notional)}
-              </div>
-
-              <small>
-                فاصله
-                ${Number(
-                  w.buy.distancePct
-                ).toFixed(2)}%
-              </small>
-
-            `
-            : "-"
-          }
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            قوی‌ترین Sell Wall
-          </small>
-
-          ${
-            w.sell
-            ? `
-
-              <strong class="short">
-                ${fmtPrice(w.sell.price)}
-              </strong>
-
-              <div>
-                ${fmtNum(w.sell.notional)}
-              </div>
-
-              <small>
-                فاصله
-                ${Number(
-                  w.sell.distancePct
-                ).toFixed(2)}%
-              </small>
-
-            `
-            : "-"
-          }
-
-        </div>
-
-      </div>
-
-
-      <details>
-
-        <summary>
-          مشاهده سطوح نقدینگی
-        </summary>
-
-        <div class="details-body">
-
-          <div class="section-title">
-            Buy Levels
-          </div>
-
-          ${renderLevels(
-            w.buyLevels,
-            "long"
-          )}
-
-
-          <div class="section-title">
-            Sell Levels
-          </div>
-
-          ${renderLevels(
-            w.sellLevels,
-            "short"
-          )}
-
-        </div>
-
-      </details>
-
-    </div>
-
-  `;
-
-}
-
-
-function renderLevels(arr,cls){
-
-  if(!arr?.length){
-
-    return `
-      <span class="muted">
-        ندارد
-      </span>
-    `;
-
-  }
-
-
-  return arr.map(x=>`
-
-    <span class="tag ${cls}">
-
-      ${fmtPrice(x.price)}
-      |
-      ${fmtNum(x.notional)}
-      |
-      ${Number(
-        x.distancePct
-      ).toFixed(2)}%
-
-    </span>
-
-  `).join("");
-
-}
-
-
-/* =====================================================
-   SUPPORT / RESISTANCE
-===================================================== */
-
-function renderSupportResistance(sr){
-
-  if(!sr){
-    return "";
-  }
-
-
-  return `
-
-    <div class="card">
-
-      <div class="card-title">
-        🧲 حمایت و مقاومت
-      </div>
-
-
-      <div class="grid">
-
-        <div class="metric">
-
-          <small>
-            نزدیک‌ترین حمایت
-          </small>
-
-          ${
-            sr.nearestSupport
-            ? `
-
-              <strong class="long">
-                ${fmtPrice(
-                  sr.nearestSupport.price
-                )}
-              </strong>
-
-              <div>
-                ${escapeHtml(
-                  sr.nearestSupport.type
-                )}
-              </div>
-
-            `
-            : "-"
-          }
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            نزدیک‌ترین مقاومت
-          </small>
-
-          ${
-            sr.nearestResistance
-            ? `
-
-              <strong class="short">
-                ${fmtPrice(
-                  sr.nearestResistance.price
-                )}
-              </strong>
-
-              <div>
-                ${escapeHtml(
-                  sr.nearestResistance.type
-                )}
-              </div>
-
-            `
-            : "-"
-          }
-
-        </div>
-
-      </div>
-
-
-      <details>
-
-        <summary>
-          سطوح بیشتر
-        </summary>
-
-        <div class="details-body">
-
-          <div class="section-title">
-            Supports
-          </div>
-
-          ${
-            (sr.supports||[])
-              .map(x=>`
-
-                <span class="tag long">
-
-                  ${fmtPrice(x.price)}
+          x.events
+            .map(e=>`
+
+              <div class="method-box">
+
+                <b>
+                  ${e.ma} ${e.source}
+                </b>
+
+                <div style="margin-top:5px">
+
+                  معادل:
+                  <b>
+                    ${e.period1m}
+                    کندل 1m
+                  </b>
+
+                </div>
+
+                <div>
+                  وضعیت:
+                  <span class="${
+                    e.direction==="LONG"
+                      ? "long"
+                      : e.direction==="SHORT"
+                        ? "short"
+                        : "yellow"
+                  }">
+                    ${e.confirmation}
+                  </span>
+                </div>
+
+                <div class="muted">
+                  Distance:
+                  ${Number(
+                    e.distancePct||0
+                  ).toFixed(3)}%
                   |
-                  ${escapeHtml(
-                    x.type || "-"
-                  )}
+                  Slope:
+                  ${e.slope||"-"}
+                </div>
 
-                </span>
+              </div>
 
-              `)
-              .join("")
-          }
+            `)
+            .join("")
+        }
 
+      </div>
 
-          <div class="section-title">
-            Resistances
-          </div>
-
-          ${
-            (sr.resistances||[])
-              .map(x=>`
-
-                <span class="tag short">
-
-                  ${fmtPrice(x.price)}
-                  |
-                  ${escapeHtml(
-                    x.type || "-"
-                  )}
-
-                </span>
-
-              `)
-              .join("")
-          }
-
-        </div>
-
-      </details>
-
-    </div>
+    </details>
 
   `;
-
-}
-
-
-/* =====================================================
-   MOVEMENT
-===================================================== */
-
-function renderMovement(m){
-
-  if(!m){
-    return "";
-  }
-
-
-  return `
-
-    <div class="card">
-
-      <div class="card-title">
-        🚀 حرکت بازار
-      </div>
-
-
-      <div class="grid3">
-
-        <div class="metric">
-
-          <small>
-            تغییر 15m
-          </small>
-
-          <strong class="${
-            Number(m.change15m)>=0
-            ? "long"
-            : "short"
-          }">
-
-            ${fmtPct(m.change15m)}
-
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            تغییر 30m
-          </small>
-
-          <strong class="${
-            Number(m.change30m)>=0
-            ? "long"
-            : "short"
-          }">
-
-            ${fmtPct(m.change30m)}
-
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Volume Ratio
-          </small>
-
-          <strong>
-            ${Number(
-              m.volumeRatio||0
-            ).toFixed(2)}x
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Pump Score
-          </small>
-
-          <strong class="long">
-            ${safeNumber(
-              m.pumpScore
-            )}
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Dump Score
-          </small>
-
-          <strong class="short">
-            ${safeNumber(
-              m.dumpScore
-            )}
-          </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            فاصله از MA20
-          </small>
-
-          <strong>
-            ${fmtPct(
-              m.distanceFromMA20
-            )}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <details>
-
-        <summary>
-          دلایل Pump / Dump
-        </summary>
-
-        <div class="details-body">
-
-          <div class="section-title long">
-            Pump
-          </div>
-
-          ${
-            (m.pumpReasons||[])
-              .map(x=>
-                `<span class="tag long">
-                  ${escapeHtml(x)}
-                </span>`
-              )
-              .join("")
-          }
-
-
-          <div class="section-title short">
-            Dump
-          </div>
-
-          ${
-            (m.dumpReasons||[])
-              .map(x=>
-                `<span class="tag short">
-                  ${escapeHtml(x)}
-                </span>`
-              )
-              .join("")
-          }
-
-        </div>
-
-      </details>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   REVERSAL
-===================================================== */
-
-function renderReversal(r){
-
-  if(!r){
-    return "";
-  }
-
-
-  return `
-
-    <div class="card">
-
-      <div class="card-title">
-        🔄 احتمال برگشت بعد از Pump / Dump
-      </div>
-
-
-      <div class="grid">
-
-        <div class="metric">
-
-          <small>
-            برگشت بعد از Pump
-          </small>
-
-          <strong class="short">
-            ${safeNumber(
-              r.pumpScore
-            )}
-          </strong>
-
-          <div class="scorebar">
-
-            <div
-              class="scorefill red"
-              style="width:${scoreWidth(
-                r.pumpScore
-              )}%"
-            ></div>
-
-          </div>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            برگشت بعد از Dump
-          </small>
-
-          <strong class="long">
-            ${safeNumber(
-              r.dumpScore
-            )}
-          </strong>
-
-          <div class="scorebar">
-
-            <div
-              class="scorefill"
-              style="width:${scoreWidth(
-                r.dumpScore
-              )}%"
-            ></div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      ${
-        r.alert &&
-        r.alert!=="NONE"
-        ? `
-          <div class="status">
-            🚨 ${escapeHtml(
-              r.alert
-            )}
-          </div>
-        `
-        : ""
-      }
-
-    </div>
-
-  `;
-
 }
 
 
@@ -2852,35 +2220,37 @@ function renderReversal(r){
    REASONS
 ===================================================== */
 
-function renderReasons(reasons){
+function renderReasons(arr){
 
-  if(!reasons?.length){
+  if(!arr?.length){
     return "";
   }
 
-
   return `
 
-    <div class="card">
+    <details>
 
-      <div class="card-title">
-        🧠 دلایل سیگنال
+      <summary>
+        🧠 دلایل کلی سیگنال
+      </summary>
+
+      <div class="details-body">
+
+        ${
+          arr
+            .map(x=>
+              `<span class="tag">
+                ${escapeHtml(x)}
+              </span>`
+            )
+            .join("")
+        }
+
       </div>
 
-      ${
-        reasons
-          .map(x=>
-            `<span class="tag">
-              ${escapeHtml(x)}
-            </span>`
-          )
-          .join("")
-      }
-
-    </div>
+    </details>
 
   `;
-
 }
 
 
@@ -2895,63 +2265,64 @@ async function runScan(){
       "scanResult"
     );
 
-
   box.innerHTML=`
-
     <div class="loading">
-      ⏳ در حال اسکن بازار...
+      ⏳ در حال اسکن ۱۰ ارز...
     </div>
-
   `;
-
 
   try{
 
-    const level=
-      getSignalLevel();
+    /*
+      سطح سخت‌گیری و روش‌های فعال
+      همراه درخواست ارسال می‌شوند.
+    */
 
+    const cfg=
+      getStrictConfig();
 
     const methods=
       getMethods();
 
-
-    const d=
-      await api(
-        `/api/scan?offset=${
-          scanOffset
-        }&level=${
-          encodeURIComponent(level)
-        }&methods=${
-          encodeURIComponent(
-            methods.join(",")
-          )
-        }`
+    const url=
+      "/api/scan"+
+      "?offset="+
+      encodeURIComponent(
+        scanOffset
+      )+
+      "&strictLevel="+
+      strictLevel+
+      "&minScore="+
+      cfg.score+
+      "&minEvidence="+
+      cfg.evidence+
+      "&methods="+
+      encodeURIComponent(
+        methods.join(",")
       );
 
+    const d=
+      await api(url);
 
     scanOffset=
       d.nextOffset || 0;
 
-
     renderScan(d);
-
 
   }catch(e){
 
     box.innerHTML=`
-
       <div class="error">
-        ❌ ${escapeHtml(
-          e.message
-        )}
+        ❌ ${escapeHtml(e.message)}
       </div>
-
     `;
-
   }
-
 }
 
+
+/* =====================================================
+   SCAN RENDER
+===================================================== */
 
 function renderScan(d){
 
@@ -2960,141 +2331,355 @@ function renderScan(d){
       "scanResult"
     );
 
+  let results=
+    Array.isArray(d.results)
+      ? d.results
+      : [];
 
-  if(!d.results?.length){
+  const cfg=
+    getStrictConfig();
+
+  /*
+    فیلتر واقعی سمت رابط:
+    اگر Worker نتیجه ضعیف برگرداند
+    در سطح انتخابی نمایش داده نمی‌شود.
+  */
+
+  results=
+    results
+      .filter(x=>{
+
+        const score=
+          Math.max(
+            Number(x.longScore||0),
+            Number(x.shortScore||0),
+            Number(x.score||0)
+          );
+
+        return score>=cfg.score;
+      })
+      .slice(0,10);
+
+  if(!results.length){
 
     box.innerHTML=`
 
-      <div class="muted">
+      <div class="status">
 
-        در این سطح سخت‌گیری
-        سیگنال قوی پیدا نشد.
+        🟡 در سطح
+        <b class="yellow">
+          ${cfg.name}
+        </b>
+        هیچ سیگنال قوی‌ای از ۱۰ ارز
+        از فیلتر عبور نکرد.
 
       </div>
 
     `;
 
     return;
-
   }
-
 
   box.innerHTML=`
 
     <div class="status">
 
-      بررسی شد:
-      ${d.batchSize || 0}
-      ارز از
-      ${d.totalMarkets || 0}
-      بازار
+      🎯 سطح:
+      <b class="yellow">
+        ${cfg.name}
+      </b>
 
-      ${
-        d.signalLevel
-        ? `
-          |
-          سطح:
-          ${escapeHtml(
-            d.signalLevel
-          )}
-        `
-        : ""
-      }
+      |
+      حداقل امتیاز:
+      <b>
+        ${cfg.score}
+      </b>
+
+      |
+      تعداد:
+      <b>
+        ${results.length}
+      </b>
 
     </div>
 
-
     ${
-      d.results.map(x=>`
-
-        <div
-          class="signal ${
-            x.direction==="LONG"
-            ? "long"
-            : x.direction==="SHORT"
-              ? "short"
-              : ""
-          }"
-        >
-
-          <div class="row">
-
-            <div style="flex:1">
-
-              <b>
-                ${escapeHtml(
-                  x.symbol
-                )}
-              </b>
-
-              <span class="muted">
-                ${fmtPrice(x.price)}
-              </span>
-
-            </div>
-
-
-            <div>
-
-              <b>
-                ${escapeHtml(
-                  x.direction || "WAIT"
-                )}
-              </b>
-
-            </div>
-
-
-            <div class="big-score">
-              ${safeNumber(x.score)}
-            </div>
-
-          </div>
-
-
-          <div class="muted">
-
-            Long
-            ${safeNumber(x.longScore)}
-
-            |
-
-            Short
-            ${safeNumber(x.shortScore)}
-
-            |
-
-            ${escapeHtml(
-              x.signalLevel || ""
-            )}
-
-          </div>
-
-
-          ${
-            x.evidenceCount!=null
-            ? `
-              <div class="muted">
-                شواهد:
-                ${x.evidenceCount}
-                ${
-                  x.minEvidence!=null
-                  ? " / "+x.minEvidence
-                  : ""
-                }
-              </div>
-            `
-            : ""
-          }
-
-        </div>
-
-      `).join("")
+      results
+        .map(
+          (x,i)=>
+            renderScanCoin(
+              x,
+              i
+            )
+        )
+        .join("")
     }
 
   `;
-
 }
+
+
+/* =====================================================
+   SCAN COIN
+===================================================== */
+
+function renderScanCoin(x,index){
+
+  const direction=
+    x.direction==="LONG"
+      ? "LONG"
+      : x.direction==="SHORT"
+        ? "SHORT"
+        : "WAIT";
+
+  const cls=
+    direction==="LONG"
+      ? "long"
+      : direction==="SHORT"
+        ? "short"
+        : "yellow";
+
+  return `
+
+    <div class="signal-card">
+
+      <div
+        class="signal-head ${cls}"
+        onclick="toggleScanCoin(${index})"
+      >
+
+        <div class="row">
+
+          <div style="flex:1">
+
+            <b>
+              ${escapeHtml(x.symbol)}
+            </b>
+
+            <span class="muted">
+              ${fmtPrice(x.price)}
+            </span>
+
+          </div>
+
+          <div>
+
+            <b class="${cls}">
+              ${direction}
+            </b>
+
+          </div>
+
+          <div class="big-score">
+            ${x.score||0}
+          </div>
+
+        </div>
+
+        <div class="muted">
+
+          Long:
+          ${x.longScore||0}
+
+          |
+
+          Short:
+          ${x.shortScore||0}
+
+          |
+
+          ${x.signalLevel||getStrictConfig().name}
+
+        </div>
+
+      </div>
+
+      <div
+        id="scanCoin-${index}"
+        class="signal-body hidden"
+      >
+
+        <div class="loading">
+          ⏳ دریافت تحلیل عمیق...
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+}
+
+
+/* =====================================================
+   SCAN DEEP TOGGLE
+===================================================== */
+
+async function toggleScanCoin(index){
+
+  const body=
+    document.getElementById(
+      "scanCoin-"+index
+    );
+
+  if(!body){
+    return;
+  }
+
+  if(
+    !body.classList.contains(
+      "hidden"
+    )
+  ){
+
+    body.classList.add(
+      "hidden"
+    );
+
+    return;
+  }
+
+  body.classList.remove(
+    "hidden"
+  );
+
+  /*
+    اطلاعات ارز از DOM
+    توسط داده ذخیره‌شده در scanData
+    گرفته می‌شود.
+  */
+
+  const x=
+    window.currentScanResults?.[index];
+
+  if(!x){
+    body.innerHTML=
+      `<div class="error">
+        اطلاعات ارز در دسترس نیست.
+      </div>`;
+    return;
+  }
+
+  try{
+
+    const symbol=
+      x.symbol;
+
+    const d=
+      await api(
+        "/api/analyze?symbol="+
+        encodeURIComponent(symbol)+
+        "&category=linear"
+      );
+
+    body.innerHTML=
+      renderDeepAnalysis(d);
+
+  }catch(e){
+
+    body.innerHTML=`
+      <div class="error">
+        ❌ ${escapeHtml(e.message)}
+      </div>
+    `;
+  }
+}
+
+
+/* =====================================================
+   PATCH SCAN RESULT STORAGE
+===================================================== */
+
+const originalRenderScan=
+  renderScan;
+
+renderScan=function(d){
+
+  const cfg=
+    getStrictConfig();
+
+  let results=
+    Array.isArray(d.results)
+      ? d.results
+      : [];
+
+  results=
+    results
+      .filter(x=>{
+
+        const score=
+          Math.max(
+            Number(x.longScore||0),
+            Number(x.shortScore||0),
+            Number(x.score||0)
+          );
+
+        return score>=cfg.score;
+
+      })
+      .slice(0,10);
+
+  window.currentScanResults=
+    results;
+
+  const box=
+    document.getElementById(
+      "scanResult"
+    );
+
+  if(!results.length){
+
+    box.innerHTML=`
+
+      <div class="status">
+
+        🟡 در سطح
+        <b class="yellow">
+          ${cfg.name}
+        </b>
+        سیگنال مناسبی پیدا نشد.
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+  box.innerHTML=`
+
+    <div class="status">
+
+      🎯 سطح:
+      <b class="yellow">
+        ${cfg.name}
+      </b>
+
+      |
+      حداقل امتیاز:
+      <b>
+        ${cfg.score}
+      </b>
+
+      |
+      ${results.length} ارز
+
+    </div>
+
+    ${
+      results
+        .map(
+          (x,i)=>
+            renderScanCoin(
+              x,
+              i
+            )
+        )
+        .join("")
+    }
+
+  `;
+};
 
 
 /* =====================================================
@@ -3108,166 +2693,95 @@ async function runRadar(){
       "radarResult"
     );
 
-
   box.innerHTML=`
-
     <div class="loading">
-      🚨 در حال اجرای رادار Pump / Dump...
+      🚨 در حال اجرای رادار...
     </div>
-
   `;
-
 
   try{
 
-    const level=
-      getSignalLevel();
-
-
     const d=
       await api(
-        `/api/radar?offset=${
-          radarOffset
-        }&level=${
-          encodeURIComponent(level)
-        }`
+        "/api/radar?offset="+
+        radarOffset
       );
 
-
     radarOffset=
-      d.nextOffset || 0;
-
+      d.nextOffset||0;
 
     renderRadar(d);
-
 
   }catch(e){
 
     box.innerHTML=`
-
       <div class="error">
-        ❌ ${escapeHtml(
-          e.message
-        )}
+        ❌ ${escapeHtml(e.message)}
       </div>
-
     `;
-
   }
-
 }
 
 
 function renderRadar(d){
 
-  const box=
-    document.getElementById(
-      "radarResult"
-    );
+  const pump=
+    d.pump||[];
 
+  const dump=
+    d.dump||[];
 
-  box.innerHTML=`
+  const reversal=
+    d.reversal||[];
 
-    <div class="grid3">
+  document.getElementById(
+    "radarResult"
+  ).innerHTML=`
+
+    <div class="grid">
 
       <div class="metric">
 
         <small>
-          🚀 قوی‌ترین Pump
+          🚀 Pump
         </small>
 
         ${
-          d.pump?.[0]
-          ? `
+          pump[0]
+            ? `
+              <strong class="long">
+                ${pump[0].symbol}
+              </strong>
 
-            <strong class="long">
-              ${escapeHtml(
-                d.pump[0].symbol
-              )}
-            </strong>
-
-            <div>
-              Score:
-              ${safeNumber(
-                d.pump[0].pumpScore
-              )}
-            </div>
-
-          `
-          : "-"
+              <div>
+                Score:
+                ${pump[0].pumpScore}
+              </div>
+            `
+            : "-"
         }
 
       </div>
 
-
       <div class="metric">
 
         <small>
-          🔻 قوی‌ترین Dump
+          🔻 Dump
         </small>
 
         ${
-          d.dump?.[0]
-          ? `
+          dump[0]
+            ? `
+              <strong class="short">
+                ${dump[0].symbol}
+              </strong>
 
-            <strong class="short">
-              ${escapeHtml(
-                d.dump[0].symbol
-              )}
-            </strong>
-
-            <div>
-              Score:
-              ${safeNumber(
-                d.dump[0].dumpScore
-              )}
-            </div>
-
-          `
-          : "-"
-        }
-
-      </div>
-
-
-      <div class="metric">
-
-        <small>
-          🔄 قوی‌ترین Reversal
-        </small>
-
-        ${
-          d.reversal?.[0]
-          ? `
-
-            <strong class="yellow">
-              ${escapeHtml(
-                d.reversal[0].symbol
-              )}
-            </strong>
-
-            <div>
-
-              Pump Rev:
-              ${safeNumber(
-                d.reversal[0]
-                  .reversal
-                  .pumpScore
-              )}
-
-              |
-
-              Dump Rev:
-              ${safeNumber(
-                d.reversal[0]
-                  .reversal
-                  .dumpScore
-              )}
-
-            </div>
-
-          `
-          : "-"
+              <div>
+                Score:
+                ${dump[0].dumpScore}
+              </div>
+            `
+            : "-"
         }
 
       </div>
@@ -3283,17 +2797,19 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${renderRadarList(
-          d.pump,
-          "pump"
-        )}
+        ${
+          renderRadarList(
+            pump,
+            "pump"
+          )
+        }
 
       </div>
 
     </details>
 
 
-    <details open>
+    <details>
 
       <summary>
         🔻 Dump Radar
@@ -3301,10 +2817,12 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${renderRadarList(
-          d.dump,
-          "dump"
-        )}
+        ${
+          renderRadarList(
+            dump,
+            "dump"
+          )
+        }
 
       </div>
 
@@ -3319,177 +2837,186 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${renderRadarList(
-          d.reversal,
-          "reversal"
-        )}
+        ${
+          renderRadarList(
+            reversal,
+            "reversal"
+          )
+        }
 
       </div>
 
     </details>
 
   `;
-
 }
 
 
-function renderRadarList(arr,type){
+function renderRadarList(
+  arr,
+  type
+){
 
   if(!arr?.length){
 
     return `
-
       <div class="muted">
-        موردی با امتیاز مناسب پیدا نشد.
+        موردی پیدا نشد.
       </div>
-
     `;
-
   }
 
+  return arr
+    .slice(0,10)
+    .map(x=>{
 
-  return arr.map(x=>{
+      let score=0;
 
-    let score=0;
-
-
-    if(type==="pump"){
-      score=x.pumpScore;
-    }
-
-
-    if(type==="dump"){
-      score=x.dumpScore;
-    }
-
-
-    if(type==="reversal"){
-
-      score=
-        Math.max(
+      if(type==="pump"){
+        score=
           Number(
-            x.reversal?.pumpScore || 0
-          ),
+            x.pumpScore||0
+          );
+      }
+
+      if(type==="dump"){
+        score=
           Number(
-            x.reversal?.dumpScore || 0
-          )
-        );
+            x.dumpScore||0
+          );
+      }
 
-    }
+      if(type==="reversal"){
 
+        score=
+          Math.max(
+            Number(
+              x.reversal?.pumpScore||0
+            ),
+            Number(
+              x.reversal?.dumpScore||0
+            )
+          );
+      }
 
-    return `
+      return `
 
-      <div class="radar-item">
+        <div class="signal-card">
 
-        <div class="row">
+          <div
+            class="signal-head"
+            onclick="loadRadarDeep(
+              '${escapeJs(x.symbol)}',
+              this
+            )"
+          >
 
-          <div style="flex:1">
+            <div class="row">
 
-            <b>
-              ${escapeHtml(
-                x.symbol
-              )}
-            </b>
+              <div style="flex:1">
 
-            <span class="${
-              type==="dump"
-              ? "short"
-              : type==="pump"
-                ? "long"
-                : "yellow"
-            }">
+                <b>
+                  ${escapeHtml(x.symbol)}
+                </b>
 
-              ${safeNumber(score)}
+                <span class="${
+                  type==="pump"
+                    ? "long"
+                    : type==="dump"
+                      ? "short"
+                      : "yellow"
+                }">
+                  ${score}
+                </span>
 
-            </span>
+              </div>
 
-          </div>
-
-
-          <div>
-            ${fmtPrice(x.price)}
-          </div>
-
-        </div>
-
-
-        <div class="muted">
-
-          15m:
-          ${fmtPct(
-            x.movement?.change15m
-          )}
-
-          |
-
-          30m:
-          ${fmtPct(
-            x.movement?.change30m
-          )}
-
-          |
-
-          Volume:
-          ${Number(
-            x.movement?.volumeRatio||0
-          ).toFixed(2)}x
-
-        </div>
-
-
-        ${
-          type==="reversal"
-          ? `
-
-            <div style="margin-top:6px">
-
-              Pump Reversal:
-
-              <b class="short">
-                ${safeNumber(
-                  x.reversal?.pumpScore
-                )}
-              </b>
-
-              |
-
-              Dump Reversal:
-
-              <b class="long">
-                ${safeNumber(
-                  x.reversal?.dumpScore
-                )}
-              </b>
-
-
-              ${
-                x.reversal?.alert &&
-                x.reversal.alert!=="NONE"
-                ? `
-
-                  <div class="status">
-                    🚨 ${escapeHtml(
-                      x.reversal.alert
-                    )}
-                  </div>
-
-                `
-                : ""
-              }
+              <div>
+                ${fmtPrice(x.price)}
+              </div>
 
             </div>
 
-          `
-          : ""
-        }
+            <div class="muted">
 
+              15m:
+              ${fmtPct(
+                x.movement?.change15m
+              )}
+
+              |
+
+              Volume:
+              ${Number(
+                x.movement?.volumeRatio||0
+              ).toFixed(2)}x
+
+            </div>
+
+          </div>
+
+          <div class="signal-body hidden"></div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
+}
+
+
+async function loadRadarDeep(
+  symbol,
+  head
+){
+
+  const body=
+    head.nextElementSibling;
+
+  if(
+    !body.classList.contains(
+      "hidden"
+    )
+  ){
+
+    body.classList.add(
+      "hidden"
+    );
+
+    return;
+  }
+
+  body.classList.remove(
+    "hidden"
+  );
+
+  body.innerHTML=`
+    <div class="loading">
+      ⏳ تحلیل عمیق...
+    </div>
+  `;
+
+  try{
+
+    const d=
+      await api(
+        "/api/analyze?symbol="+
+        encodeURIComponent(symbol)+
+        "&category=linear"
+      );
+
+    body.innerHTML=
+      renderDeepAnalysis(d);
+
+  }catch(e){
+
+    body.innerHTML=`
+      <div class="error">
+        ❌ ${escapeHtml(e.message)}
       </div>
-
     `;
-
-  }).join("");
-
+  }
 }
 
 
@@ -3506,7 +3033,6 @@ async function loadHealth(){
         "/api/health"
       );
 
-
     document.getElementById(
       "healthResult"
     ).innerHTML=`
@@ -3514,99 +3040,43 @@ async function loadHealth(){
       <div class="grid3">
 
         <div class="metric">
-
-          <small>
-            Version
-          </small>
-
+          <small>Version</small>
           <strong>
-            ${escapeHtml(
-              d.version ?? "-"
-            )}
+            ${d.version||"-"}
           </strong>
-
         </div>
 
-
         <div class="metric">
-
-          <small>
-            Scan Batch
-          </small>
-
+          <small>Scan Batch</small>
           <strong>
-            ${safeNumber(
-              d.scanBatch
-            )}
+            ${d.scanBatch||"-"}
           </strong>
-
         </div>
 
-
         <div class="metric">
-
-          <small>
-            Deep Limit
-          </small>
-
+          <small>Deep Limit</small>
           <strong>
-            ${safeNumber(
-              d.deepLimit
-            )}
+            ${d.deepLimit||"-"}
           </strong>
-
         </div>
 
-
         <div class="metric">
-
-          <small>
-            Radar Limit
-          </small>
-
+          <small>Radar Limit</small>
           <strong>
-            ${safeNumber(
-              d.radarLimit
-            )}
+            ${d.radarLimit||"-"}
           </strong>
-
         </div>
 
-
         <div class="metric">
-
-          <small>
-            Minimum Signal
-          </small>
-
+          <small>Minimum Signal</small>
           <strong>
-            ${
-              d.minimumSignalScore ??
-              "-"
-            }
+            ${d.minimumSignalScore||"-"}
           </strong>
-
-        </div>
-
-
-        <div class="metric">
-
-          <small>
-            Signal Level
-          </small>
-
-          <strong>
-            ${SIGNAL_LEVELS[
-              signalLevel
-            ]?.label || signalLevel}
-          </strong>
-
         </div>
 
       </div>
 
-
-      <div style="margin-top:10px">
+      <div style="margin-top:8px">
 
         ${
           (d.features||[])
@@ -3622,65 +3092,22 @@ async function loadHealth(){
 
     `;
 
-
   }catch(e){
 
     document.getElementById(
       "healthResult"
     ).innerHTML=`
-
       <div class="error">
-        ${escapeHtml(
-          e.message
-        )}
+        ${escapeHtml(e.message)}
       </div>
-
     `;
-
   }
-
 }
 
 
 /* =====================================================
    FORMAT
 ===================================================== */
-
-function safeNumber(v){
-
-  const n=
-    Number(v);
-
-  if(!Number.isFinite(n)){
-    return "-";
-  }
-
-  return n.toFixed(
-    0
-  );
-
-}
-
-
-function scoreWidth(v){
-
-  const n=
-    Number(v);
-
-  if(!Number.isFinite(n)){
-    return 0;
-  }
-
-  return Math.max(
-    0,
-    Math.min(
-      100,
-      n
-    )
-  );
-
-}
-
 
 function fmtNum(v){
 
@@ -3693,43 +3120,32 @@ function fmtNum(v){
     return "-";
   }
 
-
   const n=
     Number(v);
-
 
   if(
     Math.abs(n)>=1000000000
   ){
-
     return (
       n/1000000000
     ).toFixed(2)+"B";
-
   }
-
 
   if(
     Math.abs(n)>=1000000
   ){
-
     return (
       n/1000000
     ).toFixed(2)+"M";
-
   }
-
 
   if(
     Math.abs(n)>=1000
   ){
-
     return (
       n/1000
     ).toFixed(2)+"K";
-
   }
-
 
   return n.toLocaleString(
     "en-US",
@@ -3737,7 +3153,6 @@ function fmtNum(v){
       maximumFractionDigits:4
     }
   );
-
 }
 
 
@@ -3752,10 +3167,8 @@ function fmtPrice(v){
     return "-";
   }
 
-
   const n=
     Number(v);
-
 
   if(n>=100){
 
@@ -3765,9 +3178,7 @@ function fmtPrice(v){
         maximumFractionDigits:2
       }
     );
-
   }
-
 
   if(n>=1){
 
@@ -3777,22 +3188,17 @@ function fmtPrice(v){
         maximumFractionDigits:4
       }
     );
-
   }
-
 
   if(n>=0.01){
     return n.toFixed(5);
   }
 
-
   if(n>=0.000001){
     return n.toFixed(8);
   }
 
-
   return n.toExponential(4);
-
 }
 
 
@@ -3807,48 +3213,36 @@ function fmtPct(v){
     return "-";
   }
 
-
   const n=
     Number(v);
 
-
   return (
     n>=0
-    ? "+"
-    : ""
+      ? "+"
+      : ""
   )+
   n.toFixed(2)+
   "%";
-
 }
 
 
 function escapeHtml(v){
 
-  return String(
-    v ?? ""
-  )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
+  return String(v??"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
+
+function escapeJs(v){
+
+  return String(v??"")
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'")
+    .replace(/"/g,"&quot;");
 }
 
 
@@ -3864,7 +3258,9 @@ document
     "keydown",
     e=>{
 
-      if(e.key==="Enter"){
+      if(
+        e.key==="Enter"
+      ){
         manualAnalyze();
       }
 
