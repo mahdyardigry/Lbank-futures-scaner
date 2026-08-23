@@ -697,7 +697,7 @@ const vol7=sma(vol,7);
 const vol20=sma(vol,20);
 
 const spike=
-vol.at(-1)>vol201.5 ||
+vol.at(-1)>vol20*1.5 ||
 vol.at(-1)>vol71.8;
 
 const rs=
