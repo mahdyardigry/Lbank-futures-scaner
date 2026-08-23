@@ -1,10 +1,8 @@
 const DATA_API = "https://api.bybit.com";
 
 const SCAN_BATCH = 20;
-const DEEP_LIMIT = 3;
 const RADAR_LIMIT = 5;
 const DEEP_1M_LIMIT = 500;
-
 const DEFAULT_SIGNAL_SCORE = 75;
 
 const json = (data, status = 200) =>
@@ -20,21 +18,21 @@ const json = (data, status = 200) =>
 const n = (v, d = 0) =>
   Number.isFinite(Number(v)) ? Number(v) : d;
 
-const clamp = (v, a, b) =>
-  Math.max(a, Math.min(b, v));
-
 const avg = a =>
   a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
 
-function pct(a, b) {
-  if (!b) return 0;
-  return ((a - b) / b) * 100;
-}
+const clamp = (v, a, b) =>
+  Math.max(a, Math.min(b, v));
 
-function absPct(a, b) {
-  if (!b) return 999;
-  return Math.abs((a - b) / b) * 100;
-}
+const pct = (a, b) =>
+  b ? ((a - b) / b) * 100 : 0;
+
+const absPct = (a, b) =>
+  b ? Math.abs((a - b) / b) * 100 : 999;
+
+/* =========================================================
+   API
+========================================================= */
 
 async function api(path, params = {}) {
   const u = new URL(DATA_API + path);
@@ -46,19 +44,15 @@ async function api(path, params = {}) {
   }
 
   const r = await fetch(u, {
-    headers: {
-      accept: "application/json"
-    }
+    headers: { accept: "application/json" }
   });
 
-  if (!r.ok) {
-    throw new Error(`DATA_HTTP_${r.status}`);
-  }
+  if (!r.ok) throw new Error(`BYBIT_HTTP_${r.status}`);
 
   const d = await r.json();
 
   if (d.retCode !== 0) {
-    throw new Error(d.retMsg || `DATA_${d.retCode}`);
+    throw new Error(d.retMsg || `BYBIT_${d.retCode}`);
   }
 
   return d;
@@ -94,8 +88,7 @@ async function klines(category, symbol, interval, limit = 100) {
 ========================================================= */
 
 function sma(a, p) {
-  if (!a.length) return 0;
-  return avg(a.slice(-p));
+  return a.length ? avg(a.slice(-p)) : 0;
 }
 
 function ema(a, p) {
@@ -130,9 +123,7 @@ function rsi(c, p = 14) {
 
   if (!loss) return 100;
 
-  const rs = gain / loss;
-
-  return 100 - 100 / (1 + rs);
+  return 100 - 100 / (1 + gain / loss);
 }
 
 /* =========================================================
@@ -140,9 +131,9 @@ function rsi(c, p = 14) {
 ========================================================= */
 
 function macd(c) {
-  const closes = c.map(x => x.close);
+  const x = c.map(v => v.close);
 
-  if (closes.length < 35) {
+  if (x.length < 35) {
     return {
       macd: 0,
       signal: 0,
@@ -151,37 +142,31 @@ function macd(c) {
     };
   }
 
-  const fast = [];
-  const slow = [];
+  const line = [];
 
-  for (let i = 0; i < closes.length; i++) {
-    fast.push(ema(closes.slice(0, i + 1), 12));
-    slow.push(ema(closes.slice(0, i + 1), 26));
+  for (let i = 0; i < x.length; i++) {
+    line.push(
+      ema(x.slice(0, i + 1), 12) -
+      ema(x.slice(0, i + 1), 26)
+    );
   }
 
-  const line = fast.map((x, i) => x - slow[i]);
-
   const signal = ema(line, 9);
-
-  const histogram =
-    line.at(-1) - signal;
+  const histogram = line.at(-1) - signal;
 
   return {
     macd: line.at(-1),
     signal,
     histogram,
-
     direction:
-      histogram > 0
-        ? "LONG"
-        : histogram < 0
-          ? "SHORT"
-          : "NONE"
+      histogram > 0 ? "LONG" :
+      histogram < 0 ? "SHORT" :
+      "NONE"
   };
 }
 
 /* =========================================================
-   ATR / ADX / BOLLINGER
+   ATR
 ========================================================= */
 
 function atr(c, p = 14) {
@@ -204,6 +189,10 @@ function atr(c, p = 14) {
 
   return sma(tr, p);
 }
+
+/* =========================================================
+   ADX
+========================================================= */
 
 function adx(c, p = 14) {
   if (c.length < p * 2 + 1) return 0;
@@ -236,11 +225,8 @@ function adx(c, p = 14) {
   for (let i = p; i < trs.length; i++) {
     const tr = avg(trs.slice(i - p, i)) || 1;
 
-    const dp =
-      100 * avg(plus.slice(i - p, i)) / tr;
-
-    const dm =
-      100 * avg(minus.slice(i - p, i)) / tr;
+    const dp = 100 * avg(plus.slice(i - p, i)) / tr;
+    const dm = 100 * avg(minus.slice(i - p, i)) / tr;
 
     dx.push(
       dp + dm
@@ -251,6 +237,10 @@ function adx(c, p = 14) {
 
   return avg(dx.slice(-p));
 }
+
+/* =========================================================
+   BOLLINGER
+========================================================= */
 
 function bollWidth(c, p = 20) {
   const a = c.slice(-p).map(x => x.close);
@@ -286,16 +276,12 @@ function swingLevels(c, lookback = 2) {
       if (
         c[i].high <= c[i - j].high ||
         c[i].high < c[i + j].high
-      ) {
-        high = false;
-      }
+      ) high = false;
 
       if (
         c[i].low >= c[i - j].low ||
         c[i].low > c[i + j].low
-      ) {
-        low = false;
-      }
+      ) low = false;
     }
 
     if (high) {
@@ -317,7 +303,56 @@ function swingLevels(c, lookback = 2) {
 }
 
 /* =========================================================
-   HUNT
+   SUPPORT / RESISTANCE
+========================================================= */
+
+function supportResistance(c) {
+  if (c.length < 20) {
+    return {
+      supports: [],
+      resistances: []
+    };
+  }
+
+  const s = swingLevels(c, 2);
+  const price = c.at(-1).close;
+
+  const supports = s.lows
+    .filter(x => x.price < price)
+    .sort(
+      (a, b) =>
+        Math.abs(price - a.price) -
+        Math.abs(price - b.price)
+    )
+    .slice(0, 5)
+    .map(x => ({
+      ...x,
+      distancePct: absPct(price, x.price)
+    }));
+
+  const resistances = s.highs
+    .filter(x => x.price > price)
+    .sort(
+      (a, b) =>
+        Math.abs(price - a.price) -
+        Math.abs(price - b.price)
+    )
+    .slice(0, 5)
+    .map(x => ({
+      ...x,
+      distancePct: absPct(price, x.price)
+    }));
+
+  return {
+    supports,
+    resistances,
+    nearestSupport: supports[0] || null,
+    nearestResistance: resistances[0] || null
+  };
+}
+
+/* =========================================================
+   LIQUIDITY HUNT
 ========================================================= */
 
 function hunt(c) {
@@ -330,16 +365,10 @@ function hunt(c) {
   }
 
   const x = c.at(-1);
-
   const prev = c.slice(-21, -1);
 
-  const hi = Math.max(
-    ...prev.map(z => z.high)
-  );
-
-  const lo = Math.min(
-    ...prev.map(z => z.low)
-  );
+  const hi = Math.max(...prev.map(z => z.high));
+  const lo = Math.min(...prev.map(z => z.low));
 
   const range = x.high - x.low || 1;
 
@@ -355,8 +384,7 @@ function hunt(c) {
   );
 
   const volumeConfirmed =
-    va > 0 &&
-    x.volume >= va * 1.15;
+    va > 0 && x.volume >= va * 1.15;
 
   const longSweep =
     x.low < lo &&
@@ -404,9 +432,7 @@ function hunt(c) {
 ========================================================= */
 
 function detectFVG(c) {
-  if (c.length < 3) {
-    return { type: "NONE" };
-  }
+  if (c.length < 3) return { type: "NONE" };
 
   const a = c.at(-3);
   const x = c.at(-1);
@@ -416,7 +442,8 @@ function detectFVG(c) {
       type: "BULLISH",
       low: a.high,
       high: x.low,
-      size: x.low - a.high
+      size: x.low - a.high,
+      sizePct: pct(x.low, a.high)
     };
   }
 
@@ -425,7 +452,8 @@ function detectFVG(c) {
       type: "BEARISH",
       low: x.high,
       high: a.low,
-      size: a.low - x.high
+      size: a.low - x.high,
+      sizePct: pct(a.low, x.high)
     };
   }
 
@@ -448,18 +476,13 @@ function structure(c) {
   const lastL = l.at(-1)?.price || null;
   const prevL = l.at(-2)?.price || null;
 
-  const price = c.at(-1)?.close || 0;
+  const price = c.at(-1).close;
 
   let bos = "NONE";
   let choch = "NONE";
 
-  if (lastH && price > lastH) {
-    bos = "BULLISH";
-  }
-
-  if (lastL && price < lastL) {
-    bos = "BEARISH";
-  }
+  if (lastH && price > lastH) bos = "BULLISH";
+  if (lastL && price < lastL) bos = "BEARISH";
 
   if (
     prevL &&
@@ -497,9 +520,7 @@ function structure(c) {
 ========================================================= */
 
 function orderBlock(c) {
-  if (c.length < 8) {
-    return { type: "NONE" };
-  }
+  if (c.length < 8) return { type: "NONE" };
 
   const x = c.at(-1);
 
@@ -544,14 +565,11 @@ function candle(c) {
   const x = c.at(-1);
   const p = c.at(-2);
 
-  if (!x || !p) {
-    return { type: "NONE" };
-  }
+  if (!x || !p) return { type: "NONE" };
 
   const range = x.high - x.low || 1;
 
-  const body =
-    Math.abs(x.close - x.open);
+  const body = Math.abs(x.close - x.open);
 
   const upper =
     x.high - Math.max(x.open, x.close);
@@ -621,43 +639,85 @@ function ichimoku(c) {
 
   const mid = (a, b) => (a + b) / 2;
 
-  const high9 = Math.max(
+  const h9 = Math.max(
     ...c.slice(-9).map(x => x.high)
   );
 
-  const low9 = Math.min(
+  const l9 = Math.min(
     ...c.slice(-9).map(x => x.low)
   );
 
-  const high26 = Math.max(
+  const h26 = Math.max(
     ...c.slice(-26).map(x => x.high)
   );
 
-  const low26 = Math.min(
+  const l26 = Math.min(
     ...c.slice(-26).map(x => x.low)
   );
 
-  const tenkan = mid(high9, low9);
-  const kijun = mid(high26, low26);
-
+  const tenkan = mid(h9, l9);
+  const kijun = mid(h26, l26);
   const price = c.at(-1).close;
 
   let score = 0;
 
-  if (price > tenkan) score += 1;
-  if (price > kijun) score += 1;
-  if (tenkan > kijun) score += 1;
+  if (price > tenkan) score++;
+  if (price > kijun) score++;
+  if (tenkan > kijun) score++;
 
   return {
     tenkan,
     kijun,
-    direction:
-      score >= 2
-        ? "LONG"
-        : score <= 1
-          ? "SHORT"
-          : "NONE",
+    direction: score >= 2 ? "LONG" : "SHORT",
     score
+  };
+}
+
+/* =========================================================
+   DIVERGENCE
+========================================================= */
+
+function divergence(c) {
+  if (c.length < 35) {
+    return {
+      type: "NONE",
+      confirmed: false
+    };
+  }
+
+  const r1 = rsi(c.slice(0, -10));
+  const r2 = rsi(c);
+
+  const p1 = c.at(-11).close;
+  const p2 = c.at(-1).close;
+
+  if (
+    p2 < p1 &&
+    r2 > r1 + 3
+  ) {
+    return {
+      type: "BULLISH",
+      confirmed: true,
+      priceChange: pct(p2, p1),
+      rsiChange: r2 - r1
+    };
+  }
+
+  if (
+    p2 > p1 &&
+    r2 < r1 - 3
+  ) {
+    return {
+      type: "BEARISH",
+      confirmed: true,
+      priceChange: pct(p2, p1),
+      rsiChange: r2 - r1
+    };
+  }
+
+  return {
+    type: "NONE",
+    confirmed: false
   };
 }
 
@@ -667,9 +727,7 @@ function ichimoku(c) {
 
 function analyze(c) {
   if (c.length < 30) {
-    return {
-      error: "INSUFFICIENT_DATA"
-    };
+    return { error: "INSUFFICIENT_DATA" };
   }
 
   const close = c.map(x => x.close);
@@ -678,25 +736,29 @@ function analyze(c) {
   const ma7 = sma(close, 7);
   const ma20 = sma(close, 20);
 
-  const prev20 =
-    sma(close.slice(0, -1), 20);
+  const prev20 = sma(
+    close.slice(0, -1),
+    20
+  );
 
   const slope =
     prev20
       ? (ma20 - prev20) / prev20
       : 0;
 
-  const vol7 =
-    sma(c.map(x => x.volume), 7);
+  const vol7 = sma(
+    c.map(x => x.volume),
+    7
+  );
 
-  const vol20 =
-    sma(c.map(x => x.volume), 20);
+  const vol20 = sma(
+    c.map(x => x.volume),
+    20
+  );
 
   const volumeSpike =
-    c.at(-1).volume >
-      vol20 * 1.5 ||
-    c.at(-1).volume >
-      vol7 * 1.8;
+    c.at(-1).volume > vol20 * 1.5 ||
+    c.at(-1).volume > vol7 * 1.8;
 
   const h = hunt(c);
   const st = structure(c);
@@ -706,6 +768,8 @@ function analyze(c) {
   const mac = macd(c);
   const rs = rsi(c);
   const ichi = ichimoku(c);
+  const div = divergence(c);
+  const sr = supportResistance(c);
 
   const trend =
     price > ma20 && ma7 > ma20
@@ -718,6 +782,7 @@ function analyze(c) {
 
   return {
     price,
+
     ma7,
     ma20,
 
@@ -749,20 +814,16 @@ function analyze(c) {
       ma7: vol7,
       ma20: vol20,
       spike: volumeSpike,
-      ratio:
-        vol20
-          ? c.at(-1).volume / vol20
-          : 0
+      ratio: vol20
+        ? c.at(-1).volume / vol20
+        : 0
     },
 
     market: {
       adx: adxV,
       atr: atr(c),
       bollWidth: bollWidth(c),
-      state:
-        adxV < 18
-          ? "RANGE"
-          : "ACTIVE"
+      state: adxV < 18 ? "RANGE" : "ACTIVE"
     },
 
     hunt: h,
@@ -771,17 +832,21 @@ function analyze(c) {
     choch: st.choch,
     structure: st,
     orderBlock: ob,
+
     candle: cd.type,
     candleDetails: cd,
 
     macd: mac,
     rsi: rs,
-    ichimoku: ichi
+    ichimoku: ichi,
+    divergence: div,
+
+    supportResistance: sr
   };
 }
 
 /* =========================================================
-   FOOTPRINT
+   FOOTPRINT / ORDER FLOW
 ========================================================= */
 
 async function footprint(category, symbol) {
@@ -795,8 +860,7 @@ async function footprint(category, symbol) {
       }
     );
 
-    const trades =
-      d?.result?.list || [];
+    const trades = d?.result?.list || [];
 
     let buy = 0;
     let sell = 0;
@@ -833,7 +897,7 @@ async function footprint(category, symbol) {
 }
 
 /* =========================================================
-   ORDER BOOK
+   ORDER BOOK / LIQUIDITY WALLS
 ========================================================= */
 
 async function walls(category, symbol, price) {
@@ -847,57 +911,52 @@ async function walls(category, symbol, price) {
       }
     );
 
-    const bids =
-      d?.result?.b || [];
+    const bids = d?.result?.b || [];
+    const asks = d?.result?.a || [];
 
-    const asks =
-      d?.result?.a || [];
+    const buyLevels = bids
+      .map(x => ({
+        price: n(x[0]),
+        size: n(x[1])
+      }))
+      .filter(
+        x =>
+          x.price > 0 &&
+          x.size > 0 &&
+          x.price < price &&
+          absPct(x.price, price) <= 3
+      )
+      .map(x => ({
+        ...x,
+        notional: x.price * x.size,
+        distancePct: absPct(x.price, price)
+      }))
+      .sort(
+        (a, b) =>
+          b.notional - a.notional
+      );
 
-    const buyLevels =
-      bids
-        .map(x => ({
-          price: n(x[0]),
-          size: n(x[1])
-        }))
-        .filter(
-          x =>
-            x.price > 0 &&
-            x.size > 0 &&
-            absPct(x.price, price) <= 3
-        )
-        .map(x => ({
-          ...x,
-          notional: x.price * x.size,
-          distancePct:
-            absPct(x.price, price)
-        }))
-        .sort(
-          (a, b) =>
-            b.notional - a.notional
-        );
-
-    const sellLevels =
-      asks
-        .map(x => ({
-          price: n(x[0]),
-          size: n(x[1])
-        }))
-        .filter(
-          x =>
-            x.price > 0 &&
-            x.size > 0 &&
-            absPct(x.price, price) <= 3
-        )
-        .map(x => ({
-          ...x,
-          notional: x.price * x.size,
-          distancePct:
-            absPct(x.price, price)
-        }))
-        .sort(
-          (a, b) =>
-            b.notional - a.notional
-        );
+    const sellLevels = asks
+      .map(x => ({
+        price: n(x[0]),
+        size: n(x[1])
+      }))
+      .filter(
+        x =>
+          x.price > 0 &&
+          x.size > 0 &&
+          x.price > price &&
+          absPct(x.price, price) <= 3
+      )
+      .map(x => ({
+        ...x,
+        notional: x.price * x.size,
+        distancePct: absPct(x.price, price)
+      }))
+      .sort(
+        (a, b) =>
+          b.notional - a.notional
+      );
 
     const buy = buyLevels[0] || null;
     const sell = sellLevels[0] || null;
@@ -910,19 +969,43 @@ async function walls(category, symbol, price) {
       sellLevels: sellLevels.slice(0, 10),
 
       buyNear:
-        !!buy && buy.distancePct <= 1,
+        !!buy &&
+        buy.distancePct <= 1,
 
       sellNear:
-        !!sell && sell.distancePct <= 1,
+        !!sell &&
+        sell.distancePct <= 1,
 
       buyStrength:
         buy
-          ? 100
+          ? Math.min(
+              100,
+              buy.notional /
+              Math.max(
+                1,
+                avg(
+                  buyLevels
+                    .slice(0, 10)
+                    .map(x => x.notional)
+                )
+              ) * 50
+            )
           : 0,
 
       sellStrength:
         sell
-          ? 100
+          ? Math.min(
+              100,
+              sell.notional /
+              Math.max(
+                1,
+                avg(
+                  sellLevels
+                    .slice(0, 10)
+                    .map(x => x.notional)
+                )
+              ) * 50
+            )
           : 0
     };
   } catch (e) {
@@ -949,9 +1032,7 @@ async function marketInfo(category, symbol) {
     const x =
       d?.result?.list?.[0];
 
-    if (!x) {
-      return {};
-    }
+    if (!x) return {};
 
     return {
       openInterest:
@@ -964,8 +1045,9 @@ async function marketInfo(category, symbol) {
           ? n(x.fundingRate)
           : null,
 
-      turnover24h:
-        n(x.turnover24h),
+      turnover24h: n(x.turnover24h),
+
+      volume24h: n(x.volume24h),
 
       change24h:
         n(x.price24hPcnt) * 100,
@@ -993,7 +1075,6 @@ async function marketInfo(category, symbol) {
 
 async function instruments(category) {
   const all = [];
-
   let cursor = "";
 
   for (let page = 0; page < 5; page++) {
@@ -1006,17 +1087,14 @@ async function instruments(category) {
       }
     );
 
-    const list =
-      d?.result?.list || [];
+    const list = d?.result?.list || [];
 
     all.push(...list);
 
     cursor =
       d?.result?.nextPageCursor || "";
 
-    if (!cursor || !list.length) {
-      break;
-    }
+    if (!cursor || !list.length) break;
   }
 
   return all;
@@ -1040,7 +1118,7 @@ function validSpot(list) {
 }
 
 /* =========================================================
-   AUTOMATIC SYMBOL SEARCH
+   SYMBOL SEARCH
 ========================================================= */
 
 async function searchSymbol(input) {
@@ -1049,17 +1127,14 @@ async function searchSymbol(input) {
       .trim()
       .toUpperCase();
 
-  if (!raw) {
-    return null;
-  }
+  if (!raw) return null;
 
   const bare =
     raw
       .replace(/[-_/:\s]/g, "")
       .replace(/USDT$/, "");
 
-  const target =
-    bare + "USDT";
+  const target = bare + "USDT";
 
   const [linear, spot] =
     await Promise.all([
@@ -1068,12 +1143,11 @@ async function searchSymbol(input) {
     ]);
 
   const futures =
-    validLinear(linear)
-      .find(
-        x =>
-          String(x.symbol).toUpperCase() === target ||
-          String(x.symbol).toUpperCase() === raw
-      );
+    validLinear(linear).find(
+      x =>
+        String(x.symbol).toUpperCase() === target ||
+        String(x.symbol).toUpperCase() === raw
+    );
 
   if (futures) {
     return {
@@ -1084,12 +1158,11 @@ async function searchSymbol(input) {
   }
 
   const spotMarket =
-    validSpot(spot)
-      .find(
-        x =>
-          String(x.symbol).toUpperCase() === target ||
-          String(x.symbol).toUpperCase() === raw
-      );
+    validSpot(spot).find(
+      x =>
+        String(x.symbol).toUpperCase() === target ||
+        String(x.symbol).toUpperCase() === raw
+    );
 
   if (spotMarket) {
     return {
@@ -1103,14 +1176,13 @@ async function searchSymbol(input) {
 }
 
 /* =========================================================
-   SCORING
+   SCORE
 ========================================================= */
 
-function calculateScore(a, fp, wall, enabled = []) {
-  const use =
-    name =>
-      !enabled.length ||
-      enabled.includes(name);
+function calculateScore(a, fp, wall, market, enabled = []) {
+  const use = name =>
+    !enabled.length ||
+    enabled.includes(name);
 
   let L = 0;
   let S = 0;
@@ -1118,44 +1190,43 @@ function calculateScore(a, fp, wall, enabled = []) {
   const lr = [];
   const sr = [];
 
-  function add(dir, score, reason) {
-    if (dir === "L") {
-      L += score;
-      lr.push(reason);
+  const add = (d, s, r) => {
+    if (d === "L") {
+      L += s;
+      lr.push(r);
     }
 
-    if (dir === "S") {
-      S += score;
-      sr.push(reason);
+    if (d === "S") {
+      S += s;
+      sr.push(r);
     }
-  }
+  };
+
+  /* MA */
 
   if (use("ma")) {
     if (
       a.trend === "BULLISH" &&
       a.maSlope === "UP"
     ) {
-      add(
-        "L",
-        8,
-        "مووینگ میانگین در جهت صعود"
-      );
+      add("L", 8, "روند و شیب مووینگ صعودی");
     }
 
     if (
       a.trend === "BEARISH" &&
       a.maSlope === "DOWN"
     ) {
-      add(
-        "S",
-        8,
-        "مووینگ میانگین در جهت نزول"
-      );
+      add("S", 8, "روند و شیب مووینگ نزولی");
     }
   }
 
+  /* SMART MONEY */
+
   if (use("smart")) {
-    if (a.hunt.side === "LONG" && a.hunt.confirmed) {
+    if (
+      a.hunt.side === "LONG" &&
+      a.hunt.confirmed
+    ) {
       add(
         "L",
         12,
@@ -1163,7 +1234,10 @@ function calculateScore(a, fp, wall, enabled = []) {
       );
     }
 
-    if (a.hunt.side === "SHORT" && a.hunt.confirmed) {
+    if (
+      a.hunt.side === "SHORT" &&
+      a.hunt.confirmed
+    ) {
       add(
         "S",
         12,
@@ -1172,19 +1246,19 @@ function calculateScore(a, fp, wall, enabled = []) {
     }
 
     if (a.bos === "BULLISH") {
-      add("L", 8, "شکست ساختار صعودی");
+      add("L", 8, "BOS صعودی");
     }
 
     if (a.bos === "BEARISH") {
-      add("S", 8, "شکست ساختار نزولی");
+      add("S", 8, "BOS نزولی");
     }
 
     if (a.choch === "BULLISH") {
-      add("L", 10, "تغییر شخصیت صعودی");
+      add("L", 10, "CHoCH صعودی");
     }
 
     if (a.choch === "BEARISH") {
-      add("S", 10, "تغییر شخصیت نزولی");
+      add("S", 10, "CHoCH نزولی");
     }
 
     if (a.orderBlock.type === "BULLISH") {
@@ -1196,6 +1270,8 @@ function calculateScore(a, fp, wall, enabled = []) {
     }
   }
 
+  /* ICT */
+
   if (use("ict")) {
     if (a.fvg.type === "BULLISH") {
       add("L", 6, "FVG صعودی");
@@ -1205,6 +1281,8 @@ function calculateScore(a, fp, wall, enabled = []) {
       add("S", 6, "FVG نزولی");
     }
   }
+
+  /* MACD */
 
   if (use("macd")) {
     if (a.macd.direction === "LONG") {
@@ -1216,15 +1294,43 @@ function calculateScore(a, fp, wall, enabled = []) {
     }
   }
 
+  /* RSI */
+
   if (use("rsi")) {
     if (a.rsi <= 30) {
-      add("L", 8, "RSI در ناحیه اشباع فروش");
+      add("L", 8, "RSI اشباع فروش");
     }
 
     if (a.rsi >= 70) {
-      add("S", 8, "RSI در ناحیه اشباع خرید");
+      add("S", 8, "RSI اشباع خرید");
     }
   }
+
+  /* DIVERGENCE */
+
+  if (use("divergence")) {
+    if (
+      a.divergence?.type === "BULLISH"
+    ) {
+      add(
+        "L",
+        9,
+        "واگرایی مثبت RSI"
+      );
+    }
+
+    if (
+      a.divergence?.type === "BEARISH"
+    ) {
+      add(
+        "S",
+        9,
+        "واگرایی منفی RSI"
+      );
+    }
+  }
+
+  /* ICHIMOKU */
 
   if (use("ichimoku")) {
     if (a.ichimoku.direction === "LONG") {
@@ -1236,15 +1342,22 @@ function calculateScore(a, fp, wall, enabled = []) {
     }
   }
 
-  if (use("volume") && a.volume.spike) {
+  /* VOLUME */
+
+  if (
+    use("volume") &&
+    a.volume.spike
+  ) {
     if (a.trend === "BULLISH") {
-      add("L", 7, "افزایش حجم در جهت صعود");
+      add("L", 7, "افزایش حجم در روند صعودی");
     }
 
     if (a.trend === "BEARISH") {
-      add("S", 7, "افزایش حجم در جهت نزول");
+      add("S", 7, "افزایش حجم در روند نزولی");
     }
   }
+
+  /* ORDER FLOW */
 
   if (
     use("orderflow") &&
@@ -1252,13 +1365,23 @@ function calculateScore(a, fp, wall, enabled = []) {
     !fp.error
   ) {
     if (fp.deltaPercent >= 8) {
-      add("L", 10, "جریان سفارش خریداران قوی‌تر است");
+      add(
+        "L",
+        10,
+        "Delta مثبت و قدرت خریداران"
+      );
     }
 
     if (fp.deltaPercent <= -8) {
-      add("S", 10, "جریان سفارش فروشندگان قوی‌تر است");
+      add(
+        "S",
+        10,
+        "Delta منفی و قدرت فروشندگان"
+      );
     }
   }
+
+  /* LIQUIDITY */
 
   if (
     use("liquidity") &&
@@ -1269,47 +1392,100 @@ function calculateScore(a, fp, wall, enabled = []) {
       wall.buyNear &&
       wall.buyStrength >= 60
     ) {
-      add("L", 6, "نقدینگی خرید نزدیک قیمت");
+      add(
+        "L",
+        6,
+        "دیوار خرید نزدیک قیمت"
+      );
     }
 
     if (
       wall.sellNear &&
       wall.sellStrength >= 60
     ) {
-      add("S", 6, "نقدینگی فروش نزدیک قیمت");
+      add(
+        "S",
+        6,
+        "دیوار فروش نزدیک قیمت"
+      );
     }
   }
 
-  if (
-    use("sr")
-  ) {
+  /* SUPPORT / RESISTANCE */
+
+  if (use("sr")) {
     if (
-      a.hunt.side === "LONG"
+      a.supportResistance?.nearestSupport &&
+      a.supportResistance.nearestSupport.distancePct <= 1
     ) {
-      add("L", 4, "واکنش احتمالی از حمایت");
+      add(
+        "L",
+        5,
+        "قیمت نزدیک حمایت مهم"
+      );
     }
 
     if (
-      a.hunt.side === "SHORT"
+      a.supportResistance?.nearestResistance &&
+      a.supportResistance.nearestResistance.distancePct <= 1
     ) {
-      add("S", 4, "واکنش احتمالی از مقاومت");
+      add(
+        "S",
+        5,
+        "قیمت نزدیک مقاومت مهم"
+      );
     }
   }
+
+  /* OI */
 
   if (
     use("oi") &&
-    a.market?.openInterest
+    market &&
+    market.openInterest
+  ) {
+    if (a.trend === "BULLISH") {
+      add(
+        "L",
+        4,
+        "OI در ساختار صعودی"
+      );
+    }
+
+    if (a.trend === "BEARISH") {
+      add(
+        "S",
+        4,
+        "OI در ساختار نزولی"
+      );
+    }
+  }
+
+  /* FUNDING */
+
+  if (
+    use("funding") &&
+    market &&
+    market.fundingRate !== null
   ) {
     if (
-      a.trend === "BULLISH"
+      market.fundingRate < -0.0003
     ) {
-      add("L", 4, "OI در تحلیل صعودی");
+      add(
+        "L",
+        3,
+        "Funding منفی"
+      );
     }
 
     if (
-      a.trend === "BEARISH"
+      market.fundingRate > 0.0003
     ) {
-      add("S", 4, "OI در تحلیل نزولی");
+      add(
+        "S",
+        3,
+        "Funding مثبت"
+      );
     }
   }
 
@@ -1318,6 +1494,77 @@ function calculateScore(a, fp, wall, enabled = []) {
     short: Math.round(clamp(S, 0, 100)),
     longReasons: lr,
     shortReasons: sr
+  };
+}
+
+/* =========================================================
+   PUMP / DUMP DETECTOR
+========================================================= */
+
+function pumpDump(c, market) {
+  if (c.length < 30) {
+    return {
+      pumpScore: 0,
+      dumpScore: 0,
+      type: "NONE"
+    };
+  }
+
+  const price = c.at(-1).close;
+
+  const p5 =
+    c.at(-6)?.close || price;
+
+  const p15 =
+    c.at(-16)?.close || price;
+
+  const change5 = pct(price, p5);
+  const change15 = pct(price, p15);
+
+  const vol20 = sma(
+    c.slice(-21, -1)
+      .map(x => x.volume),
+    20
+  );
+
+  const volumeRatio =
+    vol20
+      ? c.at(-1).volume / vol20
+      : 0;
+
+  let pump = 0;
+  let dump = 0;
+
+  if (change5 >= 2) pump += 30;
+  if (change5 >= 4) pump += 20;
+  if (change15 >= 5) pump += 20;
+  if (volumeRatio >= 1.5) pump += 15;
+  if (volumeRatio >= 3) pump += 15;
+
+  if (change5 <= -2) dump += 30;
+  if (change5 <= -4) dump += 20;
+  if (change15 <= -5) dump += 20;
+  if (volumeRatio >= 1.5) dump += 15;
+  if (volumeRatio >= 3) dump += 15;
+
+  pump = Math.round(clamp(pump, 0, 100));
+  dump = Math.round(clamp(dump, 0, 100));
+
+  return {
+    pumpScore: pump,
+    dumpScore: dump,
+
+    change5m: change5,
+    change15m: change15,
+
+    volumeRatio,
+
+    type:
+      pump >= 70
+        ? "PUMP"
+        : dump >= 70
+          ? "DUMP"
+          : "NONE"
   };
 }
 
@@ -1336,7 +1583,11 @@ async function deepAnalyze(
     ["3", "3"],
     ["5", "5"],
     ["15", "15"],
-    ["60", "60"]
+    ["30", "30"],
+    ["60", "60"],
+    ["120", "120"],
+    ["240", "240"],
+    ["D", "D"]
   ];
 
   const tf = {};
@@ -1358,13 +1609,11 @@ async function deepAnalyze(
 
             return [
               key,
-              c,
               analyze(c)
             ];
           } catch (e) {
             return [
               key,
-              [],
               {
                 error: e.message
               }
@@ -1374,17 +1623,16 @@ async function deepAnalyze(
       )
     );
 
-  for (const [key, c, a] of results) {
-    tf[key] = a;
+  for (const [key, value] of results) {
+    tf[key] = value;
   }
 
-  const base =
-    tf["1"]?.error
-      ? null
-      : tf["1"];
+  const base = tf["1"];
 
-  if (!base) {
-    throw new Error("ANALYSIS_DATA_UNAVAILABLE");
+  if (!base || base.error) {
+    throw new Error(
+      "ANALYSIS_DATA_UNAVAILABLE"
+    );
   }
 
   const fp =
@@ -1406,94 +1654,42 @@ async function deepAnalyze(
       symbol
     );
 
-  const sc =
+  const score =
     calculateScore(
       base,
       fp,
       wall,
+      market,
       enabled
     );
 
   const direction =
-    sc.long > sc.short &&
-    sc.long >= threshold
+    score.long > score.short &&
+    score.long >= threshold
       ? "LONG"
-      : sc.short > sc.long &&
-        sc.short >= threshold
+      : score.short > score.long &&
+        score.short >= threshold
         ? "SHORT"
         : "WAIT";
 
   const finalScore =
     Math.max(
-      sc.long,
-      sc.short
+      score.long,
+      score.short
     );
 
-  const pump =
-    tf["1"]?.price &&
-    tf["1"]?.volume
-      ? 0
-      : 0;
-
-  const styles = {
-    ma:
-      sc.long > sc.short
-        ? sc.long
-        : sc.short,
-
-    smart:
+  const pd =
+    pumpDump(
       (
-        base.bos !== "NONE" ||
-        base.choch !== "NONE" ||
-        base.hunt.confirmed ||
-        base.orderBlock.type !== "NONE"
-      )
-        ? 80
-        : 0,
-
-    ict:
-      base.fvg.type !== "NONE"
-        ? 75
-        : 0,
-
-    macd:
-      base.macd.direction !== "NONE"
-        ? 70
-        : 0,
-
-    rsi:
-      base.rsi <= 30 ||
-      base.rsi >= 70
-        ? 80
-        : 40,
-
-    ichimoku:
-      base.ichimoku.direction !== "NONE"
-        ? 70
-        : 40,
-
-    volume:
-      base.volume.spike
-        ? 80
-        : 40,
-
-    orderflow:
-      fp &&
-      !fp.error &&
-      Math.abs(fp.deltaPercent) >= 8
-        ? 85
-        : 40,
-
-    liquidity:
-      wall &&
-      !wall.error &&
-      (
-        wall.buyNear ||
-        wall.sellNear
-      )
-        ? 80
-        : 40
-  };
+        await klines(
+          category,
+          symbol,
+          "1",
+          60
+        )
+      ),
+      market
+    );
 
   return {
     symbol,
@@ -1505,8 +1701,8 @@ async function deepAnalyze(
 
     score: finalScore,
 
-    longScore: sc.long,
-    shortScore: sc.short,
+    longScore: score.long,
+    shortScore: score.short,
 
     threshold,
 
@@ -1523,28 +1719,36 @@ async function deepAnalyze(
 
     footprint: fp,
 
+    liquidity: wall,
+
     walls: wall,
 
     market,
 
-    styles,
+    supportResistance:
+      base.supportResistance,
+
+    pumpDump: pd,
+
+    pumpScore:
+      pd.pumpScore,
+
+    dumpScore:
+      pd.dumpScore,
 
     reasons:
       direction === "LONG"
-        ? sc.longReasons
+        ? score.longReasons
         : direction === "SHORT"
-          ? sc.shortReasons
+          ? score.shortReasons
           : [
-              ...sc.longReasons,
-              ...sc.shortReasons
+              ...score.longReasons,
+              ...score.shortReasons
             ],
-
-    pumpScore: pump,
-    dumpScore: pump,
 
     generatedAt: Date.now(),
 
-    source: "internal"
+    source: "Bybit V11"
   };
 }
 
@@ -1562,10 +1766,7 @@ async function scan(
     );
 
   const batch =
-    markets.slice(
-      0,
-      SCAN_BATCH
-    );
+    markets.slice(0, SCAN_BATCH);
 
   const results = [];
 
@@ -1579,8 +1780,7 @@ async function scan(
           60
         );
 
-      const a =
-        analyze(c);
+      const a = analyze(c);
 
       if (a.error) continue;
 
@@ -1589,6 +1789,7 @@ async function scan(
           a,
           null,
           null,
+          {},
           enabled
         );
 
@@ -1714,13 +1915,22 @@ async function radar(
 
     pump:
       results
-        .filter(x => x.pumpScore >= 50),
+        .filter(
+          x => x.pumpScore >= 50
+        ),
 
     dump:
       results
-        .filter(x => x.dumpScore >= 50),
+        .filter(
+          x => x.dumpScore >= 50
+        ),
 
-    reversal: [],
+    reversal:
+      results.filter(
+        x =>
+          x.timeframes?.["1"]?.divergence
+            ?.confirmed
+      ),
 
     results
   };
@@ -1739,13 +1949,12 @@ export default {
       u.pathname;
 
     try {
+
       /* SEARCH */
 
       if (path === "/api/search") {
         const input =
-          u.searchParams.get(
-            "symbol"
-          );
+          u.searchParams.get("symbol");
 
         if (!input) {
           return json({
@@ -1755,9 +1964,7 @@ export default {
         }
 
         const found =
-          await searchSymbol(
-            input
-          );
+          await searchSymbol(input);
 
         if (!found) {
           return json({
@@ -1765,6 +1972,17 @@ export default {
             error: "SYMBOL_NOT_FOUND"
           }, 404);
         }
+
+        let enabled = [];
+
+        try {
+          enabled =
+            JSON.parse(
+              u.searchParams.get(
+                "methods"
+              ) || "[]"
+            );
+        } catch {}
 
         const threshold =
           clamp(
@@ -1778,38 +1996,22 @@ export default {
             100
           );
 
-        let enabled = [];
-
-        try {
-          enabled =
-            JSON.parse(
-              u.searchParams.get(
-                "methods"
-              ) || "[]"
-            );
-        } catch {}
-
-        const analysis =
-          await deepAnalyze(
+        return json({
+          ok: true,
+          ...await deepAnalyze(
             found.category,
             found.symbol,
             enabled,
             threshold
-          );
-
-        return json({
-          ok: true,
-          ...analysis
+          )
         });
       }
 
-      /* DEEP */
+      /* ANALYZE */
 
       if (path === "/api/analyze") {
         const symbol =
-          u.searchParams.get(
-            "symbol"
-          );
+          u.searchParams.get("symbol");
 
         if (!symbol) {
           return json({
@@ -1819,9 +2021,7 @@ export default {
         }
 
         const found =
-          await searchSymbol(
-            symbol
-          );
+          await searchSymbol(symbol);
 
         if (!found) {
           return json({
@@ -1937,37 +2137,62 @@ export default {
       if (path === "/api/health") {
         return json({
           ok: true,
-          service: "Market Scanner",
-          version: "V10",
+          service: "Bybit Futures Scanner",
+          version: "V11",
+
           threshold:
             DEFAULT_SIGNAL_SCORE,
+
           features: [
-            "Automatic Market Detection",
             "Futures",
             "Spot",
-            "Moving Average",
-            "Smart Money",
-            "ICT",
-            "MACD",
+            "Automatic Symbol Detection",
+
+            "1m",
+            "3m",
+            "5m",
+            "15m",
+            "30m",
+            "1H",
+            "2H",
+            "4H",
+            "1D",
+
+            "MA7",
+            "MA20",
             "RSI",
-            "Divergence",
-            "Ichimoku",
-            "Volume",
-            "Order Flow",
-            "Liquidity",
-            "FVG",
+            "MACD",
+            "ADX",
+            "ATR",
+            "Bollinger",
+
+            "Smart Money",
+            "Liquidity Hunt",
             "BOS",
             "CHoCH",
             "Order Block",
+            "FVG",
+            "Divergence",
+            "Ichimoku",
+
             "Support Resistance",
-            "OI",
-            "Funding",
+
+            "Order Flow",
+            "Delta",
+            "Order Book",
+            "Liquidity Walls",
+
+            "Open Interest",
+            "Funding Rate",
+
+            "Pump Detector",
+            "Dump Detector",
             "Radar"
           ]
         });
       }
 
-      /* STATIC FILES */
+      /* STATIC */
 
       if (
         env &&
@@ -1979,15 +2204,15 @@ export default {
 
       return new Response(
         "Not Found",
-        {
-          status: 404
-        }
+        { status: 404 }
       );
 
     } catch (e) {
       return json({
         ok: false,
-        error: e.message || "SERVER_ERROR"
+        error:
+          e.message ||
+          "SERVER_ERROR"
       }, 500);
     }
   }
