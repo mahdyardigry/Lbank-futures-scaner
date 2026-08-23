@@ -2,571 +2,276 @@
 <html lang="fa" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1"
+/>
 
 <title>Smart Market Scanner</title>
 
 <style>
 
 *{
-  box-sizing:border-box;
+box-sizing:border-box;
 }
 
 body{
-  margin:0;
-  background:#080c12;
-  color:#eef2f7;
-  font-family:
-    Tahoma,
-    Arial,
-    sans-serif;
-}
-
-button,
-input,
-select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
+margin:0;
+font-family:Arial,sans-serif;
+background:#080c12;
+color:#f2f5f8;
 }
 
 .container{
-  width:min(1200px,96%);
-  margin:auto;
-  padding:14px 0 50px;
+max-width:1100px;
+margin:auto;
+padding:12px;
 }
 
 header{
-  text-align:center;
-  padding:12px 0 18px;
+background:#101722;
+border:1px solid #263242;
+border-radius:16px;
+padding:18px;
+margin-bottom:12px;
 }
 
-header h1{
-  margin:5px 0;
-  font-size:23px;
+h1{
+font-size:22px;
+margin:0 0 8px;
 }
 
-header p{
-  margin:6px 0;
-  color:#9ca8b7;
-  font-size:13px;
+.subtitle{
+color:#aab6c5;
+font-size:13px;
 }
 
 .status{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:8px;
-  margin-top:10px;
-  flex-wrap:wrap;
-}
-
-.status span{
-  background:#111923;
-  border:1px solid #263241;
-  border-radius:20px;
-  padding:7px 12px;
-  font-size:12px;
-}
-
-.green{
-  color:#3ee58b;
-}
-
-.red{
-  color:#ff6262;
-}
-
-.yellow{
-  color:#ffd45c;
-}
-
-.blue{
-  color:#54a9ff;
+margin-top:12px;
+padding:10px;
+background:#0d2017;
+border-radius:10px;
+color:#63e6a5;
 }
 
 .card{
-  background:#0e141c;
-  border:1px solid #222d3b;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:14px;
-  box-shadow:0 4px 20px rgba(0,0,0,.12);
+background:#101722;
+border:1px solid #263242;
+border-radius:16px;
+padding:14px;
+margin-bottom:12px;
 }
 
-.card-title{
-  font-size:16px;
-  font-weight:bold;
-  margin-bottom:8px;
+.card h2{
+font-size:17px;
+margin:0 0 12px;
 }
 
-.card-sub{
-  color:#8996a6;
-  font-size:12px;
-  margin-bottom:12px;
+.languages{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin-top:12px;
 }
 
-.search-row{
-  display:flex;
-  gap:8px;
+.languages button{
+border:1px solid #344255;
+background:#18212d;
+color:white;
+padding:7px 10px;
+border-radius:8px;
 }
 
-.search-row input{
-  flex:1;
-  min-width:0;
-  background:#080d13;
-  color:white;
-  border:1px solid #2a3544;
-  border-radius:10px;
-  padding:12px;
-  outline:none;
-  direction:ltr;
-  text-align:left;
+.languages button.active{
+background:#315d91;
 }
 
-.btn{
-  background:#1b78ff;
-  color:white;
-  border:0;
-  border-radius:10px;
-  padding:10px 16px;
-  font-weight:bold;
+.searchRow{
+display:flex;
+gap:8px;
 }
 
-.btn:disabled{
-  opacity:.5;
-  cursor:not-allowed;
+input{
+width:100%;
+background:#080c12;
+border:1px solid #344255;
+border-radius:10px;
+padding:12px;
+color:white;
+font-size:16px;
+outline:none;
 }
 
-.btn.secondary{
-  background:#18212c;
-  border:1px solid #2b3847;
+button{
+cursor:pointer;
+border:0;
+border-radius:10px;
+padding:11px 15px;
+background:#2364a8;
+color:white;
+font-size:14px;
 }
 
-.btn.danger{
-  background:#681d28;
+button.secondary{
+background:#263242;
 }
 
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:12px;
+button.danger{
+background:#702b36;
 }
 
-.control{
-  background:#101923;
-  border:1px solid #2a3544;
-  border-radius:9px;
-  padding:8px 10px;
-  color:#dce4ee;
+button.green{
+background:#176b45;
 }
 
-.control label{
-  display:block;
-  font-size:11px;
-  color:#8895a6;
-  margin-bottom:4px;
+.grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(150px,1fr));
+gap:8px;
 }
 
-.control select,
-.control input{
-  background:#080d13;
-  color:#fff;
-  border:1px solid #303d4d;
-  border-radius:7px;
-  padding:7px;
+.stat{
+background:#0b1119;
+border:1px solid #202c3a;
+border-radius:11px;
+padding:10px;
 }
 
-.methods{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(130px,1fr));
-  gap:7px;
-  margin-top:10px;
+.statTitle{
+font-size:12px;
+color:#9aa8b8;
+}
+
+.statValue{
+font-size:19px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.long{
+color:#55e6a0;
+}
+
+.short{
+color:#ff6b78;
+}
+
+.wait{
+color:#ffd166;
+}
+
+.accordion{
+border:1px solid #263242;
+border-radius:11px;
+margin-top:8px;
+overflow:hidden;
+}
+
+.accordionHeader{
+padding:12px;
+background:#131d29;
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+}
+
+.accordionBody{
+display:none;
+padding:12px;
+background:#0c131d;
+line-height:1.9;
+}
+
+.accordion.open .accordionBody{
+display:block;
+}
+
+.methodGrid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(130px,1fr));
+gap:7px;
 }
 
 .method{
-  background:#0a1017;
-  border:1px solid #283443;
-  border-radius:9px;
-  padding:9px;
-  display:flex;
-  gap:7px;
-  align-items:center;
-  cursor:pointer;
-  font-size:12px;
+background:#141e2a;
+border:1px solid #2d3a4b;
+padding:10px;
+border-radius:10px;
+text-align:center;
+cursor:pointer;
 }
 
 .method.active{
-  border-color:#3188ff;
-  background:#101d2e;
+border-color:#4ca7ff;
+background:#18304a;
 }
 
-.method input{
-  accent-color:#3188ff;
+.thresholdRow{
+display:flex;
+gap:8px;
+align-items:center;
+margin:10px 0;
 }
 
-.actions{
-  display:flex;
-  flex-wrap:wrap;
-  gap:7px;
-  margin-top:10px;
+.range{
+width:100%;
 }
 
-.result-header{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
+.result{
+margin-top:10px;
 }
 
-.symbol{
-  font-size:20px;
-  font-weight:bold;
-  direction:ltr;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:11px;
-  background:#151d27;
-  border:1px solid #2a3544;
-}
-
-.badge.long{
-  color:#42e38b;
-  border-color:#1d6b47;
-  background:#0c2118;
-}
-
-.badge.short{
-  color:#ff6767;
-  border-color:#70333a;
-  background:#250e12;
-}
-
-.badge.wait{
-  color:#ffd866;
-}
-
-.score-big{
-  font-size:30px;
-  font-weight:bold;
-}
-
-.progress{
-  height:8px;
-  background:#18212c;
-  border-radius:10px;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.progress > div{
-  height:100%;
-  background:#3188ff;
-  width:0%;
-}
-
-.info-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(130px,1fr));
-  gap:8px;
-  margin-top:12px;
-}
-
-.info{
-  background:#0a1017;
-  border:1px solid #202b38;
-  border-radius:9px;
-  padding:9px;
-}
-
-.info small{
-  display:block;
-  color:#8290a0;
-  font-size:10px;
-  margin-bottom:4px;
-}
-
-.info b{
-  font-size:13px;
-}
-
-.section{
-  border:1px solid #222d3a;
-  border-radius:10px;
-  margin-top:8px;
-  overflow:hidden;
-}
-
-.section-head{
-  padding:11px;
-  background:#0b1118;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  cursor:pointer;
-}
-
-.section-head:hover{
-  background:#101821;
-}
-
-.section-title{
-  font-weight:bold;
-  font-size:13px;
-}
-
-.section-arrow{
-  color:#718096;
-}
-
-.section-body{
-  display:none;
-  padding:11px;
-  border-top:1px solid #222d3a;
-}
-
-.section.open .section-body{
-  display:block;
+.small{
+font-size:12px;
+color:#9aa8b8;
 }
 
 .reason{
-  padding:7px 9px;
-  background:#0a1017;
-  border-radius:7px;
-  margin:5px 0;
-  font-size:12px;
-  border-right:3px solid #3188ff;
+padding:7px 0;
+border-bottom:1px solid #202a36;
 }
 
-.reason.long{
-  border-right-color:#35d984;
+.badge{
+display:inline-block;
+padding:4px 8px;
+border-radius:8px;
+background:#263242;
+font-size:12px;
 }
 
-.reason.short{
-  border-right-color:#ff5e67;
+.signalCard{
+border:1px solid #354354;
+border-radius:12px;
+padding:12px;
+margin-top:8px;
+background:#0c131d;
+cursor:pointer;
 }
 
-.tf-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(150px,1fr));
-  gap:8px;
-}
-
-.tf{
-  background:#0a1017;
-  border:1px solid #202b38;
-  border-radius:9px;
-  padding:10px;
-}
-
-.tf-name{
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:7px;
-}
-
-.tf-value{
-  font-size:13px;
-}
-
-.style-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(140px,1fr));
-  gap:8px;
-}
-
-.style{
-  border:1px solid #263241;
-  background:#0a1017;
-  border-radius:9px;
-  padding:10px;
-  cursor:pointer;
-}
-
-.style:hover{
-  border-color:#3188ff;
-}
-
-.style-name{
-  font-size:12px;
-  color:#aab5c3;
-}
-
-.style-score{
-  font-size:19px;
-  font-weight:bold;
-  margin-top:4px;
-}
-
-.style-detail{
-  display:none;
-  margin-top:8px;
-  padding-top:8px;
-  border-top:1px solid #222d3a;
-  font-size:11px;
-  color:#aeb8c5;
-  line-height:1.8;
-}
-
-.style.open .style-detail{
-  display:block;
-}
-
-.wall{
-  display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(180px,1fr));
-  gap:8px;
-}
-
-.wall-box{
-  background:#0a1017;
-  border:1px solid #263241;
-  border-radius:9px;
-  padding:10px;
-}
-
-.wall-buy{
-  border-color:#1f7049;
-}
-
-.wall-sell{
-  border-color:#74333b;
-}
-
-.radar-tabs{
-  display:flex;
-  gap:7px;
-  overflow:auto;
-  padding-bottom:5px;
-}
-
-.radar-tab{
-  white-space:nowrap;
-  padding:8px 12px;
-  border-radius:9px;
-  border:1px solid #2b3745;
-  background:#0b1118;
-  color:#b7c2cf;
-}
-
-.radar-tab.active{
-  background:#16263a;
-  border-color:#3188ff;
-  color:white;
-}
-
-.radar-list{
-  margin-top:10px;
-}
-
-.radar-item{
-  background:#0a1017;
-  border:1px solid #222d3a;
-  border-radius:10px;
-  padding:10px;
-  margin-top:7px;
-  cursor:pointer;
-}
-
-.radar-item:hover{
-  border-color:#3188ff;
-}
-
-.radar-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.radar-symbol{
-  font-weight:bold;
-  direction:ltr;
-}
-
-.radar-score{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.empty{
-  padding:18px;
-  text-align:center;
-  color:#778494;
-  font-size:12px;
+.hidden{
+display:none;
 }
 
 .error{
-  color:#ff7171;
-  background:#250f13;
-  border:1px solid #5f272e;
-  padding:10px;
-  border-radius:9px;
-  margin-top:8px;
-  font-size:12px;
-  direction:ltr;
-  text-align:left;
+color:#ff7d88;
+background:#2b1419;
+padding:10px;
+border-radius:10px;
 }
 
 .loading{
-  color:#8bbcff;
-  text-align:center;
-  padding:15px;
-}
-
-.lang{
-  direction:ltr;
-}
-
-.note{
-  color:#788698;
-  font-size:11px;
-  line-height:1.8;
-}
-
-.ltr{
-  direction:ltr;
-  text-align:left;
-}
-
-@media(max-width:600px){
-
-  .container{
-    width:97%;
-    padding-top:8px;
-  }
-
-  header h1{
-    font-size:19px;
-  }
-
-  .search-row{
-    flex-direction:column;
-  }
-
-  .btn{
-    width:100%;
-  }
-
-  .score-big{
-    font-size:26px;
-  }
+color:#ffd166;
+padding:10px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -575,319 +280,371 @@ header p{
 
 <header>
 
-  <h1 id="appTitle">
-    📊 اسکنر هوشمند بازار
-  </h1>
+<h1 data-i18n="title">
+📊 اسکنر هوشمند بازار
+</h1>
 
-  <p id="appSubtitle">
-    تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش
-  </p>
+<div
+class="subtitle"
+data-i18n="subtitle"
+>
+تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش
+</div>
 
-  <div class="status">
+<div
+id="connection"
+class="status"
+>
+🟢 اتصال برقرار است
+</div>
 
-    <span id="connectionStatus">
-      🟡 در حال بررسی اتصال...
-    </span>
+<div class="languages">
 
-    <span>
-      حداقل امتیاز:
-      <b id="statusMinScore">75</b>
-    </span>
+<button data-lang="fa">فارسی</button>
+<button data-lang="en">English</button>
+<button data-lang="ar">العربية</button>
+<button data-lang="pt">Português</button>
+<button data-lang="es">Español</button>
+<button data-lang="zh">中文</button>
+<button data-lang="ja">日本語</button>
+<button data-lang="hi">हिन्दी</button>
+<button data-lang="ur">اردو</button>
+<button data-lang="ru">Русский</button>
 
-    <span>
-      اسکن چرخشی فعال
-    </span>
-
-  </div>
-
-  <div style="margin-top:10px">
-
-    <select
-      id="language"
-      class="control lang"
-      onchange="changeLanguage()"
-    >
-
-      <option value="fa">فارسی</option>
-      <option value="en">English</option>
-      <option value="ar">العربية</option>
-      <option value="pt">Português</option>
-      <option value="es">Español</option>
-      <option value="zh">中文</option>
-      <option value="ja">日本語</option>
-      <option value="hi">हिन्दी</option>
-      <option value="ur">اردو</option>
-      <option value="ru">Русский</option>
-
-    </select>
-
-  </div>
+</div>
 
 </header>
 
 
 <!-- =====================================================
-     MANUAL SEARCH
-====================================================== -->
+MANUAL SEARCH
+===================================================== -->
 
-<div class="card">
+<section class="card">
 
-  <div class="card-title">
-    🔎 <span data-i18n="manualTitle">بررسی دستی ارز</span>
-  </div>
+<h2 data-i18n="manual">
+🔎 بررسی دستی ارز
+</h2>
 
-  <div class="card-sub">
-    <span data-i18n="manualSub">
-      فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.
-    </span>
-  </div>
+<div
+class="small"
+data-i18n="manualDesc"
+>
+فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.
+</div>
 
-  <div class="search-row">
+<div
+class="searchRow"
+style="margin-top:10px"
+>
 
-    <input
-      id="symbolInput"
-      placeholder="مثلاً BTCUSDT یا BTC"
-      autocomplete="off"
-    >
+<input
+id="symbolInput"
+placeholder="مثلاً BTC یا ALICE"
+/>
 
-    <button
-      class="btn"
-      id="analyzeBtn"
-      onclick="manualAnalyze()"
-    >
-      بررسی
-    </button>
-
-  </div>
-
-  <div
-    id="manualError"
-    class="error"
-    style="display:none"
-  ></div>
+<button
+id="searchBtn"
+data-i18n="analyze"
+>
+بررسی
+</button>
 
 </div>
+
+<div
+id="manualResult"
+class="result"
+>
+</div>
+
+</section>
 
 
 <!-- =====================================================
-     SIGNAL SETTINGS
-====================================================== -->
+METHODS
+===================================================== -->
 
-<div class="card">
+<section class="card">
 
-  <div class="card-title">
-    🎯 <span data-i18n="methodTitle">
-      انتخاب روش‌های سیگنال‌گیری
-    </span>
-  </div>
+<h2 data-i18n="methods">
+🎯 انتخاب روش‌های سیگنال‌گیری
+</h2>
 
-  <div class="card-sub">
-    <span data-i18n="methodSub">
-      فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.
-    </span>
-  </div>
+<div
+class="small"
+data-i18n="methodsDesc"
+>
+فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.
+</div>
 
-  <div class="controls">
+<div class="thresholdRow">
 
-    <div class="control">
+<label
+for="threshold"
+data-i18n="minimum"
+>
+حداقل امتیاز
+</label>
 
-      <label data-i18n="minScore">
-        حداقل امتیاز سیگنال
-      </label>
+<input
+id="threshold"
+class="range"
+type="range"
+min="1"
+max="100"
+value="75"
+/>
 
-      <input
-        id="minScore"
-        type="number"
-        min="0"
-        max="100"
-        value="75"
-        style="width:90px"
-        onchange="saveSettings()"
-      >
-
-    </div>
-
-    <div class="control">
-
-      <label data-i18n="signalMode">
-        کیفیت سیگنال
-      </label>
-
-      <select
-        id="signalMode"
-        onchange="saveSettings()"
-      >
-
-        <option value="strict">
-          سخت‌گیرانه
-        </option>
-
-        <option value="multi">
-          چندتأییدی
-        </option>
-
-        <option value="normal">
-          عادی
-        </option>
-
-        <option value="all">
-          نمایش گسترده
-        </option>
-
-      </select>
-
-    </div>
-
-  </div>
-
-  <div class="methods" id="methods">
-
-  </div>
-
-  <div class="actions">
-
-    <button
-      class="btn secondary"
-      onclick="selectAllMethods()"
-    >
-      ⭐ انتخاب همه
-    </button>
-
-    <button
-      class="btn secondary"
-      onclick="clearMethods()"
-    >
-      پاک کردن
-    </button>
-
-    <button
-      class="btn secondary"
-      onclick="recommendedMethods()"
-    >
-      🔒 حالت پیشنهادی
-    </button>
-
-  </div>
+<b id="thresholdValue">
+75
+</b>
 
 </div>
+
+<div
+class="small"
+data-i18n="quality"
+>
+کیفیت سیگنال
+</div>
+
+<div
+style="
+display:flex;
+gap:6px;
+flex-wrap:wrap;
+margin:8px 0;
+"
+>
+
+<button
+class="secondary"
+data-threshold="50"
+data-i18n="wide"
+>
+نمایش گسترده
+</button>
+
+<button
+class="secondary"
+data-threshold="65"
+data-i18n="normal"
+>
+عادی
+</button>
+
+<button
+class="secondary"
+data-threshold="75"
+data-i18n="multi"
+>
+چندتأییدی
+</button>
+
+<button
+class="secondary"
+data-threshold="85"
+data-i18n="strict"
+>
+سخت‌گیرانه
+</button>
+
+</div>
+
+
+<div
+id="methods"
+class="methodGrid"
+>
+
+<div class="method active" data-method="ma">
+مووینگ میانگین
+</div>
+
+<div class="method active" data-method="smart">
+اسمارت مانی
+</div>
+
+<div class="method active" data-method="ict">
+ICT
+</div>
+
+<div class="method active" data-method="macd">
+MACD
+</div>
+
+<div class="method active" data-method="rsi">
+RSI
+</div>
+
+<div class="method active" data-method="divergence">
+واگرایی
+</div>
+
+<div class="method active" data-method="ichimoku">
+ایچیموکو
+</div>
+
+<div class="method active" data-method="volume">
+حجم
+</div>
+
+<div class="method active" data-method="orderflow">
+جریان سفارش
+</div>
+
+<div class="method active" data-method="liquidity">
+نقدینگی
+</div>
+
+<div class="method active" data-method="ict">
+FVG
+</div>
+
+<div class="method active" data-method="smart">
+BOS
+</div>
+
+<div class="method active" data-method="smart">
+CHoCH
+</div>
+
+<div class="method active" data-method="smart">
+Order Block
+</div>
+
+<div class="method active" data-method="sr">
+حمایت / مقاومت
+</div>
+
+<div class="method active" data-method="oi">
+OI
+</div>
+
+<div class="method active" data-method="funding">
+Funding
+</div>
+
+</div>
+
+<div
+style="
+display:flex;
+gap:7px;
+margin-top:10px;
+"
+>
+
+<button
+id="selectAll"
+data-i18n="selectAll"
+>
+⭐ انتخاب همه
+</button>
+
+<button
+id="clearAll"
+class="secondary"
+data-i18n="clear"
+>
+پاک کردن
+</button>
+
+</div>
+
+</section>
 
 
 <!-- =====================================================
-     MANUAL RESULT
-====================================================== -->
+MANUAL RESULT
+===================================================== -->
 
-<div class="card">
+<section class="card">
 
-  <div class="card-title">
-    📌 <span data-i18n="manualResult">
-      نتیجه بررسی دستی
-    </span>
-  </div>
+<h2 data-i18n="manualResult">
+📌 نتیجه بررسی دستی
+</h2>
 
-  <div id="manualResult">
-
-    <div class="empty">
-      نام یک ارز را وارد کن تا تحلیل نمایش داده شود.
-    </div>
-
-  </div>
-
+<div
+id="deepResult"
+>
+<div
+class="small"
+data-i18n="manualEmpty"
+>
+هنوز ارزی بررسی نشده است.
 </div>
+</div>
+
+</section>
 
 
 <!-- =====================================================
-     SIGNALS
-====================================================== -->
+SIGNALS
+===================================================== -->
 
-<div class="card">
+<section class="card">
 
-  <div class="card-title">
-    🚨 <span data-i18n="signals">
-      سیگنال‌های تأییدشده
-    </span>
-  </div>
+<h2 data-i18n="signals">
+🚨 سیگنال‌های تأییدشده
+</h2>
 
-  <div class="card-sub">
-    این قسمت مستقل از بررسی دستی است و تا Refresh بعدی باقی می‌ماند.
-  </div>
-
-  <button
-    class="btn"
-    onclick="loadSignals()"
-    id="signalsBtn"
-  >
-    🔄 دریافت سیگنال‌ها
-  </button>
-
-  <div id="signalsResult">
-
-    <div class="empty">
-      هنوز سیگنالی دریافت نشده است.
-    </div>
-
-  </div>
-
+<div
+class="small"
+data-i18n="signalDesc"
+>
+این قسمت مستقل از بررسی دستی است.
 </div>
+
+<button
+id="scanBtn"
+class="green"
+style="margin-top:10px"
+data-i18n="getSignals"
+>
+🔄 دریافت سیگنال‌ها
+</button>
+
+<div
+id="signalsResult"
+>
+</div>
+
+</section>
 
 
 <!-- =====================================================
-     RADAR
-====================================================== -->
+RADAR
+===================================================== -->
 
-<div class="card">
+<section class="card">
 
-  <div class="card-title">
-    📡 رادار بازار
-  </div>
+<h2 data-i18n="radar">
+📡 رادار بازار
+</h2>
 
-  <div class="card-sub">
-    رادار مستقل است و نتیجه بررسی دستی را تغییر نمی‌دهد.
-  </div>
-
-  <div class="radar-tabs">
-
-    <button
-      class="radar-tab active"
-      onclick="setRadarTab('pump',this)"
-    >
-      🚀 پامپ
-    </button>
-
-    <button
-      class="radar-tab"
-      onclick="setRadarTab('dump',this)"
-    >
-      🔻 دامپ
-    </button>
-
-    <button
-      class="radar-tab"
-      onclick="setRadarTab('reversal',this)"
-    >
-      🔄 برگشت
-    </button>
-
-  </div>
-
-  <button
-    class="btn"
-    style="margin-top:9px"
-    onclick="loadRadar()"
-    id="radarBtn"
-  >
-    📡 دریافت رادار
-  </button>
-
-  <div id="radarResult">
-
-    <div class="empty">
-      برای دریافت رادار دکمه بالا را بزن.
-    </div>
-
-  </div>
-
+<div
+class="small"
+data-i18n="radarDesc"
+>
+رادار مستقل است و نتیجه بررسی دستی را تغییر نمی‌دهد.
 </div>
 
+<button
+id="radarBtn"
+style="margin-top:10px"
+data-i18n="getRadar"
+>
+📡 دریافت رادار
+</button>
+
+<div
+id="radarResult"
+>
+</div>
+
+</section>
 
 </div>
 
@@ -895,597 +652,486 @@ header p{
 <script>
 
 /* =========================================================
-   CONFIG
+   STATE
 ========================================================= */
 
-const API = "";
+const state = {
 
-const DEFAULT_MIN_SCORE = 75;
+  lang:
+    localStorage.getItem(
+      "scanner_lang"
+    ) || "fa",
 
-let radarData = null;
+  threshold:
+    Number(
+      localStorage.getItem(
+        "scanner_threshold"
+      ) || 75
+    ),
 
-let currentRadarTab = "pump";
+  methods:
+    JSON.parse(
+      localStorage.getItem(
+        "scanner_methods"
+      ) || '["ma","smart","ict","macd","rsi","divergence","ichimoku","volume","orderflow","liquidity","sr","oi","funding"]'
+    )
 
-let lastManualResult = null;
-
-let selectedMethods = [];
-
-
-/* =========================================================
-   METHODS
-========================================================= */
-
-const METHODS = [
-
-  {
-    id:"ma",
-    fa:"مووینگ میانگین",
-    en:"Moving Average",
-    ar:"المتوسطات المتحركة"
-  },
-
-  {
-    id:"smc",
-    fa:"اسمارت مانی",
-    en:"Smart Money",
-    ar:"الأموال الذكية"
-  },
-
-  {
-    id:"ict",
-    fa:"ICT",
-    en:"ICT",
-    ar:"ICT"
-  },
-
-  {
-    id:"macd",
-    fa:"MACD",
-    en:"MACD",
-    ar:"MACD"
-  },
-
-  {
-    id:"rsi",
-    fa:"RSI",
-    en:"RSI",
-    ar:"RSI"
-  },
-
-  {
-    id:"divergence",
-    fa:"واگرایی",
-    en:"Divergence",
-    ar:"التباعد"
-  },
-
-  {
-    id:"ichimoku",
-    fa:"ایچیموکو",
-    en:"Ichimoku",
-    ar:"إيشيموكو"
-  },
-
-  {
-    id:"volume",
-    fa:"حجم",
-    en:"Volume",
-    ar:"الحجم"
-  },
-
-  {
-    id:"orderflow",
-    fa:"جریان سفارش",
-    en:"Order Flow",
-    ar:"تدفق الأوامر"
-  },
-
-  {
-    id:"liquidity",
-    fa:"نقدینگی",
-    en:"Liquidity",
-    ar:"السيولة"
-  },
-
-  {
-    id:"fvg",
-    fa:"FVG",
-    en:"FVG",
-    ar:"FVG"
-  },
-
-  {
-    id:"bos",
-    fa:"BOS / شکست ساختار",
-    en:"BOS / Break of Structure",
-    ar:"BOS / كسر الهيكل"
-  },
-
-  {
-    id:"choch",
-    fa:"CHoCH / تغییر شخصیت",
-    en:"CHoCH / Change of Character",
-    ar:"CHoCH / تغير الشخصية"
-  },
-
-  {
-    id:"ob",
-    fa:"Order Block",
-    en:"Order Block",
-    ar:"كتلة الأوامر"
-  },
-
-  {
-    id:"sr",
-    fa:"حمایت / مقاومت",
-    en:"Support / Resistance",
-    ar:"الدعم / المقاومة"
-  },
-
-  {
-    id:"oi",
-    fa:"OI",
-    en:"Open Interest",
-    ar:"الفائدة المفتوحة"
-  },
-
-  {
-    id:"funding",
-    fa:"Funding",
-    en:"Funding",
-    ar:"التمويل"
-  }
-
-];
+};
 
 
 /* =========================================================
    TRANSLATIONS
 ========================================================= */
 
-const LANG = {
+const T = {
 
 fa:{
-  dir:"rtl",
-  title:"📊 اسکنر هوشمند بازار",
-  subtitle:"تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش",
-  manualTitle:"بررسی دستی ارز",
-  manualSub:"فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.",
-  methodTitle:"انتخاب روش‌های سیگنال‌گیری",
-  methodSub:"فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.",
-  minScore:"حداقل امتیاز سیگنال",
-  signalMode:"کیفیت سیگنال",
-  manualResult:"نتیجه بررسی دستی",
-  signals:"سیگنال‌های تأییدشده",
-  search:"بررسی",
-  wait:"انتظار",
-  long:"صعودی",
-  short:"نزولی",
-  price:"قیمت",
-  score:"امتیاز",
-  status:"وضعیت",
-  pumpDump:"پامپ / دامپ",
-  market:"اطلاعات بازار",
-  structure:"ساختار بازار",
-  candle:"تحلیل کندل",
-  walls:"حمایت، مقاومت و نقدینگی",
-  timeframes:"تحلیل تایم‌فریم‌ها",
-  converted:"MAهای تبدیل‌شده به 1 دقیقه",
-  reversal:"تحلیل احتمال برگشت",
-  reasons:"دلایل امتیاز",
-  loading:"در حال دریافت اطلاعات...",
-  noSignal:"در این شرایط سیگنال تأییدشده‌ای پیدا نشد.",
-  noData:"داده‌ای موجود نیست.",
-  connection:"🟢 اتصال برقرار است",
-  connectionError:"🔴 خطا در اتصال",
-  pump:"پامپ",
-  dump:"دامپ",
-  reversalShort:"برگشت",
-  support:"حمایت نزدیک",
-  resistance:"مقاومت نزدیک",
-  buyWall:"Buy Wall",
-  sellWall:"Sell Wall",
-  funding:"Funding",
-  oi:"Open Interest",
-  delta:"Delta",
-  change:"تغییر 24ساعت",
-  bos:"BOS / شکست ساختار",
-  choch:"CHoCH / تغییر شخصیت",
-  hunt:"Hunt / شکار نقدینگی",
-  fvg:"FVG",
-  styles:"سبک‌های معاملاتی",
-  signalReasons:"دلایل سیگنال",
-  veryStrong:"🔥 بسیار قوی",
-  confirmed:"✅ تأییدشده",
-  watch:"👀 تحت نظر",
-  none:"⏳ بدون سیگنال"
+title:"📊 اسکنر هوشمند بازار",
+subtitle:"تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش",
+manual:"🔎 بررسی دستی ارز",
+manualDesc:"فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.",
+analyze:"بررسی",
+methods:"🎯 انتخاب روش‌های سیگنال‌گیری",
+methodsDesc:"فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.",
+minimum:"حداقل امتیاز",
+quality:"کیفیت سیگنال",
+wide:"نمایش گسترده",
+normal:"عادی",
+multi:"چندتأییدی",
+strict:"سخت‌گیرانه",
+selectAll:"⭐ انتخاب همه",
+clear:"پاک کردن",
+manualResult:"📌 نتیجه بررسی دستی",
+manualEmpty:"هنوز ارزی بررسی نشده است.",
+signals:"🚨 سیگنال‌های تأییدشده",
+signalDesc:"این قسمت مستقل از بررسی دستی است و نتیجه آن با بررسی دستی جابه‌جا نمی‌شود.",
+getSignals:"🔄 دریافت سیگنال‌ها",
+radar:"📡 رادار بازار",
+radarDesc:"رادار مستقل است و نتیجه بررسی دستی را تغییر نمی‌دهد.",
+getRadar:"📡 دریافت رادار",
+price:"قیمت",
+score:"امتیاز",
+status:"وضعیت",
+long:"خرید",
+short:"فروش",
+pump:"پامپ",
+dump:"دامپ",
+market:"اطلاعات بازار",
+structure:"🧱 ساختار بازار",
+styles:"🧠 سبک‌های معاملاتی",
+timeframes:"⏱ تحلیل تایم‌فریم‌ها",
+reasons:"📋 دلایل امتیاز",
+bull:"🟢 صعودی",
+bear:"🔴 نزولی",
+wait:"🟡 انتظار",
+support:"حمایت نزدیک",
+resistance:"مقاومت نزدیک",
+orderflow:"جریان سفارش",
+funding:"فاندینگ",
+oi:"OI",
+futures:"فیوچرز",
+spot:"اسپات",
+notFound:"❌ این نماد در بازارهای قابل بررسی پیدا نشد.",
+loading:"⏳ در حال تحلیل...",
+error:"❌ خطا در دریافت اطلاعات",
+veryStrong:"🔥 بسیار قوی",
+confirmed:"✅ تأییدشده",
+watch:"👀 تحت نظر",
+none:"⏳ بدون سیگنال"
 },
 
 en:{
-  dir:"ltr",
-  title:"📊 Smart Market Scanner",
-  subtitle:"Multi-style market, structure, liquidity, volume and order-flow analysis",
-  manualTitle:"Manual Coin Analysis",
-  manualSub:"Enter only the coin name. The market is detected automatically.",
-  methodTitle:"Signal Methods",
-  methodSub:"Only selected methods are used for signal filtering.",
-  minScore:"Minimum Signal Score",
-  signalMode:"Signal Quality",
-  manualResult:"Manual Analysis Result",
-  signals:"Confirmed Signals",
-  search:"Analyze",
-  wait:"WAIT",
-  long:"BULLISH",
-  short:"BEARISH",
-  price:"Price",
-  score:"Score",
-  status:"Status",
-  pumpDump:"Pump / Dump",
-  market:"Market Data",
-  structure:"Market Structure",
-  candle:"Candle Analysis",
-  walls:"Support, Resistance & Liquidity",
-  timeframes:"Timeframe Analysis",
-  converted:"1m Converted MAs",
-  reversal:"Reversal Analysis",
-  reasons:"Score Reasons",
-  loading:"Loading...",
-  noSignal:"No confirmed signal found.",
-  noData:"No data",
-  connection:"🟢 Connected",
-  connectionError:"🔴 Connection Error",
-  pump:"Pump",
-  dump:"Dump",
-  reversalShort:"Reversal",
-  support:"Nearest Support",
-  resistance:"Nearest Resistance",
-  buyWall:"Buy Wall",
-  sellWall:"Sell Wall",
-  funding:"Funding",
-  oi:"Open Interest",
-  delta:"Delta",
-  change:"24h Change",
-  bos:"BOS / Break of Structure",
-  choch:"CHoCH / Change of Character",
-  hunt:"Hunt / Liquidity Sweep",
-  fvg:"FVG",
-  styles:"Trading Styles",
-  signalReasons:"Signal Reasons",
-  veryStrong:"🔥 Very Strong",
-  confirmed:"✅ Confirmed",
-  watch:"👀 Watch",
-  none:"⏳ No Signal"
+title:"📊 Smart Market Scanner",
+subtitle:"Multi-style market, structure, liquidity, volume and order-flow analysis",
+manual:"🔎 Manual Asset Search",
+manualDesc:"Enter only the asset name; the market is detected automatically.",
+analyze:"Analyze",
+methods:"🎯 Signal Methods",
+methodsDesc:"Only selected methods affect the score and signal filter.",
+minimum:"Minimum score",
+quality:"Signal quality",
+wide:"Wide",
+normal:"Normal",
+multi:"Multi-confirmation",
+strict:"Strict",
+selectAll:"⭐ Select all",
+clear:"Clear",
+manualResult:"📌 Manual Analysis",
+manualEmpty:"No asset has been analyzed yet.",
+signals:"🚨 Confirmed Signals",
+signalDesc:"This section is independent from manual analysis.",
+getSignals:"🔄 Get Signals",
+radar:"📡 Market Radar",
+radarDesc:"Radar is independent from manual analysis.",
+getRadar:"📡 Get Radar",
+price:"Price",
+score:"Score",
+status:"Status",
+long:"Long",
+short:"Short",
+pump:"Pump",
+dump:"Dump",
+market:"Market Data",
+structure:"🧱 Market Structure",
+styles:"🧠 Trading Styles",
+timeframes:"⏱ Timeframes",
+reasons:"📋 Score Reasons",
+bull:"🟢 Bullish",
+bear:"🔴 Bearish",
+wait:"🟡 Waiting",
+support:"Nearest Support",
+resistance:"Nearest Resistance",
+orderflow:"Order Flow",
+funding:"Funding",
+oi:"OI",
+futures:"Futures",
+spot:"Spot",
+notFound:"❌ Asset not found.",
+loading:"⏳ Analyzing...",
+error:"❌ Error receiving data",
+veryStrong:"🔥 Very Strong",
+confirmed:"✅ Confirmed",
+watch:"👀 Watch",
+none:"⏳ No Signal"
+},
+
+ar:{
+title:"📊 ماسح السوق الذكي",
+subtitle:"تحليل متعدد الأساليب للسوق والسيولة والحجم وتدفق الأوامر",
+manual:"🔎 البحث اليدوي",
+manualDesc:"اكتب اسم العملة فقط وسيتم تحديد السوق تلقائياً.",
+analyze:"تحليل",
+methods:"🎯 طرق الإشارات",
+methodsDesc:"الطرق المختارة فقط تدخل في التقييم.",
+minimum:"الحد الأدنى",
+quality:"جودة الإشارة",
+wide:"واسع",
+normal:"عادي",
+multi:"تأكيد متعدد",
+strict:"صارم",
+selectAll:"⭐ تحديد الكل",
+clear:"مسح",
+manualResult:"📌 نتيجة التحليل",
+manualEmpty:"لم يتم تحليل عملة بعد.",
+signals:"🚨 الإشارات المؤكدة",
+signalDesc:"هذا القسم مستقل عن البحث اليدوي.",
+getSignals:"🔄 الحصول على الإشارات",
+radar:"📡 رادار السوق",
+radarDesc:"الرادار مستقل.",
+getRadar:"📡 الحصول على الرادار",
+price:"السعر",
+score:"النتيجة",
+status:"الحالة",
+long:"شراء",
+short:"بيع",
+pump:"ضخ",
+dump:"هبوط",
+market:"بيانات السوق",
+structure:"🧱 هيكل السوق",
+styles:"🧠 أساليب التداول",
+timeframes:"⏱ الأطر الزمنية",
+reasons:"📋 أسباب النتيجة",
+bull:"🟢 صاعد",
+bear:"🔴 هابط",
+wait:"🟡 انتظار",
+support:"الدعم الأقرب",
+resistance:"المقاومة الأقرب",
+orderflow:"تدفق الأوامر",
+funding:"التمويل",
+oi:"الفائدة المفتوحة",
+futures:"عقود",
+spot:"فوري",
+notFound:"❌ لم يتم العثور على العملة.",
+loading:"⏳ جاري التحليل...",
+error:"❌ خطأ في البيانات",
+veryStrong:"🔥 قوي جداً",
+confirmed:"✅ مؤكد",
+watch:"👀 مراقبة",
+none:"⏳ بدون إشارة"
 }
 
 };
+
+
+/* fallback translations */
+
+T.pt=T.en;
+T.es=T.en;
+T.zh=T.en;
+T.ja=T.en;
+T.hi=T.en;
+T.ur=T.en;
+T.ru=T.en;
 
 
 /* =========================================================
    LANGUAGE
 ========================================================= */
 
-function t(key){
-
-  const lang=
-    document.getElementById("language").value;
+function tr(key){
 
   return (
-    LANG[lang]?.[key] ||
-    LANG.fa[key] ||
+    T[state.lang]?.[key] ||
+    T.en[key] ||
     key
   );
+
 }
 
-function changeLanguage(){
+function applyLanguage(){
 
-  const lang=
-    document.getElementById("language").value;
+  document.documentElement.lang =
+    state.lang;
 
-  document.documentElement.lang=lang;
+  document.documentElement.dir =
+    state.lang==="fa" ||
+    state.lang==="ar" ||
+    state.lang==="ur"
+      ? "rtl"
+      : "ltr";
 
-  document.documentElement.dir=
-    LANG[lang]?.dir || "rtl";
+  document
+    .querySelectorAll("[data-i18n]")
+    .forEach(el=>{
+      const key =
+        el.dataset.i18n;
 
-  const l=LANG[lang] || LANG.fa;
+      el.textContent =
+        tr(key);
+    });
 
-  document.getElementById("appTitle").textContent=l.title;
-  document.getElementById("appSubtitle").textContent=l.subtitle;
+  document
+    .querySelectorAll("[data-lang]")
+    .forEach(b=>{
+      b.classList.toggle(
+        "active",
+        b.dataset.lang ===
+          state.lang
+      );
+    });
 
-  document.querySelectorAll("[data-i18n]").forEach(el=>{
+  document.getElementById(
+    "thresholdValue"
+  ).textContent =
+    state.threshold;
 
-    const key=el.dataset.i18n;
+}
 
-    if(l[key]){
-      el.textContent=l[key];
-    }
+document
+  .querySelectorAll("[data-lang]")
+  .forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      state.lang =
+        btn.dataset.lang;
+
+      localStorage.setItem(
+        "scanner_lang",
+        state.lang
+      );
+
+      applyLanguage();
+
+      renderManual(
+        window.lastManual
+      );
+
+      renderSignals(
+        window.lastSignals
+      );
+
+      renderRadar(
+        window.lastRadar
+      );
+
+    };
 
   });
 
-  renderMethods();
-
-  if(lastManualResult){
-    renderManual(lastManualResult);
-  }
-
-  localStorage.setItem(
-    "scanner_language",
-    lang
-  );
-}
-
 
 /* =========================================================
-   SETTINGS
+   METHODS
 ========================================================= */
 
-function loadSettings(){
-
-  const savedScore=
-    Number(
-      localStorage.getItem("scanner_min_score")
-    );
-
-  if(
-    Number.isFinite(savedScore) &&
-    savedScore>=0 &&
-    savedScore<=100
-  ){
-
-    document.getElementById("minScore").value=
-      savedScore;
-
-  }
-
-  const savedMode=
-    localStorage.getItem("scanner_signal_mode");
-
-  if(savedMode){
-
-    document.getElementById("signalMode").value=
-      savedMode;
-
-  }
-
-  const savedMethods=
-    localStorage.getItem("scanner_methods");
-
-  if(savedMethods){
-
-    try{
-      selectedMethods=
-        JSON.parse(savedMethods);
-    }catch{
-      selectedMethods=[];
-    }
-
-  }
-
-  if(!selectedMethods.length){
-    recommendedMethods();
-  }
-
-}
-
-function saveSettings(){
-
-  const score=
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number(
-          document.getElementById("minScore").value
-        ) || DEFAULT_MIN_SCORE
-      )
-    );
-
-  document.getElementById("minScore").value=score;
-
-  document.getElementById("statusMinScore").textContent=
-    score;
-
-  localStorage.setItem(
-    "scanner_min_score",
-    score
-  );
-
-  localStorage.setItem(
-    "scanner_signal_mode",
-    document.getElementById("signalMode").value
-  );
+function saveMethods(){
 
   localStorage.setItem(
     "scanner_methods",
-    JSON.stringify(selectedMethods)
+    JSON.stringify(
+      state.methods
+    )
   );
 
 }
 
-function recommendedMethods(){
+document
+  .querySelectorAll(".method")
+  .forEach(el=>{
 
-  selectedMethods=[
-    "ma",
-    "smc",
-    "ict",
-    "volume",
-    "orderflow",
-    "liquidity",
-    "fvg",
-    "bos",
-    "choch",
-    "ob",
-    "sr",
-    "oi",
-    "funding"
-  ];
+    el.classList.toggle(
+      "active",
+      state.methods.includes(
+        el.dataset.method
+      )
+    );
 
-  renderMethods();
-  saveSettings();
+    el.onclick=()=>{
 
-}
-
-function selectAllMethods(){
-
-  selectedMethods=
-    METHODS.map(x=>x.id);
-
-  renderMethods();
-  saveSettings();
-
-}
-
-function clearMethods(){
-
-  selectedMethods=[];
-
-  renderMethods();
-  saveSettings();
-
-}
-
-function toggleMethod(id){
-
-  if(
-    selectedMethods.includes(id)
-  ){
-
-    selectedMethods=
-      selectedMethods.filter(
-        x=>x!==id
+      el.classList.toggle(
+        "active"
       );
 
-  }else{
+      state.methods =
+        [
+          ...new Set(
+            [...document.querySelectorAll(".method.active")]
+              .map(x=>x.dataset.method)
+          )
+        ];
 
-    selectedMethods.push(id);
+      saveMethods();
 
-  }
+    };
 
-  saveSettings();
-
-  renderMethods();
-
-}
+  });
 
 
-/* =========================================================
-   METHOD UI
-========================================================= */
+document.getElementById(
+  "selectAll"
+).onclick=()=>{
 
-function methodName(m){
+  document
+    .querySelectorAll(".method")
+    .forEach(x=>
+      x.classList.add("active")
+    );
 
-  const lang=
-    document.getElementById("language").value;
+  state.methods =
+    [
+      ...new Set(
+        [...document.querySelectorAll(".method")]
+          .map(x=>x.dataset.method)
+      )
+    ];
 
-  if(lang==="en") return m.en;
+  saveMethods();
 
-  if(
-    ["ar"].includes(lang) &&
-    m.ar
-  ){
-    return m.ar;
-  }
+};
 
-  return m.fa;
-}
 
-function renderMethods(){
+document.getElementById(
+  "clearAll"
+).onclick=()=>{
 
-  const box=
-    document.getElementById("methods");
+  document
+    .querySelectorAll(".method")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
 
-  box.innerHTML=
-    METHODS.map(m=>`
+  state.methods=[];
 
-      <label
-        class="method ${
-          selectedMethods.includes(m.id)
-            ? "active"
-            : ""
-        }"
-      >
+  saveMethods();
 
-        <input
-          type="checkbox"
-          ${
-            selectedMethods.includes(m.id)
-              ? "checked"
-              : ""
-          }
-          onchange="toggleMethod('${m.id}')"
-        >
-
-        <span>
-          ${methodName(m)}
-        </span>
-
-      </label>
-
-    `).join("");
-
-}
+};
 
 
 /* =========================================================
-   FETCH JSON SAFELY
+   THRESHOLD
 ========================================================= */
 
-async function apiFetch(url,options={}){
+const threshold =
+  document.getElementById(
+    "threshold"
+  );
 
-  const r=
+threshold.value =
+  state.threshold;
+
+threshold.oninput=()=>{
+
+  state.threshold =
+    Number(
+      threshold.value
+    );
+
+  document.getElementById(
+    "thresholdValue"
+  ).textContent =
+    state.threshold;
+
+  localStorage.setItem(
+    "scanner_threshold",
+    state.threshold
+  );
+
+};
+
+document
+  .querySelectorAll(
+    "[data-threshold]"
+  )
+  .forEach(btn=>{
+
+    btn.onclick=()=>{
+
+      state.threshold =
+        Number(
+          btn.dataset.threshold
+        );
+
+      threshold.value =
+        state.threshold;
+
+      document.getElementById(
+        "thresholdValue"
+      ).textContent =
+        state.threshold;
+
+      localStorage.setItem(
+        "scanner_threshold",
+        state.threshold
+      );
+
+    };
+
+  });
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function request(path){
+
+  const r =
     await fetch(
-      url,
+      path,
       {
-        cache:"no-store",
-        ...options
+        cache:"no-store"
       }
     );
 
-  const text=
+  const text =
     await r.text();
-
-  if(!text){
-
-    throw new Error(
-      `پاسخ خالی از Worker — HTTP ${r.status}`
-    );
-
-  }
 
   let data;
 
   try{
-
-    data=
+    data =
       JSON.parse(text);
-
-  }catch(e){
-
-    if(
-      text.trim().startsWith("<")
-    ){
-
-      throw new Error(
-        `Worker به‌جای JSON صفحه HTML برگرداند — HTTP ${r.status}. مسیر Worker یا Deployment را بررسی کن.`
-      );
-
-    }
-
+  }catch{
     throw new Error(
-      `پاسخ Worker JSON معتبر نیست — HTTP ${r.status}`
+      "پاسخ Worker معتبر نیست"
     );
-
   }
 
-  if(
-    !r.ok ||
-    data.ok===false
-  ){
-
+  if(!r.ok || data.ok===false){
     throw new Error(
       data.error ||
-      `HTTP ${r.status}`
+      tr("error")
     );
-
   }
 
   return data;
@@ -1494,1382 +1140,593 @@ async function apiFetch(url,options={}){
 
 
 /* =========================================================
-   CONNECTION
+   SEARCH
 ========================================================= */
 
-async function checkConnection(){
+document.getElementById(
+  "searchBtn"
+).onclick=async()=>{
 
-  const el=
-    document.getElementById(
-      "connectionStatus"
-    );
-
-  try{
-
-    const d=
-      await apiFetch(
-        `${API}/api/health`
-      );
-
-    el.textContent=
-      t("connection");
-
-    const score=
-      Number(
-        d.minimumSignalScore
-      );
-
-    if(
-      Number.isFinite(score)
-    ){
-
-      document.getElementById(
-        "statusMinScore"
-      ).textContent=
-        score;
-
-    }
-
-  }catch(e){
-
-    el.textContent=
-      t("connectionError");
-
-    el.className="red";
-
-    console.error(e);
-
-  }
-
-}
-
-
-/* =========================================================
-   MANUAL ANALYSIS
-========================================================= */
-
-async function manualAnalyze(){
-
-  const input=
+  const input =
     document.getElementById(
       "symbolInput"
-    );
+    ).value.trim();
 
-  const raw=
-    input.value.trim();
+  if(!input) return;
 
-  if(!raw) return;
-
-  const btn=
+  const box =
     document.getElementById(
-      "analyzeBtn"
+      "deepResult"
     );
 
-  const error=
-    document.getElementById(
-      "manualError"
-    );
-
-  error.style.display="none";
-
-  btn.disabled=true;
-
-  btn.textContent=
-    "⏳ ...";
-
-  document.getElementById(
-    "manualResult"
-  ).innerHTML=
-    `<div class="loading">${t("loading")}</div>`;
+  box.innerHTML =
+    `<div class="loading">
+      ${tr("loading")}
+    </div>`;
 
   try{
 
-    /*
-      مرحله اول:
-      فقط نام ارز فرستاده می‌شود.
-      Worker خودش بازار موجود را پیدا می‌کند.
-    */
-
-    const search=
-      await apiFetch(
-        `${API}/api/search?symbol=${
-          encodeURIComponent(raw)
-        }`
+    const methods =
+      encodeURIComponent(
+        JSON.stringify(
+          state.methods
+        )
       );
 
-    let category="linear";
-
-    let chosen=
-      search.futures ||
-      search.spot;
-
-    /*
-      اگر Futures وجود داشته باشد اولویت با آن است.
-      اگر نبود Spot.
-    */
-
-    if(!search.futures){
-
-      category="spot";
-
-      chosen=search.spot;
-
-    }
-
-    if(!chosen){
-
-      throw new Error(
-        "این نماد در بازارهای قابل بررسی پیدا نشد."
+    const data =
+      await request(
+        `/api/search?symbol=${encodeURIComponent(input)}&threshold=${state.threshold}&methods=${methods}`
       );
 
-    }
+    window.lastManual =
+      data;
 
-    /*
-      روش‌ها و حداقل امتیاز نیز ارسال می‌شوند.
-      Worker فعلی در صورت عدم استفاده از این پارامترها
-      همچنان تحلیل پایه خود را انجام می‌دهد.
-    */
-
-    const minScore=
-      Number(
-        document.getElementById(
-          "minScore"
-        ).value
-      ) || 75;
-
-    const params=
-      new URLSearchParams({
-
-        symbol:chosen.symbol,
-
-        category,
-
-        minScore:String(minScore),
-
-        methods:selectedMethods.join(","),
-
-        mode:
-          document.getElementById(
-            "signalMode"
-          ).value
-
-      });
-
-    const result=
-      await apiFetch(
-        `${API}/api/analyze?${params.toString()}`
-      );
-
-    lastManualResult=result;
-
-    renderManual(result);
+    renderManual(data);
 
   }catch(e){
 
-    console.error(e);
-
-    error.style.display="block";
-
-    error.textContent=
-      "❌ "+e.message;
-
-    document.getElementById(
-      "manualResult"
-    ).innerHTML="";
-
-  }finally{
-
-    btn.disabled=false;
-
-    btn.textContent=t("search");
+    box.innerHTML =
+      `<div class="error">
+        ${e.message}
+      </div>`;
 
   }
 
-}
+};
 
 
 /* =========================================================
-   HELPERS
+   ACCORDION
 ========================================================= */
 
-function num(v,dash="-"){
+function accordion(
+  title,
+  body
+){
 
-  if(
-    v===null ||
-    v===undefined ||
-    v===""
-  ){
-    return dash;
-  }
-
-  const x=Number(v);
-
-  if(!Number.isFinite(x)){
-    return dash;
-  }
-
-  return x.toLocaleString(
-    undefined,
-    {
-      maximumFractionDigits:8
-    }
-  );
-
-}
-
-function percent(v){
-
-  if(
-    v===null ||
-    v===undefined ||
-    !Number.isFinite(Number(v))
-  ){
-    return "-";
-  }
-
-  const x=Number(v);
-
-  return (
-    x>=0 ? "+" : ""
-  )+
-  x.toFixed(2)+
-  "%";
-
-}
-
-function directionBadge(direction){
-
-  if(direction==="LONG"){
-
-    return `
-      <span class="badge long">
-        🟢 ${t("long")}
-      </span>
-    `;
-
-  }
-
-  if(direction==="SHORT"){
-
-    return `
-      <span class="badge short">
-        🔴 ${t("short")}
-      </span>
-    `;
-
-  }
-
-  return `
-    <span class="badge wait">
-      🟡 ${t("wait")}
-    </span>
-  `;
-
-}
-
-function signalLabel(level){
-
-  if(level==="VERY_STRONG"){
-    return t("veryStrong");
-  }
-
-  if(level==="CONFIRMED"){
-    return t("confirmed");
-  }
-
-  if(level==="WATCH"){
-    return t("watch");
-  }
-
-  return t("none");
-
-}
-
-function scoreBar(score){
-
-  const s=
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number(score)||0
-      )
+  const el =
+    document.createElement(
+      "div"
     );
 
-  return `
-    <div class="progress">
-      <div style="width:${s}%"></div>
+  el.className =
+    "accordion";
+
+  el.innerHTML = `
+    <div class="accordionHeader">
+      <span>${title}</span>
+      <span>＋</span>
+    </div>
+
+    <div class="accordionBody">
+      ${body}
     </div>
   `;
 
-}
+  el
+    .querySelector(
+      ".accordionHeader"
+    )
+    .onclick=()=>{
 
-function safe(v){
+      el.classList.toggle(
+        "open"
+      );
 
-  return String(
-    v===undefined ||
-    v===null
-      ? "-"
-      : v
-  );
+    };
 
-}
-
-
-/* =========================================================
-   COLLAPSIBLE SECTION
-========================================================= */
-
-function section(title,body,open=false){
-
-  return `
-
-    <div class="section ${open?"open":""}">
-
-      <div
-        class="section-head"
-        onclick="this.parentElement.classList.toggle('open')"
-      >
-
-        <span class="section-title">
-          ${title}
-        </span>
-
-        <span class="section-arrow">
-          ▼
-        </span>
-
-      </div>
-
-      <div class="section-body">
-        ${body}
-      </div>
-
-    </div>
-
-  `;
+  return el;
 
 }
 
 
 /* =========================================================
-   STYLE DETAILS
+   MANUAL RENDER
 ========================================================= */
 
-function styleDetail(name,result){
+function renderManual(d){
 
-  const one=
-    result?.timeframes?.["1"];
+  if(!d) return;
 
-  const movement=
-    result?.movement || {};
-
-  const fp=
-    result?.footprint || {};
-
-  const wall=
-    result?.walls || {};
-
-  if(name==="ma"){
-
-    return `
-      <div>
-        MA7:
-        <b>${num(one?.ma7)}</b>
-      </div>
-
-      <div>
-        MA20:
-        <b>${num(one?.ma20)}</b>
-      </div>
-
-      <div>
-        شیب:
-        <b>${safe(one?.maSlope)}</b>
-      </div>
-
-      <div>
-        روند:
-        <b>${safe(one?.trend)}</b>
-      </div>
-
-      <div>
-        تماس MA20:
-        <b>${one?.touchMA20?"بله":"خیر"}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="smc"){
-
-    return `
-      <div>
-        BOS:
-        <b>${safe(one?.bos)}</b>
-      </div>
-
-      <div>
-        CHoCH:
-        <b>${safe(one?.choch)}</b>
-      </div>
-
-      <div>
-        Hunt:
-        <b>${safe(one?.hunt?.side)}</b>
-      </div>
-
-      <div>
-        Order Block:
-        <b>${safe(one?.orderBlock?.type)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="ict"){
-
-    return `
-      <div>
-        FVG:
-        <b>${safe(one?.fvg?.type)}</b>
-      </div>
-
-      <div>
-        Liquidity Sweep:
-        <b>${one?.hunt?.confirmed?"تأیید":"مشاهده نشد"}</b>
-      </div>
-
-      <div>
-        BOS:
-        <b>${safe(one?.bos)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="volume"){
-
-    return `
-      <div>
-        Volume:
-        <b>${num(one?.volume?.current)}</b>
-      </div>
-
-      <div>
-        Volume MA20:
-        <b>${num(one?.volume?.ma20)}</b>
-      </div>
-
-      <div>
-        نسبت:
-        <b>${num(one?.volume?.ratio20)}</b>
-      </div>
-
-      <div>
-        Spike:
-        <b>${one?.volume?.spike?"بله":"خیر"}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="orderflow"){
-
-    return `
-      <div>
-        Buy:
-        <b>${num(fp?.buyVolume)}</b>
-      </div>
-
-      <div>
-        Sell:
-        <b>${num(fp?.sellVolume)}</b>
-      </div>
-
-      <div>
-        Delta:
-        <b>${percent(fp?.deltaPercent)}</b>
-      </div>
-
-      <div>
-        معاملات:
-        <b>${num(fp?.trades)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="liquidity"){
-
-    return `
-      <div>
-        Buy Liquidity:
-        <b>${num(wall?.buyLiquidity)}</b>
-      </div>
-
-      <div>
-        Sell Liquidity:
-        <b>${num(wall?.sellLiquidity)}</b>
-      </div>
-
-      <div>
-        Buy Wall:
-        <b>${num(wall?.buy?.price)}</b>
-      </div>
-
-      <div>
-        Sell Wall:
-        <b>${num(wall?.sell?.price)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="rsi"){
-
-    return `
-      <div>
-        RSI در نسخه فعلی Worker:
-        <b>داده محاسبه نشده</b>
-      </div>
-      <div>
-        این قسمت برای اتصال مستقیم به RSI آماده است.
-      </div>
-    `;
-
-  }
-
-  if(name==="macd"){
-
-    return `
-      <div>
-        MACD در نسخه فعلی Worker:
-        <b>داده محاسبه نشده</b>
-      </div>
-      <div>
-        رابط کاربری آماده دریافت MACD است.
-      </div>
-    `;
-
-  }
-
-  if(name==="ichimoku"){
-
-    return `
-      <div>
-        Ichimoku:
-        <b>در انتظار داده اندیکاتور</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="divergence"){
-
-    return `
-      <div>
-        واگرایی:
-        <b>در نسخه فعلی داده مستقل ندارد</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="fvg"){
-
-    return `
-      <div>
-        نوع FVG:
-        <b>${safe(one?.fvg?.type)}</b>
-      </div>
-
-      <div>
-        محدوده:
-        <b>
-          ${num(one?.fvg?.low)}
-          -
-          ${num(one?.fvg?.high)}
-        </b>
-      </div>
-    `;
-
-  }
-
-  if(name==="bos"){
-
-    return `
-      <div>
-        BOS:
-        <b>${safe(one?.bos)}</b>
-      </div>
-
-      <div>
-        Swing High:
-        <b>${num(one?.structure?.swingHigh)}</b>
-      </div>
-
-      <div>
-        Swing Low:
-        <b>${num(one?.structure?.swingLow)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="choch"){
-
-    return `
-      <div>
-        CHoCH:
-        <b>${safe(one?.choch)}</b>
-      </div>
-
-      <div>
-        قبلی:
-        <b>${safe(one?.structure?.previousSwingHigh)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="ob"){
-
-    return `
-      <div>
-        Order Block:
-        <b>${safe(one?.orderBlock?.type)}</b>
-      </div>
-
-      <div>
-        Low:
-        <b>${num(one?.orderBlock?.low)}</b>
-      </div>
-
-      <div>
-        High:
-        <b>${num(one?.orderBlock?.high)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="sr"){
-
-    const sr=
-      result?.supportResistance || {};
-
-    return `
-      <div>
-        Support:
-        <b>${num(sr?.nearestSupport?.price)}</b>
-      </div>
-
-      <div>
-        Resistance:
-        <b>${num(sr?.nearestResistance?.price)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="oi"){
-
-    return `
-      <div>
-        Open Interest:
-        <b>${num(result?.market?.openInterest)}</b>
-      </div>
-
-      <div>
-        تغییر قیمت:
-        <b>${percent(result?.market?.change24h)}</b>
-      </div>
-    `;
-
-  }
-
-  if(name==="funding"){
-
-    return `
-      <div>
-        Funding:
-        <b>${percent(
-          Number(result?.market?.fundingRate)*100
-        )}</b>
-      </div>
-    `;
-
-  }
-
-  return `
-    <div>
-      اطلاعات کامل این روش در حال آماده‌سازی است.
-    </div>
-  `;
-
-}
-
-
-/* =========================================================
-   STYLE SCORE
-========================================================= */
-
-function getStyleScore(result,id){
-
-  const s=
-    result?.styles || {};
-
-  const map={
-
-    ma:s.MA,
-    smc:s.SMC,
-    ict:s.ICT,
-    volume:s.Volume,
-    orderflow:s.OrderFlow,
-    liquidity:s.Liquidity
-
-  };
-
-  if(
-    map[id]!==undefined
-  ){
-    return map[id];
-  }
-
-  /*
-    روش‌هایی که Worker فعلی هنوز امتیاز مستقل
-    برای آنها نمی‌فرستد.
-  */
-
-  if(id==="fvg"){
-    return result?.timeframes?.["1"]?.fvg?.type!=="NONE"
-      ? 75
-      : 0;
-  }
-
-  if(id==="bos"){
-    return result?.timeframes?.["1"]?.bos!=="NONE"
-      ? 75
-      : 0;
-  }
-
-  if(id==="choch"){
-    return result?.timeframes?.["1"]?.choch!=="NONE"
-      ? 85
-      : 0;
-  }
-
-  if(id==="ob"){
-    return result?.timeframes?.["1"]?.orderBlock?.type!=="NONE"
-      ? 75
-      : 0;
-  }
-
-  return 0;
-
-}
-
-
-/* =========================================================
-   MANUAL RESULT
-========================================================= */
-
-function renderManual(result){
-
-  const box=
+  const box =
     document.getElementById(
-      "manualResult"
+      "deepResult"
     );
 
-  if(!result){
+  if(!d.ok){
 
-    box.innerHTML=
-      `<div class="empty">${t("noData")}</div>`;
+    box.innerHTML =
+      `<div class="error">
+        ${tr("notFound")}
+      </div>`;
 
     return;
   }
 
-  const score=
-    Number(result.score)||0;
+  const direction =
+    d.direction;
 
-  const movement=
-    result.movement || {};
+  const dirText =
+    direction==="LONG"
+      ? tr("bull")
+      : direction==="SHORT"
+        ? tr("bear")
+        : tr("wait");
 
-  const market=
-    result.market || {};
+  let html = `
 
-  const fp=
-    result.footprint || {};
+    <div class="grid">
 
-  const wall=
-    result.walls || {};
-
-  const sr=
-    result.supportResistance || {};
-
-  const one=
-    result.timeframes?.["1"];
-
-  const tf=
-    result.timeframes || {};
-
-  const styles=
-    result.styles || {};
-
-  let html="";
-
-  html+=`
-
-    <div class="result-header">
-
-      <div>
-
-        <div class="symbol">
-          ${safe(result.symbol)}
+      <div class="stat">
+        <div class="statTitle">
+          ${d.symbol}
         </div>
-
-        ${directionBadge(result.direction)}
-
+        <div class="statValue">
+          ${d.category==="linear"
+            ? tr("futures")
+            : tr("spot")}
+        </div>
       </div>
 
-      <div style="text-align:center">
-
-        <div class="score-big">
-          ${score}/100
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("price")}
         </div>
-
-        <div class="badge">
-          ${signalLabel(result.signalLevel)}
+        <div class="statValue">
+          ${format(d.price)}
         </div>
+      </div>
 
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("score")}
+        </div>
+        <div class="statValue">
+          ${d.score}/100
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("status")}
+        </div>
+        <div class="statValue ${
+          direction==="LONG"
+            ? "long"
+            : direction==="SHORT"
+              ? "short"
+              : "wait"
+        }">
+          ${dirText}
+        </div>
       </div>
 
     </div>
-
-    ${scoreBar(score)}
-
-    <div class="info-grid">
-
-      <div class="info">
-        <small>${t("price")}</small>
-        <b>${num(result.price)}</b>
-      </div>
-
-      <div class="info">
-        <small>${t("pumpDump")}</small>
-        <b>
-          ${num(result.pumpScore)}
-          /
-          ${num(result.dumpScore)}
-        </b>
-      </div>
-
-      <div class="info">
-        <small>Long</small>
-        <b class="green">
-          ${num(result.longScore)}
-        </b>
-      </div>
-
-      <div class="info">
-        <small>Short</small>
-        <b class="red">
-          ${num(result.shortScore)}
-        </b>
-      </div>
-
-      <div class="info">
-        <small>Reversal</small>
-        <b>
-          ${Math.max(
-            movement.pumpReversalScore||0,
-            movement.dumpReversalScore||0
-          )}
-        </b>
-      </div>
-
-    </div>
-
   `;
-
-
-  /* MARKET */
-
-  html+=section(
-    `📊 ${t("market")}`,
-
-    `
-
-      <div class="info-grid">
-
-        <div class="info">
-
-          <small>${t("oi")}</small>
-
-          <b>
-            ${num(market.openInterest)}
-          </b>
-
-        </div>
-
-        <div class="info">
-
-          <small>${t("funding")}</small>
-
-          <b>
-            ${
-              market.fundingRate!==null &&
-              market.fundingRate!==undefined
-              ? percent(
-                  Number(market.fundingRate)*100
-                )
-              : "-"
-            }
-          </b>
-
-        </div>
-
-        <div class="info">
-
-          <small>${t("change")}</small>
-
-          <b>
-            ${percent(market.change24h)}
-          </b>
-
-        </div>
-
-        <div class="info">
-
-          <small>${t("delta")}</small>
-
-          <b>
-            ${percent(fp.deltaPercent)}
-          </b>
-
-        </div>
-
-      </div>
-
-    `
-  );
 
 
   /* STYLES */
 
-  const styleItems=
-    METHODS.filter(
-      m=>
-        selectedMethods.includes(m.id)
-    ).map(m=>{
+  html += `
+    <h3 style="margin-bottom:5px">
+      ${tr("styles")}
+    </h3>
+  `;
 
-      const val=
-        getStyleScore(
-          result,
-          m.id
-        );
+  const styleNames = [
+    ["ma","📈 مووینگ میانگین"],
+    ["smart","🧠 اسمارت مانی"],
+    ["ict","🎯 ICT"],
+    ["macd","📉 MACD"],
+    ["rsi","📊 RSI"],
+    ["ichimoku","☁️ ایچیموکو"],
+    ["volume","📊 حجم"],
+    ["orderflow","⚡ جریان سفارش"],
+    ["liquidity","💧 نقدینگی"]
+  ];
 
-      return `
+  for(const [key,title] of styleNames){
 
-        <div
-          class="style"
-          onclick="this.classList.toggle('open')"
-        >
+    const score =
+      d.styles?.[key] ?? 0;
 
-          <div class="style-name">
-            ${methodName(m)}
-          </div>
+    let details="";
 
-          <div class="style-score">
-            ${val}/100
-          </div>
+    if(key==="ma"){
 
-          ${scoreBar(val)}
-
-          <div class="style-detail">
-
-            ${styleDetail(
-              m.id,
-              result
-            )}
-
-          </div>
-
-        </div>
-
+      details=`
+        امتیاز: ${score}<br>
+        روند: ${txt(
+          d.timeframes?.["1"]?.trend
+        )}<br>
+        شیب MA:
+        ${txt(
+          d.timeframes?.["1"]?.maSlope
+        )}<br>
+        MA7:
+        ${format(
+          d.timeframes?.["1"]?.ma7
+        )}<br>
+        MA20:
+        ${format(
+          d.timeframes?.["1"]?.ma20
+        )}
       `;
 
-    }).join("");
+    }
+
+    if(key==="smart"){
+
+      const x =
+        d.timeframes?.["1"];
+
+      details=`
+        امتیاز: ${score}<br>
+        BOS:
+        ${txt(x?.bos)}<br>
+        CHoCH:
+        ${txt(x?.choch)}<br>
+        Hunt:
+        ${txt(x?.hunt?.side)}<br>
+        Order Block:
+        ${txt(x?.orderBlock?.type)}
+      `;
+
+    }
+
+    if(key==="ict"){
+
+      details=`
+        امتیاز: ${score}<br>
+        FVG:
+        ${txt(
+          d.timeframes?.["1"]?.fvg?.type
+        )}
+      `;
+
+    }
+
+    if(key==="macd"){
+
+      details=`
+        امتیاز: ${score}<br>
+        MACD:
+        ${format(
+          d.timeframes?.["1"]?.macd?.macd
+        )}<br>
+        Signal:
+        ${format(
+          d.timeframes?.["1"]?.macd?.signal
+        )}<br>
+        Histogram:
+        ${format(
+          d.timeframes?.["1"]?.macd?.histogram
+        )}<br>
+        جهت:
+        ${txt(
+          d.timeframes?.["1"]?.macd?.direction
+        )}
+      `;
+
+    }
+
+    if(key==="rsi"){
+
+      details=`
+        امتیاز: ${score}<br>
+        RSI:
+        ${format(
+          d.timeframes?.["1"]?.rsi
+        )}
+      `;
+
+    }
+
+    if(key==="ichimoku"){
+
+      details=`
+        امتیاز: ${score}<br>
+        Tenkan:
+        ${format(
+          d.timeframes?.["1"]?.ichimoku?.tenkan
+        )}<br>
+        Kijun:
+        ${format(
+          d.timeframes?.["1"]?.ichimoku?.kijun
+        )}<br>
+        جهت:
+        ${txt(
+          d.timeframes?.["1"]?.ichimoku?.direction
+        )}
+      `;
+
+    }
+
+    if(key==="volume"){
+
+      details=`
+        امتیاز: ${score}<br>
+        حجم فعلی:
+        ${format(
+          d.timeframes?.["1"]?.volume?.current
+        )}<br>
+        نسبت حجم:
+        ${format(
+          d.timeframes?.["1"]?.volume?.ratio
+        )}
+      `;
+
+    }
+
+    if(key==="orderflow"){
+
+      details=`
+        امتیاز: ${score}<br>
+        Buy:
+        ${format(
+          d.footprint?.buyVolume
+        )}<br>
+        Sell:
+        ${format(
+          d.footprint?.sellVolume
+        )}<br>
+        Delta:
+        ${format(
+          d.footprint?.deltaPercent
+        )}%
+      `;
+
+    }
+
+    if(key==="liquidity"){
+
+      details=`
+        امتیاز: ${score}<br>
+        Buy Wall:
+        ${format(
+          d.walls?.buy?.price
+        )}<br>
+        Sell Wall:
+        ${format(
+          d.walls?.sell?.price
+        )}
+      `;
+
+    }
+
+    const el =
+      accordion(
+        `${title} — ${score}/100`,
+        details
+      );
+
+    box.appendChild(
+      el
+    );
+
+  }
 
 
-  html+=section(
-    `🧠 ${t("styles")}`,
-    `<div class="style-grid">${styleItems}</div>`
+  /* MARKET */
+
+  let marketHtml = `
+
+    <div class="grid">
+
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("oi")}
+        </div>
+        <div class="statValue">
+          ${
+            d.market?.openInterest ??
+            "-"
+          }
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("funding")}
+        </div>
+        <div class="statValue">
+          ${
+            d.market?.fundingRate === null ||
+            d.market?.fundingRate === undefined
+              ? "-"
+              : format(
+                  d.market.fundingRate * 100
+                ) + "%"
+          }
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="statTitle">
+          ${tr("orderflow")}
+        </div>
+        <div class="statValue">
+          ${
+            d.footprint?.deltaPercent !== undefined
+              ? format(
+                  d.footprint.deltaPercent
+                ) + "%"
+              : "-"
+          }
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  box.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="accordion">
+        <div class="accordionHeader">
+          <span>${tr("market")}</span>
+          <span>＋</span>
+        </div>
+        <div class="accordionBody">
+          ${marketHtml}
+        </div>
+      </div>
+    `
   );
 
 
   /* STRUCTURE */
 
-  html+=section(
-    `🧱 ${t("structure")}`,
+  const x =
+    d.timeframes?.["1"];
 
+  const structureHtml = `
+
+    BOS:
+    <b>${txt(x?.bos)}</b>
+    <br>
+
+    CHoCH:
+    <b>${txt(x?.choch)}</b>
+    <br>
+
+    Hunt:
+    <b>${txt(x?.hunt?.side)}</b>
+    <br>
+
+    FVG:
+    <b>${txt(x?.fvg?.type)}</b>
+    <br>
+
+    Order Block:
+    <b>${txt(x?.orderBlock?.type)}</b>
+
+  `;
+
+  box.insertAdjacentHTML(
+    "beforeend",
     `
-
-      <div class="info-grid">
-
-        <div class="info">
-
-          <small>${t("bos")}</small>
-
-          <b>
-            ${
-              one?.bos==="BULLISH"
-                ? "🟢 صعودی / BULLISH"
-                : one?.bos==="BEARISH"
-                  ? "🔴 نزولی / BEARISH"
-                  : "⚪ مشاهده نشد"
-            }
-          </b>
-
+      <div class="accordion">
+        <div class="accordionHeader">
+          <span>${tr("structure")}</span>
+          <span>＋</span>
         </div>
-
-        <div class="info">
-
-          <small>${t("choch")}</small>
-
-          <b>
-            ${
-              one?.choch==="BULLISH"
-                ? "🟢 صعودی / BULLISH"
-                : one?.choch==="BEARISH"
-                  ? "🔴 نزولی / BEARISH"
-                  : "⚪ مشاهده نشد"
-            }
-          </b>
-
+        <div class="accordionBody">
+          ${structureHtml}
         </div>
-
-        <div class="info">
-
-          <small>${t("hunt")}</small>
-
-          <b>
-            ${
-              one?.hunt?.confirmed
-                ? (
-                    one.hunt.side==="LONG"
-                      ? "🟢 صعودی"
-                      : "🔴 نزولی"
-                  )
-                : "⚪ مشاهده نشد"
-            }
-          </b>
-
-        </div>
-
-        <div class="info">
-
-          <small>${t("fvg")}</small>
-
-          <b>
-            ${
-              one?.fvg?.type &&
-              one.fvg.type!=="NONE"
-                ? one.fvg.type
-                : "⚪ مشاهده نشد"
-            }
-          </b>
-
-        </div>
-
       </div>
-
-    `
-  );
-
-
-  /* WALLS */
-
-  html+=section(
-    `💧 ${t("walls")}`,
-
-    `
-
-      <div class="wall">
-
-        <div class="wall-box wall-buy">
-
-          <b>
-            🟢 ${t("buyWall")}
-          </b>
-
-          <div>
-            قیمت:
-            ${num(wall?.buy?.price)}
-          </div>
-
-          <div>
-            قدرت:
-            ${num(wall?.buyStrength)}/100
-          </div>
-
-        </div>
-
-        <div class="wall-box wall-sell">
-
-          <b>
-            🔴 ${t("sellWall")}
-          </b>
-
-          <div>
-            قیمت:
-            ${num(wall?.sell?.price)}
-          </div>
-
-          <div>
-            قدرت:
-            ${num(wall?.sellStrength)}/100
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="info-grid">
-
-        <div class="info">
-
-          <small>${t("support")}</small>
-
-          <b>
-            ${num(
-              sr?.nearestSupport?.price
-            )}
-          </b>
-
-        </div>
-
-        <div class="info">
-
-          <small>${t("resistance")}</small>
-
-          <b>
-            ${num(
-              sr?.nearestResistance?.price
-            )}
-          </b>
-
-        </div>
-
-      </div>
-
     `
   );
 
 
   /* TIMEFRAMES */
 
-  html+=section(
-    `⏱ ${t("timeframes")}`,
+  let tfHtml="";
 
-    `
+  for(
+    const [key,t] of
+    Object.entries(
+      d.timeframes || {}
+    )
+  ){
 
-      <div class="tf-grid">
+    if(t.error) continue;
 
-        ${Object.entries(tf).map(
-          ([key,x])=>{
-
-            if(!x || x.error){
-
-              return `
-                <div class="tf">
-                  <div class="tf-name">
-                    ${key}
-                  </div>
-                  <div class="red">
-                    خطا
-                  </div>
-                </div>
-              `;
-
-            }
-
-            const d=
-              x.trend==="BULLISH"
-                ? "🟢 صعودی"
-                : x.trend==="BEARISH"
-                  ? "🔴 نزولی"
-                  : "🟡 رنج";
-
-            return `
-
-              <div class="tf">
-
-                <div class="tf-name">
-                  ${key} دقیقه
-                </div>
-
-                <div class="tf-value">
-                  ${d}
-                </div>
-
-                <div class="note">
-                  MA7:
-                  ${num(x.ma7)}
-                  <br>
-                  MA20:
-                  ${num(x.ma20)}
-                  <br>
-                  شیب:
-                  ${safe(x.maSlope)}
-                  <br>
-                  ADX:
-                  ${num(x.market?.adx)}
-                </div>
-
-              </div>
-
-            `;
-
-          }
-        ).join("")}
-
-      </div>
-
-    `
-  );
-
-
-  /* CONVERTED MA */
-
-  html+=section(
-    `🔄 ${t("converted")}`,
-
-    `
-
-      ${
-        result.convertedMA1m?.recent?.length
-          ? result.convertedMA1m.recent
-              .slice(-12)
-              .reverse()
-              .map(e=>`
-
-                <div class="reason ${
-                  e.direction==="LONG"
-                    ? "long"
-                    : e.direction==="SHORT"
-                      ? "short"
-                      : ""
-                }">
-
-                  <b>
-                    ${safe(e.ma)}
-                    ${safe(e.source)}
-                  </b>
-
-                  →
-
-                  MA${safe(e.period1m)}
-
-                  <br>
-
-                  نوع:
-                  ${safe(e.type)}
-
-                  |
-
-                  جهت:
-                  ${safe(e.direction)}
-
-                  |
-
-                  تأیید:
-                  ${safe(e.confirmation)}
-
-                </div>
-
-              `).join("")
-          : `<div class="empty">${t("noData")}</div>`
-      }
-
-    `
-  );
-
-
-  /* REVERSAL */
-
-  html+=section(
-    `🔄 ${t("reversal")}`,
-
-    `
-
-      <div class="info-grid">
-
-        <div class="info">
-
-          <small>
-            Pump Reversal
-          </small>
-
-          <b>
-            ${num(
-              movement.pumpReversalScore
-            )}/100
-          </b>
-
+    tfHtml += `
+      <div class="stat">
+        <div class="statTitle">
+          ${key}m
         </div>
 
-        <div class="info">
+        <div class="${
+          t.trend==="BULLISH"
+            ? "long"
+            : t.trend==="BEARISH"
+              ? "short"
+              : "wait"
+        }">
+          ${txt(t.trend)}
+        </div>
 
-          <small>
-            Dump Reversal
-          </small>
-
-          <b>
-            ${num(
-              movement.dumpReversalScore
-            )}/100
-          </b>
-
+        <div class="small">
+          MA7:
+          ${format(t.ma7)}
+          <br>
+          MA20:
+          ${format(t.ma20)}
         </div>
 
       </div>
+    `;
 
-      ${
-        [
-          ...(movement.pumpReversalReasons||[]),
-          ...(movement.dumpReversalReasons||[])
-        ].map(x=>`
-          <div class="reason">
-            ${x}
+  }
+
+  box.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="accordion">
+        <div class="accordionHeader">
+          <span>${tr("timeframes")}</span>
+          <span>＋</span>
+        </div>
+        <div class="accordionBody">
+          <div class="grid">
+            ${tfHtml}
           </div>
-        `).join("")
-      }
-
+        </div>
+      </div>
     `
   );
 
 
   /* REASONS */
 
-  const reasons=
-    result.reasons || [];
+  const reasons =
+    d.reasons || [];
 
-  html+=section(
-    `📋 ${t("reasons")}`,
-
-    reasons.length
-      ? reasons.map(x=>`
-          <div class="reason">
-            ${x}
-          </div>
-        `).join("")
-      : `<div class="empty">${t("noData")}</div>`
+  box.insertAdjacentHTML(
+    "beforeend",
+    `
+      <div class="accordion">
+        <div class="accordionHeader">
+          <span>${tr("reasons")}</span>
+          <span>＋</span>
+        </div>
+        <div class="accordionBody">
+          ${
+            reasons.length
+              ? reasons.map(
+                  r =>
+                    `<div class="reason">
+                      ${r}
+                    </div>`
+                ).join("")
+              : "-"
+          }
+        </div>
+      </div>
+    `
   );
-
-
-  box.innerHTML=html;
 
 }
 
@@ -2878,185 +1735,138 @@ function renderManual(result){
    SIGNALS
 ========================================================= */
 
-async function loadSignals(){
+document.getElementById(
+  "scanBtn"
+).onclick=async()=>{
 
-  const btn=
-    document.getElementById(
-      "signalsBtn"
-    );
-
-  const box=
+  const box =
     document.getElementById(
       "signalsResult"
     );
 
-  btn.disabled=true;
-
-  box.innerHTML=
-    `<div class="loading">${t("loading")}</div>`;
+  box.innerHTML =
+    `<div class="loading">
+      ${tr("loading")}
+    </div>`;
 
   try{
 
-    const minScore=
-      Number(
-        document.getElementById(
-          "minScore"
-        ).value
-      ) || 75;
-
-    const params=
-      new URLSearchParams({
-
-        offset:"0",
-
-        minScore:String(minScore),
-
-        methods:
-          selectedMethods.join(","),
-
-        mode:
-          document.getElementById(
-            "signalMode"
-          ).value
-
-      });
-
-    const data=
-      await apiFetch(
-        `${API}/api/scan?${params.toString()}`
+    const methods =
+      encodeURIComponent(
+        JSON.stringify(
+          state.methods
+        )
       );
 
-    const list=
-      (data.results||[])
-        .filter(x=>
-          Number(x.score)>=minScore
-        );
+    const d =
+      await request(
+        `/api/scan?threshold=${state.threshold}&methods=${methods}`
+      );
 
-    if(!list.length){
+    window.lastSignals =
+      d;
 
-      box.innerHTML=
-        `<div class="empty">${t("noSignal")}</div>`;
-
-      return;
-
-    }
-
-    box.innerHTML=
-      list.map(
-        x=>signalCard(x)
-      ).join("");
+    renderSignals(d);
 
   }catch(e){
 
-    box.innerHTML=
+    box.innerHTML =
       `<div class="error">
-        ❌ ${e.message}
+        ${e.message}
       </div>`;
 
-  }finally{
-
-    btn.disabled=false;
-
   }
 
-}
+};
 
+function renderSignals(d){
 
-/* =========================================================
-   SIGNAL CARD
-========================================================= */
-
-function signalCard(x){
-
-  const dir=
-    x.direction==="LONG"
-      ? "🟢 صعودی"
-      : x.direction==="SHORT"
-        ? "🔴 نزولی"
-        : "🟡 انتظار";
-
-  return `
-
-    <div
-      class="radar-item"
-      onclick="openDeepFromObject(${JSON.stringify(x).replace(/"/g,'&quot;')})"
-    >
-
-      <div class="radar-top">
-
-        <div>
-
-          <div class="radar-symbol">
-            ${safe(x.symbol)}
-          </div>
-
-          <div>
-            ${dir}
-          </div>
-
-        </div>
-
-        <div class="radar-score">
-          ${num(x.score)}/100
-        </div>
-
-      </div>
-
-      ${scoreBar(x.score)}
-
-      <div class="note">
-
-        Long:
-        ${num(x.longScore)}
-
-        |
-
-        Short:
-        ${num(x.shortScore)}
-
-        |
-
-        Pump:
-        ${num(x.pumpScore)}
-
-        |
-
-        Dump:
-        ${num(x.dumpScore)}
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-   DEEP OPEN
-========================================================= */
-
-function openDeepFromObject(obj){
-
-  if(
-    obj &&
-    obj.symbol
-  ){
-
+  const box =
     document.getElementById(
-      "symbolInput"
-    ).value=
-      obj.symbol;
+      "signalsResult"
+    );
 
-    manualAnalyze();
+  if(!d) return;
 
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
+  const list =
+    d.results || [];
+
+  if(!list.length){
+
+    box.innerHTML =
+      `<div class="small">
+        ${tr("none")}
+      </div>`;
+
+    return;
 
   }
+
+  box.innerHTML="";
+
+  list.forEach(x=>{
+
+    const el =
+      document.createElement(
+        "div"
+      );
+
+    el.className =
+      "signalCard";
+
+    el.innerHTML=`
+
+      <b>${x.symbol}</b>
+
+      <div class="${
+        x.direction==="LONG"
+          ? "long"
+          : "short"
+      }">
+        ${
+          x.direction==="LONG"
+            ? tr("bull")
+            : tr("bear")
+        }
+      </div>
+
+      <div>
+        ${tr("score")}:
+        <b>${x.score}/100</b>
+      </div>
+
+      <div class="small">
+        Long:
+        ${x.longScore}
+        |
+        Short:
+        ${x.shortScore}
+      </div>
+
+    `;
+
+    el.onclick=()=>{
+
+      window.lastManual =
+        x;
+
+      renderManual(x);
+
+      window.scrollTo({
+        top:
+          document.getElementById(
+            "deepResult"
+          ).offsetTop - 10,
+        behavior:"smooth"
+      });
+
+    };
+
+    box.appendChild(
+      el
+    );
+
+  });
 
 }
 
@@ -3065,316 +1875,312 @@ function openDeepFromObject(obj){
    RADAR
 ========================================================= */
 
-function setRadarTab(tab,btn){
+document.getElementById(
+  "radarBtn"
+).onclick=async()=>{
 
-  currentRadarTab=tab;
-
-  document
-    .querySelectorAll(".radar-tab")
-    .forEach(x=>
-      x.classList.remove("active")
-    );
-
-  btn.classList.add("active");
-
-  renderRadar();
-
-}
-
-async function loadRadar(){
-
-  const btn=
-    document.getElementById(
-      "radarBtn"
-    );
-
-  const box=
+  const box =
     document.getElementById(
       "radarResult"
     );
 
-  btn.disabled=true;
-
-  box.innerHTML=
-    `<div class="loading">${t("loading")}</div>`;
+  box.innerHTML =
+    `<div class="loading">
+      ${tr("loading")}
+    </div>`;
 
   try{
 
-    const minScore=
-      Number(
-        document.getElementById(
-          "minScore"
-        ).value
-      ) || 75;
-
-    const params=
-      new URLSearchParams({
-
-        offset:"0",
-
-        minScore:String(minScore),
-
-        methods:
-          selectedMethods.join(","),
-
-        mode:
-          document.getElementById(
-            "signalMode"
-          ).value
-
-      });
-
-    radarData=
-      await apiFetch(
-        `${API}/api/radar?${params.toString()}`
+    const methods =
+      encodeURIComponent(
+        JSON.stringify(
+          state.methods
+        )
       );
 
-    renderRadar();
+    const d =
+      await request(
+        `/api/radar?threshold=${state.threshold}&methods=${methods}`
+      );
+
+    window.lastRadar =
+      d;
+
+    renderRadar(d);
 
   }catch(e){
 
-    box.innerHTML=
+    box.innerHTML =
       `<div class="error">
-        ❌ ${e.message}
+        ${e.message}
       </div>`;
-
-  }finally{
-
-    btn.disabled=false;
 
   }
 
-}
+};
 
-function renderRadar(){
 
-  const box=
+function renderRadar(d){
+
+  const box =
     document.getElementById(
       "radarResult"
     );
 
-  if(!radarData){
+  if(!d) return;
 
-    box.innerHTML=
-      `<div class="empty">
-        هنوز رادار دریافت نشده است.
-      </div>`;
+  const groups=[
+    ["🚀 پامپ",d.pump],
+    ["🔻 دامپ",d.dump],
+    ["🔄 برگشت",d.reversal]
+  ];
 
-    return;
+  box.innerHTML="";
 
-  }
+  groups.forEach(
+    ([title,list])=>{
 
-  let list=
-    radarData[currentRadarTab] || [];
-
-  if(!list.length){
-
-    box.innerHTML=
-      `<div class="empty">
-        در این چرخه موردی پیدا نشد.
-      </div>`;
-
-    return;
-
-  }
-
-  list=
-    list.filter(x=>{
-
-      if(
-        currentRadarTab==="pump"
-      ){
-
-        return (
-          Number(x.pumpScore||0)>=
-          Number(
-            document.getElementById(
-              "minScore"
-            ).value
-          )
+      const el =
+        document.createElement(
+          "div"
         );
 
-      }
+      el.className =
+        "accordion";
 
-      if(
-        currentRadarTab==="dump"
-      ){
+      el.innerHTML=`
 
-        return (
-          Number(x.dumpScore||0)>=
-          Number(
-            document.getElementById(
-              "minScore"
-            ).value
-          )
-        );
+        <div class="accordionHeader">
+          <span>${title}</span>
+          <span>＋</span>
+        </div>
 
-      }
+        <div class="accordionBody">
 
-      if(
-        currentRadarTab==="reversal"
-      ){
+          ${
+            list?.length
+              ? list.map(
+                  x=>`
 
-        return Math.max(
-          Number(x.reversal?.pumpScore||0),
-          Number(x.reversal?.dumpScore||0)
-        )>=
-        Number(
-          document.getElementById(
-            "minScore"
-          ).value
-        );
+                  <div
+                    class="signalCard"
+                    data-symbol="${x.symbol}"
+                  >
 
-      }
+                    <b>
+                      ${x.symbol}
+                    </b>
 
-      return true;
+                    <br>
 
-    });
+                    ${tr("score")}:
+                    ${x.score}/100
 
-  if(!list.length){
+                  </div>
 
-    box.innerHTML=
-      `<div class="empty">
-        موردی با حداقل امتیاز انتخاب‌شده پیدا نشد.
-      </div>`;
-
-    return;
-
-  }
-
-  box.innerHTML=
-    list.map(x=>{
-
-      let score=0;
-
-      if(currentRadarTab==="pump"){
-        score=x.pumpScore;
-      }
-
-      if(currentRadarTab==="dump"){
-        score=x.dumpScore;
-      }
-
-      if(currentRadarTab==="reversal"){
-        score=Math.max(
-          x.reversal?.pumpScore||0,
-          x.reversal?.dumpScore||0
-        );
-      }
-
-      return `
-
-        <div
-          class="radar-item"
-          onclick="manualFromSymbol('${safe(x.symbol)}')"
-        >
-
-          <div class="radar-top">
-
-            <div class="radar-symbol">
-              ${safe(x.symbol)}
-            </div>
-
-            <div class="radar-score">
-              ${num(score)}/100
-            </div>
-
-          </div>
-
-          ${scoreBar(score)}
-
-          <div class="note">
-
-            Pump:
-            ${num(x.pumpScore)}
-
-            |
-
-            Dump:
-            ${num(x.dumpScore)}
-
-            |
-
-            ${
-              currentRadarTab==="reversal"
-                ? "Reversal: "+
-                  Math.max(
-                    x.reversal?.pumpScore||0,
-                    x.reversal?.dumpScore||0
-                  )
-                : ""
-            }
-
-          </div>
+                  `
+                ).join("")
+              : "-"
+          }
 
         </div>
 
       `;
 
-    }).join("");
+      el
+        .querySelector(
+          ".accordionHeader"
+        )
+        .onclick=()=>{
 
-}
+          el.classList.toggle(
+            "open"
+          );
 
-function manualFromSymbol(symbol){
+        };
 
-  document.getElementById(
-    "symbolInput"
-  ).value=symbol;
+      el
+        .querySelectorAll(
+          ".signalCard"
+        )
+        .forEach(card=>{
 
-  manualAnalyze();
+          card.onclick=()=>{
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+            document.getElementById(
+              "symbolInput"
+            ).value =
+              card.dataset.symbol;
+
+            document.getElementById(
+              "searchBtn"
+            ).click();
+
+            window.scrollTo({
+              top:
+                document.getElementById(
+                  "deepResult"
+                ).offsetTop - 10,
+              behavior:"smooth"
+            });
+
+          };
+
+        });
+
+      box.appendChild(el);
+
+    }
+  );
 
 }
 
 
 /* =========================================================
-   ENTER KEY
+   HELPERS
 ========================================================= */
 
-document
-  .getElementById("symbolInput")
-  .addEventListener(
-    "keydown",
-    e=>{
+function format(v){
 
-      if(e.key==="Enter"){
-        manualAnalyze();
+  if(
+    v === null ||
+    v === undefined ||
+    !Number.isFinite(
+      Number(v)
+    )
+  ){
+    return "-";
+  }
+
+  const x =
+    Number(v);
+
+  if(
+    Math.abs(x) >= 1000
+  ){
+    return x.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:2
       }
+    );
+  }
 
-    }
+  if(
+    Math.abs(x) < 1
+  ){
+    return x.toFixed(8)
+      .replace(/0+$/,"")
+      .replace(/\.$/,"");
+  }
+
+  return x.toFixed(4)
+    .replace(/0+$/,"")
+    .replace(/\.$/,"");
+
+}
+
+function txt(v){
+
+  const map={
+
+    BULLISH:"🟢 صعودی",
+    BEARISH:"🔴 نزولی",
+    RANGE:"🟡 رنج",
+
+    UP:"📈 صعودی",
+    DOWN:"📉 نزولی",
+    FLAT:"➖ خنثی",
+
+    LONG:"🟢 صعودی",
+    SHORT:"🔴 نزولی",
+    NONE:"⚪ مشاهده نشد",
+
+    FUTURES:"فیوچرز",
+    SPOT:"اسپات",
+
+    LIQUIDITY_SWEEP:
+      "شکار نقدینگی",
+
+    HAMMER:
+      "چکش",
+
+    SHOOTING_STAR:
+      "شوتینگ استار",
+
+    BULLISH_ENGULFING:
+      "پوشاننده صعودی",
+
+    BEARISH_ENGULFING:
+      "پوشاننده نزولی",
+
+    DOJI:
+      "دوجی"
+  };
+
+  return (
+    map[v] ||
+    v ||
+    "-"
   );
+
+}
 
 
 /* =========================================================
    INIT
 ========================================================= */
 
-(function init(){
+applyLanguage();
 
-  const savedLang=
-    localStorage.getItem(
-      "scanner_language"
-    );
+document.getElementById(
+  "threshold"
+).value =
+  state.threshold;
 
-  if(savedLang){
+document.getElementById(
+  "thresholdValue"
+).textContent =
+  state.threshold;
 
+
+/* HEALTH */
+
+request(
+  "/api/health"
+)
+.then(
+  ()=>{
     document.getElementById(
-      "language"
-    ).value=savedLang;
-
+      "connection"
+    ).textContent =
+      "🟢 اتصال برقرار است";
   }
+)
+.catch(
+  e=>{
+    document.getElementById(
+      "connection"
+    ).textContent =
+      "🔴 اتصال Worker مشکل دارد";
+  }
+);
 
-  loadSettings();
 
-  changeLanguage();
+/* ENTER SEARCH */
 
-  checkConnection();
-
-})();
+document.getElementById(
+  "symbolInput"
+).addEventListener(
+  "keydown",
+  e=>{
+    if(e.key==="Enter"){
+      document.getElementById(
+        "searchBtn"
+      ).click();
+    }
+  }
+);
 
 </script>
 
