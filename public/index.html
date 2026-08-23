@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bybit Smart Money Scanner V8</title>
+<title>Bybit Smart Money Scanner V9</title>
 
 <style>
 *{box-sizing:border-box}
@@ -16,13 +16,8 @@ body{
   font-size:14px;
 }
 
-button,input,select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
 
 .header{
   padding:16px;
@@ -62,6 +57,8 @@ button{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
 .row{
@@ -93,21 +90,10 @@ button{
   font-weight:bold;
 }
 
-button:hover{
-  opacity:.9;
-}
-
-button.green{
-  background:#087f5b;
-}
-
-button.red{
-  background:#a61e4d;
-}
-
-button.gray{
-  background:#343a40;
-}
+button:hover{opacity:.9}
+button.green{background:#087f5b}
+button.red{background:#a61e4d}
+button.gray{background:#343a40}
 
 .status{
   padding:8px 10px;
@@ -130,9 +116,7 @@ button.gray{
 }
 
 @media(max-width:800px){
-  .grid,.grid3{
-    grid-template-columns:1fr;
-  }
+  .grid,.grid3{grid-template-columns:1fr}
 }
 
 .metric{
@@ -148,29 +132,13 @@ button.gray{
   margin-bottom:5px;
 }
 
-.metric strong{
-  font-size:18px;
-}
+.metric strong{font-size:18px}
 
-.long{
-  color:#35d07f!important;
-}
-
-.short{
-  color:#ff5c70!important;
-}
-
-.yellow{
-  color:#ffc857!important;
-}
-
-.blue{
-  color:#54b4ff!important;
-}
-
-.muted{
-  color:#8491a1;
-}
+.long{color:#35d07f!important}
+.short{color:#ff5c70!important}
+.yellow{color:#ffc857!important}
+.blue{color:#54b4ff!important}
+.muted{color:#8491a1}
 
 .signal{
   padding:14px;
@@ -180,13 +148,8 @@ button.gray{
   margin-bottom:8px;
 }
 
-.signal.long{
-  border-color:#087f5b;
-}
-
-.signal.short{
-  border-color:#a61e4d;
-}
+.signal.long{border-color:#087f5b}
+.signal.short{border-color:#a61e4d}
 
 .scorebar{
   height:9px;
@@ -202,9 +165,7 @@ button.gray{
   background:#35d07f;
 }
 
-.scorefill.red{
-  background:#ff5c70;
-}
+.scorefill.red{background:#ff5c70}
 
 details{
   background:#101721;
@@ -233,17 +194,10 @@ summary{
   color:#bdc8d4;
 }
 
-.tag.long{
-  background:#073d2e;
-}
+.tag.long{background:#073d2e}
+.tag.short{background:#4b1525}
 
-.tag.short{
-  background:#4b1525;
-}
-
-.table-wrap{
-  overflow:auto;
-}
+.table-wrap{overflow:auto}
 
 table{
   width:100%;
@@ -268,24 +222,6 @@ th{
   margin:14px 0 8px;
 }
 
-.range-box{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.range-box input{
-  padding:0;
-  height:8px;
-}
-
-.range-value{
-  min-width:45px;
-  text-align:center;
-  font-weight:bold;
-  color:#ffc857;
-}
-
 .checkbox-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -293,9 +229,7 @@ th{
 }
 
 @media(max-width:650px){
-  .checkbox-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
+  .checkbox-grid{grid-template-columns:repeat(2,1fr)}
 }
 
 .check{
@@ -313,9 +247,7 @@ th{
   flex:none;
 }
 
-.hidden{
-  display:none!important;
-}
+.hidden{display:none!important}
 
 .coin-title{
   font-size:22px;
@@ -365,8 +297,47 @@ th{
   font-weight:bold;
 }
 
-small{
-  color:#8491a1;
+.level-box{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:10px;
+}
+
+@media(max-width:650px){
+  .level-box{grid-template-columns:repeat(2,1fr)}
+}
+
+.level-btn{
+  background:#101721;
+  border:1px solid #303b49;
+  color:#bdc8d4;
+  padding:10px 7px;
+  border-radius:8px;
+  text-align:center;
+}
+
+.level-btn.active{
+  background:#1769aa;
+  border-color:#54b4ff;
+  color:#fff;
+}
+
+.level-description{
+  margin-top:10px;
+  padding:10px;
+  background:#111923;
+  border-radius:8px;
+  color:#bdc8d4;
+}
+
+.level-badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:20px;
+  background:#17212d;
+  color:#ffc857;
+  font-weight:bold;
 }
 
 hr{
@@ -374,6 +345,8 @@ hr{
   border-top:1px solid #202a36;
   margin:12px 0;
 }
+
+small{color:#8491a1}
 </style>
 </head>
 
@@ -381,12 +354,16 @@ hr{
 
 <div class="header">
   <h1>📊 اسکنر هوشمند Bybit</h1>
-  <p>Smart Money • SMC • ICT • MA • Footprint • Liquidity • Pump/Dump Radar</p>
+  <p>
+    Smart Money • SMC • ICT • MA • MACD • RSI • Ichimoku •
+    Footprint • Liquidity • Pump/Dump
+  </p>
 </div>
 
 <div class="container">
 
 <!-- SEARCH -->
+
 <div class="card">
 
   <div class="card-title">
@@ -394,6 +371,7 @@ hr{
   </div>
 
   <div class="row">
+
     <input
       id="symbolInput"
       placeholder="مثلاً BTCUSDT یا BTC"
@@ -409,6 +387,7 @@ hr{
     <button onclick="manualAnalyze()">
       بررسی
     </button>
+
   </div>
 
   <div class="status" id="searchStatus">
@@ -418,36 +397,103 @@ hr{
 </div>
 
 
-<!-- SIGNAL SETTINGS -->
+<!-- SIGNAL LEVEL -->
+
 <div class="card">
 
   <div class="card-title">
-    ⚙️ تنظیم سخت‌گیری سیگنال
-    <span id="strictValue" class="range-value">75</span>
+
+    <span>
+      🎯 سطح سخت‌گیری واقعی سیگنال
+    </span>
+
+    <span
+      id="levelBadge"
+      class="level-badge"
+    >
+      زیاد
+    </span>
+
   </div>
 
-  <div class="range-box">
-    <span>کم</span>
+  <div class="level-box">
 
-    <input
-      id="strictRange"
-      type="range"
-      min="0"
-      max="100"
-      value="75"
-      oninput="updateStrict()"
+    <button
+      class="level-btn"
+      data-level="VERY_LOW"
+      onclick="setSignalLevel('VERY_LOW')"
     >
+      خیلی کم
+    </button>
 
-    <span>زیاد</span>
+    <button
+      class="level-btn"
+      data-level="LOW"
+      onclick="setSignalLevel('LOW')"
+    >
+      کم
+    </button>
+
+    <button
+      class="level-btn"
+      data-level="MEDIUM"
+      onclick="setSignalLevel('MEDIUM')"
+    >
+      متوسط
+    </button>
+
+    <button
+      class="level-btn active"
+      data-level="HIGH"
+      onclick="setSignalLevel('HIGH')"
+    >
+      زیاد
+    </button>
+
+    <button
+      class="level-btn"
+      data-level="VERY_HIGH"
+      onclick="setSignalLevel('VERY_HIGH')"
+    >
+      خیلی زیاد
+    </button>
+
+    <button
+      class="level-btn"
+      data-level="EXTREME"
+      onclick="setSignalLevel('EXTREME')"
+    >
+      فوق‌العاده سخت
+    </button>
+
+  </div>
+
+  <div
+    id="levelDescription"
+    class="level-description"
+  >
+    حداقل امتیاز بالا و نیازمند تأیید چندگانه است.
   </div>
 
   <div class="status">
-    هرچه عدد بالاتر باشد، شرایط بیشتری برای ارائه سیگنال لازم است و تعداد سیگنال‌ها کمتر و سخت‌گیرانه‌تر می‌شود.
+    این سطح فقط ظاهر رابط نیست؛ Worker نیز سطح انتخاب‌شده را برای فیلتر واقعی سیگنال استفاده می‌کند.
   </div>
 
-  <details>
+</div>
+
+
+<!-- METHODS -->
+
+<div class="card">
+
+  <div class="card-title">
+    ⚙️ روش‌های مورد استفاده برای سیگنال
+  </div>
+
+  <details open>
+
     <summary>
-      🎯 روش‌های مورد استفاده برای سیگنال
+      انتخاب اندیکاتورها و روش‌های تحلیل
     </summary>
 
     <div class="details-body">
@@ -537,71 +583,111 @@ hr{
       </div>
 
       <div style="margin-top:10px">
-        <button class="green" onclick="selectAllMethods()">
+
+        <button
+          class="green"
+          onclick="selectAllMethods()"
+        >
           انتخاب همه
         </button>
 
-        <button class="gray" onclick="clearMethods()">
+        <button
+          class="gray"
+          onclick="clearMethods()"
+        >
           حذف همه
         </button>
+
       </div>
 
     </div>
+
   </details>
 
 </div>
 
 
 <!-- MANUAL RESULT -->
+
 <div id="manualResult"></div>
 
 
-<!-- ROTATING SCANNER -->
+<!-- SCANNER -->
+
 <div class="card">
 
   <div class="card-title">
-    🔄 اسکن چرخشی بازار
-    <button onclick="runScan()">اسکن ۲۰ ارز</button>
+
+    <span>
+      🔄 اسکن چرخشی بازار
+    </span>
+
+    <button onclick="runScan()">
+      اسکن ۲۰ ارز
+    </button>
+
   </div>
 
   <div id="scanResult">
+
     <div class="muted">
       برای بررسی بازار روی «اسکن ۲۰ ارز» بزن.
     </div>
+
   </div>
 
 </div>
 
 
 <!-- RADAR -->
+
 <div class="card">
 
   <div class="card-title">
-    🚨 رادار Pump / Dump / Reversal
-    <button onclick="runRadar()">اجرای رادار</button>
+
+    <span>
+      🚨 رادار Pump / Dump / Reversal
+    </span>
+
+    <button onclick="runRadar()">
+      اجرای رادار
+    </button>
+
   </div>
 
   <div class="status">
-    رادار حرکت کوتاه‌مدت، حجم، Hunt، ساختار، MA، Order Book، Footprint و برگشت احتمالی بعد از Pump/Dump را بررسی می‌کند.
+    رادار حرکت کوتاه‌مدت، حجم، Hunt، ساختار، MA،
+    Order Book، Footprint و برگشت احتمالی بعد از Pump/Dump را بررسی می‌کند.
   </div>
 
   <div id="radarResult">
+
     <div class="muted">
       هنوز رادار اجرا نشده است.
     </div>
+
   </div>
 
 </div>
 
 
 <!-- HEALTH -->
+
 <div class="card">
 
   <details>
-    <summary>ℹ️ وضعیت سیستم</summary>
-    <div id="healthResult" class="details-body">
+
+    <summary>
+      ℹ️ وضعیت سیستم
+    </summary>
+
+    <div
+      id="healthResult"
+      class="details-body"
+    >
       در حال دریافت...
     </div>
+
   </details>
 
 </div>
@@ -611,50 +697,142 @@ hr{
 
 <script>
 
-let scanOffset = 0;
-let radarOffset = 0;
+let scanOffset=0;
+let radarOffset=0;
 
 
-/* =========================================
-   SETTINGS
-========================================= */
+/* =====================================================
+   SIGNAL LEVEL
+===================================================== */
 
-function updateStrict(){
+const SIGNAL_LEVELS={
 
-  const v=
-    Number(
-      document.getElementById(
-        "strictRange"
-      ).value
-    );
+  VERY_LOW:{
+    label:"خیلی کم",
+    description:
+      "شرایط آسان‌تر است؛ سیگنال بیشتری نمایش داده می‌شود و برای شروع مناسب است."
+  },
 
-  document.getElementById(
-    "strictValue"
-  ).textContent=v;
+  LOW:{
+    label:"کم",
+    description:
+      "فیلتر کمی سخت‌تر است و باید شواهد بیشتری برای سیگنال وجود داشته باشد."
+  },
+
+  MEDIUM:{
+    label:"متوسط",
+    description:
+      "برای سیگنال معتبر، ساختار بازار نیز باید تأیید شود."
+  },
+
+  HIGH:{
+    label:"زیاد",
+    description:
+      "امتیاز بالا و تأیید HTF، ساختار، جریان سفارش و حجم لازم است."
+  },
+
+  VERY_HIGH:{
+    label:"خیلی زیاد",
+    description:
+      "فیلتر بسیار سخت است؛ فقط موقعیت‌هایی با شواهد متعدد عبور می‌کنند."
+  },
+
+  EXTREME:{
+    label:"فوق‌العاده سخت",
+    description:
+      "سخت‌ترین حالت؛ تنها سیگنال‌هایی با بیشترین همگرایی شواهد نمایش داده می‌شوند."
+  }
+
+};
+
+
+let signalLevel=
+  localStorage.getItem("signalLevel")
+  || "HIGH";
+
+
+function setSignalLevel(level){
+
+  if(!SIGNAL_LEVELS[level]){
+    level="HIGH";
+  }
+
+  signalLevel=level;
 
   localStorage.setItem(
-    "strictSignal",
-    v
+    "signalLevel",
+    level
   );
+
+  updateLevelUI();
+
 }
+
+
+function updateLevelUI(){
+
+  const data=
+    SIGNAL_LEVELS[signalLevel]
+    || SIGNAL_LEVELS.HIGH;
+
+  const badge=
+    document.getElementById(
+      "levelBadge"
+    );
+
+  const desc=
+    document.getElementById(
+      "levelDescription"
+    );
+
+  if(badge){
+    badge.textContent=data.label;
+  }
+
+  if(desc){
+    desc.textContent=data.description;
+  }
+
+  document
+    .querySelectorAll(".level-btn")
+    .forEach(btn=>{
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.level===signalLevel
+      );
+
+    });
+
+}
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
 
 function loadSettings(){
 
-  const saved=
+  const savedLevel=
     localStorage.getItem(
-      "strictSignal"
+      "signalLevel"
     );
 
-  if(saved!==null){
+  if(
+    savedLevel &&
+    SIGNAL_LEVELS[savedLevel]
+  ){
 
-    document.getElementById(
-      "strictRange"
-    ).value=saved;
+    signalLevel=savedLevel;
 
-    document.getElementById(
-      "strictValue"
-    ).textContent=saved;
+  }else{
+
+    signalLevel="HIGH";
+
   }
+
+  updateLevelUI();
+
 
   const methods=
     JSON.parse(
@@ -663,6 +841,7 @@ function loadSettings(){
       ) || "null"
     );
 
+
   if(methods){
 
     document
@@ -670,20 +849,24 @@ function loadSettings(){
         ".checkbox-grid input"
       )
       .forEach(x=>{
+
         x.checked=
-          methods.includes(x.value);
+          methods.includes(
+            x.value
+          );
+
       });
+
   }
+
 }
 
-function getStrict(){
 
-  return Number(
-    document.getElementById(
-      "strictRange"
-    ).value
-  );
+function getSignalLevel(){
+
+  return signalLevel;
 }
+
 
 function getMethods(){
 
@@ -694,16 +877,24 @@ function getMethods(){
       ".checkbox-grid input:checked"
     )
     .forEach(x=>{
-      arr.push(x.value);
+
+      arr.push(
+        x.value
+      );
+
     });
+
 
   localStorage.setItem(
     "signalMethods",
     JSON.stringify(arr)
   );
 
+
   return arr;
+
 }
+
 
 function selectAllMethods(){
 
@@ -716,7 +907,9 @@ function selectAllMethods(){
     });
 
   getMethods();
+
 }
+
 
 function clearMethods(){
 
@@ -729,38 +922,61 @@ function clearMethods(){
     });
 
   getMethods();
+
 }
 
 
-/* =========================================
+/* =====================================================
    API
-========================================= */
+===================================================== */
 
 async function api(url){
 
   const r=
-    await fetch(url,{
-      cache:"no-store"
-    });
+    await fetch(
+      url,
+      {
+        cache:"no-store"
+      }
+    );
 
-  const d=
-    await r.json();
 
-  if(!r.ok || d.ok===false){
+  let d;
+
+  try{
+
+    d=await r.json();
+
+  }catch(e){
+
+    throw new Error(
+      "پاسخ سرور قابل خواندن نیست."
+    );
+
+  }
+
+
+  if(
+    !r.ok ||
+    d.ok===false
+  ){
 
     throw new Error(
       d.error ||
       "خطا در دریافت اطلاعات"
     );
+
   }
 
+
   return d;
+
 }
 
 
-/* =========================================
+/* =====================================================
    MANUAL SEARCH
-========================================= */
+===================================================== */
 
 async function manualAnalyze(){
 
@@ -772,11 +988,17 @@ async function manualAnalyze(){
       .value
       .trim();
 
+
   if(!input){
 
-    alert("نام ارز را وارد کن.");
+    alert(
+      "نام ارز را وارد کن."
+    );
+
     return;
+
   }
+
 
   const market=
     document
@@ -785,41 +1007,51 @@ async function manualAnalyze(){
       )
       .value;
 
+
   const box=
     document.getElementById(
       "manualResult"
     );
+
 
   const status=
     document.getElementById(
       "searchStatus"
     );
 
-  box.innerHTML=
-    `<div class="card loading">
-      ⏳ در حال جستجوی ${escapeHtml(input)} در بازار...
-    </div>`;
+
+  box.innerHTML=`
+    <div class="card loading">
+      ⏳ در حال جستجوی
+      ${escapeHtml(input)}
+      در بازار...
+    </div>
+  `;
+
 
   status.textContent=
     "در حال جستجوی Spot و Futures...";
+
 
   try{
 
     const search=
       await api(
-        `/api/search?symbol=${encodeURIComponent(input)}`
+        `/api/search?symbol=${
+          encodeURIComponent(input)
+        }`
       );
+
 
     let chosen=null;
     let category=null;
+
 
     if(market==="linear"){
 
       if(search.futures){
 
-        chosen=
-          search.futures;
-
+        chosen=search.futures;
         category="linear";
 
       }else{
@@ -827,15 +1059,17 @@ async function manualAnalyze(){
         throw new Error(
           "این ارز در Futures پیدا نشد."
         );
+
       }
 
-    }else if(market==="spot"){
+    }
+
+
+    else if(market==="spot"){
 
       if(search.spot){
 
-        chosen=
-          search.spot;
-
+        chosen=search.spot;
         category="spot";
 
       }else{
@@ -843,68 +1077,92 @@ async function manualAnalyze(){
         throw new Error(
           "این ارز در Spot پیدا نشد."
         );
+
       }
 
-    }else{
+    }
 
-      /*
-        حالت Auto:
-        اول Futures
-        اگر نبود Spot
-      */
+
+    else{
 
       if(search.futures){
 
-        chosen=
-          search.futures;
-
+        chosen=search.futures;
         category="linear";
 
-      }else if(search.spot){
+      }
 
-        chosen=
-          search.spot;
+      else if(search.spot){
 
+        chosen=search.spot;
         category="spot";
 
-      }else{
+      }
+
+      else{
 
         throw new Error(
           "این ارز در Spot و Futures پیدا نشد."
         );
+
       }
+
     }
+
 
     status.innerHTML=
       category==="linear"
-        ? "🟢 ارز در Futures پیدا شد."
-        : "🟡 Futures موجود نیست؛ نسخه Spot نمایش داده شد. OI و Funding برای Spot موجود نیست.";
+      ? "🟢 ارز در Futures پیدا شد."
+      : "🟡 Futures موجود نیست؛ نسخه Spot نمایش داده شد. OI و Funding برای Spot موجود نیست.";
+
+
+    const level=
+      getSignalLevel();
+
+
+    const methods=
+      getMethods();
+
 
     const data=
       await api(
-        `/api/analyze?symbol=${encodeURIComponent(chosen.symbol)}&category=${category}`
+        `/api/analyze?symbol=${
+          encodeURIComponent(chosen.symbol)
+        }&category=${category}&level=${
+          encodeURIComponent(level)
+        }&methods=${
+          encodeURIComponent(
+            methods.join(",")
+          )
+        }`
       );
+
 
     renderManual(
       data
     );
+
 
   }catch(e){
 
     status.textContent=
       e.message;
 
-    box.innerHTML=
-      `<div class="card error">
+
+    box.innerHTML=`
+      <div class="card error">
         ❌ ${escapeHtml(e.message)}
-      </div>`;
+      </div>
+    `;
+
   }
+
 }
 
 
-/* =========================================
+/* =====================================================
    MANUAL RENDER
-========================================= */
+===================================================== */
 
 function renderManual(d){
 
@@ -913,42 +1171,34 @@ function renderManual(d){
       "manualResult"
     );
 
+
   const methods=
     getMethods();
 
-  const strict=
-    getStrict();
 
-  let effectiveScore=
-    d.score || 0;
+  const level=
+    getSignalLevel();
+
+
+  let direction=
+    d.direction ||
+    "WAIT";
+
 
   /*
-    سخت گیری سمت رابط کاربر:
-    هرچه سخت گیری بیشتر باشد
-    آستانه بالاتر می‌رود.
+    Worker جدید باید direction نهایی را
+    براساس سطح واقعی سخت‌گیری تعیین کند.
+    اینجا دیگر threshold جعلی سمت UI نداریم.
   */
 
-  const threshold=
-    Math.round(
-      60 +
-      strict*0.35
-    );
-
-  let displayedDirection=
-    d.direction;
-
-  if(
-    effectiveScore < threshold
-  ){
-    displayedDirection="WAIT";
-  }
 
   const directionClass=
-    displayedDirection==="LONG"
-      ? "long"
-      : displayedDirection==="SHORT"
-        ? "short"
-        : "yellow";
+    direction==="LONG"
+    ? "long"
+    : direction==="SHORT"
+      ? "short"
+      : "yellow";
+
 
   box.innerHTML=`
 
@@ -959,31 +1209,50 @@ function renderManual(d){
     </div>
 
     <div class="muted">
-      ${d.category==="linear"
+
+      ${
+        d.category==="linear"
         ? "📈 Futures"
-        : "💰 Spot"}
+        : "💰 Spot"
+      }
+
     </div>
+
 
     <div style="margin-top:10px">
 
       <span class="pill">
-        قیمت: ${fmtPrice(d.price)}
+        قیمت:
+        ${fmtPrice(d.price)}
       </span>
 
+
       <span class="pill">
-        سیگنال: 
+        سیگنال:
+
         <b class="${directionClass}">
-          ${displayedDirection}
+          ${direction}
         </b>
+
       </span>
 
-      <span class="pill">
-        سخت‌گیری: ${strict}
-      </span>
 
       <span class="pill">
-        حداقل امتیاز فعلی: ${threshold}
+        سطح:
+        ${SIGNAL_LEVELS[level]?.label || level}
       </span>
+
+
+      ${
+        d.signalLevel
+        ? `
+          <span class="pill">
+            سطح Worker:
+            ${escapeHtml(d.signalLevel)}
+          </span>
+        `
+        : ""
+      }
 
     </div>
 
@@ -993,43 +1262,72 @@ function renderManual(d){
   <div class="grid">
 
     <div class="metric">
-      <small>امتیاز Long</small>
+
+      <small>
+        امتیاز Long
+      </small>
+
       <strong class="long">
-        ${d.longScore}
+        ${safeNumber(d.longScore)}
       </strong>
+
       <div class="scorebar">
+
         <div
           class="scorefill"
-          style="width:${d.longScore}%"
+          style="width:${scoreWidth(d.longScore)}%"
         ></div>
+
       </div>
+
     </div>
 
+
     <div class="metric">
-      <small>امتیاز Short</small>
+
+      <small>
+        امتیاز Short
+      </small>
+
       <strong class="short">
-        ${d.shortScore}
+        ${safeNumber(d.shortScore)}
       </strong>
+
       <div class="scorebar">
+
         <div
           class="scorefill red"
-          style="width:${d.shortScore}%"
+          style="width:${scoreWidth(d.shortScore)}%"
         ></div>
+
       </div>
+
     </div>
 
+
     <div class="metric">
-      <small>Pump</small>
+
+      <small>
+        Pump
+      </small>
+
       <strong class="long">
-        ${d.pumpScore}
+        ${safeNumber(d.pumpScore)}
       </strong>
+
     </div>
 
+
     <div class="metric">
-      <small>Dump</small>
+
+      <small>
+        Dump
+      </small>
+
       <strong class="short">
-        ${d.dumpScore}
+        ${safeNumber(d.dumpScore)}
       </strong>
+
     </div>
 
   </div>
@@ -1058,13 +1356,14 @@ function renderManual(d){
 }
 
 
-/* =========================================
-   MARKET DATA
-========================================= */
+/* =====================================================
+   MARKET
+===================================================== */
 
 function renderMarket(d){
 
   const m=d.market || {};
+
 
   return `
 
@@ -1074,112 +1373,161 @@ function renderMarket(d){
       💰 Futures Market Data
     </div>
 
+
     <div class="grid3">
 
       <div class="metric">
-        <small>Open Interest</small>
+
+        <small>
+          Open Interest
+        </small>
+
         <strong>
           ${
             m.openInterest==null
-              ? "-"
-              : fmtNum(m.openInterest)
+            ? "-"
+            : fmtNum(m.openInterest)
           }
         </strong>
+
       </div>
 
+
       <div class="metric">
-        <small>Funding Rate</small>
+
+        <small>
+          Funding Rate
+        </small>
+
         <strong class="${
           Number(m.fundingRate)>0
-            ? "long"
-            : Number(m.fundingRate)<0
-              ? "short"
-              : ""
+          ? "long"
+          : Number(m.fundingRate)<0
+            ? "short"
+            : ""
         }">
+
           ${
             m.fundingRate==null
-              ? "-"
-              : fmtPct(m.fundingRate*100)
+            ? "-"
+            : fmtPct(
+                Number(m.fundingRate)*100
+              )
           }
+
         </strong>
+
       </div>
 
+
       <div class="metric">
-        <small>تغییر قیمت 24h</small>
+
+        <small>
+          تغییر قیمت 24h
+        </small>
+
         <strong class="${
           Number(m.change24h)>0
-            ? "long"
-            : Number(m.change24h)<0
-              ? "short"
-              : ""
+          ? "long"
+          : Number(m.change24h)<0
+            ? "short"
+            : ""
         }">
+
           ${
             m.change24h==null
-              ? "-"
-              : fmtPct(m.change24h)
+            ? "-"
+            : fmtPct(m.change24h)
           }
+
         </strong>
+
       </div>
 
+
       <div class="metric">
-        <small>Turnover 24h</small>
+
+        <small>
+          Turnover 24h
+        </small>
+
         <strong>
           ${
             m.turnover24h==null
-              ? "-"
-              : fmtNum(m.turnover24h)
+            ? "-"
+            : fmtNum(m.turnover24h)
           }
         </strong>
+
       </div>
 
+
       <div class="metric">
-        <small>Mark Price</small>
+
+        <small>
+          Mark Price
+        </small>
+
         <strong>
           ${
             m.markPrice==null
-              ? "-"
-              : fmtPrice(m.markPrice)
+            ? "-"
+            : fmtPrice(m.markPrice)
           }
         </strong>
+
       </div>
 
+
       <div class="metric">
-        <small>Index Price</small>
+
+        <small>
+          Index Price
+        </small>
+
         <strong>
           ${
             m.indexPrice==null
-              ? "-"
-              : fmtPrice(m.indexPrice)
+            ? "-"
+            : fmtPrice(m.indexPrice)
           }
         </strong>
+
       </div>
 
     </div>
 
+
     ${
       d.category==="spot"
-        ? `<div class="status">
-            ℹ️ این ارز فقط در Spot پیدا شد؛ OI و Funding برای آن نمایش داده نمی‌شود.
-          </div>`
-        : ""
+      ? `
+        <div class="status">
+          ℹ️ این ارز فقط در Spot پیدا شد؛
+          OI و Funding برای آن نمایش داده نمی‌شود.
+        </div>
+      `
+      : ""
     }
 
   </div>
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    TIMEFRAMES
-========================================= */
+===================================================== */
 
 function renderTimeframes(d){
 
   const tf=
     d.timeframes || {};
 
+
   let rows="";
+
 
   for(
     const [key,x]
@@ -1189,65 +1537,100 @@ function renderTimeframes(d){
     if(!x || x.error){
 
       rows+=`
-      <tr>
-        <td>${key}m</td>
-        <td colspan="8">
-          ${x?.error || "-"}
-        </td>
-      </tr>`;
+        <tr>
+          <td>
+            ${key==="60" ? "1h" : key+"m"}
+          </td>
+
+          <td colspan="8">
+            ${escapeHtml(
+              x?.error || "-"
+            )}
+          </td>
+        </tr>
+      `;
 
       continue;
+
     }
+
 
     rows+=`
 
-    <tr>
+      <tr>
 
-      <td>
-        ${key==="60" ? "1h" : key+"m"}
-      </td>
+        <td>
+          ${
+            key==="60"
+            ? "1h"
+            : key+"m"
+          }
+        </td>
 
-      <td>
-        ${fmtPrice(x.price)}
-      </td>
 
-      <td>
-        ${fmtPrice(x.ma7)}
-      </td>
+        <td>
+          ${fmtPrice(x.price)}
+        </td>
 
-      <td>
-        ${fmtPrice(x.ma20)}
-      </td>
 
-      <td class="${
-        x.trend==="BULLISH"
+        <td>
+          ${fmtPrice(x.ma7)}
+        </td>
+
+
+        <td>
+          ${fmtPrice(x.ma20)}
+        </td>
+
+
+        <td class="${
+          x.trend==="BULLISH"
           ? "long"
           : x.trend==="BEARISH"
             ? "short"
             : "yellow"
-      }">
-        ${x.trend}
-      </td>
+        }">
 
-      <td>
-        ${x.maSlope}
-      </td>
+          ${escapeHtml(
+            x.trend || "-"
+          )}
 
-      <td>
-        ${x.bos}
-      </td>
+        </td>
 
-      <td>
-        ${x.choch}
-      </td>
 
-      <td>
-        ${x.hunt?.side || "-"}
-      </td>
+        <td>
+          ${escapeHtml(
+            x.maSlope || "-"
+          )}
+        </td>
 
-    </tr>
+
+        <td>
+          ${escapeHtml(
+            x.bos || "-"
+          )}
+        </td>
+
+
+        <td>
+          ${escapeHtml(
+            x.choch || "-"
+          )}
+        </td>
+
+
+        <td>
+          ${escapeHtml(
+            x.hunt?.side || "-"
+          )}
+        </td>
+
+      </tr>
+
     `;
+
   }
+
 
   return `
 
@@ -1257,6 +1640,7 @@ function renderTimeframes(d){
       ⏱ تحلیل تایم‌فریم‌ها
     </div>
 
+
     <div class="table-wrap">
 
       <table>
@@ -1264,6 +1648,7 @@ function renderTimeframes(d){
         <thead>
 
           <tr>
+
             <th>TF</th>
             <th>Price</th>
             <th>MA7</th>
@@ -1273,9 +1658,11 @@ function renderTimeframes(d){
             <th>BOS</th>
             <th>CHoCH</th>
             <th>Hunt</th>
+
           </tr>
 
         </thead>
+
 
         <tbody>
           ${rows}
@@ -1288,91 +1675,148 @@ function renderTimeframes(d){
   </div>
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    SIGNAL METHODS
-========================================= */
+===================================================== */
 
 function renderSignalMethods(d,methods){
 
   const c=
     d.timeframes?.["1"];
 
-  if(!c){
 
+  if(!c){
     return "";
   }
+
 
   return `
 
   <div class="card">
 
     <div class="card-title">
-      🎯 سیگنال‌های تایید شده
+      🎯 تحلیل سیگنال
     </div>
 
+
     <div class="status">
+
       روش‌های فعال:
+
       ${
         methods.length
-          ? methods.join(" • ")
-          : "هیچ روش انتخاب نشده"
+        ? methods.join(" • ")
+        : "هیچ روش انتخاب نشده"
       }
+
     </div>
+
+
+    ${
+      d.evidenceCount!=null
+      ? `
+        <div class="status">
+          شواهد تأییدشده:
+          <b>
+            ${d.evidenceCount}
+          </b>
+
+          ${
+            d.minEvidence!=null
+            ? `
+              |
+              حداقل لازم:
+              <b>
+                ${d.minEvidence}
+              </b>
+            `
+            : ""
+          }
+        </div>
+      `
+      : ""
+    }
+
 
     <details open>
 
       <summary>
-        MA / SMC / ICT / FVG / BOS / CHoCH
+        MA / MACD / RSI / Ichimoku / Divergence
+      </summary>
+
+      <div class="details-body">
+
+        ${renderIndicatorData(c,d)}
+
+      </div>
+
+    </details>
+
+
+    <details>
+
+      <summary>
+        SMC / ICT / FVG / BOS / CHoCH / OB
       </summary>
 
       <div class="details-body">
 
         <span class="tag">
-          MA7: ${fmtPrice(c.ma7)}
+          Trend:
+          ${escapeHtml(c.trend || "NONE")}
         </span>
 
         <span class="tag">
-          MA20: ${fmtPrice(c.ma20)}
+          Slope:
+          ${escapeHtml(c.maSlope || "NONE")}
         </span>
 
         <span class="tag">
-          Trend: ${c.trend}
+          Hunt:
+          ${escapeHtml(
+            c.hunt?.side || "NONE"
+          )}
         </span>
 
         <span class="tag">
-          Slope: ${c.maSlope}
+          FVG:
+          ${escapeHtml(
+            c.fvg?.type || "NONE"
+          )}
         </span>
 
         <span class="tag">
-          Hunt: ${c.hunt?.side || "NONE"}
+          BOS:
+          ${escapeHtml(c.bos || "NONE")}
         </span>
 
         <span class="tag">
-          FVG: ${c.fvg?.type || "NONE"}
+          CHoCH:
+          ${escapeHtml(c.choch || "NONE")}
         </span>
 
         <span class="tag">
-          BOS: ${c.bos}
+          OB:
+          ${escapeHtml(
+            c.orderBlock?.type || "NONE"
+          )}
         </span>
 
         <span class="tag">
-          CHoCH: ${c.choch}
-        </span>
-
-        <span class="tag">
-          OB: ${c.orderBlock?.type || "NONE"}
-        </span>
-
-        <span class="tag">
-          Candle: ${c.candle || "NORMAL"}
+          Candle:
+          ${escapeHtml(
+            c.candle || "NORMAL"
+          )}
         </span>
 
       </div>
 
     </details>
+
 
     <details>
 
@@ -1382,7 +1826,9 @@ function renderSignalMethods(d,methods){
 
       <div class="details-body">
 
-        ${renderConvertedMA(d.convertedMA1m)}
+        ${renderConvertedMA(
+          d.convertedMA1m
+        )}
 
       </div>
 
@@ -1391,190 +1837,479 @@ function renderSignalMethods(d,methods){
   </div>
 
   `;
+
 }
 
+
+function renderIndicatorData(c,d){
+
+  const macd=
+    c.macd ||
+    d.macd ||
+    null;
+
+  const rsi=
+    c.rsi ||
+    d.rsi ||
+    null;
+
+  const ichi=
+    c.ichimoku ||
+    d.ichimoku ||
+    null;
+
+  const div=
+    c.divergence ||
+    d.divergence ||
+    null;
+
+
+  let html="";
+
+
+  html+=`
+
+    <span class="tag">
+      MA7:
+      ${fmtPrice(c.ma7)}
+    </span>
+
+    <span class="tag">
+      MA20:
+      ${fmtPrice(c.ma20)}
+    </span>
+
+  `;
+
+
+  if(macd){
+
+    html+=`
+
+      <span class="tag ${
+        indicatorDirectionClass(
+          macd.direction
+        )
+      }">
+
+        MACD:
+        ${escapeHtml(
+          macd.signal ||
+          macd.direction ||
+          "-"
+        )}
+
+      </span>
+
+    `;
+
+  }else{
+
+    html+=`
+      <span class="tag">
+        MACD: -
+      </span>
+    `;
+
+  }
+
+
+  if(rsi){
+
+    html+=`
+
+      <span class="tag">
+
+        RSI:
+        ${
+          rsi.value!=null
+          ? Number(rsi.value).toFixed(2)
+          : "-"
+        }
+
+        ${
+          rsi.signal
+          ? " | "+escapeHtml(rsi.signal)
+          : ""
+        }
+
+      </span>
+
+    `;
+
+  }else{
+
+    html+=`
+      <span class="tag">
+        RSI: -
+      </span>
+    `;
+
+  }
+
+
+  if(ichi){
+
+    html+=`
+
+      <span class="tag">
+
+        Ichimoku:
+        ${escapeHtml(
+          ichi.signal ||
+          ichi.direction ||
+          "-"
+        )}
+
+      </span>
+
+    `;
+
+  }else{
+
+    html+=`
+      <span class="tag">
+        Ichimoku: -
+      </span>
+    `;
+
+  }
+
+
+  if(div){
+
+    html+=`
+
+      <span class="tag">
+
+        Divergence:
+        ${escapeHtml(
+          div.type ||
+          div.signal ||
+          "-"
+        )}
+
+      </span>
+
+    `;
+
+  }else{
+
+    html+=`
+      <span class="tag">
+        Divergence: -
+      </span>
+    `;
+
+  }
+
+
+  return html;
+
+}
+
+
+function indicatorDirectionClass(v){
+
+  const s=
+    String(v||"").toUpperCase();
+
+  if(
+    s.includes("LONG") ||
+    s.includes("BULL")
+  ){
+    return "long";
+  }
+
+  if(
+    s.includes("SHORT") ||
+    s.includes("BEAR")
+  ){
+    return "short";
+  }
+
+  return "";
+
+}
+
+
+/* =====================================================
+   CONVERTED MA
+===================================================== */
 
 function renderConvertedMA(x){
 
   if(!x || !x.events){
 
-    return `<span class="muted">داده‌ای موجود نیست.</span>`;
+    return `
+      <span class="muted">
+        داده‌ای موجود نیست.
+      </span>
+    `;
+
   }
+
 
   return x.events.map(e=>`
 
     <div class="radar-item">
 
       <b>
-        ${e.ma} ${e.source}
+        ${escapeHtml(
+          e.ma+" "+e.source
+        )}
       </b>
+
 
       <div>
         MA معادل:
-        <b>${e.period1m} کندل 1m</b>
+        <b>
+          ${e.period1m}
+          کندل 1m
+        </b>
       </div>
+
 
       <div>
+
         وضعیت:
+
         <span class="${
           e.direction==="LONG"
-            ? "long"
-            : e.direction==="SHORT"
-              ? "short"
-              : "yellow"
+          ? "long"
+          : e.direction==="SHORT"
+            ? "short"
+            : "yellow"
         }">
-          ${e.confirmation}
+
+          ${escapeHtml(
+            e.confirmation || "-"
+          )}
+
         </span>
+
       </div>
 
+
       <div class="muted">
+
         فاصله:
-        ${Number(e.distancePct||0).toFixed(3)}%
+        ${
+          Number(
+            e.distancePct||0
+          ).toFixed(3)
+        }%
+
         |
+
         Slope:
-        ${e.slope}
+        ${escapeHtml(
+          e.slope || "-"
+        )}
+
       </div>
 
     </div>
 
   `).join("");
+
 }
 
 
-/* =========================================
+/* =====================================================
    FOOTPRINT
-========================================= */
+===================================================== */
 
 function renderFootprint(fp){
 
   if(!fp){
-
     return "";
   }
+
 
   if(fp.error){
 
     return `
-    <div class="card">
 
-      <div class="card-title">
-        👣 Footprint
+      <div class="card">
+
+        <div class="card-title">
+          👣 Footprint
+        </div>
+
+        <div class="error">
+          ${escapeHtml(fp.error)}
+        </div>
+
       </div>
 
-      <div class="error">
-        ${escapeHtml(fp.error)}
-      </div>
+    `;
 
-    </div>`;
   }
+
 
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      👣 Footprint / Recent Trades
-    </div>
-
-    <div class="grid3">
-
-      <div class="metric">
-        <small>Buy Volume</small>
-        <strong class="long">
-          ${fmtNum(fp.buyVolume)}
-        </strong>
+      <div class="card-title">
+        👣 Footprint / Recent Trades
       </div>
 
-      <div class="metric">
-        <small>Sell Volume</small>
-        <strong class="short">
-          ${fmtNum(fp.sellVolume)}
-        </strong>
-      </div>
 
-      <div class="metric">
-        <small>Delta</small>
-        <strong class="${
-          fp.delta>=0
+      <div class="grid3">
+
+        <div class="metric">
+
+          <small>
+            Buy Volume
+          </small>
+
+          <strong class="long">
+            ${fmtNum(fp.buyVolume)}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Sell Volume
+          </small>
+
+          <strong class="short">
+            ${fmtNum(fp.sellVolume)}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Delta
+          </small>
+
+          <strong class="${
+            Number(fp.delta)>=0
             ? "long"
             : "short"
-        }">
-          ${fmtNum(fp.delta)}
-        </strong>
-      </div>
+          }">
 
-      <div class="metric">
-        <small>Delta %</small>
-        <strong class="${
-          fp.deltaPercent>=0
+            ${fmtNum(fp.delta)}
+
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Delta %
+          </small>
+
+          <strong class="${
+            Number(fp.deltaPercent)>=0
             ? "long"
             : "short"
-        }">
-          ${fmtPct(fp.deltaPercent)}
-        </strong>
-      </div>
+          }">
 
-      <div class="metric">
-        <small>Trades</small>
-        <strong>
-          ${fmtNum(fp.trades)}
-        </strong>
-      </div>
+            ${fmtPct(fp.deltaPercent)}
 
-      <div class="metric">
-        <small>Largest Trade</small>
-        <strong>
-          ${fmtNum(fp.largeTradeNotional)}
-        </strong>
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Trades
+          </small>
+
+          <strong>
+            ${fmtNum(fp.trades)}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Largest Trade
+          </small>
+
+          <strong>
+            ${fmtNum(
+              fp.largeTradeNotional
+            )}
+          </strong>
+
+        </div>
+
       </div>
 
     </div>
-
-  </div>
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    ORDER BOOK
-========================================= */
+===================================================== */
 
 function renderWalls(w){
 
   if(!w || w.error){
 
     return `
-    <div class="card">
 
-      <div class="card-title">
-        🧱 Order Book / Walls
+      <div class="card">
+
+        <div class="card-title">
+          🧱 Order Book / Walls
+        </div>
+
+        <div class="muted">
+          ${escapeHtml(
+            w?.error ||
+            "داده‌ای موجود نیست"
+          )}
+        </div>
+
       </div>
 
-      <div class="muted">
-        ${w?.error || "داده‌ای موجود نیست"}
-      </div>
+    `;
 
-    </div>`;
   }
+
 
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      🧱 Order Book / Liquidity Walls
-    </div>
+      <div class="card-title">
+        🧱 Order Book / Liquidity Walls
+      </div>
 
-    <div class="grid">
 
-      <div class="metric">
+      <div class="grid">
 
-        <small>قوی‌ترین Buy Wall</small>
+        <div class="metric">
 
-        ${
-          w.buy
+          <small>
+            قوی‌ترین Buy Wall
+          </small>
+
+          ${
+            w.buy
             ? `
+
               <strong class="long">
                 ${fmtPrice(w.buy.price)}
               </strong>
@@ -1584,21 +2319,29 @@ function renderWalls(w){
               </div>
 
               <small>
-                فاصله ${Number(w.buy.distancePct).toFixed(2)}%
+                فاصله
+                ${Number(
+                  w.buy.distancePct
+                ).toFixed(2)}%
               </small>
+
             `
             : "-"
-        }
+          }
 
-      </div>
+        </div>
 
-      <div class="metric">
 
-        <small>قوی‌ترین Sell Wall</small>
+        <div class="metric">
 
-        ${
-          w.sell
+          <small>
+            قوی‌ترین Sell Wall
+          </small>
+
+          ${
+            w.sell
             ? `
+
               <strong class="short">
                 ${fmtPrice(w.sell.price)}
               </strong>
@@ -1608,44 +2351,56 @@ function renderWalls(w){
               </div>
 
               <small>
-                فاصله ${Number(w.sell.distancePct).toFixed(2)}%
+                فاصله
+                ${Number(
+                  w.sell.distancePct
+                ).toFixed(2)}%
               </small>
+
             `
             : "-"
-        }
+          }
+
+        </div>
 
       </div>
+
+
+      <details>
+
+        <summary>
+          مشاهده سطوح نقدینگی
+        </summary>
+
+        <div class="details-body">
+
+          <div class="section-title">
+            Buy Levels
+          </div>
+
+          ${renderLevels(
+            w.buyLevels,
+            "long"
+          )}
+
+
+          <div class="section-title">
+            Sell Levels
+          </div>
+
+          ${renderLevels(
+            w.sellLevels,
+            "short"
+          )}
+
+        </div>
+
+      </details>
 
     </div>
 
-
-    <details>
-
-      <summary>
-        مشاهده سطوح نقدینگی
-      </summary>
-
-      <div class="details-body">
-
-        <div class="section-title">
-          Buy Levels
-        </div>
-
-        ${renderLevels(w.buyLevels,"long")}
-
-        <div class="section-title">
-          Sell Levels
-        </div>
-
-        ${renderLevels(w.sellLevels,"short")}
-
-      </div>
-
-    </details>
-
-  </div>
-
   `;
+
 }
 
 
@@ -1653,26 +2408,37 @@ function renderLevels(arr,cls){
 
   if(!arr?.length){
 
-    return `<span class="muted">ندارد</span>`;
+    return `
+      <span class="muted">
+        ندارد
+      </span>
+    `;
+
   }
+
 
   return arr.map(x=>`
 
     <span class="tag ${cls}">
+
       ${fmtPrice(x.price)}
       |
       ${fmtNum(x.notional)}
       |
-      ${Number(x.distancePct).toFixed(2)}%
+      ${Number(
+        x.distancePct
+      ).toFixed(2)}%
+
     </span>
 
   `).join("");
+
 }
 
 
-/* =========================================
-   SUPPORT RESISTANCE
-========================================= */
+/* =====================================================
+   SUPPORT / RESISTANCE
+===================================================== */
 
 function renderSupportResistance(sr){
 
@@ -1680,23 +2446,28 @@ function renderSupportResistance(sr){
     return "";
   }
 
+
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      🧲 حمایت و مقاومت
-    </div>
+      <div class="card-title">
+        🧲 حمایت و مقاومت
+      </div>
 
-    <div class="grid">
 
-      <div class="metric">
+      <div class="grid">
 
-        <small>نزدیک‌ترین حمایت</small>
+        <div class="metric">
 
-        ${
-          sr.nearestSupport
+          <small>
+            نزدیک‌ترین حمایت
+          </small>
+
+          ${
+            sr.nearestSupport
             ? `
+
               <strong class="long">
                 ${fmtPrice(
                   sr.nearestSupport.price
@@ -1704,21 +2475,28 @@ function renderSupportResistance(sr){
               </strong>
 
               <div>
-                ${sr.nearestSupport.type}
+                ${escapeHtml(
+                  sr.nearestSupport.type
+                )}
               </div>
+
             `
             : "-"
-        }
+          }
 
-      </div>
+        </div>
 
-      <div class="metric">
 
-        <small>نزدیک‌ترین مقاومت</small>
+        <div class="metric">
 
-        ${
-          sr.nearestResistance
+          <small>
+            نزدیک‌ترین مقاومت
+          </small>
+
+          ${
+            sr.nearestResistance
             ? `
+
               <strong class="short">
                 ${fmtPrice(
                   sr.nearestResistance.price
@@ -1726,67 +2504,87 @@ function renderSupportResistance(sr){
               </strong>
 
               <div>
-                ${sr.nearestResistance.type}
+                ${escapeHtml(
+                  sr.nearestResistance.type
+                )}
               </div>
+
             `
             : "-"
-        }
+          }
+
+        </div>
 
       </div>
+
+
+      <details>
+
+        <summary>
+          سطوح بیشتر
+        </summary>
+
+        <div class="details-body">
+
+          <div class="section-title">
+            Supports
+          </div>
+
+          ${
+            (sr.supports||[])
+              .map(x=>`
+
+                <span class="tag long">
+
+                  ${fmtPrice(x.price)}
+                  |
+                  ${escapeHtml(
+                    x.type || "-"
+                  )}
+
+                </span>
+
+              `)
+              .join("")
+          }
+
+
+          <div class="section-title">
+            Resistances
+          </div>
+
+          ${
+            (sr.resistances||[])
+              .map(x=>`
+
+                <span class="tag short">
+
+                  ${fmtPrice(x.price)}
+                  |
+                  ${escapeHtml(
+                    x.type || "-"
+                  )}
+
+                </span>
+
+              `)
+              .join("")
+          }
+
+        </div>
+
+      </details>
 
     </div>
 
-    <details>
-
-      <summary>
-        سطوح بیشتر
-      </summary>
-
-      <div class="details-body">
-
-        <div class="section-title">
-          Supports
-        </div>
-
-        ${
-          (sr.supports||[])
-            .map(x=>`
-              <span class="tag long">
-                ${fmtPrice(x.price)}
-                |
-                ${x.type}
-              </span>
-            `).join("")
-        }
-
-        <div class="section-title">
-          Resistances
-        </div>
-
-        ${
-          (sr.resistances||[])
-            .map(x=>`
-              <span class="tag short">
-                ${fmtPrice(x.price)}
-                |
-                ${x.type}
-              </span>
-            `).join("")
-        }
-
-      </div>
-
-    </details>
-
-  </div>
-
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    MOVEMENT
-========================================= */
+===================================================== */
 
 function renderMovement(m){
 
@@ -1794,111 +2592,169 @@ function renderMovement(m){
     return "";
   }
 
+
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      🚀 حرکت بازار
-    </div>
+      <div class="card-title">
+        🚀 حرکت بازار
+      </div>
 
-    <div class="grid3">
 
-      <div class="metric">
-        <small>تغییر 15m</small>
-        <strong class="${
-          m.change15m>=0
+      <div class="grid3">
+
+        <div class="metric">
+
+          <small>
+            تغییر 15m
+          </small>
+
+          <strong class="${
+            Number(m.change15m)>=0
             ? "long"
             : "short"
-        }">
-          ${fmtPct(m.change15m)}
-        </strong>
-      </div>
+          }">
 
-      <div class="metric">
-        <small>تغییر 30m</small>
-        <strong class="${
-          m.change30m>=0
+            ${fmtPct(m.change15m)}
+
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            تغییر 30m
+          </small>
+
+          <strong class="${
+            Number(m.change30m)>=0
             ? "long"
             : "short"
-        }">
-          ${fmtPct(m.change30m)}
-        </strong>
+          }">
+
+            ${fmtPct(m.change30m)}
+
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Volume Ratio
+          </small>
+
+          <strong>
+            ${Number(
+              m.volumeRatio||0
+            ).toFixed(2)}x
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Pump Score
+          </small>
+
+          <strong class="long">
+            ${safeNumber(
+              m.pumpScore
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Dump Score
+          </small>
+
+          <strong class="short">
+            ${safeNumber(
+              m.dumpScore
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            فاصله از MA20
+          </small>
+
+          <strong>
+            ${fmtPct(
+              m.distanceFromMA20
+            )}
+          </strong>
+
+        </div>
+
       </div>
 
-      <div class="metric">
-        <small>Volume Ratio</small>
-        <strong>
-          ${Number(m.volumeRatio||0).toFixed(2)}x
-        </strong>
-      </div>
 
-      <div class="metric">
-        <small>Pump Score</small>
-        <strong class="long">
-          ${m.pumpScore}
-        </strong>
-      </div>
+      <details>
 
-      <div class="metric">
-        <small>Dump Score</small>
-        <strong class="short">
-          ${m.dumpScore}
-        </strong>
-      </div>
+        <summary>
+          دلایل Pump / Dump
+        </summary>
 
-      <div class="metric">
-        <small>فاصله از MA20</small>
-        <strong>
-          ${fmtPct(m.distanceFromMA20)}
-        </strong>
-      </div>
+        <div class="details-body">
+
+          <div class="section-title long">
+            Pump
+          </div>
+
+          ${
+            (m.pumpReasons||[])
+              .map(x=>
+                `<span class="tag long">
+                  ${escapeHtml(x)}
+                </span>`
+              )
+              .join("")
+          }
+
+
+          <div class="section-title short">
+            Dump
+          </div>
+
+          ${
+            (m.dumpReasons||[])
+              .map(x=>
+                `<span class="tag short">
+                  ${escapeHtml(x)}
+                </span>`
+              )
+              .join("")
+          }
+
+        </div>
+
+      </details>
 
     </div>
-
-    <details>
-
-      <summary>
-        دلایل Pump / Dump
-      </summary>
-
-      <div class="details-body">
-
-        <div class="section-title long">
-          Pump
-        </div>
-
-        ${
-          (m.pumpReasons||[])
-            .map(x=>
-              `<span class="tag long">${escapeHtml(x)}</span>`
-            ).join("")
-        }
-
-        <div class="section-title short">
-          Dump
-        </div>
-
-        ${
-          (m.dumpReasons||[])
-            .map(x=>
-              `<span class="tag short">${escapeHtml(x)}</span>`
-            ).join("")
-        }
-
-      </div>
-
-    </details>
-
-  </div>
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    REVERSAL
-========================================= */
+===================================================== */
 
 function renderReversal(r){
 
@@ -1906,72 +2762,95 @@ function renderReversal(r){
     return "";
   }
 
+
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      🔄 احتمال برگشت بعد از Pump / Dump
-    </div>
+      <div class="card-title">
+        🔄 احتمال برگشت بعد از Pump / Dump
+      </div>
 
-    <div class="grid">
 
-      <div class="metric">
+      <div class="grid">
 
-        <small>برگشت بعد از Pump</small>
+        <div class="metric">
 
-        <strong class="short">
-          ${r.pumpScore}
-        </strong>
+          <small>
+            برگشت بعد از Pump
+          </small>
 
-        <div class="scorebar">
-          <div
-            class="scorefill red"
-            style="width:${r.pumpScore}%"
-          ></div>
+          <strong class="short">
+            ${safeNumber(
+              r.pumpScore
+            )}
+          </strong>
+
+          <div class="scorebar">
+
+            <div
+              class="scorefill red"
+              style="width:${scoreWidth(
+                r.pumpScore
+              )}%"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            برگشت بعد از Dump
+          </small>
+
+          <strong class="long">
+            ${safeNumber(
+              r.dumpScore
+            )}
+          </strong>
+
+          <div class="scorebar">
+
+            <div
+              class="scorefill"
+              style="width:${scoreWidth(
+                r.dumpScore
+              )}%"
+            ></div>
+
+          </div>
+
         </div>
 
       </div>
 
-      <div class="metric">
 
-        <small>برگشت بعد از Dump</small>
-
-        <strong class="long">
-          ${r.dumpScore}
-        </strong>
-
-        <div class="scorebar">
-          <div
-            class="scorefill"
-            style="width:${r.dumpScore}%"
-          ></div>
-        </div>
-
-      </div>
-
-    </div>
-
-    ${
-      r.alert &&
-      r.alert!=="NONE"
+      ${
+        r.alert &&
+        r.alert!=="NONE"
         ? `
           <div class="status">
-            🚨 ${r.alert}
+            🚨 ${escapeHtml(
+              r.alert
+            )}
           </div>
         `
         : ""
-    }
+      }
 
-  </div>
+    </div>
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    REASONS
-========================================= */
+===================================================== */
 
 function renderReasons(reasons){
 
@@ -1979,30 +2858,35 @@ function renderReasons(reasons){
     return "";
   }
 
+
   return `
 
-  <div class="card">
+    <div class="card">
 
-    <div class="card-title">
-      🧠 دلایل سیگنال
+      <div class="card-title">
+        🧠 دلایل سیگنال
+      </div>
+
+      ${
+        reasons
+          .map(x=>
+            `<span class="tag">
+              ${escapeHtml(x)}
+            </span>`
+          )
+          .join("")
+      }
+
     </div>
 
-    ${
-      reasons
-        .map(x=>
-          `<span class="tag">${escapeHtml(x)}</span>`
-        ).join("")
-    }
-
-  </div>
-
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    SCAN
-========================================= */
+===================================================== */
 
 async function runScan(){
 
@@ -2011,30 +2895,61 @@ async function runScan(){
       "scanResult"
     );
 
-  box.innerHTML=
-    `<div class="loading">
+
+  box.innerHTML=`
+
+    <div class="loading">
       ⏳ در حال اسکن بازار...
-    </div>`;
+    </div>
+
+  `;
+
 
   try{
 
+    const level=
+      getSignalLevel();
+
+
+    const methods=
+      getMethods();
+
+
     const d=
       await api(
-        `/api/scan?offset=${scanOffset}`
+        `/api/scan?offset=${
+          scanOffset
+        }&level=${
+          encodeURIComponent(level)
+        }&methods=${
+          encodeURIComponent(
+            methods.join(",")
+          )
+        }`
       );
+
 
     scanOffset=
       d.nextOffset || 0;
 
+
     renderScan(d);
+
 
   }catch(e){
 
-    box.innerHTML=
-      `<div class="error">
-        ❌ ${escapeHtml(e.message)}
-      </div>`;
+    box.innerHTML=`
+
+      <div class="error">
+        ❌ ${escapeHtml(
+          e.message
+        )}
+      </div>
+
+    `;
+
   }
+
 }
 
 
@@ -2045,25 +2960,49 @@ function renderScan(d){
       "scanResult"
     );
 
+
   if(!d.results?.length){
 
-    box.innerHTML=
-      `<div class="muted">
-        در این بخش سیگنال قوی پیدا نشد.
-      </div>`;
+    box.innerHTML=`
+
+      <div class="muted">
+
+        در این سطح سخت‌گیری
+        سیگنال قوی پیدا نشد.
+
+      </div>
+
+    `;
 
     return;
+
   }
+
 
   box.innerHTML=`
 
     <div class="status">
+
       بررسی شد:
-      ${d.batchSize}
+      ${d.batchSize || 0}
       ارز از
-      ${d.totalMarkets}
+      ${d.totalMarkets || 0}
       بازار
+
+      ${
+        d.signalLevel
+        ? `
+          |
+          سطح:
+          ${escapeHtml(
+            d.signalLevel
+          )}
+        `
+        : ""
+      }
+
     </div>
+
 
     ${
       d.results.map(x=>`
@@ -2071,10 +3010,10 @@ function renderScan(d){
         <div
           class="signal ${
             x.direction==="LONG"
-              ? "long"
-              : x.direction==="SHORT"
-                ? "short"
-                : ""
+            ? "long"
+            : x.direction==="SHORT"
+              ? "short"
+              : ""
           }"
         >
 
@@ -2083,7 +3022,9 @@ function renderScan(d){
             <div style="flex:1">
 
               <b>
-                ${x.symbol}
+                ${escapeHtml(
+                  x.symbol
+                )}
               </b>
 
               <span class="muted">
@@ -2092,25 +3033,59 @@ function renderScan(d){
 
             </div>
 
+
             <div>
+
               <b>
-                ${x.direction}
+                ${escapeHtml(
+                  x.direction || "WAIT"
+                )}
               </b>
+
             </div>
+
 
             <div class="big-score">
-              ${x.score}
+              ${safeNumber(x.score)}
             </div>
 
           </div>
 
+
           <div class="muted">
-            Long ${x.longScore}
+
+            Long
+            ${safeNumber(x.longScore)}
+
             |
-            Short ${x.shortScore}
+
+            Short
+            ${safeNumber(x.shortScore)}
+
             |
-            ${x.signalLevel}
+
+            ${escapeHtml(
+              x.signalLevel || ""
+            )}
+
           </div>
+
+
+          ${
+            x.evidenceCount!=null
+            ? `
+              <div class="muted">
+                شواهد:
+                ${x.evidenceCount}
+                ${
+                  x.minEvidence!=null
+                  ? " / "+x.minEvidence
+                  : ""
+                }
+              </div>
+            `
+            : ""
+          }
 
         </div>
 
@@ -2118,12 +3093,13 @@ function renderScan(d){
     }
 
   `;
+
 }
 
 
-/* =========================================
+/* =====================================================
    RADAR
-========================================= */
+===================================================== */
 
 async function runRadar(){
 
@@ -2132,30 +3108,53 @@ async function runRadar(){
       "radarResult"
     );
 
-  box.innerHTML=
-    `<div class="loading">
+
+  box.innerHTML=`
+
+    <div class="loading">
       🚨 در حال اجرای رادار Pump / Dump...
-    </div>`;
+    </div>
+
+  `;
+
 
   try{
 
+    const level=
+      getSignalLevel();
+
+
     const d=
       await api(
-        `/api/radar?offset=${radarOffset}`
+        `/api/radar?offset=${
+          radarOffset
+        }&level=${
+          encodeURIComponent(level)
+        }`
       );
+
 
     radarOffset=
       d.nextOffset || 0;
 
+
     renderRadar(d);
+
 
   }catch(e){
 
-    box.innerHTML=
-      `<div class="error">
-        ❌ ${escapeHtml(e.message)}
-      </div>`;
+    box.innerHTML=`
+
+      <div class="error">
+        ❌ ${escapeHtml(
+          e.message
+        )}
+      </div>
+
+    `;
+
   }
+
 }
 
 
@@ -2165,6 +3164,7 @@ function renderRadar(d){
     document.getElementById(
       "radarResult"
     );
+
 
   box.innerHTML=`
 
@@ -2178,20 +3178,27 @@ function renderRadar(d){
 
         ${
           d.pump?.[0]
-            ? `
-              <strong class="long">
-                ${d.pump[0].symbol}
-              </strong>
+          ? `
 
-              <div>
-                Score:
-                ${d.pump[0].pumpScore}
-              </div>
-            `
-            : "-"
+            <strong class="long">
+              ${escapeHtml(
+                d.pump[0].symbol
+              )}
+            </strong>
+
+            <div>
+              Score:
+              ${safeNumber(
+                d.pump[0].pumpScore
+              )}
+            </div>
+
+          `
+          : "-"
         }
 
       </div>
+
 
       <div class="metric">
 
@@ -2201,20 +3208,27 @@ function renderRadar(d){
 
         ${
           d.dump?.[0]
-            ? `
-              <strong class="short">
-                ${d.dump[0].symbol}
-              </strong>
+          ? `
 
-              <div>
-                Score:
-                ${d.dump[0].dumpScore}
-              </div>
-            `
-            : "-"
+            <strong class="short">
+              ${escapeHtml(
+                d.dump[0].symbol
+              )}
+            </strong>
+
+            <div>
+              Score:
+              ${safeNumber(
+                d.dump[0].dumpScore
+              )}
+            </div>
+
+          `
+          : "-"
         }
 
       </div>
+
 
       <div class="metric">
 
@@ -2224,20 +3238,36 @@ function renderRadar(d){
 
         ${
           d.reversal?.[0]
-            ? `
-              <strong class="yellow">
-                ${d.reversal[0].symbol}
-              </strong>
+          ? `
 
-              <div>
-                Pump Rev:
-                ${d.reversal[0].reversal.pumpScore}
-                |
-                Dump Rev:
-                ${d.reversal[0].reversal.dumpScore}
-              </div>
-            `
-            : "-"
+            <strong class="yellow">
+              ${escapeHtml(
+                d.reversal[0].symbol
+              )}
+            </strong>
+
+            <div>
+
+              Pump Rev:
+              ${safeNumber(
+                d.reversal[0]
+                  .reversal
+                  .pumpScore
+              )}
+
+              |
+
+              Dump Rev:
+              ${safeNumber(
+                d.reversal[0]
+                  .reversal
+                  .dumpScore
+              )}
+
+            </div>
+
+          `
+          : "-"
         }
 
       </div>
@@ -2253,12 +3283,10 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${
-          renderRadarList(
-            d.pump,
-            "pump"
-          )
-        }
+        ${renderRadarList(
+          d.pump,
+          "pump"
+        )}
 
       </div>
 
@@ -2273,12 +3301,10 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${
-          renderRadarList(
-            d.dump,
-            "dump"
-          )
-        }
+        ${renderRadarList(
+          d.dump,
+          "dump"
+        )}
 
       </div>
 
@@ -2293,18 +3319,17 @@ function renderRadar(d){
 
       <div class="details-body">
 
-        ${
-          renderRadarList(
-            d.reversal,
-            "reversal"
-          )
-        }
+        ${renderRadarList(
+          d.reversal,
+          "reversal"
+        )}
 
       </div>
 
     </details>
 
   `;
+
 }
 
 
@@ -2313,31 +3338,45 @@ function renderRadarList(arr,type){
   if(!arr?.length){
 
     return `
+
       <div class="muted">
         موردی با امتیاز مناسب پیدا نشد.
       </div>
+
     `;
+
   }
+
 
   return arr.map(x=>{
 
     let score=0;
 
+
     if(type==="pump"){
       score=x.pumpScore;
     }
+
 
     if(type==="dump"){
       score=x.dumpScore;
     }
 
+
     if(type==="reversal"){
+
       score=
         Math.max(
-          x.reversal.pumpScore,
-          x.reversal.dumpScore
+          Number(
+            x.reversal?.pumpScore || 0
+          ),
+          Number(
+            x.reversal?.dumpScore || 0
+          )
         );
+
     }
+
 
     return `
 
@@ -2348,20 +3387,25 @@ function renderRadarList(arr,type){
           <div style="flex:1">
 
             <b>
-              ${x.symbol}
+              ${escapeHtml(
+                x.symbol
+              )}
             </b>
 
             <span class="${
               type==="dump"
-                ? "short"
-                : type==="pump"
-                  ? "long"
-                  : "yellow"
+              ? "short"
+              : type==="pump"
+                ? "long"
+                : "yellow"
             }">
-              ${score}
+
+              ${safeNumber(score)}
+
             </span>
 
           </div>
+
 
           <div>
             ${fmtPrice(x.price)}
@@ -2369,15 +3413,20 @@ function renderRadarList(arr,type){
 
         </div>
 
+
         <div class="muted">
 
           15m:
-          ${fmtPct(x.movement?.change15m)}
+          ${fmtPct(
+            x.movement?.change15m
+          )}
 
           |
 
           30m:
-          ${fmtPct(x.movement?.change30m)}
+          ${fmtPct(
+            x.movement?.change30m
+          )}
 
           |
 
@@ -2388,36 +3437,51 @@ function renderRadarList(arr,type){
 
         </div>
 
+
         ${
           type==="reversal"
-            ? `
-              <div style="margin-top:6px">
+          ? `
 
-                Pump Reversal:
-                <b class="short">
-                  ${x.reversal.pumpScore}
-                </b>
+            <div style="margin-top:6px">
 
-                |
+              Pump Reversal:
 
-                Dump Reversal:
-                <b class="long">
-                  ${x.reversal.dumpScore}
-                </b>
+              <b class="short">
+                ${safeNumber(
+                  x.reversal?.pumpScore
+                )}
+              </b>
 
-                ${
-                  x.reversal.alert!=="NONE"
-                    ? `
-                      <div class="status">
-                        🚨 ${x.reversal.alert}
-                      </div>
-                    `
-                    : ""
-                }
+              |
 
-              </div>
-            `
-            : ""
+              Dump Reversal:
+
+              <b class="long">
+                ${safeNumber(
+                  x.reversal?.dumpScore
+                )}
+              </b>
+
+
+              ${
+                x.reversal?.alert &&
+                x.reversal.alert!=="NONE"
+                ? `
+
+                  <div class="status">
+                    🚨 ${escapeHtml(
+                      x.reversal.alert
+                    )}
+                  </div>
+
+                `
+                : ""
+              }
+
+            </div>
+
+          `
+          : ""
         }
 
       </div>
@@ -2425,12 +3489,13 @@ function renderRadarList(arr,type){
     `;
 
   }).join("");
+
 }
 
 
-/* =========================================
+/* =====================================================
    HEALTH
-========================================= */
+===================================================== */
 
 async function loadHealth(){
 
@@ -2441,6 +3506,7 @@ async function loadHealth(){
         "/api/health"
       );
 
+
     document.getElementById(
       "healthResult"
     ).innerHTML=`
@@ -2448,103 +3514,222 @@ async function loadHealth(){
       <div class="grid3">
 
         <div class="metric">
-          <small>Version</small>
+
+          <small>
+            Version
+          </small>
+
           <strong>
-            ${d.version}
+            ${escapeHtml(
+              d.version ?? "-"
+            )}
           </strong>
+
         </div>
 
-        <div class="metric">
-          <small>Scan Batch</small>
-          <strong>
-            ${d.scanBatch}
-          </strong>
-        </div>
 
         <div class="metric">
-          <small>Deep Limit</small>
+
+          <small>
+            Scan Batch
+          </small>
+
           <strong>
-            ${d.deepLimit}
+            ${safeNumber(
+              d.scanBatch
+            )}
           </strong>
+
         </div>
 
-        <div class="metric">
-          <small>Radar Limit</small>
-          <strong>
-            ${d.radarLimit}
-          </strong>
-        </div>
 
         <div class="metric">
-          <small>Minimum Signal</small>
+
+          <small>
+            Deep Limit
+          </small>
+
           <strong>
-            ${d.minimumSignalScore}
+            ${safeNumber(
+              d.deepLimit
+            )}
           </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Radar Limit
+          </small>
+
+          <strong>
+            ${safeNumber(
+              d.radarLimit
+            )}
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Minimum Signal
+          </small>
+
+          <strong>
+            ${
+              d.minimumSignalScore ??
+              "-"
+            }
+          </strong>
+
+        </div>
+
+
+        <div class="metric">
+
+          <small>
+            Signal Level
+          </small>
+
+          <strong>
+            ${SIGNAL_LEVELS[
+              signalLevel
+            ]?.label || signalLevel}
+          </strong>
+
         </div>
 
       </div>
+
 
       <div style="margin-top:10px">
 
         ${
           (d.features||[])
             .map(x=>
-              `<span class="tag">${escapeHtml(x)}</span>`
-            ).join("")
+              `<span class="tag">
+                ${escapeHtml(x)}
+              </span>`
+            )
+            .join("")
         }
 
       </div>
 
     `;
 
+
   }catch(e){
 
     document.getElementById(
       "healthResult"
-    ).innerHTML=
-      `<div class="error">
-        ${escapeHtml(e.message)}
-      </div>`;
+    ).innerHTML=`
+
+      <div class="error">
+        ${escapeHtml(
+          e.message
+        )}
+      </div>
+
+    `;
+
   }
+
 }
 
 
-/* =========================================
+/* =====================================================
    FORMAT
-========================================= */
+===================================================== */
 
-function fmtNum(v){
-
-  if(v==null || !Number.isFinite(Number(v))){
-    return "-";
-  }
+function safeNumber(v){
 
   const n=
     Number(v);
 
+  if(!Number.isFinite(n)){
+    return "-";
+  }
+
+  return n.toFixed(
+    0
+  );
+
+}
+
+
+function scoreWidth(v){
+
+  const n=
+    Number(v);
+
+  if(!Number.isFinite(n)){
+    return 0;
+  }
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      n
+    )
+  );
+
+}
+
+
+function fmtNum(v){
+
+  if(
+    v==null ||
+    !Number.isFinite(
+      Number(v)
+    )
+  ){
+    return "-";
+  }
+
+
+  const n=
+    Number(v);
+
+
   if(
     Math.abs(n)>=1000000000
   ){
+
     return (
       n/1000000000
     ).toFixed(2)+"B";
+
   }
+
 
   if(
     Math.abs(n)>=1000000
   ){
+
     return (
       n/1000000
     ).toFixed(2)+"M";
+
   }
+
 
   if(
     Math.abs(n)>=1000
   ){
+
     return (
       n/1000
     ).toFixed(2)+"K";
+
   }
+
 
   return n.toLocaleString(
     "en-US",
@@ -2552,82 +3737,124 @@ function fmtNum(v){
       maximumFractionDigits:4
     }
   );
+
 }
 
 
 function fmtPrice(v){
 
-  if(v==null || !Number.isFinite(Number(v))){
+  if(
+    v==null ||
+    !Number.isFinite(
+      Number(v)
+    )
+  ){
     return "-";
   }
+
 
   const n=
     Number(v);
 
+
   if(n>=100){
+
     return n.toLocaleString(
       "en-US",
       {
         maximumFractionDigits:2
       }
     );
+
   }
 
+
   if(n>=1){
+
     return n.toLocaleString(
       "en-US",
       {
         maximumFractionDigits:4
       }
     );
+
   }
+
 
   if(n>=0.01){
     return n.toFixed(5);
   }
 
+
   if(n>=0.000001){
     return n.toFixed(8);
   }
 
+
   return n.toExponential(4);
+
 }
 
 
 function fmtPct(v){
 
-  if(v==null ||
-     !Number.isFinite(Number(v))){
+  if(
+    v==null ||
+    !Number.isFinite(
+      Number(v)
+    )
+  ){
     return "-";
   }
+
 
   const n=
     Number(v);
 
+
   return (
     n>=0
-      ? "+"
-      : ""
+    ? "+"
+    : ""
   )+
   n.toFixed(2)+
   "%";
+
 }
 
 
 function escapeHtml(v){
 
-  return String(v??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+  return String(
+    v ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
 }
 
 
-/* =========================================
+/* =====================================================
    EVENTS
-========================================= */
+===================================================== */
 
 document
   .getElementById(
@@ -2636,9 +3863,11 @@ document
   .addEventListener(
     "keydown",
     e=>{
+
       if(e.key==="Enter"){
         manualAnalyze();
       }
+
     }
   );
 
@@ -2648,16 +3877,18 @@ document
     ".checkbox-grid input"
   )
   .forEach(x=>{
+
     x.addEventListener(
       "change",
       getMethods
     );
+
   });
 
 
-/* =========================================
+/* =====================================================
    START
-========================================= */
+===================================================== */
 
 loadSettings();
 loadHealth();
