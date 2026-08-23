@@ -2,271 +2,600 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1"
-/>
-
-<title>Crypto Scanner V12</title>
+<title>Crypto Scanner V13 — Bybit</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   background:#080c12;
-  color:#e8edf5;
-  font-family:Arial,sans-serif;
+  color:#e9eef5;
+  font-family:Tahoma,Arial,sans-serif;
 }
 
-header{
-  padding:18px;
-  text-align:center;
-  border-bottom:1px solid #202733;
-  background:#0d121a;
-}
-
-h1{
-  margin:0 0 8px;
-  font-size:22px;
-}
-
-.subtitle{
-  color:#8d98a8;
-  font-size:13px;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:12px;
-}
-
-.panel{
-  background:#101722;
-  border:1px solid #202938;
-  border-radius:14px;
-  padding:14px;
-  margin-bottom:12px;
-}
-
-.row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-input,
-select,
-button{
-  background:#0b1119;
-  color:#fff;
-  border:1px solid #2b3545;
-  border-radius:9px;
-  padding:11px;
-  font-size:14px;
-}
-
-input{
-  flex:1;
-  min-width:180px;
-}
+button,input,select{font-family:inherit}
 
 button{
   cursor:pointer;
+  border:0;
+  border-radius:9px;
+  padding:11px 14px;
+  background:#246bfd;
+  color:#fff;
+  font-weight:bold;
 }
 
-button:hover{
-  border-color:#5e718e;
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
 }
 
-.primary{
-  background:#153c62;
+input,select{
+  width:100%;
+  background:#080d14;
+  border:1px solid #293444;
+  color:#fff;
+  border-radius:9px;
+  padding:11px;
+  outline:none;
 }
 
-.tabs{
+input:focus,select:focus{
+  border-color:#4f8cff;
+}
+
+.container{
+  width:min(1200px,96%);
+  margin:auto;
+}
+
+header{
+  padding:18px 10px;
+  text-align:center;
+  border-bottom:1px solid #202734;
+}
+
+header h1{
+  margin:0;
+  font-size:24px;
+}
+
+header p{
+  margin:7px 0 0;
+  color:#9aa6b5;
+  font-size:13px;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  padding:6px 12px;
+  border-radius:20px;
+  background:#101923;
+  color:#61e6a7;
+  font-size:12px;
+}
+
+.panel{
+  background:#0d131c;
+  border:1px solid #202938;
+  border-radius:14px;
+  padding:14px;
+  margin-top:14px;
+}
+
+.panel-title{
+  font-size:15px;
+  font-weight:bold;
+  margin-bottom:12px;
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:9px;
+}
+
+label{
+  display:block;
+  font-size:11px;
+  color:#9ca9b9;
+  margin-bottom:5px;
+}
+
+.market-buttons,
+.tf-buttons{
   display:flex;
   gap:7px;
   flex-wrap:wrap;
-  margin-bottom:10px;
 }
 
-.tab{
-  flex:1;
-  min-width:110px;
+.market-btn,
+.tf,
+.vol{
+  background:#151e2a;
 }
 
-.tab.active{
-  background:#245b8e;
+.market-btn.active{
+  background:#246bfd;
+}
+
+.tf{
+  min-width:55px;
+  padding:9px;
+}
+
+.tf.active{
+  background:#704dff;
+}
+
+.volume-levels{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:5px;
+}
+
+.vol{
+  padding:9px 2px;
+  font-size:12px;
+}
+
+.vol.active{
+  background:#d77a1c;
+}
+
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+.secondary{
+  background:#1a2431;
+}
+
+.green{
+  background:#138a5b;
+}
+
+.red{
+  background:#a83d4b;
+}
+
+.loading{
+  text-align:center;
+  padding:25px;
+  color:#9ba8b8;
+}
+
+.error{
+  padding:14px;
+  border-radius:10px;
+  background:#3a171c;
+  border:1px solid #72333d;
+  color:#ff9da7;
 }
 
 .hidden{
-  display:none;
+  display:none!important;
 }
 
-.section-title{
-  font-size:16px;
-  margin-bottom:10px;
-}
-
-.grid{
+.result-head{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(160px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
   gap:8px;
+}
+
+.metric{
+  background:#111923;
+  border:1px solid #202b38;
+  border-radius:10px;
+  padding:11px;
+}
+
+.metric-title{
+  color:#8f9baa;
+  font-size:11px;
+}
+
+.metric-value{
+  font-size:17px;
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.long{
+  color:#48e09a;
+}
+
+.short{
+  color:#ff6575;
+}
+
+.wait{
+  color:#ffc857;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:10px;
+  margin-top:10px;
 }
 
 .card{
   background:#0b1119;
-  border:1px solid #202b39;
-  border-radius:10px;
+  border:1px solid #202a38;
+  border-radius:11px;
   padding:12px;
 }
 
-.card-title{
-  color:#8e9aad;
+.card h3{
+  margin:0 0 10px;
+  font-size:14px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:6px 0;
+  border-bottom:1px solid #17202b;
   font-size:12px;
-  margin-bottom:7px;
 }
 
-.value{
-  font-size:18px;
-  font-weight:bold;
+.row:last-child{
+  border-bottom:0;
 }
 
-.long{
-  color:#36d58a;
-}
-
-.short{
-  color:#ff6875;
-}
-
-.wait{
-  color:#e7c75f;
-}
-
-.small{
-  font-size:12px;
-  color:#8e9aad;
-}
-
-.signal{
-  text-align:center;
-  padding:18px;
+.badge{
+  display:inline-block;
+  padding:4px 8px;
   border-radius:12px;
-  background:#0b1119;
-  border:1px solid #273244;
+  font-size:10px;
+  background:#172230;
 }
 
-.signal-direction{
-  font-size:30px;
-  font-weight:bold;
+.badge.green{
+  background:#123b2b;
+  color:#62e9a8;
 }
 
-.score{
-  font-size:22px;
+.badge.red{
+  background:#421c23;
+  color:#ff7785;
+}
+
+.progress{
+  height:9px;
+  border-radius:20px;
+  background:#151d27;
+  overflow:hidden;
   margin-top:8px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  background:#4f8cff;
+}
+
+.table-wrap{
+  overflow:auto;
+  margin-top:10px;
 }
 
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:12px;
+  min-width:600px;
 }
 
-th,
-td{
-  padding:8px 5px;
-  border-bottom:1px solid #202936;
+th,td{
+  border-bottom:1px solid #202938;
+  padding:8px;
+  font-size:11px;
   text-align:center;
 }
 
 th{
-  color:#8e9aad;
+  color:#8f9baa;
+  background:#111923;
 }
 
-.scroll{
-  overflow:auto;
-  max-height:420px;
+.scan-card{
+  border:1px solid #202938;
+  background:#0c131c;
+  border-radius:12px;
+  padding:11px;
 }
 
-details{
-  background:#0d131c;
-  border:1px solid #202a37;
-  border-radius:10px;
-  padding:10px;
-  margin-top:8px;
+.scan-top{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
 }
 
-summary{
-  cursor:pointer;
+.scan-symbol{
   font-weight:bold;
 }
 
-.status{
-  display:inline-block;
-  padding:5px 8px;
-  border-radius:7px;
-  font-size:11px;
-  background:#192331;
+.scan-price{
+  font-size:12px;
+  color:#9aa8b8;
 }
 
-footer{
-  text-align:center;
-  color:#667386;
-  padding:20px;
-  font-size:11px;
+.score{
+  font-size:18px;
+  font-weight:bold;
 }
 
+.reason{
+  margin-top:10px;
+  color:#aab5c3;
+  font-size:11px;
+  line-height:1.8;
+}
+
+.grid-scan{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:9px;
+}
+
+.small{
+  font-size:11px;
+  color:#929eac;
+}
+
+.section-space{
+  margin-top:12px;
+}
+
+@media(max-width:600px){
+
+  .actions{
+    grid-template-columns:1fr;
+  }
+
+  .volume-levels{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  header h1{
+    font-size:20px;
+  }
+}
 </style>
-
 </head>
+
 
 <body>
 
 <header>
 
+<div class="container">
+
 <h1>📊 اسکنر هوشمند بازار</h1>
 
-<div class="subtitle">
+<p>
 تحلیل ساختار، نقدینگی، حجم و جریان سفارش Bybit
+</p>
+
+<div class="status" id="status">
+🟡 در حال اتصال به Bybit...
 </div>
 
-<div style="margin-top:8px">
-<span id="connection" class="status">
-🟡 در حال اتصال
-</span>
 </div>
 
 </header>
 
 
-<div class="container">
+<main class="container">
 
-<!-- MANUAL -->
 
-<div class="panel">
+<!-- =========================
+     MANUAL ANALYSIS
+========================= -->
 
-<div class="section-title">
+<section class="panel">
+
+<div class="panel-title">
 🔎 بررسی دستی ارز
 </div>
 
-<div class="row">
+<div class="controls">
+
+<div>
+
+<label>نام ارز</label>
 
 <input
-  id="symbol"
-  placeholder="مثلاً BTCUSDT"
-  value="BTCUSDT"
-/>
+id="symbol"
+value="BTCUSDT"
+placeholder="مثلاً BTCUSDT"
+autocomplete="off">
 
-<select id="market">
+</div>
+
+
+<div>
+
+<label>بازار</label>
+
+<div class="market-buttons">
+
+<button
+class="market-btn active"
+data-market="linear"
+onclick="setMarket('linear')">
+
+فیوچرز
+
+</button>
+
+<button
+class="market-btn"
+data-market="spot"
+onclick="setMarket('spot')">
+
+اسپات
+
+</button>
+
+</div>
+
+</div>
+
+
+<div>
+
+<label>تایم‌فریم</label>
+
+<div class="tf-buttons">
+
+<button
+class="tf active"
+data-tf="1"
+onclick="setTF('1')">
+1m
+</button>
+
+<button
+class="tf"
+data-tf="3"
+onclick="setTF('3')">
+3m
+</button>
+
+<button
+class="tf"
+data-tf="5"
+onclick="setTF('5')">
+5m
+</button>
+
+<button
+class="tf"
+data-tf="15"
+onclick="setTF('15')">
+15m
+</button>
+
+<button
+class="tf"
+data-tf="60"
+onclick="setTF('60')">
+1h
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section-space">
+
+<label>
+سخت‌گیری حجم — ۱ آسان تا ۶ بسیار سخت
+</label>
+
+<div class="volume-levels">
+
+<button
+class="vol"
+data-vol="1"
+onclick="setVolume(1)">
+1
+</button>
+
+<button
+class="vol"
+data-vol="2"
+onclick="setVolume(2)">
+2
+</button>
+
+<button
+class="vol active"
+data-vol="3"
+onclick="setVolume(3)">
+3
+</button>
+
+<button
+class="vol"
+data-vol="4"
+onclick="setVolume(4)">
+4
+</button>
+
+<button
+class="vol"
+data-vol="5"
+onclick="setVolume(5)">
+5
+</button>
+
+<button
+class="vol"
+data-vol="6"
+onclick="setVolume(6)">
+6
+</button>
+
+</div>
+
+</div>
+
+
+<div class="actions">
+
+<button onclick="analyzeManual()">
+🔍 بررسی ارز
+</button>
+
+<button
+class="secondary"
+onclick="clearResult()">
+
+پاک کردن نتیجه
+
+</button>
+
+</div>
+
+</section>
+
+
+
+<!-- =========================
+     MARKET SCANNER
+========================= -->
+
+<section class="panel">
+
+<div class="panel-title">
+🚨 اسکن بازار
+</div>
+
+<div class="controls">
+
+<div>
+
+<label>بازار اسکن</label>
+
+<select id="scanMarket">
 
 <option value="linear">
 فیوچرز
@@ -278,7 +607,14 @@ footer{
 
 </select>
 
-<select id="interval">
+</div>
+
+
+<div>
+
+<label>تایم‌فریم اسکن</label>
+
+<select id="scanTF">
 
 <option value="1">1 دقیقه</option>
 <option value="3">3 دقیقه</option>
@@ -288,279 +624,458 @@ footer{
 
 </select>
 
-<button
-  class="primary"
-  onclick="manualAnalyze()"
->
-بررسی
-</button>
-
-</div>
-
 </div>
 
 
-<!-- SIGNAL SETTINGS -->
+<div>
 
-<div class="panel">
+<label>سخت‌گیری حجم</label>
 
-<details>
+<select id="scanVolume">
 
-<summary>
-⚙️ تنظیمات سیگنال‌گیری
-</summary>
-
-<div style="margin-top:12px">
-
-<div class="small">
-هرچه سطح Volume بالاتر باشد،
-ورود حجم بیشتری برای تأیید سیگنال لازم است.
-</div>
-
-<br>
-
-<select id="volumeLevel">
-
-<option value="1">
-Volume 1 - بسیار آسان
-</option>
-
-<option value="2">
-Volume 2 - آسان
-</option>
-
-<option value="3" selected>
-Volume 3 - متعادل
-</option>
-
-<option value="4">
-Volume 4 - سخت
-</option>
-
-<option value="5">
-Volume 5 - خیلی سخت
-</option>
-
-<option value="6">
-Volume 6 - بسیار سخت
-</option>
+<option value="1">سطح 1</option>
+<option value="2">سطح 2</option>
+<option value="3" selected>سطح 3</option>
+<option value="4">سطح 4</option>
+<option value="5">سطح 5</option>
+<option value="6">سطح 6</option>
 
 </select>
 
 </div>
 
-</details>
-
 </div>
 
 
-<!-- SCAN -->
-
-<div class="panel">
-
-<div class="section-title">
-🚨 اسکن بازار
-</div>
-
-<div class="tabs">
+<div class="actions">
 
 <button
-  class="tab active"
-  id="futuresTab"
-  onclick="setScanMarket('linear')"
->
-فیوچرز
-</button>
+class="green"
+onclick="scanMarket()">
 
-<button
-  class="tab"
-  id="spotTab"
-  onclick="setScanMarket('spot')"
->
-اسپات
-</button>
-
-</div>
-
-<button
-  class="primary"
-  style="width:100%"
-  onclick="scanMarket()"
->
 🚀 شروع اسکن
+
 </button>
 
 </div>
 
+</section>
 
-<!-- RESULT -->
+
+
+<!-- =========================
+     MANUAL RESULT
+========================= -->
+
+<section
+id="resultSection"
+class="panel hidden">
 
 <div id="result"></div>
 
+</section>
+
+
+
+<!-- =========================
+     SCAN RESULT
+========================= -->
+
+<section
+id="scanSection"
+class="panel hidden">
+
+<div class="panel-title">
+🚨 نتایج اسکن
 </div>
 
+<div id="scanResult"></div>
 
-<footer>
+</section>
 
-Crypto Scanner V12 — Bybit Market Analysis
 
-</footer>
+</main>
+
 
 
 <script>
 
+/* =====================================================
+   WORKER URL
+===================================================== */
+
 const WORKER_URL =
-  "https://soft-flower-2790.29mah12.workers.dev";
-
-let scanCategory = "linear";
+"https://soft-flower-2790.29mah12.workers.dev";
 
 
-function api(path, params = {}){
+let market = "linear";
+let timeframe = "1";
+let volumeLevel = 3;
 
-  const url =
-    new URL(WORKER_URL + path);
 
-  Object.entries(params).forEach(
-    ([key,value]) => {
+/* =====================================================
+   BASIC HELPERS
+===================================================== */
 
-      if(
-        value !== undefined &&
-        value !== null &&
-        value !== ""
-      ){
-        url.searchParams.set(
-          key,
-          value
-        );
-      }
-
-    }
-  );
-
-  return fetch(url.toString())
-    .then(async response => {
-
-      const data =
-        await response.json();
-
-      if(!response.ok || data.ok === false){
-
-        throw new Error(
-          data.error ||
-          "API Error"
-        );
-
-      }
-
-      return data;
-
-    });
-
+function $(id){
+  return document.getElementById(id);
 }
 
 
-async function testConnection(){
+function money(value){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+    return "-";
+  }
+
+  const n = Number(value);
+
+  if(!Number.isFinite(n)){
+    return "-";
+  }
+
+  if(n >= 1000){
+
+    return n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:2
+      }
+    );
+  }
+
+  if(n >= 1){
+
+    return n.toLocaleString(
+      "en-US",
+      {
+        maximumFractionDigits:6
+      }
+    );
+  }
+
+  return n.toLocaleString(
+    "en-US",
+    {
+      maximumSignificantDigits:8
+    }
+  );
+}
+
+
+function pct(value){
+
+  const n = Number(value);
+
+  if(!Number.isFinite(n)){
+    return "-";
+  }
+
+  return n.toFixed(2) + "%";
+}
+
+
+function cls(direction){
+
+  if(
+    String(direction)
+      .toUpperCase()
+      .includes("LONG")
+  ){
+    return "long";
+  }
+
+  if(
+    String(direction)
+      .toUpperCase()
+      .includes("SHORT")
+  ){
+    return "short";
+  }
+
+  return "wait";
+}
+
+
+function row(label,value){
+
+  return `
+    <div class="row">
+      <span>${label}</span>
+      <strong>${value ?? "-"}</strong>
+    </div>
+  `;
+}
+
+
+function yesNo(value){
+
+  return value
+    ? `<span class="badge green">بله</span>`
+    : `<span class="badge">خیر</span>`;
+}
+
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+
+/* =====================================================
+   MARKET
+===================================================== */
+
+function setMarket(value){
+
+  market = value;
+
+  document
+    .querySelectorAll(".market-btn")
+    .forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.market === value
+      );
+
+    });
+}
+
+
+/* =====================================================
+   TIMEFRAME
+===================================================== */
+
+function setTF(value){
+
+  timeframe = value;
+
+  document
+    .querySelectorAll(".tf")
+    .forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.tf === value
+      );
+
+    });
+}
+
+
+/* =====================================================
+   VOLUME LEVEL
+===================================================== */
+
+function setVolume(value){
+
+  volumeLevel = Number(value);
+
+  document
+    .querySelectorAll(".vol")
+    .forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        Number(btn.dataset.vol) === volumeLevel
+      );
+
+    });
+}
+
+
+/* =====================================================
+   WORKER API
+===================================================== */
+
+async function api(path){
+
+  const response =
+    await fetch(
+      WORKER_URL + path,
+      {
+        method:"GET",
+        cache:"no-store",
+        headers:{
+          "Accept":"application/json"
+        }
+      }
+    );
+
+  const text =
+    await response.text();
+
+  let data;
+
+  try{
+    data = JSON.parse(text);
+  }
+  catch{
+
+    throw new Error(
+      "پاسخ Worker معتبر نیست: " +
+      text.slice(0,200)
+    );
+  }
+
+
+  if(
+    !response.ok ||
+    data.ok === false
+  ){
+
+    throw new Error(
+      data.error ||
+      data.message ||
+      "خطای Worker"
+    );
+  }
+
+  return data;
+}
+
+
+/* =====================================================
+   HEALTH CHECK
+===================================================== */
+
+async function health(){
 
   try{
 
-    await api("/health");
+    const data =
+      await api("/health");
 
-    document.getElementById(
-      "connection"
-    ).innerText =
-      "🟢 اتصال برقرار است";
-
-  }catch(e){
-
-    document.getElementById(
-      "connection"
-    ).innerText =
-      "🔴 خطا در اتصال";
+    $("status").textContent =
+      "🟢 اتصال برقرار است — " +
+      (
+        data.exchange ||
+        "Bybit"
+      );
 
   }
+  catch(error){
 
+    console.error(error);
+
+    $("status").textContent =
+      "🔴 Worker پاسخ نمی‌دهد";
+
+  }
 }
 
 
-function setScanMarket(category){
-
-  scanCategory = category;
-
-  document
-    .getElementById("futuresTab")
-    .classList.toggle(
-      "active",
-      category === "linear"
-    );
-
-  document
-    .getElementById("spotTab")
-    .classList.toggle(
-      "active",
-      category === "spot"
-    );
-
-}
+health();
 
 
-async function manualAnalyze(){
+/* =====================================================
+   MANUAL ANALYSIS
+===================================================== */
+
+async function analyzeManual(){
 
   const symbol =
-    document
-      .getElementById("symbol")
+    $("symbol")
       .value
       .trim()
-      .toUpperCase();
+      .toUpperCase()
+      .replace(
+        /[^A-Z0-9]/g,
+        ""
+      );
 
-  const category =
-    document
-      .getElementById("market")
-      .value;
-
-  const interval =
-    document
-      .getElementById("interval")
-      .value;
-
-  const volumeLevel =
-    document
-      .getElementById("volumeLevel")
-      .value;
 
   if(!symbol){
 
-    alert("نام ارز را وارد کن");
+    alert(
+      "نام ارز را وارد کن"
+    );
 
     return;
   }
 
-  document.getElementById(
-    "result"
-  ).innerHTML = `
-    <div class="panel">
-      ⏳ در حال تحلیل ${symbol}...
+
+  $("symbol").value =
+    symbol;
+
+
+  $("resultSection")
+    .classList
+    .remove("hidden");
+
+
+  $("result").innerHTML = `
+    <div class="loading">
+
+      ⏳ در حال دریافت اطلاعات
+      ${escapeHtml(symbol)}
+      از Bybit...
+
+      <br><br>
+
+      بازار:
+      ${market === "linear" ? "فیوچرز" : "اسپات"}
+
+      —
+
+      تایم‌فریم:
+      ${timeframe}m
+
     </div>
   `;
 
+
   try{
 
+    const query =
+      "?category=" +
+      encodeURIComponent(market) +
+
+      "&symbol=" +
+      encodeURIComponent(symbol) +
+
+      "&interval=" +
+      encodeURIComponent(timeframe) +
+
+      "&volumeLevel=" +
+      encodeURIComponent(volumeLevel);
+
+
     const data =
-      await api("/api/analyze",{
-        category,
-        symbol,
-        interval,
-        volumeLevel
-      });
+      await api(
+        "/api/analyze" +
+        query
+      );
+
 
     renderAnalysis(data);
 
-  }catch(e){
+  }
+  catch(error){
 
-    document.getElementById(
-      "result"
-    ).innerHTML = `
-      <div class="panel">
-        🔴 ${escapeHtml(e.message)}
+    console.error(error);
+
+    $("result").innerHTML = `
+      <div class="error">
+
+        ❌ خطا در تحلیل
+
+        <br><br>
+
+        ${escapeHtml(
+          error.message
+        )}
+
       </div>
     `;
 
@@ -569,586 +1084,698 @@ async function manualAnalyze(){
 }
 
 
-async function scanMarket(){
-
-  const interval =
-    document
-      .getElementById("interval")
-      .value;
-
-  const volumeLevel =
-    document
-      .getElementById("volumeLevel")
-      .value;
-
-  document.getElementById(
-    "result"
-  ).innerHTML = `
-    <div class="panel">
-      ⏳ در حال اسکن بازار...
-      <br>
-      ابتدا غربال اولیه انجام می‌شود
-      و سپس تعداد محدود ارز تحلیل کامل می‌شوند.
-    </div>
-  `;
-
-  try{
-
-    const data =
-      await api("/api/scan",{
-        category:scanCategory,
-        interval,
-        volumeLevel
-      });
-
-    renderScan(data);
-
-  }catch(e){
-
-    document.getElementById(
-      "result"
-    ).innerHTML = `
-      <div class="panel">
-        🔴 ${escapeHtml(e.message)}
-      </div>
-    `;
-
-  }
-
-}
-
+/* =====================================================
+   ANALYSIS RENDER
+===================================================== */
 
 function renderAnalysis(data){
 
-  const s = data.signal;
+  const s =
+    data.signal || {};
 
-  const directionClass =
-    s.direction === "LONG"
-      ? "long"
-      : s.direction === "SHORT"
-      ? "short"
-      : "wait";
+  const t =
+    data.ticker || {};
 
-  let reasons = "";
+  const v =
+    data.volume || {};
 
-  const r = s.reasons;
+  const st =
+    data.structure || {};
 
-  reasons += `
-    <div class="grid">
+  const h =
+    data.hunt || {};
 
-      <div class="card">
-        <div class="card-title">
-          Volume
-        </div>
-        <div class="value">
-          ${Number(
-            data.volume.ratio
-          ).toFixed(2)}x
-        </div>
-      </div>
+  const ob =
+    data.orderbook || {};
 
-      <div class="card">
-        <div class="card-title">
-          RSI
-        </div>
-        <div class="value">
-          ${s.indicators.rsi.toFixed(1)}
-        </div>
-      </div>
+  const fp =
+    data.footprint || {};
 
-      <div class="card">
-        <div class="card-title">
-          MA 7
-        </div>
-        <div class="value">
-          ${formatPrice(
-            s.indicators.ma7
-          )}
-        </div>
-      </div>
+  const oi =
+    data.openInterest || {};
 
-      <div class="card">
-        <div class="card-title">
-          MA 20
-        </div>
-        <div class="value">
-          ${formatPrice(
-            s.indicators.ma20
-          )}
-        </div>
-      </div>
+  const funding =
+    data.funding || {};
 
-      <div class="card">
-        <div class="card-title">
-          OI Change
-        </div>
-        <div class="value">
-          ${Number(
-            r.oiChange
-          ).toFixed(2)}%
-        </div>
-      </div>
+  const sr =
+    data.supportResistance || {};
 
-      <div class="card">
-        <div class="card-title">
-          Funding
-        </div>
-        <div class="value">
-          ${formatFunding(
-            r.fundingRate
-          )}
-        </div>
-      </div>
+  const regime =
+    data.regime || {};
+
+
+  const indicators =
+    data.indicators || {};
+
+
+  let html = `
+
+  <div class="result-head">
+
+    ${metric(
+      "نماد",
+      data.market?.symbol ||
+      data.symbol ||
+      "-"
+    )}
+
+    ${metric(
+      "قیمت",
+      money(t.lastPrice)
+    )}
+
+    ${metric(
+      "تغییر ۲۴ ساعت",
+      `<span class="${
+        Number(t.change24h) >= 0
+        ? "long"
+        : "short"
+      }">
+        ${pct(t.change24h)}
+      </span>`
+    )}
+
+    ${metric(
+      "سیگنال",
+      `<span class="${cls(s.direction)}">
+        ${s.direction || "WAIT"}
+      </span>`
+    )}
+
+    ${metric(
+      "قدرت",
+      s.strength || "-"
+    )}
+
+    ${metric(
+      "امتیاز",
+      s.score ?? "-"
+    )}
+
+    ${metric(
+      "اطمینان",
+      s.confidence != null
+        ? s.confidence + "%"
+        : "-"
+    )}
+
+    ${metric(
+      "وضعیت بازار",
+      regime.regime || "-"
+    )}
+
+  </div>
+
+
+  <div class="cards">
+
+
+    <!-- INDICATORS -->
+
+    <div class="card">
+
+      <h3>📈 اندیکاتورها</h3>
+
+      ${row(
+        "MA 7",
+        money(indicators.ma7)
+      )}
+
+      ${row(
+        "MA 20",
+        money(indicators.ma20)
+      )}
+
+      ${row(
+        "RSI",
+        money(indicators.rsi)
+      )}
+
+      ${row(
+        "MACD",
+        money(
+          indicators.macd?.macd
+        )
+      )}
+
+      ${row(
+        "Signal",
+        money(
+          indicators.macd?.signal
+        )
+      )}
+
+      ${row(
+        "Histogram",
+        money(
+          indicators.macd?.histogram
+        )
+      )}
+
+      ${row(
+        "Ichimoku",
+        indicators.ichimoku?.signal ||
+        indicators.ichi?.signal ||
+        "-"
+      )}
+
+      ${row(
+        "Divergence",
+        indicators.divergence ||
+        "-"
+      )}
 
     </div>
-  `;
 
-  const huntText =
-    data.hunt.detected
-      ? (
-        data.hunt.type === "bullish"
-          ? "🟢 Hunt صعودی"
-          : "🔴 Hunt نزولی"
+
+    <!-- VOLUME -->
+
+    <div class="card">
+
+      <h3>
+        🔥 Volume —
+        سطح ${v.level || volumeLevel}
+      </h3>
+
+      ${row(
+        "حجم فعلی",
+        money(v.current)
+      )}
+
+      ${row(
+        "میانگین ۲۰",
+        money(v.average20)
+      )}
+
+      ${row(
+        "Volume Ratio",
+        v.ratio != null
+        ? Number(v.ratio).toFixed(2) + "x"
+        : "-"
+      )}
+
+      ${row(
+        "قوی",
+        yesNo(v.strong)
+      )}
+
+      ${row(
+        "خیلی قوی",
+        yesNo(v.veryStrong)
+      )}
+
+      ${row(
+        "Extreme",
+        yesNo(v.extreme)
+      )}
+
+      ${row(
+        "Ultra",
+        yesNo(v.ultra)
+      )}
+
+    </div>
+
+
+    <!-- STRUCTURE -->
+
+    <div class="card">
+
+      <h3>
+        🏗 ساختار بازار
+      </h3>
+
+      ${row(
+        "Trend",
+        st.trend || "-"
+      )}
+
+      ${row(
+        "BOS",
+        st.bos
+        ? (
+          st.bosDirection ||
+          "YES"
+        )
+        : "ندارد"
+      )}
+
+      ${row(
+        "CHoCH",
+        st.choch
+        ? (
+          st.chochDirection ||
+          "YES"
+        )
+        : "ندارد"
+      )}
+
+      ${row(
+        "Swing High",
+        money(st.swingHigh)
+      )}
+
+      ${row(
+        "Swing Low",
+        money(st.swingLow)
+      )}
+
+    </div>
+
+
+    <!-- HUNT -->
+
+    <div class="card">
+
+      <h3>
+        🎯 Hunt / Liquidity Sweep
+      </h3>
+
+      ${row(
+        "وضعیت",
+        h.detected
+        ? `<span class="badge green">
+             شناسایی شد
+           </span>`
+        : "شناسایی نشد"
+      )}
+
+      ${row(
+        "نوع",
+        h.type || "-"
+      )}
+
+      ${row(
+        "سطح",
+        money(h.level)
+      )}
+
+      ${row(
+        "قدرت",
+        h.strength != null
+        ? Number(
+            h.strength
+          ).toFixed(1)
+        : "-"
+      )}
+
+    </div>
+
+
+    <!-- FOOTPRINT -->
+
+    <div class="card">
+
+      <h3>
+        👣 Footprint / Delta
+      </h3>
+
+      ${row(
+        "Buy Volume",
+        money(
+          fp.buy ??
+          fp.buyVolume
+        )
+      )}
+
+      ${row(
+        "Sell Volume",
+        money(
+          fp.sell ??
+          fp.sellVolume
+        )
+      )}
+
+      ${row(
+        "Delta",
+        money(
+          fp.delta
+        )
+      )}
+
+      ${row(
+        "Buy %",
+        pct(
+          fp.buyPercent
+        )
+      )}
+
+      ${row(
+        "Sell %",
+        pct(
+          fp.sellPercent
+        )
+      )}
+
+    </div>
+
+
+    <!-- ORDER BOOK -->
+
+    <div class="card">
+
+      <h3>
+        📚 Order Book
+      </h3>
+
+      ${row(
+        "Bid",
+        money(
+          ob.bidTotal
+        )
+      )}
+
+      ${row(
+        "Ask",
+        money(
+          ob.askTotal
+        )
+      )}
+
+      ${row(
+        "Imbalance",
+        ob.imbalance != null
+        ? Number(
+            ob.imbalance
+          ).toFixed(4)
+        : "-"
+      )}
+
+      ${row(
+        "Bid Walls",
+        ob.bidWalls?.length ||
+        0
+      )}
+
+      ${row(
+        "Ask Walls",
+        ob.askWalls?.length ||
+        0
+      )}
+
+    </div>
+
+
+    <!-- OI -->
+
+    <div class="card">
+
+      <h3>
+        💰 Open Interest
+      </h3>
+
+      ${row(
+        "وضعیت",
+        oi.supported === false
+        ? "موجود نیست"
+        : "فعال"
+      )}
+
+      ${row(
+        "OI",
+        money(oi.current)
+      )}
+
+      ${row(
+        "تغییر",
+        pct(oi.change)
+      )}
+
+    </div>
+
+
+    <!-- FUNDING -->
+
+    <div class="card">
+
+      <h3>
+        💵 Funding
+      </h3>
+
+      ${row(
+        "وضعیت",
+        funding.supported === false
+        ? "موجود نیست"
+        : "فعال"
+      )}
+
+      ${row(
+        "Funding Rate",
+        funding.rate != null
+        ? Number(
+            funding.rate
+          ).toFixed(6)
+        : "-"
+      )}
+
+    </div>
+
+
+    <!-- SUPPORT RESISTANCE -->
+
+    <div class="card">
+
+      <h3>
+        🧱 حمایت / مقاومت
+      </h3>
+
+      ${row(
+        "قیمت",
+        money(
+          sr.price ||
+          t.lastPrice
+        )
+      )}
+
+      ${row(
+        "Support",
+        money(sr.support)
+      )}
+
+      ${row(
+        "Resistance",
+        money(sr.resistance)
+      )}
+
+      ${row(
+        "فاصله Support",
+        pct(
+          sr.distanceToSupport
+        )
+      )}
+
+      ${row(
+        "فاصله Resistance",
+        pct(
+          sr.distanceToResistance
+        )
+      )}
+
+    </div>
+
+
+  </div>
+
+
+  <!-- LONG SHORT -->
+
+  <div class="card section-space">
+
+    <h3>
+      ⚖️ قدرت Long / Short
+    </h3>
+
+    ${row(
+      "Long",
+      s.long ?? 0
+    )}
+
+    <div class="progress">
+      <span style="
+        width:${Math.min(
+          100,
+          Math.max(
+            0,
+            Number(s.long || 0)
+          )
+        )}%
+      "></span>
+    </div>
+
+
+    ${row(
+      "Short",
+      s.short ?? 0
+    )}
+
+    <div class="progress">
+      <span style="
+        width:${Math.min(
+          100,
+          Math.max(
+            0,
+            Number(s.short || 0)
+          )
+        )}%
+      "></span>
+    </div>
+
+  </div>
+
+
+  <!-- REASONS -->
+
+  <div class="card section-space">
+
+    <h3>
+      🧠 دلایل سیگنال
+    </h3>
+
+    <div class="reason">
+
+      ${
+        Array.isArray(s.reasons)
+        ? s.reasons
+          .map(
+            x =>
+              "• " +
+              escapeHtml(x)
+          )
+          .join("<br>")
+        : (
+          s.reason ||
+          "دلیل خاصی ثبت نشده"
+        )
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- FVG -->
+
+  <div class="card section-space">
+
+    <h3>
+      🟦 FVG
+    </h3>
+
+    ${renderFVG(
+      Array.isArray(data.fvg)
+      ? data.fvg
+      : []
+    )}
+
+  </div>
+
+
+  <!-- ORDER BLOCK -->
+
+  <div class="card section-space">
+
+    <h3>
+      🟪 Order Block
+    </h3>
+
+    ${renderOB(
+      Array.isArray(
+        data.orderBlocks
       )
-      : "⚪ Hunt مشاهده نشد";
+      ? data.orderBlocks
+      : []
+    )}
 
-  document.getElementById(
-    "result"
-  ).innerHTML = `
+  </div>
 
-    <div class="panel">
 
-      <div class="signal">
+  <!-- WALLS -->
 
-        <div class="small">
-          ${data.market.category === "spot"
-            ? "بازار اسپات"
-            : "بازار فیوچرز"}
-          |
-          ${data.market.symbol}
-          |
-          ${data.market.interval}m
-        </div>
+  <div class="card section-space">
 
-        <div
-          class="signal-direction ${directionClass}"
-        >
-          ${s.direction}
-        </div>
+    <h3>
+      🧱 دیوارهای سفارش
+    </h3>
 
-        <div>
-          قدرت:
-          <b>${s.strength}</b>
-        </div>
+    ${renderWalls(ob)}
 
-        <div class="score">
-          ${s.score}/100
-        </div>
+  </div>
 
-        <div class="small">
-          Long ${s.long}
-          |
-          Short ${s.short}
-        </div>
 
-      </div>
+  <!-- FOOTPRINT LEVELS -->
 
-    </div>
+  <div class="card section-space">
 
+    <h3>
+      👣 Footprint Price Levels
+    </h3>
 
-    <div class="panel">
+    ${renderFootprint(
+      Array.isArray(fp.levels)
+      ? fp.levels
+      : []
+    )}
 
-      <div class="section-title">
-        📊 شاخص‌های اصلی
-      </div>
-
-      ${reasons}
-
-    </div>
-
-
-    <div class="panel">
-
-      <div class="section-title">
-        🧠 ساختار بازار
-      </div>
-
-      <div class="grid">
-
-        <div class="card">
-          <div class="card-title">
-            Trend
-          </div>
-          <div class="value">
-            ${data.structure.trend}
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            BOS
-          </div>
-          <div class="value">
-            ${data.structure.bos
-              ? data.structure.bosDirection
-              : "ندارد"}
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            Hunt
-          </div>
-          <div class="value">
-            ${huntText}
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            Support
-          </div>
-          <div class="value">
-            ${formatPrice(
-              data.supportResistance.support
-            )}
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">
-            Resistance
-          </div>
-          <div class="value">
-            ${formatPrice(
-              data.supportResistance.resistance
-            )}
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="panel">
-
-      <details open>
-
-        <summary>
-          📚 Footprint / جریان سفارش
-        </summary>
-
-        <div class="grid" style="margin-top:10px">
-
-          <div class="card">
-            <div class="card-title">
-              Buy Volume
-            </div>
-            <div class="value long">
-              ${formatNumber(
-                data.footprint.buy
-              )}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Sell Volume
-            </div>
-            <div class="value short">
-              ${formatNumber(
-                data.footprint.sell
-              )}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Delta
-            </div>
-            <div class="value">
-              ${formatNumber(
-                data.footprint.delta
-              )}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Buy %
-            </div>
-            <div class="value">
-              ${data.footprint.buyPercent
-                .toFixed(1)}%
-            </div>
-          </div>
-
-        </div>
-
-      </details>
-
-    </div>
-
-
-    <div class="panel">
-
-      <details>
-
-        <summary>
-          🧱 Order Book / دیوارهای سفارش
-        </summary>
-
-        <div class="grid" style="margin-top:10px">
-
-          <div class="card">
-            <div class="card-title">
-              کل سفارش خرید
-            </div>
-            <div class="value long">
-              ${formatNumber(
-                data.orderbook.bidTotal
-              )}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              کل سفارش فروش
-            </div>
-            <div class="value short">
-              ${formatNumber(
-                data.orderbook.askTotal
-              )}
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-title">
-              Imbalance
-            </div>
-            <div class="value">
-              ${(
-                data.orderbook.imbalance *
-                100
-              ).toFixed(2)}%
-            </div>
-          </div>
-
-        </div>
-
-
-        <h4>
-          دیوارهای خرید
-        </h4>
-
-        ${wallsTable(
-          data.orderbook.bidWalls
-        )}
-
-
-        <h4>
-          دیوارهای فروش
-        </h4>
-
-        ${wallsTable(
-          data.orderbook.askWalls
-        )}
-
-      </details>
-
-    </div>
-
-
-    <div class="panel">
-
-      <details>
-
-        <summary>
-          🕳️ FVG
-        </summary>
-
-        <div class="scroll">
-
-          <table>
-
-            <thead>
-              <tr>
-                <th>نوع</th>
-                <th>پایین</th>
-                <th>بالا</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              ${
-                data.fvg
-                  .slice()
-                  .reverse()
-                  .map(x => `
-                    <tr>
-                      <td>
-                        ${x.type}
-                      </td>
-                      <td>
-                        ${formatPrice(x.low)}
-                      </td>
-                      <td>
-                        ${formatPrice(x.high)}
-                      </td>
-                    </tr>
-                  `)
-                  .join("")
-              }
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </details>
-
-    </div>
+  </div>
 
   `;
 
+
+  $("result").innerHTML =
+    html;
 }
 
 
-function renderScan(data){
+/* =====================================================
+   METRIC
+===================================================== */
 
-  const rows =
-    data.results.map(x => {
-
-      const cls =
-        x.direction === "LONG"
-          ? "long"
-          : x.direction === "SHORT"
-          ? "short"
-          : "wait";
-
-      return `
-
-        <tr>
-
-          <td>
-            <b>${x.symbol}</b>
-          </td>
-
-          <td>
-            ${formatPrice(x.price)}
-          </td>
-
-          <td class="${x.change24h >= 0
-            ? "long"
-            : "short"}">
-            ${x.change24h.toFixed(2)}%
-          </td>
-
-          <td>
-            ${x.score}
-          </td>
-
-          <td class="${cls}">
-            ${x.direction}
-          </td>
-
-          <td>
-            ${x.strength}
-          </td>
-
-          <td>
-            ${x.volumeRatio.toFixed(2)}x
-          </td>
-
-          <td>
-            ${x.oiChange.toFixed(2)}%
-          </td>
-
-          <td>
-            ${x.hunt.detected
-              ? x.hunt.type
-              : "-"}
-          </td>
-
-        </tr>
-
-      `;
-
-    }).join("");
-
-
-  document.getElementById(
-    "result"
-  ).innerHTML = `
-
-    <div class="panel">
-
-      <div class="section-title">
-        🚨 نتایج اسکن
-      </div>
-
-      <div class="small">
-        ${data.scanned}
-        ارز غربال و تحلیل شدند.
-      </div>
-
-      <br>
-
-      <div class="scroll">
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>ارز</th>
-              <th>قیمت</th>
-              <th>24h</th>
-              <th>امتیاز</th>
-              <th>سیگنال</th>
-              <th>قدرت</th>
-              <th>Volume</th>
-              <th>OI</th>
-              <th>Hunt</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            ${rows}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-function wallsTable(walls){
+function metric(title,value){
 
   return `
+    <div class="metric">
 
-    <div class="scroll">
+      <div class="metric-title">
+        ${title}
+      </div>
+
+      <div class="metric-value">
+        ${value}
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* =====================================================
+   FVG
+===================================================== */
+
+function renderFVG(list){
+
+  if(!list.length){
+
+    return `
+      <div class="small">
+        FVG مهمی پیدا نشد.
+      </div>
+    `;
+  }
+
+
+  return `
+    <div class="table-wrap">
 
       <table>
 
         <thead>
 
           <tr>
-            <th>قیمت</th>
-            <th>مقدار</th>
+            <th>نوع</th>
+            <th>Low</th>
+            <th>High</th>
+            <th>Index</th>
           </tr>
 
         </thead>
@@ -1156,21 +1783,39 @@ function wallsTable(walls){
         <tbody>
 
           ${
-            walls.map(x => `
+            list
+              .slice(-10)
+              .reverse()
+              .map(x => `
 
-              <tr>
+                <tr>
 
-                <td>
-                  ${formatPrice(x.price)}
-                </td>
+                  <td class="${
+                    x.type === "bullish"
+                    ? "long"
+                    : "short"
+                  }">
+                    ${escapeHtml(
+                      x.type || "-"
+                    )}
+                  </td>
 
-                <td>
-                  ${formatNumber(x.size)}
-                </td>
+                  <td>
+                    ${money(x.low)}
+                  </td>
 
-              </tr>
+                  <td>
+                    ${money(x.high)}
+                  </td>
 
-            `).join("")
+                  <td>
+                    ${x.index ?? "-"}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
           }
 
         </tbody>
@@ -1178,82 +1823,622 @@ function wallsTable(walls){
       </table>
 
     </div>
+  `;
+}
 
+
+/* =====================================================
+   ORDER BLOCK
+===================================================== */
+
+function renderOB(list){
+
+  if(!list.length){
+
+    return `
+      <div class="small">
+        Order Block مهمی پیدا نشد.
+      </div>
+    `;
+  }
+
+
+  return `
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>نوع</th>
+            <th>Low</th>
+            <th>High</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${
+            list
+              .slice(-10)
+              .reverse()
+              .map(x => `
+
+                <tr>
+
+                  <td class="${
+                    x.type === "bullish"
+                    ? "long"
+                    : "short"
+                  }">
+                    ${escapeHtml(
+                      x.type || "-"
+                    )}
+                  </td>
+
+                  <td>
+                    ${money(x.low)}
+                  </td>
+
+                  <td>
+                    ${money(x.high)}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+
+/* =====================================================
+   ORDER BOOK WALLS
+===================================================== */
+
+function renderWalls(ob){
+
+  const bids =
+    Array.isArray(
+      ob.bidWalls
+    )
+    ? ob.bidWalls
+    : [];
+
+  const asks =
+    Array.isArray(
+      ob.askWalls
+    )
+    ? ob.askWalls
+    : [];
+
+
+  if(
+    !bids.length &&
+    !asks.length
+  ){
+
+    return `
+      <div class="small">
+        دیوار قابل‌توجهی پیدا نشد.
+      </div>
+    `;
+  }
+
+
+  return `
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>سمت</th>
+            <th>قیمت</th>
+            <th>حجم</th>
+            <th>ارزش تقریبی</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${
+            bids
+              .slice(0,10)
+              .map(x => `
+
+                <tr>
+
+                  <td class="long">
+                    BUY WALL
+                  </td>
+
+                  <td>
+                    ${money(x.price)}
+                  </td>
+
+                  <td>
+                    ${money(x.size)}
+                  </td>
+
+                  <td>
+                    ${money(
+                      Number(x.price || 0) *
+                      Number(x.size || 0)
+                    )}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+
+          ${
+            asks
+              .slice(0,10)
+              .map(x => `
+
+                <tr>
+
+                  <td class="short">
+                    SELL WALL
+                  </td>
+
+                  <td>
+                    ${money(x.price)}
+                  </td>
+
+                  <td>
+                    ${money(x.size)}
+                  </td>
+
+                  <td>
+                    ${money(
+                      Number(x.price || 0) *
+                      Number(x.size || 0)
+                    )}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+
+/* =====================================================
+   FOOTPRINT
+===================================================== */
+
+function renderFootprint(list){
+
+  if(!list.length){
+
+    return `
+      <div class="small">
+        اطلاعات Footprint در پاسخ Worker موجود نیست.
+      </div>
+    `;
+  }
+
+
+  return `
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Price</th>
+            <th>Buy</th>
+            <th>Sell</th>
+            <th>Delta</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${
+            list
+              .slice(0,40)
+              .map(x => `
+
+                <tr>
+
+                  <td>
+                    ${money(x.price)}
+                  </td>
+
+                  <td class="long">
+                    ${money(x.buy)}
+                  </td>
+
+                  <td class="short">
+                    ${money(x.sell)}
+                  </td>
+
+                  <td class="${
+                    Number(x.delta) >= 0
+                    ? "long"
+                    : "short"
+                  }">
+                    ${money(x.delta)}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+  `;
+}
+
+
+/* =====================================================
+   MARKET SCANNER
+===================================================== */
+
+async function scanMarket(){
+
+  $("scanSection")
+    .classList
+    .remove("hidden");
+
+
+  $("scanResult").innerHTML = `
+    <div class="loading">
+
+      ⏳ در حال اسکن بازار Bybit...
+
+      <br><br>
+
+      لطفاً چند ثانیه صبر کن.
+
+    </div>
   `;
 
+
+  const scanMarket =
+    $("scanMarket").value;
+
+  const scanTF =
+    $("scanTF").value;
+
+  const scanVolume =
+    $("scanVolume").value;
+
+
+  try{
+
+    const query =
+      "?category=" +
+      encodeURIComponent(
+        scanMarket
+      ) +
+
+      "&interval=" +
+      encodeURIComponent(
+        scanTF
+      ) +
+
+      "&volumeLevel=" +
+      encodeURIComponent(
+        scanVolume
+      );
+
+
+    const data =
+      await api(
+        "/api/scan" +
+        query
+      );
+
+
+    renderScan(data);
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    $("scanResult").innerHTML = `
+      <div class="error">
+
+        ❌ خطا در اسکن بازار
+
+        <br><br>
+
+        ${escapeHtml(
+          error.message
+        )}
+
+      </div>
+    `;
+  }
+
 }
 
 
-function formatPrice(v){
+/* =====================================================
+   SCAN RESULT
+===================================================== */
 
-  const n = Number(v);
+function renderScan(data){
 
-  if(!Number.isFinite(n))
-    return "-";
+  const results =
+    Array.isArray(data.results)
+    ? data.results
+    : [];
 
-  if(n >= 1000)
-    return n.toLocaleString(
-      "en-US",
-      {
-        maximumFractionDigits:2
+
+  if(!results.length){
+
+    $("scanResult").innerHTML = `
+      <div class="small">
+
+        نتیجه‌ای با شرایط فعلی پیدا نشد.
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  $("scanResult").innerHTML = `
+
+    <div class="small"
+      style="margin-bottom:10px">
+
+      ${
+        data.scanned ??
+        results.length
       }
-    );
 
-  if(n >= 1)
-    return n.toFixed(4);
+      ارز بررسی شد.
 
-  return n.toFixed(8);
+    </div>
 
+
+    <div class="grid-scan">
+
+      ${
+        results
+          .map(x => `
+
+            <div class="scan-card">
+
+              <div class="scan-top">
+
+                <div>
+
+                  <div class="scan-symbol">
+                    ${escapeHtml(
+                      x.symbol ||
+                      "-"
+                    )}
+                  </div>
+
+                  <div class="scan-price">
+                    ${money(
+                      x.price
+                    )}
+                  </div>
+
+                </div>
+
+
+                <div class="
+                  score
+                  ${cls(
+                    x.direction
+                  )}
+                ">
+
+                  ${x.score ?? 0}
+
+                </div>
+
+              </div>
+
+
+              ${row(
+                "Signal",
+                `<span class="${cls(
+                  x.direction
+                )}">
+                  ${x.direction || "-"}
+                </span>`
+              )}
+
+
+              ${row(
+                "قدرت",
+                x.strength || "-"
+              )}
+
+
+              ${row(
+                "Long / Short",
+                `
+                <span class="long">
+                  ${x.long ?? 0}
+                </span>
+                /
+                <span class="short">
+                  ${x.short ?? 0}
+                </span>
+                `
+              )}
+
+
+              ${row(
+                "تغییر ۲۴h",
+                `<span class="${
+                  Number(x.change24h) >= 0
+                  ? "long"
+                  : "short"
+                }">
+                  ${pct(x.change24h)}
+                </span>`
+              )}
+
+
+              ${row(
+                "Volume Ratio",
+                x.volumeRatio != null
+                ? Number(
+                    x.volumeRatio
+                  ).toFixed(2) + "x"
+                : "-"
+              )}
+
+
+              ${row(
+                "OI",
+                pct(
+                  x.oiChange
+                )
+              )}
+
+
+              ${row(
+                "Footprint Delta",
+                `<span class="${
+                  Number(
+                    x.footprintDelta
+                  ) >= 0
+                  ? "long"
+                  : "short"
+                }">
+                  ${money(
+                    x.footprintDelta
+                  )}
+                </span>`
+              )}
+
+
+              ${row(
+                "Order Book",
+                x.orderbookImbalance != null
+                ? Number(
+                    x.orderbookImbalance
+                  ).toFixed(3)
+                : "-"
+              )}
+
+
+              <div class="reason">
+
+                ${
+                  x.hunt?.detected
+                  ? "🎯 Hunt شناسایی شد<br>"
+                  : ""
+                }
+
+                ${
+                  x.fvg
+                  ? "🟦 FVG: " +
+                    escapeHtml(
+                      x.fvg.type ||
+                      "-"
+                    ) +
+                    "<br>"
+                  : ""
+                }
+
+                ${
+                  x.regime
+                  ? "📊 Regime: " +
+                    escapeHtml(
+                      x.regime
+                    )
+                  : ""
+                }
+
+              </div>
+
+            </div>
+
+          `)
+          .join("")
+      }
+
+    </div>
+  `;
 }
 
 
-function formatNumber(v){
+/* =====================================================
+   CLEAR
+===================================================== */
 
-  const n = Number(v);
+function clearResult(){
 
-  if(!Number.isFinite(n))
-    return "-";
+  $("resultSection")
+    .classList
+    .add("hidden");
 
-  if(Math.abs(n) >= 1000000)
-    return (
-      n / 1000000
-    ).toFixed(2) + "M";
+  $("scanSection")
+    .classList
+    .add("hidden");
 
-  if(Math.abs(n) >= 1000)
-    return (
-      n / 1000
-    ).toFixed(2) + "K";
+  $("result").innerHTML = "";
 
-  return n.toFixed(2);
-
+  $("scanResult").innerHTML = "";
 }
 
 
-function formatFunding(v){
+/* =====================================================
+   ENTER KEY
+===================================================== */
 
-  const n = Number(v) * 100;
+$("symbol")
+  .addEventListener(
+    "keydown",
+    function(event){
 
-  return n.toFixed(4) + "%";
+      if(
+        event.key === "Enter"
+      ){
 
-}
+        analyzeManual();
 
+      }
 
-function escapeHtml(text){
-
-  return String(text)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
-
-
-testConnection();
+    }
+  );
 
 </script>
 
 </body>
-
 </html>
