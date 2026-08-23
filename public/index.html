@@ -1,387 +1,546 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>Smart Market Scanner</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  background:#080d13;
-  color:#eef3f8;
-  font-family:Tahoma,Arial,sans-serif;
-  line-height:1.7;
+  background:#080c12;
+  color:#e8edf5;
+  font-family:
+    Arial,
+    Tahoma,
+    sans-serif;
+  line-height:1.6;
 }
 
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:14px;
-}
-
-header{
-  background:linear-gradient(135deg,#111c29,#0b131d);
-  border:1px solid #263646;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:12px;
-}
-
-h1{
-  font-size:21px;
-  margin:0 0 5px;
-}
-
-.subtitle{
-  color:#9eabb8;
-  font-size:13px;
-}
-
-.card{
-  background:#101820;
-  border:1px solid #263441;
-  border-radius:15px;
-  padding:14px;
-  margin-bottom:12px;
-}
-
-.title{
-  font-size:16px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-
-.status{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  color:#72e6a5;
-  font-size:13px;
-}
-
-.languageBox{
-  position:relative;
-}
-
-.langButton{
-  width:100%;
-  background:#17222d;
-  border:1px solid #334452;
-  color:#fff;
-  border-radius:10px;
-  padding:11px;
-  text-align:right;
-  cursor:pointer;
-}
-
-.langMenu{
-  display:none;
-  position:absolute;
-  z-index:50;
-  top:48px;
-  right:0;
-  left:0;
-  background:#101820;
-  border:1px solid #354654;
-  border-radius:12px;
-  padding:6px;
-  box-shadow:0 15px 40px #0008;
-}
-
-.langMenu.open{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:5px;
-}
-
-.langMenu button{
-  background:#17222d;
-  color:#fff;
-  border:1px solid #293946;
-  border-radius:8px;
-  padding:8px;
-  cursor:pointer;
-}
-
-.langMenu button:hover{
-  background:#243442;
-}
-
-input,select{
-  width:100%;
-  background:#080f16;
-  color:#fff;
-  border:1px solid #344654;
-  border-radius:10px;
-  padding:12px;
-  outline:none;
-  font-size:15px;
+button,
+input,
+select{
+  font-family:inherit;
 }
 
 button{
   cursor:pointer;
 }
 
-.primary{
+.container{
   width:100%;
-  margin-top:8px;
-  background:#1769aa;
-  color:white;
-  border:0;
-  border-radius:10px;
+  max-width:1100px;
+  margin:auto;
   padding:12px;
-  font-weight:bold;
 }
 
-.primary:active{
-  transform:scale(.99);
+.header{
+  background:linear-gradient(135deg,#101722,#0c1119);
+  border:1px solid #202b3a;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
 }
 
-.searchRow{
-  display:grid;
-  grid-template-columns:1fr 110px;
-  gap:8px;
+.title{
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:4px;
 }
 
-.sectionButton{
-  width:100%;
+.subtitle{
+  color:#91a0b5;
+  font-size:13px;
+}
+
+.topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:#17222d;
-  color:#fff;
-  border:1px solid #344452;
-  border-radius:11px;
-  padding:12px;
-  font-size:14px;
-  font-weight:bold;
+  gap:10px;
+  margin-top:12px;
+  flex-wrap:wrap;
 }
 
-.collapsible{
+.status{
+  color:#52e69a;
+  font-size:13px;
+}
+
+.langWrap{
+  position:relative;
+}
+
+.langButton{
+  background:#141c28;
+  border:1px solid #2b3748;
+  color:white;
+  border-radius:10px;
+  padding:8px 12px;
+}
+
+.langMenu{
   display:none;
-  margin-top:8px;
-  padding:10px;
-  background:#0b1219;
-  border:1px solid #263541;
-  border-radius:11px;
+  position:absolute;
+  right:0;
+  top:44px;
+  z-index:100;
+  min-width:170px;
+  background:#101722;
+  border:1px solid #303c4e;
+  border-radius:12px;
+  padding:6px;
+  box-shadow:0 15px 40px rgba(0,0,0,.45);
 }
 
-.collapsible.open{
+.langMenu.open{
   display:block;
 }
 
-.methodGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
+.langItem{
+  display:block;
+  width:100%;
+  background:none;
+  border:0;
+  color:#dfe7f2;
+  padding:8px 10px;
+  border-radius:8px;
+  text-align:right;
 }
 
-.method{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  background:#141f29;
-  border:1px solid #293945;
-  border-radius:9px;
-  padding:8px;
+.langItem:hover{
+  background:#1b2635;
+}
+
+.card{
+  background:#0e141d;
+  border:1px solid #202b3a;
+  border-radius:15px;
+  padding:14px;
+  margin-bottom:12px;
+}
+
+.cardTitle{
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.muted{
+  color:#8997aa;
   font-size:12px;
 }
 
-.method input{
-  width:auto;
-  accent-color:#35a7ff;
-}
-
-.actions{
+.searchRow{
   display:flex;
-  gap:7px;
-  margin-top:9px;
+  gap:8px;
+  margin-top:12px;
 }
 
-.smallBtn{
+.searchRow input{
   flex:1;
-  background:#182631;
-  color:#fff;
-  border:1px solid #344553;
-  border-radius:8px;
-  padding:8px;
-}
-
-.rangeRow{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-input[type=range]{
-  padding:0;
-}
-
-.scoreNumber{
-  min-width:48px;
-  text-align:center;
-  background:#172530;
-  border-radius:8px;
-  padding:5px;
-  font-weight:bold;
-}
-
-.qualityGrid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  margin-top:8px;
-}
-
-.quality{
-  background:#151f28;
-  color:#dce6ee;
-  border:1px solid #30404d;
-  border-radius:8px;
-  padding:7px 4px;
-  font-size:11px;
-}
-
-.quality.active{
-  background:#17527b;
-  border-color:#35a7ff;
-}
-
-.result{
-  border:1px solid #2c3c48;
-  border-radius:12px;
-  background:#0d151d;
+  min-width:0;
+  background:#080d14;
+  color:white;
+  border:1px solid #303c4c;
+  border-radius:10px;
   padding:12px;
-  margin-top:8px;
+  font-size:16px;
+  direction:ltr;
+  text-transform:uppercase;
 }
 
-.resultHead{
+.primary{
+  background:#1877f2;
+  border:0;
+  color:white;
+  border-radius:10px;
+  padding:10px 18px;
+  font-weight:700;
+}
+
+.primary:disabled{
+  opacity:.5;
+}
+
+.resultHeader{
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:10px;
+  flex-wrap:wrap;
 }
 
 .symbol{
-  font-size:17px;
-  font-weight:bold;
+  font-size:20px;
+  font-weight:800;
+  direction:ltr;
 }
 
-.long{color:#45df8b}
-.short{color:#ff6470}
-.wait{color:#ffd166}
-
-.score{
-  font-size:22px;
-  font-weight:bold;
+.direction{
+  display:inline-block;
+  padding:5px 10px;
+  border-radius:8px;
+  font-weight:800;
+  font-size:13px;
 }
 
-.meta{
+.long{
+  background:#073d2c;
+  color:#54efaa;
+}
+
+.short{
+  background:#421c25;
+  color:#ff7184;
+}
+
+.wait{
+  background:#413812;
+  color:#ffd85a;
+}
+
+.scoreBox{
+  margin-top:12px;
+  background:#090e15;
+  border-radius:12px;
+  padding:12px;
+}
+
+.scoreNumber{
+  font-size:30px;
+  font-weight:900;
+}
+
+.scoreBar{
+  height:8px;
+  background:#202936;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:7px;
+}
+
+.scoreFill{
+  height:100%;
+  width:0%;
+  background:#38d996;
+  transition:.3s;
+}
+
+.grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:5px;
-  margin-top:8px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin-top:10px;
 }
 
-.meta div{
-  background:#121d26;
-  border-radius:7px;
-  padding:5px;
-  text-align:center;
+.stat{
+  background:#0a1018;
+  border:1px solid #1d2735;
+  border-radius:10px;
+  padding:9px;
+}
+
+.statLabel{
+  color:#8492a6;
   font-size:11px;
 }
 
-.deep{
-  display:none;
-  margin-top:10px;
-  border-top:1px solid #293945;
-  padding-top:10px;
+.statValue{
+  font-size:14px;
+  font-weight:700;
+  margin-top:2px;
 }
 
-.deep.open{
-  display:block;
+.section{
+  margin-top:12px;
 }
 
-.styleRow{
-  border:1px solid #293945;
-  border-radius:9px;
-  margin-top:6px;
+.sectionTitle{
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.styleCard{
+  background:#0a1018;
+  border:1px solid #202b39;
+  border-radius:11px;
+  margin-top:7px;
   overflow:hidden;
 }
 
 .styleHead{
   display:flex;
   justify-content:space-between;
-  padding:8px;
-  background:#14202a;
+  align-items:center;
+  padding:10px;
   cursor:pointer;
+}
+
+.styleName{
+  font-weight:800;
+}
+
+.styleScore{
+  font-weight:900;
 }
 
 .styleBody{
   display:none;
-  padding:9px;
-  background:#0b131a;
+  border-top:1px solid #202b39;
+  padding:10px;
+  color:#aeb9c8;
   font-size:12px;
-  color:#bfcbd5;
 }
 
-.styleBody.open{
+.styleCard.open .styleBody{
   display:block;
 }
 
-.reason{
-  margin:3px 0;
+.arrow{
+  color:#7f8ca0;
+}
+
+.methodsToggle{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#121a25;
+  color:white;
+  border:1px solid #293647;
+  border-radius:11px;
+  padding:12px;
+  font-weight:800;
+}
+
+.methodsBody{
+  display:none;
+  margin-top:8px;
+}
+
+.methodsBody.open{
+  display:block;
+}
+
+.methodGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+.method{
+  background:#0a1018;
+  border:1px solid #253142;
+  color:#dfe6f0;
+  border-radius:9px;
+  padding:8px;
+  text-align:right;
+}
+
+.method.active{
+  border-color:#3295ff;
+  background:#0d2742;
+}
+
+.controls{
+  margin-top:12px;
+}
+
+.thresholdRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.thresholdValue{
+  min-width:48px;
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+}
+
+input[type=range]{
+  flex:1;
+  accent-color:#2387ff;
+}
+
+.levels{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:4px;
+  margin-top:8px;
+}
+
+.level{
+  border:1px solid #293647;
+  background:#0a1018;
+  color:#9aa7b9;
+  border-radius:7px;
+  padding:5px 2px;
+  font-size:10px;
+}
+
+.level.active{
+  border-color:#2387ff;
+  color:#fff;
+  background:#10335b;
+}
+
+.levelNumber{
+  font-size:13px;
+  font-weight:900;
+}
+
+.actionRow{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.smallBtn{
+  flex:1;
+  background:#121a25;
+  color:white;
+  border:1px solid #293647;
+  border-radius:9px;
+  padding:8px;
+}
+
+.signalsList{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.signalCard{
+  background:#0a1018;
+  border:1px solid #263242;
+  border-radius:11px;
+  padding:10px;
+}
+
+.signalTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.signalMeta{
+  color:#93a0b1;
+  font-size:11px;
+  margin-top:4px;
+}
+
+.signalDetails{
+  margin-top:7px;
+  color:#b8c3d0;
+  font-size:12px;
 }
 
 .radarGrid{
   display:grid;
-  grid-template-columns:1fr;
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
 }
 
 .radarBox{
-  border:1px solid #2c3c48;
+  background:#0a1018;
+  border:1px solid #263242;
   border-radius:11px;
   padding:10px;
-  background:#0d151d;
+  min-height:100px;
 }
 
-.error{
-  color:#ff6872;
-  background:#29151a;
-  border:1px solid #57242b;
-  padding:9px;
-  border-radius:9px;
-  margin-top:8px;
+.radarTitle{
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.radarItem{
+  padding:5px 0;
+  border-bottom:1px solid #18212d;
   font-size:12px;
 }
 
-.empty{
-  color:#8e9ba7;
-  text-align:center;
-  padding:12px;
-  font-size:13px;
+.error{
+  color:#ff687c;
+  background:#2b1218;
+  border:1px solid #5b202c;
+  padding:9px;
+  border-radius:9px;
+  margin-top:8px;
 }
 
 .loading{
-  color:#62c4ff;
-  text-align:center;
-  padding:10px;
+  color:#64aaff;
+  padding:10px 0;
 }
 
-.hidden{
-  display:none!important;
+.empty{
+  color:#8290a4;
+  padding:12px 0;
 }
 
-@media(max-width:600px){
-  .container{padding:8px}
-  .searchRow{grid-template-columns:1fr 90px}
-  .methodGrid{grid-template-columns:1fr 1fr}
-  .qualityGrid{grid-template-columns:1fr 1fr 1fr}
+.kv{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
 }
+
+.kv div{
+  background:#080d14;
+  border-radius:7px;
+  padding:5px 7px;
+}
+
+.ltr{
+  direction:ltr;
+  text-align:left;
+}
+
+@media(max-width:650px){
+
+  .container{
+    padding:8px;
+  }
+
+  .title{
+    font-size:19px;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .radarGrid{
+    grid-template-columns:1fr;
+  }
+
+  .levels{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .methodGrid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .searchRow{
+    flex-direction:column;
+  }
+
+  .primary{
+    width:100%;
+  }
+}
+
 </style>
 </head>
 
@@ -389,1527 +548,2727 @@ input[type=range]{
 
 <div class="container">
 
-<header>
-  <h1 data-i18n="title">📊 اسکنر هوشمند بازار</h1>
-  <div class="subtitle" data-i18n="subtitle">
+<header class="header">
+
+  <div class="title" id="title">
+    📊 اسکنر هوشمند بازار
+  </div>
+
+  <div class="subtitle" id="subtitle">
     تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش
   </div>
-  <div class="status" style="margin-top:8px">
-    🟢 <span data-i18n="connected">اتصال برقرار است</span>
+
+  <div class="topbar">
+
+    <div class="status" id="status">
+      🟢 اتصال برقرار است
+    </div>
+
+    <div class="langWrap">
+
+      <button
+        class="langButton"
+        id="langButton"
+        onclick="toggleLanguages()">
+        🌐 🇮🇷 فارسی ▼
+      </button>
+
+      <div
+        class="langMenu"
+        id="langMenu">
+
+        <button class="langItem" onclick="setLang('fa')">
+          🇮🇷 فارسی
+        </button>
+
+        <button class="langItem" onclick="setLang('en')">
+          🇬🇧 English
+        </button>
+
+        <button class="langItem" onclick="setLang('ar')">
+          🇸🇦 العربية
+        </button>
+
+        <button class="langItem" onclick="setLang('pt')">
+          🇵🇹 Português
+        </button>
+
+        <button class="langItem" onclick="setLang('es')">
+          🇪🇸 Español
+        </button>
+
+        <button class="langItem" onclick="setLang('zh')">
+          🇨🇳 中文
+        </button>
+
+        <button class="langItem" onclick="setLang('ja')">
+          🇯🇵 日本語
+        </button>
+
+        <button class="langItem" onclick="setLang('hi')">
+          🇮🇳 हिन्दी
+        </button>
+
+        <button class="langItem" onclick="setLang('ur')">
+          🇵🇰 اردو
+        </button>
+
+        <button class="langItem" onclick="setLang('ru')">
+          🇷🇺 Русский
+        </button>
+
+      </div>
+
+    </div>
+
   </div>
+
 </header>
 
-<!-- LANGUAGE -->
-<div class="card languageBox">
-  <button class="langButton" id="langButton">
-    🌐 فارسی ▼
-  </button>
 
-  <div class="langMenu" id="langMenu">
-    <button data-lang="fa">🇮🇷 فارسی</button>
-    <button data-lang="en">🇬🇧 English</button>
-    <button data-lang="ar">🇸🇦 العربية</button>
-    <button data-lang="pt">🇵🇹 Português</button>
-    <button data-lang="es">🇪🇸 Español</button>
-    <button data-lang="zh">🇨🇳 中文</button>
-    <button data-lang="ja">🇯🇵 日本語</button>
-    <button data-lang="hi">🇮🇳 हिन्दी</button>
-    <button data-lang="ur">🇵🇰 اردو</button>
-    <button data-lang="ru">🇷🇺 Русский</button>
-  </div>
-</div>
+<!-- MANUAL SEARCH -->
 
-<!-- MANUAL -->
-<div class="card">
+<section class="card">
 
-  <div class="title" data-i18n="manualTitle">
+  <div class="cardTitle" id="manualTitle">
     🔎 بررسی دستی ارز
   </div>
 
-  <div class="subtitle" data-i18n="manualDesc">
+  <div class="muted" id="manualDesc">
     فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.
   </div>
 
-  <div class="searchRow" style="margin-top:9px">
+  <div class="searchRow">
+
     <input
       id="symbolInput"
       placeholder="مثلاً BTC یا ALICE"
-      autocomplete="off"
-    >
+      autocomplete="off">
+
     <button
       class="primary"
       id="analyzeBtn"
-      style="margin-top:0"
-    >
+      onclick="manualAnalyze()">
       بررسی
     </button>
+
   </div>
 
-  <div id="manualResult">
-    <div class="empty" data-i18n="noManual">
-      هنوز ارزی بررسی نشده است.
-    </div>
-  </div>
+  <div id="manualResult"></div>
 
-</div>
+</section>
 
-<!-- SIGNAL SETTINGS -->
-<div class="card">
 
-  <button class="sectionButton" id="methodsToggle">
-    <span data-i18n="signalMethods">🎯 انتخاب روش‌های سیگنال‌گیری</span>
-    <span id="methodsArrow">▼</span>
+<!-- SIGNAL METHODS -->
+
+<section class="card">
+
+  <button
+    class="methodsToggle"
+    onclick="toggleMethods()">
+
+    <span id="methodsTitle">
+      🎯 انتخاب روش‌های سیگنال‌گیری
+    </span>
+
+    <span id="methodsArrow">
+      ▼
+    </span>
+
   </button>
 
-  <div class="collapsible" id="methodsPanel">
+  <div
+    class="muted"
+    id="methodsDesc"
+    style="margin-top:7px">
 
-    <div class="subtitle" data-i18n="methodsDesc">
-      فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.
-    </div>
+    فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.
+  </div>
 
-    <div style="margin-top:12px">
-      <div class="title" data-i18n="minimumScore">
-        حداقل امتیاز سیگنال
-      </div>
+  <div
+    class="methodsBody"
+    id="methodsBody">
 
-      <div class="rangeRow">
+    <div class="controls">
+
+      <div class="thresholdRow">
+
+        <div id="thresholdLabel">
+          حداقل امتیاز سیگنال
+        </div>
+
         <input
-          id="scoreRange"
           type="range"
+          id="threshold"
           min="1"
           max="100"
           value="75"
-        >
-        <div class="scoreNumber" id="scoreValue">75</div>
-      </div>
-    </div>
+          oninput="thresholdChanged()">
 
-    <div style="margin-top:12px">
-      <div class="title" data-i18n="quality">
-        کیفیت سیگنال
-      </div>
-
-      <div class="qualityGrid">
-
-        <button class="quality" data-score="25">
-          1️⃣ <span data-i18n="veryEasy">خیلی آسان</span>
-        </button>
-
-        <button class="quality" data-score="40">
-          2️⃣ <span data-i18n="easy">آسان</span>
-        </button>
-
-        <button class="quality" data-score="55">
-          3️⃣ <span data-i18n="normal">معمولی</span>
-        </button>
-
-        <button class="quality" data-score="65">
-          4️⃣ <span data-i18n="medium">متوسط</span>
-        </button>
-
-        <button class="quality" data-score="75">
-          5️⃣ <span data-i18n="hard">سخت</span>
-        </button>
-
-        <button class="quality" data-score="85">
-          6️⃣ <span data-i18n="veryHard">خیلی سخت‌گیرانه</span>
-        </button>
+        <div
+          class="thresholdValue"
+          id="thresholdValue">
+          75
+        </div>
 
       </div>
-    </div>
 
-    <div class="methodGrid" style="margin-top:12px">
+      <div
+        class="levels"
+        id="levels">
 
-      <label class="method">
-        <input type="checkbox" value="ma">
-        <span data-i18n="ma">مووینگ میانگین</span>
-      </label>
+        <button class="level" onclick="setLevel(1)">
+          <span class="levelNumber">1</span><br>
+          خیلی آسان
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="smart">
-        <span data-i18n="smart">اسمارت مانی</span>
-      </label>
+        <button class="level" onclick="setLevel(2)">
+          <span class="levelNumber">2</span><br>
+          آسان
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="ict">
-        <span data-i18n="ict">ICT</span>
-      </label>
+        <button class="level" onclick="setLevel(3)">
+          <span class="levelNumber">3</span><br>
+          معمولی
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="macd">
-        <span data-i18n="macd">MACD</span>
-      </label>
+        <button class="level" onclick="setLevel(4)">
+          <span class="levelNumber">4</span><br>
+          متوسط
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="rsi">
-        <span data-i18n="rsi">RSI</span>
-      </label>
+        <button class="level" onclick="setLevel(5)">
+          <span class="levelNumber">5</span><br>
+          سخت
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="divergence">
-        <span data-i18n="divergence">واگرایی</span>
-      </label>
+        <button class="level active" onclick="setLevel(6)">
+          <span class="levelNumber">6</span><br>
+          خیلی سخت‌گیرانه
+        </button>
 
-      <label class="method">
-        <input type="checkbox" value="ichimoku">
-        <span data-i18n="ichimoku">ایچیموکو</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="volume">
-        <span data-i18n="volume">حجم</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="orderflow">
-        <span data-i18n="orderflow">جریان سفارش</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="liquidity">
-        <span data-i18n="liquidity">نقدینگی</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="ict">
-        <span data-i18n="fvg">FVG</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="smart">
-        <span data-i18n="bos">BOS</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="smart">
-        <span data-i18n="choch">CHoCH</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="smart">
-        <span data-i18n="ob">Order Block</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="sr">
-        <span data-i18n="sr">حمایت / مقاومت</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="oi">
-        <span data-i18n="oi">OI</span>
-      </label>
-
-      <label class="method">
-        <input type="checkbox" value="funding">
-        <span data-i18n="funding">Funding</span>
-      </label>
+      </div>
 
     </div>
 
-    <div class="actions">
-      <button class="smallBtn" id="selectAll">
-        ⭐ <span data-i18n="selectAll">انتخاب همه</span>
+
+    <div class="methodGrid" id="methodGrid">
+
+      <button class="method active" data-method="ma">
+        📈 مووینگ میانگین
       </button>
 
-      <button class="smallBtn" id="clearAll">
-        <span data-i18n="clear">پاک کردن</span>
+      <button class="method active" data-method="smart">
+        🧠 اسمارت مانی
       </button>
+
+      <button class="method active" data-method="ict">
+        🎯 ICT
+      </button>
+
+      <button class="method active" data-method="macd">
+        📊 MACD
+      </button>
+
+      <button class="method active" data-method="rsi">
+        RSI
+      </button>
+
+      <button class="method active" data-method="divergence">
+        ↔️ واگرایی
+      </button>
+
+      <button class="method active" data-method="ichimoku">
+        ☁️ ایچیموکو
+      </button>
+
+      <button class="method active" data-method="volume">
+        📊 حجم
+      </button>
+
+      <button class="method active" data-method="orderflow">
+        ⚡ جریان سفارش
+      </button>
+
+      <button class="method active" data-method="liquidity">
+        💧 نقدینگی
+      </button>
+
+      <button class="method active" data-method="ict">
+        FVG
+      </button>
+
+      <button class="method active" data-method="bos">
+        BOS
+      </button>
+
+      <button class="method active" data-method="choch">
+        CHoCH
+      </button>
+
+      <button class="method active" data-method="ob">
+        Order Block
+      </button>
+
+      <button class="method active" data-method="sr">
+        حمایت / مقاومت
+      </button>
+
+      <button class="method active" data-method="oi">
+        OI
+      </button>
+
+      <button class="method active" data-method="funding">
+        Funding
+      </button>
+
+    </div>
+
+    <div class="actionRow">
+
+      <button
+        class="smallBtn"
+        onclick="selectAllMethods()"
+        id="selectAll">
+        ⭐ انتخاب همه
+      </button>
+
+      <button
+        class="smallBtn"
+        onclick="clearMethods()"
+        id="clearAll">
+        پاک کردن
+      </button>
+
     </div>
 
   </div>
-</div>
+
+</section>
+
 
 <!-- SIGNALS -->
-<div class="card">
 
-  <div class="title">
-    🚨 <span data-i18n="signals">سیگنال‌های تأییدشده</span>
+<section class="card">
+
+  <div class="cardTitle" id="signalsTitle">
+    🚨 سیگنال‌های تأییدشده
   </div>
 
-  <div class="subtitle" data-i18n="signalsDesc">
+  <div class="muted" id="signalsDesc">
     این قسمت مستقل از بررسی دستی است و نتیجه آن با بررسی دستی جابه‌جا نمی‌شود.
   </div>
 
-  <button class="primary" id="signalsBtn">
-    🔄 <span data-i18n="getSignals">دریافت سیگنال‌ها</span>
+  <button
+    class="primary"
+    style="margin-top:10px;width:100%"
+    onclick="loadSignals()"
+    id="signalsBtn">
+
+    🔄 دریافت سیگنال‌ها
+
   </button>
 
-  <div id="signalsResult">
-    <div class="empty" data-i18n="noSignals">
+  <div
+    class="signalsList"
+    id="signalsList"
+    style="margin-top:10px">
+
+    <div class="empty">
       هنوز سیگنالی دریافت نشده است.
     </div>
+
   </div>
 
-</div>
+</section>
+
 
 <!-- RADAR -->
-<div class="card">
 
-  <div class="title">
-    📡 <span data-i18n="radar">رادار بازار</span>
+<section class="card">
+
+  <div class="cardTitle" id="radarTitle">
+    📡 رادار بازار
   </div>
 
-  <div class="subtitle" data-i18n="radarDesc">
-    رادار مستقل است و نتیجه بررسی دستی را تغییر نمی‌دهد.
+  <div class="muted" id="radarDesc">
+    رادار مستقل است و برای شناسایی پامپ، دامپ و برگشت بازار استفاده می‌شود.
   </div>
 
-  <div class="radarGrid" style="margin-top:10px">
+  <button
+    class="primary"
+    style="margin-top:10px;width:100%"
+    onclick="loadRadar()"
+    id="radarBtn">
 
-    <div class="radarBox">
-      🚀 <b data-i18n="pump">پامپ</b>
-      <div id="pumpRadar"></div>
-    </div>
+    📡 دریافت رادار
 
-    <div class="radarBox">
-      🔻 <b data-i18n="dump">دامپ</b>
-      <div id="dumpRadar"></div>
-    </div>
-
-    <div class="radarBox">
-      🔄 <b data-i18n="reversal">برگشت</b>
-      <div id="reversalRadar"></div>
-    </div>
-
-  </div>
-
-  <button class="primary" id="radarBtn">
-    📡 <span data-i18n="getRadar">دریافت رادار</span>
   </button>
 
-</div>
+  <div
+    class="radarGrid"
+    id="radarGrid"
+    style="margin-top:10px">
+
+    <div class="radarBox">
+
+      <div class="radarTitle">
+        🚀 <span id="pumpTitle">پامپ</span>
+      </div>
+
+      <div id="pumpList" class="empty">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="radarBox">
+
+      <div class="radarTitle">
+        🔻 <span id="dumpTitle">دامپ</span>
+      </div>
+
+      <div id="dumpList" class="empty">
+        —
+      </div>
+
+    </div>
+
+
+    <div class="radarBox">
+
+      <div class="radarTitle">
+        🔄 <span id="reversalTitle">برگشت</span>
+      </div>
+
+      <div id="reversalList" class="empty">
+        —
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 
 </div>
+
 
 <script>
 
-/* =====================================================
+/* =========================================================
    CONFIG
-===================================================== */
+========================================================= */
 
-const API = "/api";
+const API = "";
 
 let currentLang =
-  localStorage.getItem("scannerLang") || "fa";
+  localStorage.getItem("scanner_lang") || "fa";
+
+let currentLevel = 6;
 
 let currentThreshold = 75;
 
+const levelThresholds = {
+  1: 20,
+  2: 35,
+  3: 50,
+  4: 65,
+  5: 80,
+  6: 90
+};
 
-/* =====================================================
-   TRANSLATIONS
-===================================================== */
-
-const T = {
+const translations = {
 
 fa:{
-title:"📊 اسکنر هوشمند بازار",
-subtitle:"تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش",
-connected:"اتصال برقرار است",
-manualTitle:"🔎 بررسی دستی ارز",
-manualDesc:"فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.",
-placeholder:"مثلاً BTC یا ALICE",
-analyze:"بررسی",
-noManual:"هنوز ارزی بررسی نشده است.",
-signalMethods:"🎯 انتخاب روش‌های سیگنال‌گیری",
-methodsDesc:"فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.",
-minimumScore:"حداقل امتیاز سیگنال",
-quality:"کیفیت سیگنال",
-veryEasy:"خیلی آسان",
-easy:"آسان",
-normal:"معمولی",
-medium:"متوسط",
-hard:"سخت",
-veryHard:"خیلی سخت‌گیرانه",
-ma:"مووینگ میانگین",
-smart:"اسمارت مانی",
-ict:"ICT",
-macd:"MACD",
-rsi:"RSI",
-divergence:"واگرایی",
-ichimoku:"ایچیموکو",
-volume:"حجم",
-orderflow:"جریان سفارش",
-liquidity:"نقدینگی",
-fvg:"FVG",
-bos:"BOS / شکست ساختار",
-choch:"CHoCH / تغییر شخصیت",
-ob:"Order Block",
-sr:"حمایت / مقاومت",
-oi:"OI",
-funding:"Funding",
-selectAll:"انتخاب همه",
-clear:"پاک کردن",
-signals:"سیگنال‌های تأییدشده",
-signalsDesc:"این قسمت مستقل از بررسی دستی است و نتیجه آن با بررسی دستی جابه‌جا نمی‌شود.",
-getSignals:"دریافت سیگنال‌ها",
-noSignals:"هنوز سیگنالی دریافت نشده است.",
-radar:"رادار بازار",
-radarDesc:"رادار مستقل است و نتیجه بررسی دستی را تغییر نمی‌دهد.",
-pump:"پامپ",
-dump:"دامپ",
-reversal:"برگشت",
-getRadar:"دریافت رادار",
-long:"صعودی",
-short:"نزولی",
-wait:"انتظار",
-score:"امتیاز",
-price:"قیمت",
-market:"بازار",
-futures:"فیوچرز",
-spot:"اسپات",
-deep:"👆 تحلیل عمیق",
-reasons:"دلایل",
-error:"خطا",
-notFound:"این نماد در بازارهای قابل بررسی پیدا نشد.",
-loading:"در حال دریافت اطلاعات..."
+  dir:"rtl",
+  title:"📊 اسکنر هوشمند بازار",
+  subtitle:"تحلیل چندسبکی بازار، ساختار، نقدینگی، حجم و جریان سفارش",
+  connected:"🟢 اتصال برقرار است",
+  manual:"🔎 بررسی دستی ارز",
+  manualDesc:"فقط نام ارز را وارد کن؛ بازار به‌صورت خودکار بررسی می‌شود.",
+  placeholder:"مثلاً BTC یا ALICE",
+  analyze:"بررسی",
+  methods:"🎯 انتخاب روش‌های سیگنال‌گیری",
+  methodsDesc:"فقط روش‌های انتخاب‌شده در امتیاز و فیلتر سیگنال لحاظ می‌شوند.",
+  minScore:"حداقل امتیاز سیگنال",
+  selectAll:"⭐ انتخاب همه",
+  clear:"پاک کردن",
+  result:"📌 نتیجه بررسی دستی",
+  signals:"🚨 سیگنال‌های تأییدشده",
+  signalsDesc:"این قسمت مستقل از بررسی دستی است و نتیجه آن با بررسی دستی جابه‌جا نمی‌شود.",
+  getSignals:"🔄 دریافت سیگنال‌ها",
+  radar:"📡 رادار بازار",
+  radarDesc:"رادار مستقل است و برای شناسایی پامپ، دامپ و برگشت بازار استفاده می‌شود.",
+  getRadar:"📡 دریافت رادار",
+  pump:"پامپ",
+  dump:"دامپ",
+  reversal:"برگشت",
+  deep:"👆 تحلیل عمیق",
+  score:"امتیاز",
+  long:"صعودی",
+  short:"نزولی",
+  wait:"انتظار",
+  market:"بازار",
+  futures:"فیوچرز",
+  spot:"اسپات",
+  price:"قیمت",
+  reasons:"📋 دلایل",
+  timeframes:"📊 تایم‌فریم‌ها",
+  structure:"🧱 ساختار",
+  liquidity:"💧 نقدینگی",
+  orderflow:"⚡ جریان سفارش",
+  marketInfo:"📈 بازار",
+  trend:"روند",
+  maSlope:"شیب MA",
+  macdDir:"جهت MACD",
+  histogram:"هیستوگرام",
+  rsi:"RSI",
+  current:"فعلی",
+  spike:"جهش حجم",
+  yes:"بله",
+  no:"خیر",
+  buyWall:"دیوار خرید",
+  sellWall:"دیوار فروش",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"شکار نقدینگی",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"داده‌ای وجود ندارد",
+  notFound:"❌ این نماد در بازارهای قابل بررسی پیدا نشد.",
+  loading:"⏳ در حال دریافت اطلاعات...",
+  error:"❌ خطا در دریافت اطلاعات",
+  noSignal:"هنوز سیگنالی دریافت نشده است.",
+  none:"—",
+  levels:["خیلی آسان","آسان","معمولی","متوسط","سخت","خیلی سخت‌گیرانه"],
+  styles:{
+    ma:"مووینگ میانگین",
+    smart:"اسمارت مانی",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"ایچیموکو",
+    volume:"حجم",
+    orderflow:"جریان سفارش",
+    liquidity:"نقدینگی"
+  }
 },
 
 en:{
-title:"📊 Smart Market Scanner",
-subtitle:"Multi-style market, structure, liquidity, volume and order-flow analysis",
-connected:"Connection established",
-manualTitle:"🔎 Manual Asset Search",
-manualDesc:"Enter only the asset name; the market is detected automatically.",
-placeholder:"Example: BTC or ALICE",
-analyze:"Analyze",
-noManual:"No asset has been analyzed yet.",
-signalMethods:"🎯 Signal Methods",
-methodsDesc:"Only selected methods affect the score and signal filter.",
-minimumScore:"Minimum Signal Score",
-quality:"Signal Quality",
-veryEasy:"Very Easy",
-easy:"Easy",
-normal:"Normal",
-medium:"Medium",
-hard:"Hard",
-veryHard:"Very Strict",
-ma:"Moving Average",
-smart:"Smart Money",
-ict:"ICT",
-macd:"MACD",
-rsi:"RSI",
-divergence:"Divergence",
-ichimoku:"Ichimoku",
-volume:"Volume",
-orderflow:"Order Flow",
-liquidity:"Liquidity",
-fvg:"FVG",
-bos:"BOS / Break of Structure",
-choch:"CHoCH",
-ob:"Order Block",
-sr:"Support / Resistance",
-oi:"OI",
-funding:"Funding",
-selectAll:"Select All",
-clear:"Clear",
-signals:"Confirmed Signals",
-signalsDesc:"This section is independent from manual analysis.",
-getSignals:"Get Signals",
-noSignals:"No signals received yet.",
-radar:"Market Radar",
-radarDesc:"Radar is independent from manual analysis.",
-pump:"Pump",
-dump:"Dump",
-reversal:"Reversal",
-getRadar:"Get Radar",
-long:"Bullish",
-short:"Bearish",
-wait:"Wait",
-score:"Score",
-price:"Price",
-market:"Market",
-futures:"Futures",
-spot:"Spot",
-deep:"👆 Deep Analysis",
-reasons:"Reasons",
-error:"Error",
-notFound:"Asset not found.",
-loading:"Loading..."
+  dir:"ltr",
+  title:"📊 Smart Market Scanner",
+  subtitle:"Multi-style market, structure, liquidity, volume and order-flow analysis",
+  connected:"🟢 Connection active",
+  manual:"🔎 Manual Asset Search",
+  manualDesc:"Enter only the asset name; the market is detected automatically.",
+  placeholder:"Example BTC or ALICE",
+  analyze:"Analyze",
+  methods:"🎯 Signal Methods",
+  methodsDesc:"Only selected methods affect the score and signal filter.",
+  minScore:"Minimum signal score",
+  selectAll:"⭐ Select all",
+  clear:"Clear",
+  result:"📌 Manual Analysis",
+  signals:"🚨 Confirmed Signals",
+  signalsDesc:"This section is independent from manual analysis.",
+  getSignals:"🔄 Get Signals",
+  radar:"📡 Market Radar",
+  radarDesc:"Independent radar for pump, dump and reversal detection.",
+  getRadar:"📡 Get Radar",
+  pump:"Pump",
+  dump:"Dump",
+  reversal:"Reversal",
+  deep:"👆 Deep Analysis",
+  score:"Score",
+  long:"Bullish",
+  short:"Bearish",
+  wait:"Wait",
+  market:"Market",
+  futures:"Futures",
+  spot:"Spot",
+  price:"Price",
+  reasons:"📋 Reasons",
+  timeframes:"📊 Timeframes",
+  structure:"🧱 Structure",
+  liquidity:"💧 Liquidity",
+  orderflow:"⚡ Order Flow",
+  marketInfo:"📈 Market",
+  trend:"Trend",
+  maSlope:"MA Slope",
+  macdDir:"MACD Direction",
+  histogram:"Histogram",
+  rsi:"RSI",
+  current:"Current",
+  spike:"Volume Spike",
+  yes:"Yes",
+  no:"No",
+  buyWall:"Buy Wall",
+  sellWall:"Sell Wall",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"Liquidity Hunt",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"No data",
+  notFound:"❌ Asset not found.",
+  loading:"⏳ Loading...",
+  error:"❌ Error receiving data",
+  noSignal:"No signals received yet.",
+  none:"—",
+  levels:["Very Easy","Easy","Normal","Medium","Hard","Very Strict"],
+  styles:{
+    ma:"Moving Average",
+    smart:"Smart Money",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"Ichimoku",
+    volume:"Volume",
+    orderflow:"Order Flow",
+    liquidity:"Liquidity"
+  }
 },
 
 ar:{
-title:"📊 ماسح السوق الذكي",
-subtitle:"تحليل متعدد الأساليب للسوق والسيولة والحجم وتدفق الأوامر",
-connected:"الاتصال متاح",
-manualTitle:"🔎 البحث اليدوي عن العملة",
-manualDesc:"اكتب اسم العملة فقط وسيتم تحديد السوق تلقائياً.",
-placeholder:"مثال BTC أو ALICE",
-analyze:"تحليل",
-noManual:"لم يتم تحليل أي عملة بعد.",
-signalMethods:"🎯 طرق الإشارات",
-methodsDesc:"الطرق المختارة فقط تؤثر على النتيجة.",
-minimumScore:"الحد الأدنى للإشارة",
-quality:"جودة الإشارة",
-veryEasy:"سهل جداً",
-easy:"سهل",
-normal:"عادي",
-medium:"متوسط",
-hard:"صعب",
-veryHard:"صارم جداً",
-ma:"المتوسطات المتحركة",
-smart:"الأموال الذكية",
-ict:"ICT",
-macd:"MACD",
-rsi:"RSI",
-divergence:"التباعد",
-ichimoku:"إيشيموكو",
-volume:"الحجم",
-orderflow:"تدفق الأوامر",
-liquidity:"السيولة",
-fvg:"FVG",
-bos:"BOS",
-choch:"CHoCH",
-ob:"كتلة الأوامر",
-sr:"الدعم والمقاومة",
-oi:"OI",
-funding:"التمويل",
-selectAll:"تحديد الكل",
-clear:"مسح",
-signals:"الإشارات المؤكدة",
-signalsDesc:"هذا القسم مستقل عن التحليل اليدوي.",
-getSignals:"جلب الإشارات",
-noSignals:"لا توجد إشارات بعد.",
-radar:"رادار السوق",
-radarDesc:"الرادار مستقل عن التحليل اليدوي.",
-pump:"صعود قوي",
-dump:"هبوط قوي",
-reversal:"انعكاس",
-getRadar:"جلب الرادار",
-long:"صعودي",
-short:"هبوطي",
-wait:"انتظار",
-score:"النتيجة",
-price:"السعر",
-market:"السوق",
-futures:"عقود",
-spot:"سبوت",
-deep:"👆 تحليل عميق",
-reasons:"الأسباب",
-error:"خطأ",
-notFound:"لم يتم العثور على العملة.",
-loading:"جاري التحميل..."
+  dir:"rtl",
+  title:"📊 الماسح الذكي للسوق",
+  subtitle:"تحليل متعدد الأساليب للسوق والسيولة والحجم وتدفق الأوامر",
+  connected:"🟢 الاتصال نشط",
+  manual:"🔎 البحث اليدوي عن العملة",
+  manualDesc:"اكتب اسم العملة فقط وسيتم تحديد السوق تلقائياً.",
+  placeholder:"مثال BTC أو ALICE",
+  analyze:"تحليل",
+  methods:"🎯 طرق الإشارة",
+  methodsDesc:"الطرق المحددة فقط تؤثر على النتيجة والإشارة.",
+  minScore:"الحد الأدنى للإشارة",
+  selectAll:"⭐ تحديد الكل",
+  clear:"مسح",
+  result:"📌 التحليل اليدوي",
+  signals:"🚨 الإشارات المؤكدة",
+  signalsDesc:"هذا القسم مستقل عن التحليل اليدوي.",
+  getSignals:"🔄 الحصول على الإشارات",
+  radar:"📡 رادار السوق",
+  radarDesc:"رادار مستقل لاكتشاف الصعود والهبوط والانعكاس.",
+  getRadar:"📡 الحصول على الرادار",
+  pump:"صعود قوي",
+  dump:"هبوط قوي",
+  reversal:"انعكاس",
+  deep:"👆 تحليل عميق",
+  score:"النتيجة",
+  long:"صاعد",
+  short:"هابط",
+  wait:"انتظار",
+  market:"السوق",
+  futures:"عقود",
+  spot:"فوري",
+  price:"السعر",
+  reasons:"📋 الأسباب",
+  timeframes:"📊 الأطر الزمنية",
+  structure:"🧱 الهيكل",
+  liquidity:"💧 السيولة",
+  orderflow:"⚡ تدفق الأوامر",
+  marketInfo:"📈 السوق",
+  trend:"الاتجاه",
+  maSlope:"ميل المتوسط",
+  macdDir:"اتجاه MACD",
+  histogram:"المدرج",
+  rsi:"RSI",
+  current:"الحالي",
+  spike:"ارتفاع الحجم",
+  yes:"نعم",
+  no:"لا",
+  buyWall:"جدار شراء",
+  sellWall:"جدار بيع",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"اصطياد السيولة",
+  fvg:"FVG",
+  orderBlock:"منطقة الطلب",
+  noData:"لا توجد بيانات",
+  notFound:"❌ لم يتم العثور على العملة.",
+  loading:"⏳ جار التحميل...",
+  error:"❌ خطأ في الحصول على البيانات",
+  noSignal:"لا توجد إشارات بعد.",
+  none:"—",
+  levels:["سهل جداً","سهل","عادي","متوسط","صعب","صارم جداً"],
+  styles:{
+    ma:"المتوسطات",
+    smart:"الأموال الذكية",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"إيشيموكو",
+    volume:"الحجم",
+    orderflow:"تدفق الأوامر",
+    liquidity:"السيولة"
+  }
+},
+
+pt:{
+  dir:"ltr",
+  title:"📊 Scanner Inteligente de Mercado",
+  subtitle:"Análise de mercado, estrutura, liquidez, volume e fluxo de ordens",
+  connected:"🟢 Conexão ativa",
+  manual:"🔎 Pesquisa manual",
+  manualDesc:"Digite apenas o nome do ativo; o mercado será detectado automaticamente.",
+  placeholder:"Exemplo BTC ou ALICE",
+  analyze:"Analisar",
+  methods:"🎯 Métodos de sinal",
+  methodsDesc:"Somente os métodos selecionados afetam a pontuação.",
+  minScore:"Pontuação mínima",
+  selectAll:"⭐ Selecionar tudo",
+  clear:"Limpar",
+  result:"📌 Análise manual",
+  signals:"🚨 Sinais confirmados",
+  signalsDesc:"Esta seção é independente da análise manual.",
+  getSignals:"🔄 Obter sinais",
+  radar:"📡 Radar do mercado",
+  radarDesc:"Radar independente para pump, dump e reversão.",
+  getRadar:"📡 Obter radar",
+  pump:"Pump",
+  dump:"Dump",
+  reversal:"Reversão",
+  deep:"👆 Análise profunda",
+  score:"Pontuação",
+  long:"Alta",
+  short:"Baixa",
+  wait:"Aguardar",
+  market:"Mercado",
+  futures:"Futuros",
+  spot:"Spot",
+  price:"Preço",
+  reasons:"📋 Motivos",
+  timeframes:"📊 Timeframes",
+  structure:"🧱 Estrutura",
+  liquidity:"💧 Liquidez",
+  orderflow:"⚡ Fluxo de ordens",
+  marketInfo:"📈 Mercado",
+  trend:"Tendência",
+  maSlope:"Inclinação MA",
+  macdDir:"Direção MACD",
+  histogram:"Histograma",
+  rsi:"RSI",
+  current:"Atual",
+  spike:"Pico de volume",
+  yes:"Sim",
+  no:"Não",
+  buyWall:"Parede de compra",
+  sellWall:"Parede de venda",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"Caça à liquidez",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"Sem dados",
+  notFound:"❌ Ativo não encontrado.",
+  loading:"⏳ Carregando...",
+  error:"❌ Erro ao obter dados",
+  noSignal:"Nenhum sinal recebido.",
+  none:"—",
+  levels:["Muito fácil","Fácil","Normal","Médio","Difícil","Muito rigoroso"],
+  styles:{
+    ma:"Médias móveis",
+    smart:"Smart Money",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"Ichimoku",
+    volume:"Volume",
+    orderflow:"Fluxo de ordens",
+    liquidity:"Liquidez"
+  }
+},
+
+es:{
+  dir:"ltr",
+  title:"📊 Escáner Inteligente de Mercado",
+  subtitle:"Análisis de mercado, estructura, liquidez, volumen y flujo de órdenes",
+  connected:"🟢 Conexión activa",
+  manual:"🔎 Búsqueda manual",
+  manualDesc:"Escribe solo el nombre del activo; el mercado se detectará automáticamente.",
+  placeholder:"Ejemplo BTC o ALICE",
+  analyze:"Analizar",
+  methods:"🎯 Métodos de señal",
+  methodsDesc:"Solo los métodos seleccionados afectan la puntuación.",
+  minScore:"Puntuación mínima",
+  selectAll:"⭐ Seleccionar todo",
+  clear:"Limpiar",
+  result:"📌 Análisis manual",
+  signals:"🚨 Señales confirmadas",
+  signalsDesc:"Esta sección es independiente del análisis manual.",
+  getSignals:"🔄 Obtener señales",
+  radar:"📡 Radar del mercado",
+  radarDesc:"Radar independiente para detectar pump, dump y reversión.",
+  getRadar:"📡 Obtener radar",
+  pump:"Pump",
+  dump:"Dump",
+  reversal:"Reversión",
+  deep:"👆 Análisis profundo",
+  score:"Puntuación",
+  long:"Alcista",
+  short:"Bajista",
+  wait:"Esperar",
+  market:"Mercado",
+  futures:"Futuros",
+  spot:"Spot",
+  price:"Precio",
+  reasons:"📋 Razones",
+  timeframes:"📊 Marcos temporales",
+  structure:"🧱 Estructura",
+  liquidity:"💧 Liquidez",
+  orderflow:"⚡ Flujo de órdenes",
+  marketInfo:"📈 Mercado",
+  trend:"Tendencia",
+  maSlope:"Pendiente MA",
+  macdDir:"Dirección MACD",
+  histogram:"Histograma",
+  rsi:"RSI",
+  current:"Actual",
+  spike:"Pico de volumen",
+  yes:"Sí",
+  no:"No",
+  buyWall:"Muro de compra",
+  sellWall:"Muro de venta",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"Caza de liquidez",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"Sin datos",
+  notFound:"❌ Activo no encontrado.",
+  loading:"⏳ Cargando...",
+  error:"❌ Error al obtener datos",
+  noSignal:"Aún no hay señales.",
+  none:"—",
+  levels:["Muy fácil","Fácil","Normal","Medio","Difícil","Muy estricto"],
+  styles:{
+    ma:"Medias móviles",
+    smart:"Smart Money",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"Ichimoku",
+    volume:"Volumen",
+    orderflow:"Flujo de órdenes",
+    liquidity:"Liquidez"
+  }
+},
+
+zh:{
+  dir:"ltr",
+  title:"📊 智能市场扫描器",
+  subtitle:"多策略市场、结构、流动性、成交量和订单流分析",
+  connected:"🟢 连接正常",
+  manual:"🔎 手动搜索资产",
+  manualDesc:"只输入资产名称，系统自动识别市场。",
+  placeholder:"例如 BTC 或 ALICE",
+  analyze:"分析",
+  methods:"🎯 信号方法",
+  methodsDesc:"只有选中的方法会影响评分和信号过滤。",
+  minScore:"最低信号分数",
+  selectAll:"⭐ 全选",
+  clear:"清除",
+  result:"📌 手动分析",
+  signals:"🚨 已确认信号",
+  signalsDesc:"此部分独立于手动分析。",
+  getSignals:"🔄 获取信号",
+  radar:"📡 市场雷达",
+  radarDesc:"独立雷达，用于检测暴涨、暴跌和反转。",
+  getRadar:"📡 获取雷达",
+  pump:"暴涨",
+  dump:"暴跌",
+  reversal:"反转",
+  deep:"👆 深度分析",
+  score:"评分",
+  long:"看涨",
+  short:"看跌",
+  wait:"等待",
+  market:"市场",
+  futures:"期货",
+  spot:"现货",
+  price:"价格",
+  reasons:"📋 原因",
+  timeframes:"📊 时间周期",
+  structure:"🧱 市场结构",
+  liquidity:"💧 流动性",
+  orderflow:"⚡ 订单流",
+  marketInfo:"📈 市场",
+  trend:"趋势",
+  maSlope:"MA斜率",
+  macdDir:"MACD方向",
+  histogram:"柱状图",
+  rsi:"RSI",
+  current:"当前",
+  spike:"成交量激增",
+  yes:"是",
+  no:"否",
+  buyWall:"买墙",
+  sellWall:"卖墙",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"流动性猎取",
+  fvg:"FVG",
+  orderBlock:"订单块",
+  noData:"无数据",
+  notFound:"❌ 未找到资产。",
+  loading:"⏳ 加载中...",
+  error:"❌ 获取数据失败",
+  noSignal:"暂无信号。",
+  none:"—",
+  levels:["非常容易","容易","普通","中等","困难","非常严格"],
+  styles:{
+    ma:"移动平均线",
+    smart:"聪明钱",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"一目均衡表",
+    volume:"成交量",
+    orderflow:"订单流",
+    liquidity:"流动性"
+  }
+},
+
+ja:{
+  dir:"ltr",
+  title:"📊 スマートマーケットスキャナー",
+  subtitle:"市場・構造・流動性・出来高・オーダーフローの分析",
+  connected:"🟢 接続中",
+  manual:"🔎 手動アセット検索",
+  manualDesc:"銘柄名だけ入力してください。市場を自動判定します。",
+  placeholder:"例 BTC または ALICE",
+  analyze:"分析",
+  methods:"🎯 シグナル方法",
+  methodsDesc:"選択した方法だけがスコアとシグナル判定に影響します。",
+  minScore:"最低シグナルスコア",
+  selectAll:"⭐ すべて選択",
+  clear:"クリア",
+  result:"📌 手動分析",
+  signals:"🚨 確認済みシグナル",
+  signalsDesc:"このセクションは手動分析とは独立しています。",
+  getSignals:"🔄 シグナル取得",
+  radar:"📡 マーケットレーダー",
+  radarDesc:"ポンプ・ダンプ・反転を検出する独立レーダーです。",
+  getRadar:"📡 レーダー取得",
+  pump:"ポンプ",
+  dump:"ダンプ",
+  reversal:"反転",
+  deep:"👆 詳細分析",
+  score:"スコア",
+  long:"上昇",
+  short:"下降",
+  wait:"待機",
+  market:"市場",
+  futures:"先物",
+  spot:"現物",
+  price:"価格",
+  reasons:"📋 理由",
+  timeframes:"📊 時間足",
+  structure:"🧱 構造",
+  liquidity:"💧 流動性",
+  orderflow:"⚡ オーダーフロー",
+  marketInfo:"📈 市場",
+  trend:"トレンド",
+  maSlope:"MA傾き",
+  macdDir:"MACD方向",
+  histogram:"ヒストグラム",
+  rsi:"RSI",
+  current:"現在",
+  spike:"出来高急増",
+  yes:"はい",
+  no:"いいえ",
+  buyWall:"買い壁",
+  sellWall:"売り壁",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"流動性狩り",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"データなし",
+  notFound:"❌ アセットが見つかりません。",
+  loading:"⏳ 読み込み中...",
+  error:"❌ データ取得エラー",
+  noSignal:"シグナルはまだありません。",
+  none:"—",
+  levels:["非常に簡単","簡単","通常","中","難しい","非常に厳格"],
+  styles:{
+    ma:"移動平均",
+    smart:"スマートマネー",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"一目均衡表",
+    volume:"出来高",
+    orderflow:"オーダーフロー",
+    liquidity:"流動性"
+  }
+},
+
+hi:{
+  dir:"ltr",
+  title:"📊 स्मार्ट मार्केट स्कैनर",
+  subtitle:"मार्केट, स्ट्रक्चर, लिक्विडिटी, वॉल्यूम और ऑर्डर फ्लो विश्लेषण",
+  connected:"🟢 कनेक्शन सक्रिय",
+  manual:"🔎 मैनुअल एसेट खोज",
+  manualDesc:"सिर्फ एसेट का नाम लिखें; मार्केट अपने आप पहचाना जाएगा।",
+  placeholder:"उदाहरण BTC या ALICE",
+  analyze:"विश्लेषण",
+  methods:"🎯 सिग्नल तरीके",
+  methodsDesc:"केवल चुने गए तरीके स्कोर और सिग्नल पर असर डालेंगे।",
+  minScore:"न्यूनतम सिग्नल स्कोर",
+  selectAll:"⭐ सभी चुनें",
+  clear:"साफ करें",
+  result:"📌 मैनुअल विश्लेषण",
+  signals:"🚨 पुष्टि किए गए सिग्नल",
+  signalsDesc:"यह भाग मैनुअल विश्लेषण से स्वतंत्र है।",
+  getSignals:"🔄 सिग्नल प्राप्त करें",
+  radar:"📡 मार्केट रडार",
+  radarDesc:"पंप, डंप और रिवर्सल के लिए स्वतंत्र रडार।",
+  getRadar:"📡 रडार प्राप्त करें",
+  pump:"पंप",
+  dump:"डंप",
+  reversal:"रिवर्सल",
+  deep:"👆 गहन विश्लेषण",
+  score:"स्कोर",
+  long:"तेजी",
+  short:"मंदी",
+  wait:"प्रतीक्षा",
+  market:"मार्केट",
+  futures:"फ्यूचर्स",
+  spot:"स्पॉट",
+  price:"कीमत",
+  reasons:"📋 कारण",
+  timeframes:"📊 टाइमफ्रेम",
+  structure:"🧱 स्ट्रक्चर",
+  liquidity:"💧 लिक्विडिटी",
+  orderflow:"⚡ ऑर्डर फ्लो",
+  marketInfo:"📈 मार्केट",
+  trend:"ट्रेंड",
+  maSlope:"MA ढलान",
+  macdDir:"MACD दिशा",
+  histogram:"हिस्टोग्राम",
+  rsi:"RSI",
+  current:"वर्तमान",
+  spike:"वॉल्यूम स्पाइक",
+  yes:"हाँ",
+  no:"नहीं",
+  buyWall:"बाय वॉल",
+  sellWall:"सेल वॉल",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"लिक्विडिटी हंट",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"डेटा नहीं",
+  notFound:"❌ एसेट नहीं मिला।",
+  loading:"⏳ लोड हो रहा है...",
+  error:"❌ डेटा प्राप्त करने में त्रुटि",
+  noSignal:"अभी कोई सिग्नल नहीं।",
+  none:"—",
+  levels:["बहुत आसान","आसान","सामान्य","मध्यम","कठिन","बहुत सख्त"],
+  styles:{
+    ma:"मूविंग एवरेज",
+    smart:"स्मार्ट मनी",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"इचिमोकू",
+    volume:"वॉल्यूम",
+    orderflow:"ऑर्डर फ्लो",
+    liquidity:"लिक्विडिटी"
+  }
+},
+
+ur:{
+  dir:"rtl",
+  title:"📊 اسمارٹ مارکیٹ اسکینر",
+  subtitle:"مارکیٹ، اسٹرکچر، لیکویڈیٹی، والیوم اور آرڈر فلو کا تجزیہ",
+  connected:"🟢 کنکشن فعال ہے",
+  manual:"🔎 دستی اثاثہ تلاش",
+  manualDesc:"صرف اثاثے کا نام لکھیں؛ مارکیٹ خودکار طور پر معلوم ہوگی۔",
+  placeholder:"مثلاً BTC یا ALICE",
+  analyze:"تجزیہ",
+  methods:"🎯 سگنل کے طریقے",
+  methodsDesc:"صرف منتخب طریقے اسکور اور سگنل پر اثر انداز ہوں گے۔",
+  minScore:"کم از کم سگنل اسکور",
+  selectAll:"⭐ سب منتخب کریں",
+  clear:"صاف کریں",
+  result:"📌 دستی تجزیہ",
+  signals:"🚨 تصدیق شدہ سگنلز",
+  signalsDesc:"یہ حصہ دستی تجزیے سے الگ ہے۔",
+  getSignals:"🔄 سگنلز حاصل کریں",
+  radar:"📡 مارکیٹ ریڈار",
+  radarDesc:"پمپ، ڈمپ اور ریورسل کے لیے آزاد ریڈار۔",
+  getRadar:"📡 ریڈار حاصل کریں",
+  pump:"پمپ",
+  dump:"ڈمپ",
+  reversal:"ریورسل",
+  deep:"👆 گہرا تجزیہ",
+  score:"اسکور",
+  long:"تیزی",
+  short:"مندی",
+  wait:"انتظار",
+  market:"مارکیٹ",
+  futures:"فیوچرز",
+  spot:"اسپاٹ",
+  price:"قیمت",
+  reasons:"📋 وجوہات",
+  timeframes:"📊 ٹائم فریم",
+  structure:"🧱 اسٹرکچر",
+  liquidity:"💧 لیکویڈیٹی",
+  orderflow:"⚡ آرڈر فلو",
+  marketInfo:"📈 مارکیٹ",
+  trend:"رجحان",
+  maSlope:"MA ڈھلوان",
+  macdDir:"MACD سمت",
+  histogram:"ہسٹوگرام",
+  rsi:"RSI",
+  current:"موجودہ",
+  spike:"والیوم اسپائک",
+  yes:"ہاں",
+  no:"نہیں",
+  buyWall:"خرید دیوار",
+  sellWall:"فروخت دیوار",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"لیکویڈیٹی ہنٹ",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"ڈیٹا موجود نہیں",
+  notFound:"❌ اثاثہ نہیں ملا۔",
+  loading:"⏳ لوڈ ہو رہا ہے...",
+  error:"❌ ڈیٹا حاصل کرنے میں خرابی",
+  noSignal:"ابھی کوئی سگنل نہیں۔",
+  none:"—",
+  levels:["بہت آسان","آسان","عام","درمیانہ","مشکل","بہت سخت"],
+  styles:{
+    ma:"موونگ ایوریج",
+    smart:"اسمارٹ منی",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"ایچیموکو",
+    volume:"والیوم",
+    orderflow:"آرڈر فلو",
+    liquidity:"لیکویڈیٹی"
+  }
+},
+
+ru:{
+  dir:"ltr",
+  title:"📊 Умный сканер рынка",
+  subtitle:"Мультистилевой анализ рынка, структуры, ликвидности, объёма и потока ордеров",
+  connected:"🟢 Соединение активно",
+  manual:"🔎 Ручной поиск актива",
+  manualDesc:"Введите только название актива; рынок будет определён автоматически.",
+  placeholder:"Например BTC или ALICE",
+  analyze:"Анализ",
+  methods:"🎯 Методы сигналов",
+  methodsDesc:"Только выбранные методы влияют на оценку и фильтр.",
+  minScore:"Минимальный балл сигнала",
+  selectAll:"⭐ Выбрать всё",
+  clear:"Очистить",
+  result:"📌 Ручной анализ",
+  signals:"🚨 Подтверждённые сигналы",
+  signalsDesc:"Этот раздел независим от ручного анализа.",
+  getSignals:"🔄 Получить сигналы",
+  radar:"📡 Радар рынка",
+  radarDesc:"Независимый радар для пампа, дампа и разворота.",
+  getRadar:"📡 Получить радар",
+  pump:"Памп",
+  dump:"Дамп",
+  reversal:"Разворот",
+  deep:"👆 Глубокий анализ",
+  score:"Оценка",
+  long:"Рост",
+  short:"Падение",
+  wait:"Ожидание",
+  market:"Рынок",
+  futures:"Фьючерсы",
+  spot:"Спот",
+  price:"Цена",
+  reasons:"📋 Причины",
+  timeframes:"📊 Таймфреймы",
+  structure:"🧱 Структура",
+  liquidity:"💧 Ликвидность",
+  orderflow:"⚡ Поток ордеров",
+  marketInfo:"📈 Рынок",
+  trend:"Тренд",
+  maSlope:"Наклон MA",
+  macdDir:"Направление MACD",
+  histogram:"Гистограмма",
+  rsi:"RSI",
+  current:"Текущее",
+  spike:"Всплеск объёма",
+  yes:"Да",
+  no:"Нет",
+  buyWall:"Стена покупок",
+  sellWall:"Стена продаж",
+  bos:"BOS",
+  choch:"CHoCH",
+  hunt:"Охота за ликвидностью",
+  fvg:"FVG",
+  orderBlock:"Order Block",
+  noData:"Нет данных",
+  notFound:"❌ Актив не найден.",
+  loading:"⏳ Загрузка...",
+  error:"❌ Ошибка получения данных",
+  noSignal:"Сигналов пока нет.",
+  none:"—",
+  levels:["Очень легко","Легко","Обычно","Средне","Сложно","Очень строго"],
+  styles:{
+    ma:"Скользящие средние",
+    smart:"Smart Money",
+    ict:"ICT",
+    macd:"MACD",
+    rsi:"RSI",
+    ichimoku:"Ichimoku",
+    volume:"Объём",
+    orderflow:"Поток ордеров",
+    liquidity:"Ликвидность"
+  }
 }
 
 };
 
-/* زبان‌های دیگر از انگلیسی به‌عنوان fallback استفاده می‌کنند */
-["pt","es","zh","ja","hi","ur","ru"].forEach(x=>{
-  T[x] = T.en;
-});
 
-
-/* =====================================================
-   LANGUAGE
-===================================================== */
-
-function tr(key){
-  return T[currentLang]?.[key] || T.en[key] || key;
-}
-
-function applyLanguage(){
-
-  document.documentElement.lang =
-    currentLang;
-
-  document.documentElement.dir =
-    currentLang === "ar" ||
-    currentLang === "ur"
-      ? "rtl"
-      : currentLang === "fa"
-        ? "rtl"
-        : "ltr";
-
-  document.querySelectorAll("[data-i18n]")
-    .forEach(el=>{
-      const key = el.dataset.i18n;
-      if(T[currentLang]?.[key]){
-        el.textContent =
-          T[currentLang][key];
-      }
-    });
-
-  document.getElementById("symbolInput").placeholder =
-    tr("placeholder");
-
-  const names={
-    fa:"🇮🇷 فارسی",
-    en:"🇬🇧 English",
-    ar:"🇸🇦 العربية",
-    pt:"🇵🇹 Português",
-    es:"🇪🇸 Español",
-    zh:"🇨🇳 中文",
-    ja:"🇯🇵 日本語",
-    hi:"🇮🇳 हिन्दी",
-    ur:"🇵🇰 اردو",
-    ru:"🇷🇺 Русский"
-  };
-
-  document.getElementById("langButton").textContent =
-    "🌐 " + names[currentLang] + " ▼";
-
-  renderManual(lastManual);
-}
-
-
-/* =====================================================
-   LANGUAGE MENU
-===================================================== */
-
-document.getElementById("langButton")
-.addEventListener("click",()=>{
-  document.getElementById("langMenu")
-    .classList.toggle("open");
-});
-
-document.querySelectorAll("[data-lang]")
-.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    currentLang =
-      btn.dataset.lang;
-
-    localStorage.setItem(
-      "scannerLang",
-      currentLang
-    );
-
-    document.getElementById("langMenu")
-      .classList.remove("open");
-
-    applyLanguage();
-  });
-});
-
-
-/* =====================================================
-   METHODS
-===================================================== */
-
-const methodsPanel =
-  document.getElementById("methodsPanel");
-
-document.getElementById("methodsToggle")
-.addEventListener("click",()=>{
-
-  methodsPanel.classList.toggle("open");
-
-  document.getElementById("methodsArrow")
-    .textContent =
-      methodsPanel.classList.contains("open")
-        ? "▲"
-        : "▼";
-});
-
-function getMethods(){
-
-  return [
-    ...document.querySelectorAll(
-      ".method input:checked"
-    )
-  ].map(x=>x.value);
-
-}
-
-document.getElementById("selectAll")
-.addEventListener("click",()=>{
-
-  document.querySelectorAll(
-    ".method input"
-  ).forEach(x=>x.checked=true);
-
-});
-
-document.getElementById("clearAll")
-.addEventListener("click",()=>{
-
-  document.querySelectorAll(
-    ".method input"
-  ).forEach(x=>x.checked=false);
-
-});
-
-
-/* =====================================================
-   SCORE
-===================================================== */
-
-const scoreRange =
-  document.getElementById("scoreRange");
-
-const scoreValue =
-  document.getElementById("scoreValue");
-
-scoreRange.addEventListener("input",()=>{
-
-  currentThreshold =
-    Number(scoreRange.value);
-
-  scoreValue.textContent =
-    currentThreshold;
-
-  document.querySelectorAll(".quality")
-    .forEach(x=>{
-      x.classList.toggle(
-        "active",
-        Number(x.dataset.score) ===
-        currentThreshold
-      );
-    });
-});
-
-document.querySelectorAll(".quality")
-.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-
-    currentThreshold =
-      Number(btn.dataset.score);
-
-    scoreRange.value =
-      currentThreshold;
-
-    scoreValue.textContent =
-      currentThreshold;
-
-    document.querySelectorAll(".quality")
-      .forEach(x=>
-        x.classList.remove("active")
-      );
-
-    btn.classList.add("active");
-  });
-});
-
-document.querySelector(
-  '.quality[data-score="75"]'
-).classList.add("active");
-
-
-/* =====================================================
+/* =========================================================
    HELPERS
-===================================================== */
+========================================================= */
+
+function T(){
+  return translations[currentLang] || translations.fa;
+}
 
 function esc(v){
-
   return String(v ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
 }
 
-function num(v){
-
-  const n =
-    Number(v);
-
-  if(!Number.isFinite(n))
-    return "-";
-
-  if(Math.abs(n)>=1000)
-    return n.toLocaleString();
-
-  return Number(
-    n.toFixed(6)
-  ).toString();
-
+function num(v,d=2){
+  const x=Number(v);
+  if(!Number.isFinite(x)) return "—";
+  return x.toFixed(d);
 }
 
-function directionClass(d){
+function directionText(v){
 
-  if(d==="LONG")
+  const t=T();
+
+  if(v==="LONG" || v==="BULLISH")
+    return t.long;
+
+  if(v==="SHORT" || v==="BEARISH")
+    return t.short;
+
+  return t.wait;
+}
+
+function directionClass(v){
+
+  if(v==="LONG" || v==="BULLISH")
     return "long";
 
-  if(d==="SHORT")
+  if(v==="SHORT" || v==="BEARISH")
     return "short";
 
   return "wait";
 }
 
-function directionText(d){
+function tfText(v){
+  return directionText(v);
+}
 
-  if(d==="LONG")
-    return "🟢 " + tr("long");
+function val(v){
+  return v===undefined ||
+         v===null ||
+         v===""
+    ? "—"
+    : esc(v);
+}
 
-  if(d==="SHORT")
-    return "🔴 " + tr("short");
+function enabledMethods(){
 
-  return "🟡 " + tr("wait");
+  return [
+    ...document.querySelectorAll(
+      ".method.active"
+    )
+  ].map(
+    x=>x.dataset.method
+  );
 }
 
 
-/* =====================================================
-   API
-===================================================== */
+/* =========================================================
+   LANGUAGE
+========================================================= */
 
-async function apiFetch(path){
+function toggleLanguages(){
 
-  const response =
-    await fetch(path,{
-      cache:"no-store"
+  document
+    .getElementById("langMenu")
+    .classList.toggle("open");
+
+}
+
+function setLang(lang){
+
+  currentLang=lang;
+
+  localStorage.setItem(
+    "scanner_lang",
+    lang
+  );
+
+  document
+    .getElementById("langMenu")
+    .classList.remove("open");
+
+  applyLanguage();
+
+}
+
+function applyLanguage(){
+
+  const t=T();
+
+  document.documentElement.lang=
+    currentLang;
+
+  document.documentElement.dir=
+    t.dir;
+
+  document.getElementById("title").textContent=t.title;
+  document.getElementById("subtitle").textContent=t.subtitle;
+  document.getElementById("status").textContent=t.connected;
+  document.getElementById("manualTitle").textContent=t.manual;
+  document.getElementById("manualDesc").textContent=t.manualDesc;
+  document.getElementById("symbolInput").placeholder=t.placeholder;
+  document.getElementById("analyzeBtn").textContent=t.analyze;
+  document.getElementById("methodsTitle").textContent=t.methods;
+  document.getElementById("methodsDesc").textContent=t.methodsDesc;
+  document.getElementById("thresholdLabel").textContent=t.minScore;
+  document.getElementById("selectAll").textContent=t.selectAll;
+  document.getElementById("clearAll").textContent=t.clear;
+  document.getElementById("signalsTitle").textContent=t.signals;
+  document.getElementById("signalsDesc").textContent=t.signalsDesc;
+  document.getElementById("signalsBtn").textContent=t.getSignals;
+  document.getElementById("radarTitle").textContent=t.radar;
+  document.getElementById("radarDesc").textContent=t.radarDesc;
+  document.getElementById("radarBtn").textContent=t.getRadar;
+  document.getElementById("pumpTitle").textContent=t.pump;
+  document.getElementById("dumpTitle").textContent=t.dump;
+  document.getElementById("reversalTitle").textContent=t.reversal;
+
+  const labels=[
+    ...document.querySelectorAll(".level")
+  ];
+
+  labels.forEach(
+    (el,i)=>{
+      el.innerHTML=
+        `<span class="levelNumber">${i+1}</span><br>${t.levels[i]}`;
+    }
+  );
+
+  document.getElementById("langButton").textContent=
+    {
+      fa:"🌐 🇮🇷 فارسی ▼",
+      en:"🌐 🇬🇧 English ▼",
+      ar:"🌐 🇸🇦 العربية ▼",
+      pt:"🌐 🇵🇹 Português ▼",
+      es:"🌐 🇪🇸 Español ▼",
+      zh:"🌐 🇨🇳 中文 ▼",
+      ja:"🌐 🇯🇵 日本語 ▼",
+      hi:"🌐 🇮🇳 हिन्दी ▼",
+      ur:"🌐 🇵🇰 اردو ▼",
+      ru:"🌐 🇷🇺 Русский ▼"
+    }[currentLang];
+
+  updateMethodNames();
+
+}
+
+function updateMethodNames(){
+
+  const t=T();
+
+  const map={
+    ma:t.styles.ma,
+    smart:t.styles.smart,
+    ict:t.styles.ict,
+    macd:t.styles.macd,
+    rsi:t.styles.rsi,
+    ichimoku:t.styles.ichimoku,
+    volume:t.styles.volume,
+    orderflow:t.styles.orderflow,
+    liquidity:t.styles.liquidity
+  };
+
+  document
+    .querySelectorAll(".method")
+    .forEach(el=>{
+
+      const m=el.dataset.method;
+
+      if(
+        m==="ict" &&
+        el.textContent.trim()==="FVG"
+      ){
+        el.innerHTML="FVG";
+        return;
+      }
+
+      if(
+        m==="bos"
+      ){
+        el.innerHTML=
+          currentLang==="fa"
+            ? "BOS / شکست ساختار"
+            : "BOS";
+        return;
+      }
+
+      if(
+        m==="choch"
+      ){
+        el.innerHTML=
+          currentLang==="fa"
+            ? "CHoCH / تغییر شخصیت"
+            : "CHoCH";
+        return;
+      }
+
+      if(m==="ob"){
+        el.innerHTML=t.orderBlock;
+        return;
+      }
+
+      if(m==="sr"){
+        el.innerHTML=
+          currentLang==="fa"
+            ? "حمایت / مقاومت"
+            : currentLang==="ar"
+              ? "الدعم / المقاومة"
+              : "Support / Resistance";
+        return;
+      }
+
+      if(m==="oi"){
+        el.innerHTML="OI";
+        return;
+      }
+
+      if(m==="funding"){
+        el.innerHTML="Funding";
+        return;
+      }
+
+      if(map[m]){
+        el.innerHTML=map[m];
+      }
+
     });
 
-  const text =
-    await response.text();
-
-  let data;
-
-  try{
-    data=JSON.parse(text);
-  }catch{
-    throw new Error(
-      "API returned invalid response"
-    );
-  }
-
-  if(!response.ok || data.ok===false){
-
-    throw new Error(
-      data.error ||
-      tr("error")
-    );
-  }
-
-  return data;
 }
 
 
-/* =====================================================
-   MANUAL ANALYSIS
-===================================================== */
+/* =========================================================
+   LEVEL
+========================================================= */
 
-let lastManual=null;
+function setLevel(level){
+
+  currentLevel=level;
+
+  currentThreshold=
+    levelThresholds[level];
+
+  document
+    .getElementById("threshold")
+    .value=currentThreshold;
+
+  document
+    .getElementById("thresholdValue")
+    .textContent=currentThreshold;
+
+  document
+    .querySelectorAll(".level")
+    .forEach(
+      (x,i)=>{
+        x.classList.toggle(
+          "active",
+          i+1===level
+        );
+      }
+    );
+
+}
+
+function thresholdChanged(){
+
+  currentThreshold=
+    Number(
+      document.getElementById(
+        "threshold"
+      ).value
+    );
+
+  document
+    .getElementById(
+      "thresholdValue"
+    )
+    .textContent=
+      currentThreshold;
+
+  document
+    .querySelectorAll(".level")
+    .forEach(x=>
+      x.classList.remove("active")
+    );
+
+}
+
+function selectAllMethods(){
+
+  document
+    .querySelectorAll(".method")
+    .forEach(
+      x=>x.classList.add("active")
+    );
+
+}
+
+function clearMethods(){
+
+  document
+    .querySelectorAll(".method")
+    .forEach(
+      x=>x.classList.remove("active")
+    );
+
+}
+
+function toggleMethods(){
+
+  const body=
+    document.getElementById(
+      "methodsBody"
+    );
+
+  const arrow=
+    document.getElementById(
+      "methodsArrow"
+    );
+
+  body.classList.toggle("open");
+
+  arrow.textContent=
+    body.classList.contains("open")
+      ? "▲"
+      : "▼";
+
+}
+
+
+/* =========================================================
+   METHODS CLICK
+========================================================= */
+
+document.addEventListener(
+  "click",
+  e=>{
+
+    const el=
+      e.target.closest(".method");
+
+    if(el){
+      el.classList.toggle("active");
+    }
+
+  }
+);
+
+
+/* =========================================================
+   MANUAL ANALYSIS
+========================================================= */
 
 async function manualAnalyze(){
 
-  const input =
-    document.getElementById("symbolInput")
+  const input=
+    document
+      .getElementById("symbolInput")
       .value
       .trim();
 
-  if(!input)
+  const box=
+    document.getElementById(
+      "manualResult"
+    );
+
+  const t=T();
+
+  if(!input){
+    box.innerHTML=
+      `<div class="error">${t.notFound}</div>`;
     return;
+  }
 
-  const box =
-    document.getElementById("manualResult");
+  box.innerHTML=
+    `<div class="loading">${t.loading}</div>`;
 
-  box.innerHTML =
-    `<div class="loading">⏳ ${esc(tr("loading"))}</div>`;
+  const btn=
+    document.getElementById(
+      "analyzeBtn"
+    );
+
+  btn.disabled=true;
 
   try{
 
-    const methods =
-      getMethods();
+    const params=
+      new URLSearchParams();
 
-    const url =
-      API +
-      "/search?symbol=" +
-      encodeURIComponent(input) +
-      "&threshold=" +
-      currentThreshold +
-      "&methods=" +
-      encodeURIComponent(
-        JSON.stringify(methods)
+    params.set(
+      "symbol",
+      input
+    );
+
+    params.set(
+      "threshold",
+      currentThreshold
+    );
+
+    params.set(
+      "methods",
+      JSON.stringify(
+        enabledMethods()
+      )
+    );
+
+    const r=
+      await fetch(
+        `${API}/api/search?${params.toString()}`,
+        {
+          cache:"no-store"
+        }
       );
 
-    const data =
-      await apiFetch(url);
+    const data=
+      await r.json();
 
-    lastManual=data;
+    if(!r.ok || !data.ok){
 
-    renderManual(data);
+      box.innerHTML=
+        `<div class="error">${t.notFound}</div>`;
+
+      return;
+    }
+
+    renderAnalysis(
+      data,
+      box
+    );
 
   }catch(e){
 
-    box.innerHTML =
-      `<div class="error">
-        ❌ ${esc(e.message)}
-      </div>`;
+    box.innerHTML=
+      `<div class="error">${t.error}<br>${esc(e.message)}</div>`;
+
+  }finally{
+
+    btn.disabled=false;
 
   }
-}
 
-document.getElementById("analyzeBtn")
-.addEventListener("click",manualAnalyze);
-
-document.getElementById("symbolInput")
-.addEventListener("keydown",e=>{
-  if(e.key==="Enter")
-    manualAnalyze();
-});
-
-
-/* =====================================================
-   MANUAL RENDER
-===================================================== */
-
-function renderManual(data){
-
-  const box =
-    document.getElementById("manualResult");
-
-  if(!data){
-
-    box.innerHTML =
-      `<div class="empty">${esc(tr("noManual"))}</div>`;
-
-    return;
-  }
-
-  if(data.ok===false){
-
-    box.innerHTML =
-      `<div class="error">
-        ❌ ${esc(data.error)}
-      </div>`;
-
-    return;
-  }
-
-  box.innerHTML =
-    createResultCard(
-      data,
-      true
-    );
 }
 
 
-/* =====================================================
-   RESULT CARD
-===================================================== */
+/* =========================================================
+   ANALYSIS RENDER
+========================================================= */
 
-function createResultCard(data,manual=false){
+function renderAnalysis(data,box){
 
-  const id =
-    "deep_" +
-    Math.random()
-      .toString(36)
-      .slice(2);
+  const t=T();
 
-  const direction =
-    data.direction;
-
-  const score =
+  const score=
     Number(data.score || 0);
 
-  const market =
-    data.category === "linear"
-      ? tr("futures")
-      : tr("spot");
+  const direction=
+    data.direction || "WAIT";
 
-  const reasons =
-    Array.isArray(data.reasons)
-      ? data.reasons
-      : [];
+  const market=
+    data.category==="linear"
+      ? t.futures
+      : t.spot;
 
-  const tf =
-    data.timeframes || {};
+  const a=
+    data.timeframes?.["1"] || {};
 
-  const styles =
-    data.styles || {};
+  const html=[];
 
-  const styleNames={
-    ma:"ma",
-    smart:"smart",
-    ict:"ict",
-    macd:"macd",
-    rsi:"rsi",
-    ichimoku:"ichimoku",
-    volume:"volume",
-    orderflow:"orderflow",
-    liquidity:"liquidity"
-  };
+  html.push(`
+    <div class="section">
 
-  let styleHtml="";
+      <div class="resultHeader">
 
-  Object.entries(styleNames)
-  .forEach(([key,label])=>{
-
-    if(styles[key]===undefined)
-      return;
-
-    styleHtml += `
-      <div class="styleRow">
-
-        <div
-          class="styleHead"
-          onclick="toggleStyle(this)"
-        >
-          <span>${esc(tr(label))}</span>
-          <b>${num(styles[key])}/100 ▼</b>
+        <div class="symbol">
+          ${esc(data.symbol)}
         </div>
-
-        <div class="styleBody">
-          ${styleReason(key,data)}
-        </div>
-
-      </div>
-    `;
-
-  });
-
-  let tfHtml="";
-
-  Object.entries(tf)
-    .forEach(([key,x])=>{
-
-      if(!x || x.error)
-        return;
-
-      tfHtml += `
-        <div class="meta">
-          <div>
-            ${key}m
-          </div>
-          <div class="${directionClass(
-            x.trend==="BULLISH"
-              ?"LONG"
-              :x.trend==="BEARISH"
-                ?"SHORT"
-                :"WAIT"
-          )}">
-            ${
-              x.trend==="BULLISH"
-                ?"🟢"
-                :x.trend==="BEARISH"
-                  ?"🔴"
-                  :"🟡"
-            }
-          </div>
-          <div>
-            ${esc(x.trend || "-")}
-          </div>
-        </div>
-      `;
-
-    });
-
-  return `
-    <div class="result">
-
-      <div
-        class="resultHead"
-        onclick="toggleDeep('${id}')"
-        style="cursor:pointer"
-      >
 
         <div>
-          <div class="symbol">
-            ${esc(data.symbol)}
-          </div>
-
-          <div class="${directionClass(direction)}">
+          <span class="direction ${directionClass(direction)}">
             ${directionText(direction)}
-          </div>
-        </div>
-
-        <div class="score">
-          ${score}/100
+          </span>
         </div>
 
       </div>
 
-      <div class="meta">
+      <div class="scoreBox">
 
         <div>
-          ${esc(tr("market"))}
-          <br>
-          ${esc(market)}
+          ${t.score}:
+          <span class="scoreNumber">
+            ${score}/100
+          </span>
         </div>
 
-        <div>
-          Long<br>
-          ${num(data.longScore)}
-        </div>
-
-        <div>
-          Short<br>
-          ${num(data.shortScore)}
+        <div class="scoreBar">
+          <div
+            class="scoreFill"
+            style="width:${Math.min(100,score)}%">
+          </div>
         </div>
 
       </div>
 
-      <div
-        class="deep"
-        id="${id}"
-      >
+      <div class="grid">
 
-        <div class="title">
-          ${esc(tr("deep"))}
+        <div class="stat">
+          <div class="statLabel">${t.market}</div>
+          <div class="statValue">${market}</div>
         </div>
 
-        ${styleHtml}
-
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>📋 ${esc(tr("reasons"))}</span>
-          </div>
-
-          <div class="styleBody open">
-
-            ${
-              reasons.length
-                ? reasons.map(
-                    x=>`
-                    <div class="reason">
-                      ✓ ${esc(x)}
-                    </div>
-                    `
-                  ).join("")
-                : "—"
-            }
-
+        <div class="stat">
+          <div class="statLabel">${t.price}</div>
+          <div class="statValue ltr">
+            ${num(data.price,8)}
           </div>
         </div>
 
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>📊 Timeframes</span>
-          </div>
-
-          <div class="styleBody open">
-            ${tfHtml || "—"}
+        <div class="stat">
+          <div class="statLabel">Long</div>
+          <div class="statValue">
+            ${data.longScore ?? 0}
           </div>
         </div>
 
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>🧱 Structure</span>
-          </div>
-
-          <div class="styleBody open">
-
-            BOS:
-            ${esc(
-              data.timeframes?.["1"]?.bos || "-"
-            )}
-
-            <br>
-
-            CHoCH:
-            ${esc(
-              data.timeframes?.["1"]?.choch || "-"
-            )}
-
-            <br>
-
-            FVG:
-            ${esc(
-              data.timeframes?.["1"]?.fvg?.type || "-"
-            )}
-
-            <br>
-
-            Hunt:
-            ${esc(
-              data.timeframes?.["1"]?.hunt?.side || "-"
-            )}
-
-          </div>
-        </div>
-
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>💧 ${esc(tr("liquidity"))}</span>
-          </div>
-
-          <div class="styleBody">
-
-            ${
-              data.walls?.buy
-                ? "Buy Wall: " +
-                  num(data.walls.buy.price)
-                : "Buy Wall: -"
-            }
-
-            <br>
-
-            ${
-              data.walls?.sell
-                ? "Sell Wall: " +
-                  num(data.walls.sell.price)
-                : "Sell Wall: -"
-            }
-
-          </div>
-        </div>
-
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>⚡ Order Flow</span>
-          </div>
-
-          <div class="styleBody">
-
-            ${
-              data.footprint?.error
-                ? esc(data.footprint.error)
-                :
-                "Delta: " +
-                num(data.footprint?.deltaPercent) +
-                "%"
-            }
-
-          </div>
-        </div>
-
-        <div class="styleRow">
-          <div class="styleHead">
-            <span>📈 Market</span>
-          </div>
-
-          <div class="styleBody">
-
-            Price:
-            ${num(data.price)}
-
-            <br>
-
-            OI:
-            ${num(data.market?.openInterest)}
-
-            <br>
-
-            Funding:
-            ${
-              data.market?.fundingRate !== null &&
-              data.market?.fundingRate !== undefined
-                ? num(data.market.fundingRate * 100) + "%"
-                : "-"
-            }
-
-            <br>
-
-            24h:
-            ${num(data.market?.change24h)}%
-
+        <div class="stat">
+          <div class="statLabel">Short</div>
+          <div class="statValue">
+            ${data.shortScore ?? 0}
           </div>
         </div>
 
       </div>
 
     </div>
-  `;
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.deep}
+      </div>
+
+      ${styleCard(
+        "ma",
+        t.styles.ma,
+        data.styles?.ma ?? 0,
+        `
+        ${t.trend}: ${directionText(a.trend)}<br>
+        ${t.maSlope}: ${translateSlope(a.maSlope)}<br>
+        MA7: ${num(a.ma7,8)}<br>
+        MA20: ${num(a.ma20,8)}
+        `
+      )}
+
+      ${styleCard(
+        "smart",
+        t.styles.smart,
+        data.styles?.smart ?? 0,
+        `
+        ${t.bos}: ${translateState(a.bos)}<br>
+        ${t.choch}: ${translateState(a.choch)}<br>
+        ${t.hunt}: ${translateHunt(a.hunt)}<br>
+        ${t.orderBlock}: ${translateState(a.orderBlock?.type)}
+        `
+      )}
+
+      ${styleCard(
+        "ict",
+        "ICT / FVG",
+        data.styles?.ict ?? 0,
+        `
+        ${t.fvg}: ${translateState(a.fvg?.type)}
+        `
+      )}
+
+      ${styleCard(
+        "macd",
+        t.styles.macd,
+        data.styles?.macd ?? 0,
+        `
+        ${t.macdDir}: ${directionText(a.macd?.direction)}<br>
+        ${t.histogram}: ${num(a.macd?.histogram,8)}
+        `
+      )}
+
+      ${styleCard(
+        "rsi",
+        t.styles.rsi,
+        data.styles?.rsi ?? 0,
+        `
+        ${t.rsi}: ${num(a.rsi,2)}
+        `
+      )}
+
+      ${styleCard(
+        "ichimoku",
+        t.styles.ichimoku,
+        data.styles?.ichimoku ?? 0,
+        `
+        ${t.trend}: ${directionText(a.ichimoku?.direction)}
+        `
+      )}
+
+      ${styleCard(
+        "volume",
+        t.styles.volume,
+        data.styles?.volume ?? 0,
+        `
+        ${t.current}: ${num(a.volume?.current,2)}<br>
+        MA20: ${num(a.volume?.ma20,2)}<br>
+        ${t.spike}: ${a.volume?.spike ? t.yes : t.no}
+        `
+      )}
+
+      ${styleCard(
+        "orderflow",
+        t.styles.orderflow,
+        data.styles?.orderflow ?? 0,
+        `
+        Delta: ${num(data.footprint?.deltaPercent,2)}%
+        `
+      )}
+
+      ${styleCard(
+        "liquidity",
+        t.styles.liquidity,
+        data.styles?.liquidity ?? 0,
+        `
+        ${t.buyWall}: ${num(data.walls?.buy?.price,8)}<br>
+        ${t.sellWall}: ${num(data.walls?.sell?.price,8)}
+        `
+      )}
+
+    </div>
+  `);
+
+
+  const reasons=
+    Array.isArray(data.reasons)
+      ? data.reasons
+      : [];
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.reasons}
+      </div>
+
+      <div class="stat">
+
+        ${
+          reasons.length
+            ? reasons.map(
+                x=>`✓ ${esc(translateReason(x))}<br>`
+              ).join("")
+            : t.noData
+        }
+
+      </div>
+
+    </div>
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.timeframes}
+      </div>
+
+      <div class="grid">
+
+        ${renderTF("1",data.timeframes?.["1"])}
+        ${renderTF("3",data.timeframes?.["3"])}
+        ${renderTF("5",data.timeframes?.["5"])}
+        ${renderTF("15",data.timeframes?.["15"])}
+        ${renderTF("60",data.timeframes?.["60"])}
+
+      </div>
+
+    </div>
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.structure}
+      </div>
+
+      <div class="stat">
+
+        ${t.bos}: ${translateState(a.bos)}
+        <br>
+
+        ${t.choch}: ${translateState(a.choch)}
+        <br>
+
+        ${t.fvg}: ${translateState(a.fvg?.type)}
+        <br>
+
+        ${t.hunt}: ${translateHunt(a.hunt)}
+
+      </div>
+
+    </div>
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.liquidity}
+      </div>
+
+      <div class="kv">
+
+        <div>
+          ${t.buyWall}<br>
+          <b>${num(data.walls?.buy?.price,8)}</b>
+        </div>
+
+        <div>
+          ${t.sellWall}<br>
+          <b>${num(data.walls?.sell?.price,8)}</b>
+        </div>
+
+      </div>
+
+    </div>
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.orderflow}
+      </div>
+
+      <div class="stat">
+        Delta:
+        <b>
+          ${num(data.footprint?.deltaPercent,2)}%
+        </b>
+      </div>
+
+    </div>
+  `);
+
+
+  html.push(`
+    <div class="section">
+
+      <div class="sectionTitle">
+        ${t.marketInfo}
+      </div>
+
+      <div class="grid">
+
+        <div class="stat">
+          <div class="statLabel">OI</div>
+          <div class="statValue ltr">
+            ${
+              data.market?.openInterest === null ||
+              data.market?.openInterest === undefined
+                ? "—"
+                : num(data.market.openInterest,2)
+            }
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="statLabel">Funding</div>
+          <div class="statValue ltr">
+            ${
+              data.market?.fundingRate === null ||
+              data.market?.fundingRate === undefined
+                ? "—"
+                : num(
+                    data.market.fundingRate*100,
+                    4
+                  )+"%"
+            }
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  `);
+
+
+  box.innerHTML=html.join("");
+
 }
 
 
-/* =====================================================
-   STYLE REASONS
-===================================================== */
-
-function styleReason(key,data){
-
-  const a =
-    data.timeframes?.["1"] || {};
-
-  if(key==="ma")
-    return `
-      Trend: ${esc(a.trend || "-")}
-      <br>
-      MA Slope: ${esc(a.maSlope || "-")}
-      <br>
-      MA7: ${num(a.ma7)}
-      <br>
-      MA20: ${num(a.ma20)}
-    `;
-
-  if(key==="smart")
-    return `
-      BOS:
-      ${esc(a.bos || "-")}
-      <br>
-      CHoCH:
-      ${esc(a.choch || "-")}
-      <br>
-      Hunt:
-      ${esc(a.hunt?.side || "-")}
-      <br>
-      Order Block:
-      ${esc(a.orderBlock?.type || "-")}
-    `;
-
-  if(key==="ict")
-    return `
-      FVG:
-      ${esc(a.fvg?.type || "-")}
-    `;
-
-  if(key==="macd")
-    return `
-      Direction:
-      ${esc(a.macd?.direction || "-")}
-      <br>
-      Histogram:
-      ${num(a.macd?.histogram)}
-    `;
-
-  if(key==="rsi")
-    return `
-      RSI:
-      ${num(a.rsi)}
-    `;
-
-  if(key==="ichimoku")
-    return `
-      Direction:
-      ${esc(a.ichimoku?.direction || "-")}
-    `;
-
-  if(key==="volume")
-    return `
-      Current:
-      ${num(a.volume?.current)}
-      <br>
-      MA20:
-      ${num(a.volume?.ma20)}
-      <br>
-      Spike:
-      ${a.volume?.spike ? "YES" : "NO"}
-    `;
-
-  if(key==="orderflow")
-    return `
-      Delta:
-      ${num(data.footprint?.deltaPercent)}%
-    `;
-
-  if(key==="liquidity")
-    return `
-      Buy Wall:
-      ${num(data.walls?.buy?.price)}
-      <br>
-      Sell Wall:
-      ${num(data.walls?.sell?.price)}
-    `;
-
-  return "—";
-}
-
-
-/* =====================================================
-   DEEP TOGGLE
-===================================================== */
-
-window.toggleDeep=function(id){
-
-  const el =
-    document.getElementById(id);
-
-  if(el)
-    el.classList.toggle("open");
-
-};
-
-window.toggleStyle=function(head){
-
-  const body =
-    head.nextElementSibling;
-
-  if(body)
-    body.classList.toggle("open");
-
-};
-
-
-/* =====================================================
-   SIGNALS
-===================================================== */
-
-document.getElementById("signalsBtn")
-.addEventListener("click",async()=>{
-
-  const box =
-    document.getElementById("signalsResult");
-
-  box.innerHTML =
-    `<div class="loading">
-      ⏳ ${esc(tr("loading"))}
-    </div>`;
-
-  try{
-
-    const methods =
-      getMethods();
-
-    const url =
-      API +
-      "/scan?threshold=" +
-      currentThreshold +
-      "&methods=" +
-      encodeURIComponent(
-        JSON.stringify(methods)
-      );
-
-    const data =
-      await apiFetch(url);
-
-    const results =
-      Array.isArray(data.results)
-        ? data.results
-        : [];
-
-    /*
-      اینجا یک فیلتر اضافه هم داریم تا اگر Worker
-      به هر دلیل نتیجه پایین‌تر برگرداند،
-      در بخش «تأییدشده» نمایش داده نشود.
-    */
-
-    const confirmed =
-      results.filter(
-        x =>
-          Number(x.score || 0)
-          >= currentThreshold
-      );
-
-    if(!confirmed.length){
-
-      box.innerHTML =
-        `<div class="empty">
-          🟡 ${esc(tr("noSignals"))}
-        </div>`;
-
-      return;
-    }
-
-    box.innerHTML =
-      confirmed
-        .map(x=>createResultCard(x))
-        .join("");
-
-  }catch(e){
-
-    box.innerHTML =
-      `<div class="error">
-        ❌ ${esc(e.message)}
-      </div>`;
-
-  }
-
-});
-
-
-/* =====================================================
-   RADAR
-===================================================== */
-
-document.getElementById("radarBtn")
-.addEventListener("click",async()=>{
-
-  const pump =
-    document.getElementById("pumpRadar");
-
-  const dump =
-    document.getElementById("dumpRadar");
-
-  const reversal =
-    document.getElementById("reversalRadar");
-
-  pump.innerHTML =
-    dump.innerHTML =
-    reversal.innerHTML =
-      `<div class="loading">
-        ⏳ ${esc(tr("loading"))}
-      </div>`;
-
-  try{
-
-    const methods =
-      getMethods();
-
-    const url =
-      API +
-      "/radar?threshold=" +
-      currentThreshold +
-      "&methods=" +
-      encodeURIComponent(
-        JSON.stringify(methods)
-      );
-
-    const data =
-      await apiFetch(url);
-
-    renderRadar(
-      pump,
-      data.pump,
-      "🚀"
-    );
-
-    renderRadar(
-      dump,
-      data.dump,
-      "🔻"
-    );
-
-    renderRadar(
-      reversal,
-      data.reversal,
-      "🔄"
-    );
-
-  }catch(e){
-
-    const error =
-      `<div class="error">
-        ❌ ${esc(e.message)}
-      </div>`;
-
-    pump.innerHTML =
-      dump.innerHTML =
-      reversal.innerHTML =
-        error;
-  }
-
-});
-
-
-function renderRadar(box,items,icon){
-
-  if(!Array.isArray(items) ||
-     !items.length){
-
-    box.innerHTML =
-      `<div class="empty">—</div>`;
-
-    return;
-  }
-
-  box.innerHTML =
-    items.map(x=>`
-
-      <div
-        class="result"
-        style="margin-top:6px"
-      >
-
-        <div class="resultHead">
-
-          <div>
-            <div class="symbol">
-              ${icon} ${esc(x.symbol)}
-            </div>
-
-            <div class="${directionClass(x.direction)}">
-              ${directionText(x.direction)}
-            </div>
-          </div>
-
-          <div class="score">
-            ${num(x.score)}
-          </div>
+/* =========================================================
+   STYLE CARD
+========================================================= */
+
+function styleCard(
+  id,
+  name,
+  score,
+  body
+){
+
+  return `
+    <div
+      class="styleCard"
+      onclick="this.classList.toggle('open')">
+
+      <div class="styleHead">
+
+        <div class="styleName">
+          ${esc(name)}
+        </div>
+
+        <div>
+
+          <span class="styleScore">
+            ${Math.round(score)}/100
+          </span>
+
+          <span class="arrow">
+            ▼
+          </span>
 
         </div>
 
       </div>
 
-    `).join("");
+      <div class="styleBody">
+        ${body}
+      </div>
+
+    </div>
+  `;
 
 }
 
 
-/* =====================================================
-   START
-===================================================== */
+/* =========================================================
+   TRANSLATION OF WORKER VALUES
+========================================================= */
+
+function translateState(v){
+
+  if(v===undefined || v===null)
+    return "—";
+
+  const map={
+
+    NONE:{
+      fa:"مشاهده نشد",
+      en:"Not detected",
+      ar:"غير موجود",
+      pt:"Não detectado",
+      es:"No detectado",
+      zh:"未发现",
+      ja:"検出なし",
+      hi:"नहीं मिला",
+      ur:"نہیں ملا",
+      ru:"Не обнаружено"
+    },
+
+    BULLISH:{
+      fa:"صعودی",
+      en:"Bullish",
+      ar:"صاعد",
+      pt:"Alta",
+      es:"Alcista",
+      zh:"看涨",
+      ja:"上昇",
+      hi:"तेजी",
+      ur:"تیزی",
+      ru:"Рост"
+    },
+
+    BEARISH:{
+      fa:"نزولی",
+      en:"Bearish",
+      ar:"هابط",
+      pt:"Baixa",
+      es:"Bajista",
+      zh:"看跌",
+      ja:"下降",
+      hi:"मंदी",
+      ur:"مندی",
+      ru:"Падение"
+    },
+
+    UP:{
+      fa:"صعودی",
+      en:"Up",
+      ar:"صاعد",
+      pt:"Alta",
+      es:"Al alza",
+      zh:"上升",
+      ja:"上向き",
+      hi:"ऊपर",
+      ur:"اوپر",
+      ru:"Вверх"
+    },
+
+    DOWN:{
+      fa:"نزولی",
+      en:"Down",
+      ar:"هابط",
+      pt:"Baixa",
+      es:"A la baja",
+      zh:"下降",
+      ja:"下向き",
+      hi:"नीचे",
+      ur:"نیچے",
+      ru:"Вниз"
+    },
+
+    FLAT:{
+      fa:"خنثی",
+      en:"Flat",
+      ar:"ثابت",
+      pt:"Lateral",
+      es:"Plano",
+      zh:"横盘",
+      ja:"横ばい",
+      hi:"स्थिर",
+      ur:"مستحکم",
+      ru:"Флэт"
+    },
+
+    LONG:{
+      fa:"صعودی",
+      en:"Long",
+      ar:"شراء",
+      pt:"Long",
+      es:"Long",
+      zh:"做多",
+      ja:"ロング",
+      hi:"लॉन्ग",
+      ur:"لانگ",
+      ru:"Лонг"
+    },
+
+    SHORT:{
+      fa:"نزولی",
+      en:"Short",
+      ar:"بيع",
+      pt:"Short",
+      es:"Short",
+      zh:"做空",
+      ja:"ショート",
+      hi:"शॉर्ट",
+      ur:"شارٹ",
+      ru:"Шорт"
+    },
+
+    BULLISH_ENGULFING:{
+      fa:"پوشای صعودی",
+      en:"Bullish Engulfing",
+      ar:"ابتلاع صاعد",
+      pt:"Engolfo de alta",
+      es:"Envolvente alcista",
+      zh:"看涨吞没",
+      ja:"強気の包み足",
+      hi:"बुलिश एंगलफिंग",
+      ur:"بلش انگیلفنگ",
+      ru:"Бычье поглощение"
+    },
+
+    BEARISH_ENGULFING:{
+      fa:"پوشای نزولی",
+      en:"Bearish Engulfing",
+      ar:"ابتلاع هابط",
+      pt:"Engolfo de baixa",
+      es:"Envolvente bajista",
+      zh:"看跌吞没",
+      ja:"弱気の包み足",
+      hi:"बियरिश एंगलफिंग",
+      ur:"بیئرش انگیلفنگ",
+      ru:"Медвежье поглощение"
+    }
+
+  };
+
+  if(map[v])
+    return map[v][currentLang] || map[v].en;
+
+  return esc(v);
+
+}
+
+function translateSlope(v){
+  return translateState(v);
+}
+
+function translateHunt(h){
+
+  if(!h || !h.side)
+    return "—";
+
+  if(h.side==="LONG")
+    return T().long;
+
+  if(h.side==="SHORT")
+    return T().short;
+
+  return "—";
+}
+
+function translateReason(x){
+
+  if(!x)
+    return "";
+
+  const dict={
+
+    "مووینگ میانگین در جهت صعود":{
+      en:"Moving averages are bullish",
+      fa:"مووینگ میانگین در جهت صعود",
+      ar:"المتوسطات متجهة للصعود",
+      pt:"Médias móveis em alta",
+      es:"Medias móviles alcistas",
+      zh:"均线看涨",
+      ja:"移動平均線は上昇",
+      hi:"मूविंग एवरेज तेजी में",
+      ur:"موونگ ایوریج تیزی میں",
+      ru:"Скользящие средние бычьи"
+    },
+
+    "مووینگ میانگین در جهت نزول":{
+      en:"Moving averages are bearish",
+      fa:"مووینگ میانگین در جهت نزول",
+      ar:"المتوسطات متجهة للهبوط",
+      pt:"Médias móveis em baixa",
+      es:"Medias móviles bajistas",
+      zh:"均线看跌",
+      ja:"移動平均線は下降",
+      hi:"मूविंग एवरेज मंदी में",
+      ur:"موونگ ایوریج مندی میں",
+      ru:"Скользящие средние медвежьи"
+    },
+
+    "MACD صعودی":{
+      en:"MACD is bullish",
+      fa:"MACD صعودی",
+      ar:"MACD صاعد",
+      pt:"MACD de alta",
+      es:"MACD alcista",
+      zh:"MACD 看涨",
+      ja:"MACD 上昇",
+      hi:"MACD तेजी",
+      ur:"MACD تیزی",
+      ru:"MACD бычий"
+    },
+
+    "MACD نزولی":{
+      en:"MACD is bearish",
+      fa:"MACD نزولی",
+      ar:"MACD هابط",
+      pt:"MACD de baixa",
+      es:"MACD bajista",
+      zh:"MACD 看跌",
+      ja:"MACD 下降",
+      hi:"MACD मंदी",
+      ur:"MACD مندی",
+      ru:"MACD медвежий"
+    },
+
+    "RSI در ناحیه اشباع فروش":{
+      en:"RSI is oversold",
+      fa:"RSI در ناحیه اشباع فروش",
+      ar:"RSI في منطقة تشبع البيع",
+      pt:"RSI está sobrevendido",
+      es:"RSI está sobrevendido",
+      zh:"RSI 处于超卖区",
+      ja:"RSI は売られ過ぎ",
+      hi:"RSI ओवरसोल्ड है",
+      ur:"RSI اوور سولڈ ہے",
+      ru:"RSI перепродан"
+    },
+
+    "RSI در ناحیه اشباع خرید":{
+      en:"RSI is overbought",
+      fa:"RSI در ناحیه اشباع خرید",
+      ar:"RSI في منطقة تشبع الشراء",
+      pt:"RSI está sobrecomprado",
+      es:"RSI está sobrecomprado",
+      zh:"RSI 处于超买区",
+      ja:"RSI は買われ過ぎ",
+      hi:"RSI ओवरबॉट है",
+      ur:"RSI اوور بوٹ ہے",
+      ru:"RSI перекуплен"
+    },
+
+    "Order Block نزولی":{
+      en:"Bearish Order Block",
+      fa:"Order Block نزولی",
+      ar:"منطقة طلب هابطة",
+      pt:"Order Block baixista",
+      es:"Order Block bajista",
+      zh:"看跌订单块",
+      ja:"弱気 Order Block",
+      hi:"बियरिश Order Block",
+      ur:"بیئرش Order Block",
+      ru:"Медвежий Order Block"
+    },
+
+    "Order Block صعودی":{
+      en:"Bullish Order Block",
+      fa:"Order Block صعودی",
+      ar:"منطقة طلب صاعدة",
+      pt:"Order Block de alta",
+      es:"Order Block alcista",
+      zh:"看涨订单块",
+      ja:"強気 Order Block",
+      hi:"बुलिश Order Block",
+      ur:"بلش Order Block",
+      ru:"Бычий Order Block"
+    },
+
+    "جریان سفارش خریداران قوی‌تر است":{
+      en:"Buyers have stronger order flow",
+      fa:"جریان سفارش خریداران قوی‌تر است",
+      ar:"تدفق أوامر المشترين أقوى",
+      pt:"Fluxo comprador mais forte",
+      es:"Flujo comprador más fuerte",
+      zh:"买方订单流更强",
+      ja:"買い注文フローが強い",
+      hi:"खरीदारों का ऑर्डर फ्लो मजबूत है",
+      ur:"خریداروں کا آرڈر فلو مضبوط ہے",
+      ru:"Поток покупателей сильнее"
+    },
+
+    "جریان سفارش فروشندگان قوی‌تر است":{
+      en:"Sellers have stronger order flow",
+      fa:"جریان سفارش فروشندگان قوی‌تر است",
+      ar:"تدفق أوامر البائعين أقوى",
+      pt:"Fluxo vendedor mais forte",
+      es:"Flujo vendedor más fuerte",
+      zh:"卖方订单流更强",
+      ja:"売り注文フローが強い",
+      hi:"विक्रेताओं का ऑर्डर फ्लो मजबूत है",
+      ur:"فروخت کنندگان کا آرڈر فلو مضبوط ہے",
+      ru:"Поток продавцов сильнее"
+    }
+
+  };
+
+  if(dict[x])
+    return dict[x][currentLang] || dict[x].en;
+
+  return x;
+
+}
+
+
+/* =========================================================
+   TIMEFRAMES
+========================================================= */
+
+function renderTF(tf,a){
+
+  if(!a)
+    return `
+      <div class="stat">
+        <div class="statLabel">${tf}m</div>
+        <div class="statValue">—</div>
+      </div>
+    `;
+
+  const d=
+    a.trend || "RANGE";
+
+  return `
+    <div class="stat">
+
+      <div class="statLabel">
+        ${tf==="60" ? "1h" : tf+"m"}
+      </div>
+
+      <div class="statValue">
+        <span class="direction ${directionClass(d)}">
+          ${tfText(d)}
+        </span>
+      </div>
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   SIGNALS
+========================================================= */
+
+async function loadSignals(){
+
+  const list=
+    document.getElementById(
+      "signalsList"
+    );
+
+  const btn=
+    document.getElementById(
+      "signalsBtn"
+    );
+
+  const t=T();
+
+  list.innerHTML=
+    `<div class="loading">${t.loading}</div>`;
+
+  btn.disabled=true;
+
+  try{
+
+    const params=
+      new URLSearchParams();
+
+    params.set(
+      "threshold",
+      currentThreshold
+    );
+
+    params.set(
+      "methods",
+      JSON.stringify(
+        enabledMethods()
+      )
+    );
+
+    const r=
+      await fetch(
+        `${API}/api/scan?${params.toString()}`,
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data=
+      await r.json();
+
+    if(!r.ok || !data.ok)
+      throw new Error(
+        data.error || "SCAN_ERROR"
+      );
+
+    if(!data.results?.length){
+
+      list.innerHTML=
+        `<div class="empty">
+          ${t.noSignal}
+        </div>`;
+
+      return;
+
+    }
+
+    list.innerHTML=
+      data.results
+        .map(renderSignal)
+        .join("");
+
+  }catch(e){
+
+    list.innerHTML=
+      `<div class="error">
+        ${t.error}<br>${esc(e.message)}
+      </div>`;
+
+  }finally{
+
+    btn.disabled=false;
+
+  }
+
+}
+
+function renderSignal(x){
+
+  const t=T();
+
+  const d=
+    x.direction || "WAIT";
+
+  return `
+
+    <div
+      class="signalCard"
+      onclick="openSignal('${esc(x.symbol)}')">
+
+      <div class="signalTop">
+
+        <div class="symbol">
+          ${esc(x.symbol)}
+        </div>
+
+        <div class="direction ${directionClass(d)}">
+          ${directionText(d)}
+        </div>
+
+      </div>
+
+      <div class="signalMeta">
+
+        ${t.score}: ${x.score}/100
+
+        &nbsp; | &nbsp;
+
+        Long: ${x.longScore ?? 0}
+
+        &nbsp; | &nbsp;
+
+        Short: ${x.shortScore ?? 0}
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+async function openSignal(symbol){
+
+  document
+    .getElementById("symbolInput")
+    .value=
+      symbol.replace(
+        /USDT$/i,
+        ""
+      );
+
+  await manualAnalyze();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================================================
+   RADAR
+========================================================= */
+
+async function loadRadar(){
+
+  const btn=
+    document.getElementById(
+      "radarBtn"
+    );
+
+  const t=T();
+
+  btn.disabled=true;
+
+  document.getElementById("pumpList").innerHTML=
+    `<div class="loading">${t.loading}</div>`;
+
+  document.getElementById("dumpList").innerHTML=
+    `<div class="loading">${t.loading}</div>`;
+
+  document.getElementById("reversalList").innerHTML=
+    `<div class="loading">${t.loading}</div>`;
+
+  try{
+
+    const params=
+      new URLSearchParams();
+
+    params.set(
+      "threshold",
+      currentThreshold
+    );
+
+    params.set(
+      "methods",
+      JSON.stringify(
+        enabledMethods()
+      )
+    );
+
+    const r=
+      await fetch(
+        `${API}/api/radar?${params.toString()}`,
+        {
+          cache:"no-store"
+        }
+      );
+
+    const data=
+      await r.json();
+
+    if(!r.ok || !data.ok)
+      throw new Error(
+        data.error || "RADAR_ERROR"
+      );
+
+    renderRadarList(
+      "pumpList",
+      data.pump || []
+    );
+
+    renderRadarList(
+      "dumpList",
+      data.dump || []
+    );
+
+    renderRadarList(
+      "reversalList",
+      data.reversal || []
+    );
+
+  }catch(e){
+
+    const error=
+      `<div class="error">
+        ${t.error}<br>${esc(e.message)}
+      </div>`;
+
+    document.getElementById("pumpList").innerHTML=error;
+    document.getElementById("dumpList").innerHTML=error;
+    document.getElementById("reversalList").innerHTML=error;
+
+  }finally{
+
+    btn.disabled=false;
+
+  }
+
+}
+
+function renderRadarList(id,list){
+
+  const box=
+    document.getElementById(id);
+
+  const t=T();
+
+  if(!list.length){
+
+    box.innerHTML=
+      `<div class="empty">${t.none}</div>`;
+
+    return;
+
+  }
+
+  box.innerHTML=
+    list
+      .map(
+        x=>`
+
+          <div
+            class="radarItem"
+            onclick="openSignal('${esc(x.symbol)}')">
+
+            <b>${esc(x.symbol)}</b>
+
+            <br>
+
+            ${t.score}:
+            ${x.score ?? 0}
+
+          </div>
+
+        `
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
 
 applyLanguage();
+
+setLevel(6);
+
+document
+  .getElementById("symbolInput")
+  .addEventListener(
+    "keydown",
+    e=>{
+      if(e.key==="Enter")
+        manualAnalyze();
+    }
+  );
+
+document.addEventListener(
+  "click",
+  e=>{
+
+    const wrap=
+      document.querySelector(
+        ".langWrap"
+      );
+
+    if(
+      wrap &&
+      !wrap.contains(e.target)
+    ){
+      document
+        .getElementById("langMenu")
+        .classList.remove("open");
+    }
+
+  }
+);
 
 </script>
 
