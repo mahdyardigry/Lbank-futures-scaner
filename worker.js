@@ -698,7 +698,7 @@ const vol20=sma(vol,20);
 
 const spike=
 vol.at(-1)>vol20*1.5 ||
-vol.at(-1)>vol71.8;
+vol.at(-1)>vol7*1.8;
 
 const rs=
 rangeState(
