@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>رادار شخصی MA20</title>
+<title>Personal MA20 Radar</title>
 
 <style>
 *{box-sizing:border-box}
@@ -15,13 +15,8 @@ body{
   font-family:Tahoma,Arial,sans-serif;
 }
 
-button,input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input,select{font:inherit}
+button{cursor:pointer}
 
 .header{
   padding:18px 14px;
@@ -84,6 +79,7 @@ button{
   justify-content:space-between;
   align-items:center;
   margin:10px 0;
+  gap:10px;
 }
 
 .section-title h2{
@@ -94,6 +90,61 @@ button{
 .counter{
   color:#8d9aae;
   font-size:12px;
+}
+
+.filter-box{
+  background:#0d141e;
+  border:1px solid #263344;
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:12px;
+}
+
+.filter-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:9px;
+}
+
+.filter-title{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.filter-level{
+  color:#67c7ff;
+  font-weight:bold;
+}
+
+.range{
+  width:100%;
+  accent-color:#2ca968;
+}
+
+.filter-description{
+  color:#8290a2;
+  font-size:11px;
+  line-height:1.8;
+  margin-top:7px;
+}
+
+.filter-bars{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:4px;
+  margin-top:8px;
+}
+
+.filter-bars span{
+  height:5px;
+  border-radius:4px;
+  background:#263344;
+}
+
+.filter-bars span.on{
+  background:#2ca968;
 }
 
 .signals{
@@ -129,25 +180,18 @@ button{
 }
 
 .signal.current{
-  border-color:#f0b84b;
   box-shadow:
-    0 0 0 2px #f0b84b33,
-    0 0 22px #f0b84b18;
+    0 0 0 2px #f0b84b55,
+    0 0 18px #f0b84b18;
 }
 
-.selected-bar{
-  display:none;
-  background:#302615;
-  border:1px solid #7d6025;
-  color:#f1ce72;
-  padding:7px 9px;
-  border-radius:8px;
-  margin-bottom:10px;
-  font-size:11px;
-}
-
-.signal.current .selected-bar{
-  display:block;
+.selected-label{
+  background:#392d12;
+  color:#f2c965;
+  padding:6px 8px;
+  border-radius:7px;
+  font-size:10px;
+  margin-bottom:9px;
 }
 
 .signal-head{
@@ -236,6 +280,12 @@ button{
   background:#192838;
 }
 
+.update-note{
+  color:#69d9a0;
+  font-size:10px;
+  margin-top:7px;
+}
+
 #deepPanel{
   display:none;
   position:fixed;
@@ -287,73 +337,30 @@ button{
   margin-top:5px;
 }
 
-.live{
-  margin-top:8px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-}
-
-.live span{
-  background:#111c28;
-  border:1px solid #263548;
-  border-radius:7px;
-  padding:5px 8px;
-  font-size:10px;
-  color:#9eacbd;
-}
-
-.live .on{
-  color:#62e6a1;
-  border-color:#246c48;
-}
-
-.important{
+.live-box{
   margin-top:10px;
-  background:#2c2110;
-  border:1px solid #75551e;
-  color:#f0cd70;
+  background:#101923;
+  border:1px solid #263445;
+  border-radius:9px;
+  padding:9px;
+  font-size:11px;
+  color:#9daabd;
+}
+
+.live-box strong{
+  color:#5ee69b;
+}
+
+.alert-box{
+  margin-top:10px;
+  display:none;
+  background:#392512;
+  border:1px solid #9a6b28;
+  color:#ffd878;
   border-radius:9px;
   padding:10px;
   font-size:11px;
-  line-height:1.9;
-}
-
-.direction-box{
-  padding:12px;
-  border-radius:10px;
-  margin-bottom:10px;
-  text-align:center;
-  font-size:15px;
-  font-weight:bold;
-  border:1px solid #263445;
-  background:#101923;
-}
-
-.direction-box.up{
-  color:#62e6a1;
-  border-color:#237b4e;
-  background:#0d2118;
-}
-
-.direction-box.down{
-  color:#ff8c8c;
-  border-color:#863f3f;
-  background:#261313;
-}
-
-.direction-box.flat{
-  color:#e6c76c;
-  border-color:#6b5a2d;
-  background:#211d12;
-}
-
-.tf-title{
-  margin:18px 0 8px;
-  font-size:15px;
-  color:#dce7f5;
-  padding-bottom:7px;
-  border-bottom:1px solid #263445;
+  line-height:1.8;
 }
 
 .deep-grid{
@@ -408,10 +415,6 @@ button{
   line-height:1.8;
 }
 
-.reason.important{
-  margin-top:5px;
-}
-
 .wall{
   padding:8px;
   background:#111a24;
@@ -438,14 +441,7 @@ button{
   display:none;
   max-width:330px;
   font-size:12px;
-}
-
-.change-up{
-  color:#62e6a1 !important;
-}
-
-.change-down{
-  color:#ff8c8c !important;
+  line-height:1.7;
 }
 
 @media(max-width:600px){
@@ -463,8 +459,8 @@ button{
     grid-template-columns:1fr;
   }
 
-  .deep-grid{
-    grid-template-columns:1fr;
+  .filter-bars{
+    gap:3px;
   }
 }
 </style>
@@ -473,8 +469,13 @@ button{
 <body>
 
 <div class="header">
+
   <h1>🎯 رادار شخصی MA20</h1>
-  <p>شکار برخورد قیمت با میانگین متحرک ۲۰ در تایم‌فریم یک دقیقه</p>
+
+  <p>
+    شکار برخورد قیمت با میانگین متحرک ۲۰ در تایم‌فریم یک دقیقه
+  </p>
+
 </div>
 
 <div class="toolbar">
@@ -482,7 +483,8 @@ button{
   <button
     id="startBtn"
     class="active"
-    onclick="startRadar()">
+    onclick="startRadar()"
+  >
     ▶ شروع رادار
   </button>
 
@@ -500,7 +502,8 @@ button{
 
   <button
     id="soundBtn"
-    onclick="toggleSound()">
+    onclick="toggleSound()"
+  >
     🔊 صدا روشن
   </button>
 
@@ -519,6 +522,51 @@ button{
 
 <div class="container">
 
+  <div class="filter-box">
+
+    <div class="filter-top">
+
+      <div class="filter-title">
+        🎚️ میزان سخت‌گیری سیگنال
+      </div>
+
+      <div class="filter-level">
+        سطح <span id="strictLevel">3</span> از 6
+      </div>
+
+    </div>
+
+    <input
+      id="strictRange"
+      class="range"
+      type="range"
+      min="1"
+      max="6"
+      step="1"
+      value="3"
+      oninput="changeStrictness(this.value)"
+    >
+
+    <div class="filter-bars">
+
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+
+    </div>
+
+    <div
+      id="strictDescription"
+      class="filter-description"
+    >
+      سطح متوسط؛ تعادل بین تعداد و کیفیت سیگنال‌ها.
+    </div>
+
+  </div>
+
   <div class="section-title">
 
     <h2>
@@ -527,13 +575,17 @@ button{
 
     <span
       class="counter"
-      id="signalCount">
+      id="signalCount"
+    >
       0 سیگنال
     </span>
 
   </div>
 
-  <div id="signals" class="signals">
+  <div
+    id="signals"
+    class="signals"
+  >
 
     <div class="empty">
       هنوز سیگنال جدیدی دریافت نشده است.<br>
@@ -543,7 +595,6 @@ button{
   </div>
 
 </div>
-
 
 <div id="deepPanel">
 
@@ -557,33 +608,40 @@ button{
 
           <div
             class="deep-title"
-            id="deepTitle">
+            id="deepTitle"
+          >
             تحلیل عمیق
           </div>
 
           <div
             class="deep-sub"
-            id="deepSub">
-          </div>
-
-          <div
-            class="live"
-            id="liveStatus">
-          </div>
+            id="deepSub"
+          ></div>
 
         </div>
 
         <button
           class="close"
-          onclick="closeDeep()">
+          onclick="closeDeep()"
+        >
           ✕ بستن
         </button>
 
       </div>
 
-    </div>
+      <div
+        id="liveBox"
+        class="live-box"
+      >
+        🟢 بازار زنده
+      </div>
 
-    <div id="importantEvent"></div>
+      <div
+        id="importantAlert"
+        class="alert-box"
+      ></div>
+
+    </div>
 
     <div id="deepContent">
 
@@ -597,9 +655,10 @@ button{
 
 </div>
 
-
-<div id="toast" class="toast"></div>
-
+<div
+  id="toast"
+  class="toast"
+></div>
 
 <script>
 
@@ -618,29 +677,30 @@ const ANALYZE_URL =
 
 const SCAN_INTERVAL = 15000;
 
-/*
-  تحلیل ارز انتخاب‌شده سریع‌تر تازه می‌شود.
-*/
-const SELECTED_REFRESH = 12000;
+const ANALYZE_INTERVAL = 15000;
 
 
 /* =========================================================
-حافظه سیگنال‌ها
+حافظه
 ========================================================= */
-
-const seenSignals = new Set();
 
 const signals = new Map();
 
-let currentSignalId = null;
+const seenSignals = new Set();
 
-let currentSelectedSymbol = null;
+let currentSignalId =
+  localStorage.getItem(
+    "ma20_selected_signal"
+  ) || null;
 
-let currentSelectedCategory = "linear";
+let selectedSymbol =
+  localStorage.getItem(
+    "ma20_selected_symbol"
+  ) || null;
 
 let radarTimer = null;
 
-let selectedRefreshTimer = null;
+let analyzeTimer = null;
 
 let running = false;
 
@@ -648,118 +708,16 @@ let soundEnabled = true;
 
 let offset = 0;
 
-let lastSelectedAnalysis = null;
+let strictness =
+  Number(
+    localStorage.getItem(
+      "ma20_strictness"
+    )
+  ) || 3;
 
-let importantEvents = [];
+let lastDeepData = null;
 
-
-/* =========================================================
-ذخیره انتخاب
-========================================================= */
-
-const STORAGE_KEY =
-  "personal_ma20_selected_signal";
-
-const SIGNALS_KEY =
-  "personal_ma20_signals";
-
-
-function saveSelected(){
-
-  if(!currentSignalId)return;
-
-  try{
-
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        id:currentSignalId,
-        symbol:currentSelectedSymbol,
-        category:currentSelectedCategory,
-        savedAt:Date.now()
-      })
-    );
-
-  }catch(e){}
-}
-
-
-function loadSelected(){
-
-  try{
-
-    const raw =
-      localStorage.getItem(
-        STORAGE_KEY
-      );
-
-    if(!raw)return null;
-
-    return JSON.parse(raw);
-
-  }catch(e){
-
-    return null;
-  }
-}
-
-
-/* =========================================================
-ذخیره سیگنال‌ها
-========================================================= */
-
-function saveSignals(){
-
-  try{
-
-    const arr =
-      [...signals.values()]
-        .slice(0,100)
-        .map(s=>({
-          ...s,
-          deep:null
-        }));
-
-    localStorage.setItem(
-      SIGNALS_KEY,
-      JSON.stringify(arr)
-    );
-
-  }catch(e){}
-}
-
-
-function loadSignals(){
-
-  try{
-
-    const raw =
-      localStorage.getItem(
-        SIGNALS_KEY
-      );
-
-    if(!raw)return;
-
-    const arr=JSON.parse(raw);
-
-    if(!Array.isArray(arr))return;
-
-    for(const s of arr){
-
-      if(!s.id || !s.symbol)continue;
-
-      signals.set(
-        s.id,
-        s
-      );
-
-      seenSignals.add(
-        s.id
-      );
-    }
-
-  }catch(e){}
-}
+let lastImportantState = null;
 
 
 /* =========================================================
@@ -768,6 +726,284 @@ DOM
 
 const $ = id =>
   document.getElementById(id);
+
+
+/* =========================================================
+سخت گیری
+========================================================= */
+
+const STRICT_TEXT = {
+
+  1:
+    "سطح ۱ — بسیار آسان؛ سیگنال‌های بیشتری نمایش داده می‌شوند و کیفیت حداقلی دارند.",
+
+  2:
+    "سطح ۲ — آسان؛ برخوردهای معتبر MA20 با فیلتر سبک نمایش داده می‌شوند.",
+
+  3:
+    "سطح ۳ — متوسط؛ تعادل بین تعداد و کیفیت سیگنال‌ها.",
+
+  4:
+    "سطح ۴ — سخت؛ جهت MA20 و وضعیت بازار ۱۵ دقیقه اهمیت بیشتری پیدا می‌کند.",
+
+  5:
+    "سطح ۵ — خیلی سخت؛ چند تأیید همزمان لازم است.",
+
+  6:
+    "سطح ۶ — بسیار سخت؛ فقط برخوردهای قوی و چندلایه نمایش داده می‌شوند."
+};
+
+
+function changeStrictness(value){
+
+  strictness =
+    Number(value);
+
+  localStorage.setItem(
+    "ma20_strictness",
+    strictness
+  );
+
+  updateStrictUI();
+
+  /*
+    سیگنال‌های قبلی حذف نمی‌شوند.
+    فقط سیگنال‌های جدید با سطح جدید
+    فیلتر خواهند شد.
+  */
+
+  toast(
+    `🎚️ سخت‌گیری روی سطح ${strictness} تنظیم شد`
+  );
+}
+
+
+function updateStrictUI(){
+
+  $("strictRange").value =
+    strictness;
+
+  $("strictLevel").textContent =
+    strictness;
+
+  $("strictDescription").textContent =
+    STRICT_TEXT[strictness];
+
+  const bars =
+    document.querySelectorAll(
+      ".filter-bars span"
+    );
+
+  bars.forEach(
+    (x,i)=>{
+      x.classList.toggle(
+        "on",
+        i < strictness
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+امتیاز سخت گیری
+========================================================= */
+
+function calculateSignalQuality(s){
+
+  let score = 0;
+
+  /*
+    برخورد واقعی MA20
+  */
+
+  if(s.type !== "NONE"){
+    score += 20;
+  }
+
+  /*
+    جهت MA20
+  */
+
+  if(
+    s.maSlope === "UP" ||
+    s.maSlope === "DOWN"
+  ){
+    score += 15;
+  }
+
+  /*
+    روند یک دقیقه
+  */
+
+  if(
+    s.trend === "UP" ||
+    s.trend === "DOWN" ||
+    s.trend === "BULLISH" ||
+    s.trend === "BEARISH"
+  ){
+    score += 10;
+  }
+
+  /*
+    تأیید حجم
+  */
+
+  if(s.volumeConfirmed){
+    score += 10;
+  }
+
+  /*
+    شکست یا برگشت
+  */
+
+  if(s.rejection){
+    score += 10;
+  }
+
+  if(s.crossUp || s.crossDown){
+    score += 10;
+  }
+
+  /*
+    Hunt
+  */
+
+  if(
+    s.hunt &&
+    s.hunt.confirmed
+  ){
+    score += 10;
+  }
+
+  /*
+    فاصله مناسب از MA20
+  */
+
+  const dist =
+    Math.abs(
+      Number(s.distancePct)||0
+    );
+
+  if(dist <= 0.25){
+    score += 5;
+  }
+
+  /*
+    جهت قطعی
+  */
+
+  if(
+    s.direction === "LONG" ||
+    s.direction === "SHORT"
+  ){
+    score += 10;
+  }
+
+  return Math.min(
+    100,
+    score
+  );
+}
+
+
+function requiredScore(){
+
+  return {
+
+    1:20,
+    2:30,
+    3:40,
+    4:55,
+    5:70,
+    6:82
+
+  }[strictness] || 40;
+}
+
+
+function passesStrictness(s){
+
+  const quality =
+    calculateSignalQuality(s);
+
+  s.qualityScore =
+    quality;
+
+  /*
+    سطوح ۴ تا ۶ نیاز به تأیید
+    تایم ۱۵ دقیقه هم دارند اگر
+    اطلاعات آن از Worker موجود باشد.
+  */
+
+  const deep =
+    s.deep || {};
+
+  const tf15 =
+    deep.timeframes?.["15"] ||
+    deep.timeframes?.["15m"] ||
+    null;
+
+  if(strictness >= 4 && tf15){
+
+    const trend15 =
+      String(
+        tf15.trend || ""
+      ).toUpperCase();
+
+    const slope15 =
+      String(
+        tf15.maSlope || ""
+      ).toUpperCase();
+
+    const aligned =
+      (
+        s.direction === "LONG" &&
+        (
+          trend15.includes("UP") ||
+          trend15.includes("BULL")
+        ) &&
+        slope15 === "UP"
+      ) ||
+      (
+        s.direction === "SHORT" &&
+        (
+          trend15.includes("DOWN") ||
+          trend15.includes("BEAR")
+        ) &&
+        slope15 === "DOWN"
+      );
+
+    if(strictness >= 5 && !aligned){
+      return false;
+    }
+
+    if(strictness === 4){
+
+      /*
+        سطح ۴ الزام کامل نیست،
+        ولی جهت ۱۵ دقیقه نباید کاملاً
+        مخالف باشد.
+      */
+
+      const opposite =
+        (
+          s.direction === "LONG" &&
+          trend15.includes("DOWN")
+        ) ||
+        (
+          s.direction === "SHORT" &&
+          trend15.includes("UP")
+        );
+
+      if(opposite){
+        return false;
+      }
+    }
+  }
+
+  return quality >= requiredScore();
+}
 
 
 /* =========================================================
@@ -799,9 +1035,9 @@ function timeText(ts){
 function num(v,digits=4){
 
   if(
-    v===null||
-    v===undefined||
-    v===""||
+    v===null ||
+    v===undefined ||
+    v==="" ||
     Number.isNaN(Number(v))
   ){
     return "-";
@@ -819,14 +1055,14 @@ function num(v,digits=4){
 function pct(v){
 
   if(
-    v===null||
-    v===undefined||
+    v===null ||
+    v===undefined ||
     Number.isNaN(Number(v))
   ){
     return "-";
   }
 
-  return Number(v).toFixed(2)+"٪";
+  return Number(v).toFixed(2)+"%";
 }
 
 
@@ -836,11 +1072,14 @@ function pct(v){
 
 function fa(v){
 
-  if(v===null||v===undefined)return "—";
+  if(v===null || v===undefined){
+    return "—";
+  }
 
-  const s=String(v);
+  const s =
+    String(v);
 
-  const map={
+  const map = {
 
     LONG:"صعودی",
     SHORT:"نزولی",
@@ -848,36 +1087,46 @@ function fa(v){
 
     UP:"صعودی",
     DOWN:"نزولی",
-    FLAT:"خنثی",
+    SIDEWAYS:"خنثی",
+    NEUTRAL:"خنثی",
 
     BULLISH:"صعودی",
     BEARISH:"نزولی",
-    NEUTRAL:"خنثی",
+
+    NONE:"ندارد",
+
+    NORMAL:"عادی",
 
     TOUCH:"برخورد",
-    REJECTION:"برگشت",
     BREAK:"شکست",
+    REJECTION:"برگشت",
 
-    CONFIRMED:"تأیید شده",
-    true:"بله",
-    false:"خیر",
+    BUY_PRESSURE:"فشار خرید",
+    SELL_PRESSURE:"فشار فروش",
 
     BUY:"خرید",
     SELL:"فروش",
 
-    SMC:"پول هوشمند",
-    ICT:"تحلیل نقدینگی",
-    MA:"میانگین متحرک",
-    Volume:"حجم",
-    Candles:"کندل",
-    OrderFlow:"جریان سفارش",
-    Liquidity:"نقدینگی",
+    DOJI:"دوجی",
 
-    "Strong Buy":"خرید بسیار قوی",
-    "Strong Sell":"فروش بسیار قوی",
-    "Buy":"خرید",
-    "Sell":"فروش",
-    "Neutral":"خنثی"
+    TRUE:"بله",
+    FALSE:"خیر",
+
+    UPWARD:"صعودی",
+    DOWNWARD:"نزولی",
+
+    CONFIRMED:"تأیید شده",
+
+    PUMP:"پامپ",
+    DUMP:"دامپ",
+
+    SMC:"ساختار پول هوشمند",
+    ICT:"آی‌سی‌تی",
+    MA:"میانگین‌های متحرک",
+    Volume:"حجم",
+    Candles:"کندل‌ها",
+    OrderFlow:"جریان سفارش",
+    Liquidity:"نقدینگی"
 
   };
 
@@ -889,9 +1138,13 @@ function fa(v){
 وضعیت
 ========================================================= */
 
-function setStatus(text,good=false){
+function setStatus(
+  text,
+  good=false
+){
 
-  $("statusText").textContent=text;
+  $("statusText").textContent =
+    text;
 
   $("statusText").style.color =
     good
@@ -901,24 +1154,34 @@ function setStatus(text,good=false){
 
 
 /* =========================================================
-پیام
+Toast
 ========================================================= */
 
 let toastTimer;
 
 function toast(text){
 
-  const el=$("toast");
+  const el =
+    $("toast");
 
-  el.textContent=text;
+  el.textContent =
+    text;
 
-  el.style.display="block";
+  el.style.display =
+    "block";
 
-  clearTimeout(toastTimer);
+  clearTimeout(
+    toastTimer
+  );
 
-  toastTimer=setTimeout(()=>{
-    el.style.display="none";
-  },3500);
+  toastTimer =
+    setTimeout(
+      ()=>{
+        el.style.display =
+          "none";
+      },
+      4500
+    );
 }
 
 
@@ -938,13 +1201,17 @@ function beep(){
 
     if(!Ctx)return;
 
-    const ctx=new Ctx();
+    const ctx =
+      new Ctx();
 
-    const osc=ctx.createOscillator();
+    const osc =
+      ctx.createOscillator();
 
-    const gain=ctx.createGain();
+    const gain =
+      ctx.createGain();
 
-    osc.type="sine";
+    osc.type =
+      "sine";
 
     osc.frequency.setValueAtTime(
       740,
@@ -987,14 +1254,17 @@ function beep(){
 
 function toggleSound(){
 
-  soundEnabled=!soundEnabled;
+  soundEnabled =
+    !soundEnabled;
 
   $("soundBtn").textContent =
     soundEnabled
-      ?"🔊 صدا روشن"
-      :"🔇 صدا خاموش";
+      ? "🔊 صدا روشن"
+      : "🔇 صدا خاموش";
 
-  if(soundEnabled)beep();
+  if(soundEnabled){
+    beep();
+  }
 }
 
 
@@ -1007,9 +1277,13 @@ function extractMA20Signal(item){
   const tf =
     item?.timeframes?.["1"];
 
-  if(!tf || tf.error)return null;
+  if(!tf || tf.error){
+    return null;
+  }
 
-  if(!tf.touchMA20)return null;
+  if(!tf.touchMA20){
+    return null;
+  }
 
   const price =
     Number(
@@ -1020,42 +1294,59 @@ function extractMA20Signal(item){
   const ma20 =
     Number(tf.ma20);
 
-  if(!price || !ma20)return null;
+  if(
+    !price ||
+    !ma20
+  ){
+    return null;
+  }
 
-  let direction="WAIT";
+  let direction =
+    "WAIT";
 
   if(
-    price>=ma20 &&
-    tf.maSlope==="UP"
+    price >= ma20 &&
+    tf.maSlope === "UP"
   ){
-    direction="LONG";
+    direction =
+      "LONG";
   }
 
   if(
-    price<=ma20 &&
-    tf.maSlope==="DOWN"
+    price <= ma20 &&
+    tf.maSlope === "DOWN"
   ){
-    direction="SHORT";
+    direction =
+      "SHORT";
   }
 
-  if(item.direction==="LONG")
-    direction="LONG";
+  if(item.direction === "LONG"){
+    direction =
+      "LONG";
+  }
 
-  if(item.direction==="SHORT")
-    direction="SHORT";
+  if(item.direction === "SHORT"){
+    direction =
+      "SHORT";
+  }
 
   const event =
     item.convertedMA1m?.events
-      ?.find(x =>
-        x.source==="1m" &&
-        x.ma==="MA20"
+      ?.find(
+        x =>
+          x.source === "1m" &&
+          x.ma === "MA20"
       ) || null;
 
   const type =
     event?.type ||
-    "TOUCH";
+    (
+      tf.touchMA20
+        ? "TOUCH"
+        : "NONE"
+    );
 
-  return{
+  return {
 
     symbol:item.symbol,
 
@@ -1081,91 +1372,225 @@ function extractMA20Signal(item){
     type,
 
     rejection:
-      event?.rejection||false,
+      event?.rejection ||
+      false,
 
     crossUp:
-      event?.crossUp||false,
+      event?.crossUp ||
+      false,
 
     crossDown:
-      event?.crossDown||false,
+      event?.crossDown ||
+      false,
 
     volumeConfirmed:
-      event?.volumeConfirmed||
-      tf.volume?.spike||
+      event?.volumeConfirmed ||
+      tf.volume?.spike ||
       false,
 
     score:
-      item.score||0,
+      item.score || 0,
 
     longScore:
-      item.longScore||0,
+      item.longScore || 0,
 
     shortScore:
-      item.shortScore||0,
+      item.shortScore || 0,
 
     hunt:
-      tf.hunt||null,
+      tf.hunt || null,
 
     timestamp:
-      tf.timestamp||
-      item.generatedAt||
+      tf.timestamp ||
+      item.generatedAt ||
       Date.now(),
 
     deep:item
+
   };
 }
 
 
 /* =========================================================
-شناسه
+شناسه پایدار
 ========================================================= */
 
-function signalId(s){
+function signalKey(s){
 
-  return[
+  return [
     s.symbol,
-    s.timestamp,
-    s.direction,
-    s.type
+    s.direction
   ].join("_");
 }
 
 
 /* =========================================================
-ثبت سیگنال
+افزودن / بروزرسانی
 ========================================================= */
 
-function addSignal(s){
+function addOrUpdateSignal(s){
 
-  const id=signalId(s);
+  const key =
+    signalKey(s);
 
-  if(seenSignals.has(id)){
+  const old =
+    signals.get(key);
+
+  /*
+    اگر سیگنال انتخاب شده باشد
+    همیشه اجازه بروزرسانی دارد.
+  */
+
+  const isSelected =
+    key === currentSignalId ||
+    s.symbol === selectedSymbol;
+
+  /*
+    سیگنال جدید باید سخت گیری را پاس کند.
+  */
+
+  if(!old && !isSelected){
+
+    if(!passesStrictness(s)){
+      return false;
+    }
+
+    seenSignals.add(key);
+
+    signals.set(
+      key,
+      {
+        ...s,
+        id:key,
+        receivedAt:Date.now(),
+        active:true
+      }
+    );
+
+    beep();
+
+    renderSignals();
+
+    toast(
+      `🚨 سیگنال جدید ${s.symbol} — ${fa(s.direction)}`
+    );
+
+    return true;
+  }
+
+  /*
+    سیگنال قبلی:
+    اطلاعات جدید جایگزین می‌شود.
+  */
+
+  if(old){
+
+    const changed =
+      hasImportantSignalChange(
+        old,
+        s
+      );
+
+    signals.set(
+      key,
+      {
+        ...old,
+        ...s,
+        id:key,
+        receivedAt:
+          old.receivedAt,
+        updatedAt:
+          Date.now()
+      }
+    );
+
+    if(changed && isSelected){
+
+      toast(
+        `🚨 تغییر مهم در ${s.symbol}`
+      );
+
+      beep();
+    }
+
+    renderSignals();
+
     return false;
   }
 
-  seenSignals.add(id);
+  /*
+    اگر انتخاب شده ولی از قبل
+    در Map نبوده، حتماً نگه داشته شود.
+  */
 
-  signals.set(
-    id,
-    {
-      id,
-      ...s,
-      receivedAt:Date.now(),
-      active:true
-    }
-  );
+  if(isSelected){
 
-  saveSignals();
+    signals.set(
+      key,
+      {
+        ...s,
+        id:key,
+        receivedAt:Date.now(),
+        active:true
+      }
+    );
 
-  beep();
+    renderSignals();
 
-  renderSignals();
+    return false;
+  }
 
-  toast(
-    `🚨 سیگنال جدید ${s.symbol} — ${fa(s.direction)}`
-  );
+  return false;
+}
 
-  return true;
+
+/* =========================================================
+تغییر مهم
+========================================================= */
+
+function hasImportantSignalChange(
+  old,
+  now
+){
+
+  if(!old)return false;
+
+  if(
+    old.direction !==
+    now.direction
+  ){
+    return true;
+  }
+
+  if(
+    old.maSlope !==
+    now.maSlope
+  ){
+    return true;
+  }
+
+  if(
+    old.type !==
+    now.type
+  ){
+    return true;
+  }
+
+  if(
+    old.volumeConfirmed !==
+    now.volumeConfirmed
+  ){
+    return true;
+  }
+
+  if(
+    Boolean(old.rejection) !==
+    Boolean(now.rejection)
+  ){
+    return true;
+  }
+
+  return false;
 }
 
 
@@ -1175,20 +1600,19 @@ function addSignal(s){
 
 function renderSignals(){
 
-  const box=$("signals");
+  const box =
+    $("signals");
 
   if(!signals.size){
 
-    box.innerHTML=`
-
+    box.innerHTML = `
       <div class="empty">
         هنوز سیگنال جدیدی دریافت نشده است.<br>
         رادار برخورد MA20 در حال انتظار است.
       </div>
-
     `;
 
-    $("signalCount").textContent=
+    $("signalCount").textContent =
       "0 سیگنال";
 
     return;
@@ -1198,53 +1622,59 @@ function renderSignals(){
     [...signals.values()]
       .sort(
         (a,b)=>
-          b.receivedAt-a.receivedAt
+          b.receivedAt -
+          a.receivedAt
       );
 
   box.innerHTML =
-    arr.map(s=>{
+    arr.map(
+      s => {
 
-      const dirClass =
-        s.direction==="LONG"
-          ?"long"
-          :s.direction==="SHORT"
-            ?"short"
-            :"";
+        const selected =
+          s.id ===
+          currentSignalId;
 
-      const badgeClass =
-        s.direction==="LONG"
-          ?"long"
-          :s.direction==="SHORT"
-            ?"short"
-            :"wait";
+        const dirClass =
+          s.direction === "LONG"
+            ? "long"
+            : s.direction === "SHORT"
+              ? "short"
+              : "";
 
-      const directionText =
-        s.direction==="LONG"
-          ?"🟢 صعودی"
-          :s.direction==="SHORT"
-            ?"🔴 نزولی"
-            :"🟡 MA20";
+        const badgeClass =
+          s.direction === "LONG"
+            ? "long"
+            : s.direction === "SHORT"
+              ? "short"
+              : "wait";
 
-      const typeText={
-        TOUCH:"برخورد",
-        REJECTION:"برگشت از MA20",
-        BREAK:"شکست MA20"
-      }[s.type] ||
-      "برخورد MA20";
+        const directionText =
+          s.direction === "LONG"
+            ? "🟢 صعودی"
+            : s.direction === "SHORT"
+              ? "🔴 نزولی"
+              : "🟡 MA20";
 
-      return`
+        return `
 
         <div
           class="signal ${dirClass} ${
-            currentSignalId===s.id
-              ?"current"
-              :""
+            selected
+              ? "current"
+              : ""
           }"
         >
 
-          <div class="selected-bar">
-            📌 این ارز در حال بررسی است
-          </div>
+          ${
+            selected
+              ? `
+                <div class="selected-label">
+                  📌 این ارز در حال بررسی است
+                  — اطلاعات بازار در حال بروزرسانی
+                </div>
+              `
+              : ""
+          }
 
           <div class="signal-head">
 
@@ -1252,7 +1682,9 @@ function renderSignals(){
               ${escapeHtml(s.symbol)}
             </div>
 
-            <div class="badge ${badgeClass}">
+            <div
+              class="badge ${badgeClass}"
+            >
               ${directionText}
             </div>
 
@@ -1274,17 +1706,23 @@ function renderSignals(){
 
             <div class="metric">
               <small>فاصله از میانگین ۲۰</small>
-              <b>${pct(s.distancePct)}</b>
+              <b>
+                ${pct(s.distancePct)}
+              </b>
             </div>
 
             <div class="metric">
               <small>نوع برخورد</small>
-              <b>${typeText}</b>
+              <b>
+                ${fa(s.type)}
+              </b>
             </div>
 
             <div class="metric">
               <small>شیب میانگین ۲۰</small>
-              <b>${fa(s.maSlope)}</b>
+              <b>
+                ${fa(s.maSlope)}
+              </b>
             </div>
 
             <div class="metric">
@@ -1292,9 +1730,16 @@ function renderSignals(){
               <b>
                 ${
                   s.volumeConfirmed
-                    ?"بله"
-                    :"خیر"
+                    ? "بله"
+                    : "خیر"
                 }
+              </b>
+            </div>
+
+            <div class="metric">
+              <small>امتیاز سخت‌گیری</small>
+              <b>
+                ${s.qualityScore || calculateSignalQuality(s)}
               </b>
             </div>
 
@@ -1307,25 +1752,40 @@ function renderSignals(){
 
             |
 
-            کندل:
-            ${timeText(s.timestamp)}
+            بروزرسانی:
+            ${timeText(s.updatedAt || s.receivedAt)}
 
           </div>
+
+          ${
+            selected
+              ? `
+                <div class="update-note">
+                  🟢 این سیگنال حذف نمی‌شود و همراه بازار
+                  بروزرسانی خواهد شد.
+                </div>
+              `
+              : ""
+          }
 
           <div class="signal-actions">
 
             <button
-              onclick="openDeep(
-                '${encodeURIComponent(s.symbol)}',
-                '${s.category}',
-                '${s.id}'
-              )"
+              onclick="
+                openDeep(
+                  '${encodeURIComponent(s.symbol)}',
+                  '${s.category}',
+                  '${s.id}'
+                )
+              "
             >
               🔬 بررسی عمیق
             </button>
 
             <button
-              onclick="focusSignal('${s.id}')"
+              onclick="
+                selectSignal('${s.id}')
+              "
             >
               🎯 انتخاب
             </button>
@@ -1333,10 +1793,9 @@ function renderSignals(){
           </div>
 
         </div>
-
-      `;
-
-    }).join("");
+        `;
+      }
+    ).join("");
 
   $("signalCount").textContent =
     `${arr.length} سیگنال`;
@@ -1344,12 +1803,53 @@ function renderSignals(){
 
 
 /* =========================================================
-پاکسازی متن
+انتخاب دائمی
+========================================================= */
+
+function selectSignal(id){
+
+  const s =
+    signals.get(id);
+
+  if(!s)return;
+
+  currentSignalId =
+    id;
+
+  selectedSymbol =
+    s.symbol;
+
+  localStorage.setItem(
+    "ma20_selected_signal",
+    id
+  );
+
+  localStorage.setItem(
+    "ma20_selected_symbol",
+    s.symbol
+  );
+
+  renderSignals();
+
+  toast(
+    `🎯 ${s.symbol} برای بررسی انتخاب شد و حذف نخواهد شد.`
+  );
+
+  openDeep(
+    encodeURIComponent(s.symbol),
+    s.category,
+    id
+  );
+}
+
+
+/* =========================================================
+Escape
 ========================================================= */
 
 function escapeHtml(v){
 
-  return String(v??"")
+  return String(v ?? "")
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
@@ -1359,84 +1859,16 @@ function escapeHtml(v){
 
 
 /* =========================================================
-انتخاب سیگنال
-========================================================= */
-
-function focusSignal(id){
-
-  const s=signals.get(id);
-
-  if(!s)return;
-
-  currentSignalId=id;
-
-  currentSelectedSymbol=s.symbol;
-
-  currentSelectedCategory=
-    s.category||"linear";
-
-  saveSelected();
-
-  renderSignals();
-
-  const cards =
-    document.querySelectorAll(
-      ".signal"
-    );
-
-  const arr =
-    [...signals.values()]
-      .sort(
-        (a,b)=>
-          b.receivedAt-a.receivedAt
-      );
-
-  const index =
-    arr.findIndex(
-      x=>x.id===id
-    );
-
-  if(cards[index]){
-
-    cards[index].scrollIntoView({
-      behavior:"smooth",
-      block:"center"
-    });
-
-  }
-
-  /*
-    اگر انتخاب شد، تحلیل عمیق را هم باز کن.
-  */
-
-  openDeep(
-    encodeURIComponent(s.symbol),
-    s.category||"linear",
-    id
-  );
-}
-
-
-/* =========================================================
 اسکن
 ========================================================= */
 
 async function scanNow(){
 
-  if(!running){
-
-    setStatus(
-      "در حال بررسی دستی...",
-      false
-    );
-
-  }
-
   try{
 
     const url =
-      SCAN_URL+
-      "?offset="+
+      SCAN_URL +
+      "?offset=" +
       encodeURIComponent(offset);
 
     const r =
@@ -1450,9 +1882,8 @@ async function scanNow(){
     if(!r.ok){
 
       throw new Error(
-        "خطای ارتباطی "+r.status
+        "HTTP " + r.status
       );
-
     }
 
     const data =
@@ -1461,32 +1892,39 @@ async function scanNow(){
     if(!data.ok){
 
       throw new Error(
-        data.error||
-        "خطای نامشخص"
+        data.error ||
+        "خطای Worker"
       );
-
     }
 
     offset =
-      Number(data.nextOffset)||0;
+      Number(data.nextOffset) ||
+      0;
 
-    let found=0;
+    let found = 0;
 
     for(
-      const item
-      of data.results||[]
+      const item of
+      data.results || []
     ){
 
-      const signal =
+      const s =
         extractMA20Signal(item);
 
-      if(!signal)continue;
+      if(!s)continue;
 
-      if(addSignal(signal)){
+      if(
+        addOrUpdateSignal(s)
+      ){
         found++;
       }
-
     }
+
+    /*
+      اگر ارز انتخاب شده در نتایج اسکن بود،
+      حتی اگر سطح سخت گیری فعلی را رد کند،
+      اطلاعات آن به‌روزرسانی می‌شود.
+    */
 
     $("lastScan").textContent =
       ` | آخرین بررسی: ${timeText()}`;
@@ -1495,72 +1933,10 @@ async function scanNow(){
 
       setStatus(
         found
-          ?`🟢 ${found} سیگنال جدید`
-          :"🟡 بازار بررسی شد؛ سیگنال جدیدی نبود",
-        found>0
+          ? `🟢 ${found} سیگنال جدید — سطح سخت‌گیری ${strictness}`
+          : `🟡 اسکن انجام شد — سطح سخت‌گیری ${strictness}`,
+        found > 0
       );
-
-    }else{
-
-      setStatus(
-        found
-          ?`🟢 ${found} سیگنال پیدا شد`
-          :"🟡 بررسی انجام شد"
-      );
-
-    }
-
-    /*
-      اگر ارز انتخاب شده در اسکن جدید
-      دوباره دیده شد، اطلاعات کارت آن
-      نیز تازه می‌شود.
-    */
-
-    if(
-      currentSelectedSymbol &&
-      data.results
-    ){
-
-      const updated =
-        data.results.find(
-          x=>
-            x.symbol===
-            currentSelectedSymbol
-        );
-
-      if(updated){
-
-        const fresh =
-          extractMA20Signal(updated);
-
-        if(fresh){
-
-          const old =
-            signals.get(
-              currentSignalId
-            );
-
-          if(old){
-
-            signals.set(
-              currentSignalId,
-              {
-                ...old,
-                ...fresh,
-                id:currentSignalId,
-                receivedAt:old.receivedAt
-              }
-            );
-
-            saveSignals();
-
-            renderSignals();
-
-          }
-
-        }
-
-      }
 
     }
 
@@ -1569,34 +1945,30 @@ async function scanNow(){
     console.error(e);
 
     setStatus(
-      "❌ خطا: "+e.message
-    );
-
-    toast(
-      "خطا در ارتباط با سرور"
+      "❌ خطا: " + e.message
     );
 
   }
-
 }
 
 
 /* =========================================================
-شروع
+رادار
 ========================================================= */
 
 function startRadar(){
 
   if(running)return;
 
-  running=true;
+  running =
+    true;
 
   $("startBtn")
     .classList
     .add("active");
 
   setStatus(
-    "🟢 رادار فعال است",
+    `🟢 رادار فعال — سخت‌گیری ${strictness}`,
     true
   );
 
@@ -1610,13 +1982,10 @@ function startRadar(){
 }
 
 
-/* =========================================================
-توقف
-========================================================= */
-
 function stopRadar(){
 
-  running=false;
+  running =
+    false;
 
   $("startBtn")
     .classList
@@ -1628,8 +1997,8 @@ function stopRadar(){
       radarTimer
     );
 
-    radarTimer=null;
-
+    radarTimer =
+      null;
   }
 
   setStatus(
@@ -1644,38 +2013,46 @@ function stopRadar(){
 
 function clearSignals(){
 
-  signals.clear();
+  /*
+    ارز انتخاب شده را عمداً پاک نمی‌کنیم.
+  */
+
+  for(
+    const [id] of
+    signals
+  ){
+
+    if(
+      id !==
+      currentSignalId
+    ){
+      signals.delete(id);
+    }
+  }
+
+  /*
+    سیگنال‌های دیده شده غیرانتخابی
+    پاک می‌شوند تا دوباره قابل ثبت باشند.
+  */
 
   seenSignals.clear();
 
-  currentSignalId=null;
-
-  currentSelectedSymbol=null;
-
-  localStorage.removeItem(
-    STORAGE_KEY
-  );
-
-  localStorage.removeItem(
-    SIGNALS_KEY
-  );
-
-  stopSelectedRefresh();
+  if(currentSignalId){
+    seenSignals.add(
+      currentSignalId
+    );
+  }
 
   renderSignals();
 
-  $("deepPanel").style.display="none";
-
-  document.body.style.overflow="";
-
   toast(
-    "سیگنال‌های صفحه پاک شدند."
+    "سیگنال‌های غیرانتخابی پاک شدند."
   );
 }
 
 
 /* =========================================================
-باز کردن تحلیل عمیق
+تحلیل عمیق
 ========================================================= */
 
 async function openDeep(
@@ -1689,110 +2066,76 @@ async function openDeep(
       encodedSymbol
     );
 
-  const saved =
-    signals.get(id);
+  currentSignalId =
+    id;
 
-  currentSignalId=id;
+  selectedSymbol =
+    symbol;
 
-  currentSelectedSymbol=symbol;
+  localStorage.setItem(
+    "ma20_selected_signal",
+    id
+  );
 
-  currentSelectedCategory=
-    category||"linear";
+  localStorage.setItem(
+    "ma20_selected_symbol",
+    symbol
+  );
 
-  saveSelected();
-
-  renderSignals();
-
-  $("deepPanel").style.display=
+  $("deepPanel")
+    .style
+    .display =
     "block";
 
-  document.body.style.overflow=
+  document.body.style.overflow =
     "hidden";
 
   $("deepTitle").textContent =
     `🔬 بررسی عمیق ${symbol}`;
 
   $("deepSub").textContent =
-    "در حال دریافت آخرین اطلاعات بازار...";
+    "در حال دریافت اطلاعات بازار...";
 
-  $("liveStatus").innerHTML=`
-    <span class="on">
-      🟢 به‌روزرسانی زنده فعال
-    </span>
+  $("deepContent").innerHTML =
+    `
+      <div class="loading">
+        ⏳ در حال دریافت تحلیل عمیق...
+      </div>
+    `;
 
-    <span>
-      هر ${SELECTED_REFRESH/1000} ثانیه
-    </span>
-  `;
+  renderSignals();
 
-  $("importantEvent").innerHTML="";
+  await fetchDeep(
+    symbol,
+    category
+  );
 
-  $("deepContent").innerHTML=`
-    <div class="loading">
-      ⏳ در حال دریافت تحلیل عمیق...
-    </div>
-  `;
-
-  startSelectedRefresh();
-
-  await refreshSelectedAnalysis();
-
+  startDeepLive(
+    symbol,
+    category
+  );
 }
 
 
 /* =========================================================
-به‌روزرسانی تحلیل انتخاب‌شده
+دریافت تحلیل عمیق
 ========================================================= */
 
-function startSelectedRefresh(){
-
-  stopSelectedRefresh();
-
-  selectedRefreshTimer =
-    setInterval(
-      refreshSelectedAnalysis,
-      SELECTED_REFRESH
-    );
-}
-
-
-function stopSelectedRefresh(){
-
-  if(selectedRefreshTimer){
-
-    clearInterval(
-      selectedRefreshTimer
-    );
-
-    selectedRefreshTimer=null;
-  }
-}
-
-
-/* =========================================================
-تحلیل انتخاب‌شده
-========================================================= */
-
-async function refreshSelectedAnalysis(){
-
-  if(
-    !currentSelectedSymbol ||
-    !currentSignalId
-  ){
-    return;
-  }
+async function fetchDeep(
+  symbol,
+  category,
+  silent=false
+){
 
   try{
 
     const url =
-      ANALYZE_URL+
-      "?symbol="+
+      ANALYZE_URL +
+      "?symbol=" +
+      encodeURIComponent(symbol) +
+      "&category=" +
       encodeURIComponent(
-        currentSelectedSymbol
-      )+
-      "&category="+
-      encodeURIComponent(
-        currentSelectedCategory
+        category || "linear"
       );
 
     const r =
@@ -1806,9 +2149,8 @@ async function refreshSelectedAnalysis(){
     if(!r.ok){
 
       throw new Error(
-        "خطای ارتباطی "+r.status
+        "HTTP " + r.status
       );
-
     }
 
     const data =
@@ -1817,1288 +2159,786 @@ async function refreshSelectedAnalysis(){
     if(!data.ok){
 
       throw new Error(
-        data.error||
+        data.error ||
         "تحلیل دریافت نشد"
       );
-
     }
 
-    const previous =
-      lastSelectedAnalysis;
-
-    lastSelectedAnalysis=data;
-
-    detectImportantChanges(
-      previous,
-      data
-    );
-
-    renderDeep(data);
-
     /*
-      زمان آخرین بروزرسانی
+      تشخیص تغییرات مهم
     */
 
-    $("liveStatus").innerHTML=`
+    if(lastDeepData){
 
-      <span class="on">
-        🟢 بازار زنده
-      </span>
+      const important =
+        detectDeepChanges(
+          lastDeepData,
+          data
+        );
 
-      <span>
+      if(
+        important.length
+      ){
+
+        showImportantAlert(
+          important
+        );
+
+        beep();
+
+        toast(
+          `🚨 ${symbol}: ${important[0]}`
+        );
+      }
+    }
+
+    lastDeepData =
+      data;
+
+    $("deepSub").textContent =
+      `قیمت: ${num(data.price)} | امتیاز تحلیل: ${data.score || 0} از 100`;
+
+    $("liveBox").innerHTML =
+      `
+        🟢 <strong>بازار زنده</strong>
+        |
         آخرین بروزرسانی:
         ${timeText()}
-      </span>
+      `;
 
-    `;
+    $("deepContent").innerHTML =
+      buildDeep(data);
 
   }catch(e){
 
     console.error(e);
 
-    $("liveStatus").innerHTML=`
+    if(!silent){
 
-      <span>
-        🔴 خطا در به‌روزرسانی
-      </span>
+      $("deepContent").innerHTML =
+        `
+        <div class="panel">
 
-    `;
+          <h3>❌ خطا</h3>
 
-  }
+          <div class="reason">
+            ${escapeHtml(e.message)}
+          </div>
 
-}
-
-
-/* =========================================================
-تشخیص اتفاق مهم
-========================================================= */
-
-function detectImportantChanges(oldData,newData){
-
-  if(!oldData)return;
-
-  const events=[];
-
-  const old1 =
-    oldData.timeframes?.["1"]||{};
-
-  const new1 =
-    newData.timeframes?.["1"]||{};
-
-  const old15 =
-    oldData.timeframes?.["15"]||{};
-
-  const new15 =
-    newData.timeframes?.["15"]||{};
-
-
-  /*
-    تغییر جهت یک دقیقه
-  */
-
-  const oldDir =
-    normalizeDirection(
-      oldData.direction ||
-      old1.trend
-    );
-
-  const newDir =
-    normalizeDirection(
-      newData.direction ||
-      new1.trend
-    );
-
-  if(
-    oldDir &&
-    newDir &&
-    oldDir!==newDir
-  ){
-
-    events.push(
-      `⚠️ جهت یک دقیقه تغییر کرد: ${fa(oldDir)} ← ${fa(newDir)}`
-    );
-
-  }
-
-
-  /*
-    تغییر وضعیت ۱۵ دقیقه
-  */
-
-  const old15Dir =
-    normalizeDirection(
-      old15.trend
-    );
-
-  const new15Dir =
-    normalizeDirection(
-      new15.trend
-    );
-
-  if(
-    old15Dir &&
-    new15Dir &&
-    old15Dir!==new15Dir
-  ){
-
-    events.push(
-      `🚨 جهت ۱۵ دقیقه تغییر کرد: ${fa(old15Dir)} ← ${fa(new15Dir)}`
-    );
-
-  }
-
-
-  /*
-    شکست یا برخورد MA20
-  */
-
-  if(
-    !old1.touchMA20 &&
-    new1.touchMA20
-  ){
-
-    events.push(
-      "📌 قیمت دوباره به میانگین ۲۰ یک دقیقه رسید."
-    );
-
-  }
-
-
-  /*
-    تغییر امتیاز شدید
-  */
-
-  const oldScore =
-    Number(oldData.score)||0;
-
-  const newScore =
-    Number(newData.score)||0;
-
-  if(
-    Math.abs(
-      newScore-oldScore
-    )>=15
-  ){
-
-    events.push(
-      `📊 امتیاز تحلیل ${newScore>oldScore?"افزایش":"کاهش"} قابل‌توجه داشت: ${oldScore} ← ${newScore}`
-    );
-
-  }
-
-
-  /*
-    تغییر شدید دلتا
-  */
-
-  const oldDelta =
-    Number(
-      oldData.footprint?.delta
-    )||0;
-
-  const newDelta =
-    Number(
-      newData.footprint?.delta
-    )||0;
-
-  if(
-    oldDelta!==0 &&
-    newDelta!==0 &&
-    (
-      oldDelta>0 !==
-      newDelta>0
-    )
-  ){
-
-    events.push(
-      "👣 فشار خرید و فروش در جریان سفارش معکوس شد."
-    );
-
-  }
-
-
-  /*
-    تغییر فشار سفارشات
-  */
-
-  const oldPressure =
-    String(
-      oldData.footprint?.pressure||
-      ""
-    );
-
-  const newPressure =
-    String(
-      newData.footprint?.pressure||
-      ""
-    );
-
-  if(
-    oldPressure &&
-    newPressure &&
-    oldPressure!==newPressure
-  ){
-
-    events.push(
-      `📚 فشار سفارشات تغییر کرد: ${fa(oldPressure)}`
-    );
-
-  }
-
-
-  /*
-    تغییر وضعیت حجم
-  */
-
-  const oldSpike =
-    !!old1.volume?.spike;
-
-  const newSpike =
-    !!new1.volume?.spike;
-
-  if(
-    !oldSpike &&
-    newSpike
-  ){
-
-    events.push(
-      "🔥 افزایش غیرعادی حجم مشاهده شد."
-    );
-
-  }
-
-
-  if(events.length){
-
-    importantEvents = [
-      ...events,
-      ...importantEvents
-    ].slice(0,8);
-
-    renderImportantEvents();
-
-    for(
-      const e of events
-    ){
-
-      toast(e);
-
+        </div>
+        `;
     }
-
-    beep();
-
   }
-
-}
-
-
-function normalizeDirection(v){
-
-  if(!v)return null;
-
-  const s=
-    String(v)
-      .toUpperCase();
-
-  if(
-    s==="LONG"||
-    s==="UP"||
-    s==="BULLISH"||
-    s.includes("BULL")
-  ){
-    return"LONG";
-  }
-
-  if(
-    s==="SHORT"||
-    s==="DOWN"||
-    s==="BEARISH"||
-    s.includes("BEAR")
-  ){
-    return"SHORT";
-  }
-
-  return"FLAT";
 }
 
 
 /* =========================================================
-اتفاقات مهم
+بروزرسانی زنده تحلیل
 ========================================================= */
 
-function renderImportantEvents(){
-
-  if(!importantEvents.length){
-
-    $("importantEvent").innerHTML="";
-
-    return;
-  }
-
-  $("importantEvent").innerHTML=`
-
-    <div class="important">
-
-      <b>
-        🚨 اتفاقات مهم بازار
-      </b>
-
-      ${importantEvents
-        .map(
-          x=>
-            `<div>
-              • ${escapeHtml(x)}
-            </div>`
-        )
-        .join("")
-      }
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-نمایش تحلیل
-========================================================= */
-
-function renderDeep(d){
-
-  const tf1 =
-    d.timeframes?.["1"]||{};
-
-  const tf15 =
-    d.timeframes?.["15"]||{};
-
-
-  $("deepSub").textContent =
-    `قیمت: ${num(d.price)} | امتیاز تحلیل: ${d.score||0} از 100`;
-
-
-  const dir15 =
-    normalizeDirection(
-      tf15.trend
-    );
-
-
-  const dir1 =
-    normalizeDirection(
-      tf1.trend ||
-      d.direction
-    );
-
-
-  let directionClass="flat";
-
-  if(dir15==="LONG")
-    directionClass="up";
-
-  if(dir15==="SHORT")
-    directionClass="down";
-
-
-  $("deepContent").innerHTML=`
-
-    <div class="direction-box ${directionClass}">
-
-      وضعیت اصلی ۱۵ دقیقه:
-
-      ${
-        dir15==="LONG"
-          ?"🟢 صعودی"
-          :dir15==="SHORT"
-            ?"🔴 نزولی"
-            :"🟡 خنثی"
-      }
-
-      <div style="
-        font-size:11px;
-        margin-top:7px;
-        color:#9caabd;
-      ">
-
-        وضعیت یک دقیقه:
-        ${
-          dir1==="LONG"
-            ?"🟢 صعودی"
-            :dir1==="SHORT"
-              ?"🔴 نزولی"
-              :"🟡 خنثی"
-        }
-
-      </div>
-
-    </div>
-
-
-    <div class="tf-title">
-      ⏱ تحلیل یک دقیقه
-    </div>
-
-    <div class="deep-grid">
-
-      ${buildTimeframePanel(
-        tf1,
-        "یک دقیقه",
-        20
-      )}
-
-      ${buildSignalPanel(d)}
-
-      ${buildHuntPanel(tf1)}
-
-      ${buildFVGPanel(tf1)}
-
-      ${buildFootprintPanel(d)}
-
-      ${buildOrderBookPanel(d)}
-
-      ${buildSupportResistancePanel(d)}
-
-    </div>
-
-
-    <div class="tf-title">
-      ⏱ تحلیل پانزده دقیقه
-    </div>
-
-    <div class="deep-grid">
-
-      ${build15MinuteOverview(
-        tf15
-      )}
-
-      ${buildTimeframePanel(
-        tf15,
-        "پانزده دقیقه",
-        20
-      )}
-
-      ${build15Structure(
-        tf15
-      )}
-
-    </div>
-
-
-    <div class="tf-title">
-      📌 اطلاعات کلی بازار
-    </div>
-
-    <div class="deep-grid">
-
-      ${buildMarketPanel(d)}
-
-      ${buildPumpDumpPanel(d)}
-
-      ${buildReversalPanel(d)}
-
-      ${buildStylesPanel(d)}
-
-      ${buildTradePlanPanel(d)}
-
-      ${buildReasonsPanel(d)}
-
-    </div>
-
-  `;
-
-  renderImportantEvents();
-
-}
-
-
-/* =========================================================
-پنل وضعیت تایم‌فریم
-========================================================= */
-
-function buildTimeframePanel(
-  tf,
-  title,
-  maPeriod
+function startDeepLive(
+  symbol,
+  category
 ){
 
-  const dir =
-    normalizeDirection(
-      tf.trend
+  if(analyzeTimer){
+
+    clearInterval(
+      analyzeTimer
     );
+  }
 
-  return panel(
+  lastDeepData =
+    null;
 
-    `📈 ${title}`,
+  analyzeTimer =
+    setInterval(
+      ()=>{
 
-    row(
-      "وضعیت",
-      dir==="LONG"
-        ?"صعودی"
-        :dir==="SHORT"
-          ?"نزولی"
-          :"خنثی"
-    )+
+        if(
+          $("deepPanel")
+            .style
+            .display ===
+          "none"
+        ){
+          return;
+        }
 
-    row(
-      "قیمت",
-      num(tf.price)
-    )+
+        fetchDeep(
+          symbol,
+          category,
+          true
+        );
 
-    row(
-      `میانگین ${maPeriod}`,
-      num(tf.ma20)
-    )+
-
-    row(
-      "میانگین ۷",
-      num(tf.ma7)
-    )+
-
-    row(
-      "شیب میانگین ۲۰",
-      fa(tf.maSlope)
-    )+
-
-    row(
-      "برخورد با میانگین ۲۰",
-      tf.touchMA20
-        ?"بله"
-        :"خیر"
-    )+
-
-    row(
-      "برخورد با میانگین ۷",
-      tf.touchMA7
-        ?"بله"
-        :"خیر"
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-خلاصه ۱۵ دقیقه
-========================================================= */
-
-function build15MinuteOverview(tf){
-
-  const dir =
-    normalizeDirection(
-      tf.trend
+      },
+      ANALYZE_INTERVAL
     );
-
-  const title =
-    dir==="LONG"
-      ?"🟢 ساختار ۱۵ دقیقه صعودی"
-      :dir==="SHORT"
-        ?"🔴 ساختار ۱۵ دقیقه نزولی"
-        :"🟡 ساختار ۱۵ دقیقه خنثی";
-
-  return panel(
-
-    "🧭 جهت بازار در ۱۵ دقیقه",
-
-    `<div class="reason">
-      ${title}
-    </div>`+
-
-    row(
-      "روند",
-      dir==="LONG"
-        ?"صعودی"
-        :dir==="SHORT"
-          ?"نزولی"
-          :"خنثی"
-    )+
-
-    row(
-      "شیب میانگین ۲۰",
-      fa(tf.maSlope)
-    )+
-
-    row(
-      "برخورد میانگین ۲۰",
-      tf.touchMA20
-        ?"بله"
-        :"خیر"
-    )+
-
-    row(
-      "قیمت",
-      num(tf.price)
-    )
-
-  );
-
 }
 
 
 /* =========================================================
-ساختار ۱۵ دقیقه
+تغییرات مهم تحلیل
 ========================================================= */
 
-function build15Structure(tf){
+function detectDeepChanges(
+  old,
+  now
+){
 
-  return panel(
+  const changes = [];
 
-    "🏗 ساختار بازار ۱۵ دقیقه",
+  const old15 =
+    old.timeframes?.["15"] ||
+    old.timeframes?.["15m"] ||
+    {};
 
-    row(
-      "شکار نقدینگی",
-      fa(tf.hunt?.type)
-    )+
+  const now15 =
+    now.timeframes?.["15"] ||
+    now.timeframes?.["15m"] ||
+    {};
 
-    row(
-      "سمت شکار",
-      fa(tf.hunt?.side)
-    )+
+  const old1 =
+    old.timeframes?.["1"] ||
+    {};
 
-    row(
-      "تأیید شکار",
-      tf.hunt?.confirmed
-        ?"بله"
-        :"خیر"
-    )+
+  const now1 =
+    now.timeframes?.["1"] ||
+    {};
 
-    row(
-      "شکست ساختار",
-      fa(tf.bos)
-    )+
+  if(
+    old.direction !==
+    now.direction
+  ){
+    changes.push(
+      `جهت تحلیل از ${fa(old.direction)} به ${fa(now.direction)} تغییر کرد`
+    );
+  }
 
-    row(
-      "تغییر ساختار",
-      fa(tf.choch)
-    )+
+  if(
+    old1.maSlope !==
+    now1.maSlope
+  ){
+    changes.push(
+      `شیب میانگین ۲۰ یک دقیقه از ${fa(old1.maSlope)} به ${fa(now1.maSlope)} تغییر کرد`
+    );
+  }
 
-    row(
-      "کندل",
-      fa(tf.candle)
-    )
+  if(
+    old15.trend !==
+    now15.trend
+  ){
+    changes.push(
+      `روند ۱۵ دقیقه از ${fa(old15.trend)} به ${fa(now15.trend)} تغییر کرد`
+    );
+  }
 
-  );
+  if(
+    old15.maSlope !==
+    now15.maSlope
+  ){
+    changes.push(
+      `شیب میانگین ۲۰ در ۱۵ دقیقه تغییر کرد`
+    );
+  }
 
+  if(
+    old15.hunt?.type !==
+    now15.hunt?.type
+  ){
+    changes.push(
+      `شکار نقدینگی در ۱۵ دقیقه تغییر کرد`
+    );
+  }
+
+  if(
+    old15.bos !==
+    now15.bos
+  ){
+    changes.push(
+      `شکست ساختار ۱۵ دقیقه تغییر کرد`
+    );
+  }
+
+  if(
+    old15.choch !==
+    now15.choch
+  ){
+    changes.push(
+      `تغییر ساختار ۱۵ دقیقه تغییر کرد`
+    );
+  }
+
+  if(
+    old.pumpDumpStatus !==
+    now.pumpDumpStatus
+  ){
+    changes.push(
+      `وضعیت پامپ/دامپ تغییر کرد`
+    );
+  }
+
+  if(
+    old.reversal?.alert !==
+    now.reversal?.alert
+  ){
+    changes.push(
+      `هشدار احتمال برگشت تغییر کرد`
+    );
+  }
+
+  return changes;
 }
 
 
 /* =========================================================
-سیگنال
+اعلان مهم
 ========================================================= */
 
-function buildSignalPanel(d){
+function showImportantAlert(
+  changes
+){
 
-  return panel(
+  const box =
+    $("importantAlert");
 
-    "🎯 نتیجه تحلیل",
+  box.innerHTML =
+    `
+      🚨 <strong>اتفاق مهم در بازار</strong><br>
+      ${changes
+        .slice(0,5)
+        .map(
+          x =>
+            "• " +
+            escapeHtml(x)
+        )
+        .join("<br>")
+      }
+    `;
 
-    row(
-      "جهت",
-      fa(d.direction)
-    )+
-
-    row(
-      "امتیاز",
-      d.score
-    )+
-
-    row(
-      "امتیاز خرید",
-      d.longScore
-    )+
-
-    row(
-      "امتیاز فروش",
-      d.shortScore
-    )+
-
-    row(
-      "سطح سیگنال",
-      fa(d.signalLevel)
-    )+
-
-    row(
-      "وضعیت پامپ/دامپ",
-      fa(d.pumpDumpStatus)
-    )
-
-  );
-
+  box.style.display =
+    "block";
 }
 
 
 /* =========================================================
-شکار نقدینگی
+ساخت تحلیل
 ========================================================= */
 
-function buildHuntPanel(tf){
+function buildDeep(d){
 
-  return panel(
+  const tf1 =
+    d.timeframes?.["1"] ||
+    {};
 
-    "🎯 شکار نقدینگی",
-
-    row(
-      "نوع",
-      fa(tf.hunt?.type)
-    )+
-
-    row(
-      "سمت",
-      fa(tf.hunt?.side)
-    )+
-
-    row(
-      "تأیید",
-      tf.hunt?.confirmed
-        ?"بله"
-        :"خیر"
-    )+
-
-    row(
-      "شکست ساختار",
-      fa(tf.bos)
-    )+
-
-    row(
-      "تغییر ساختار",
-      fa(tf.choch)
-    )+
-
-    row(
-      "نوع کندل",
-      fa(tf.candle)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-FVG
-========================================================= */
-
-function buildFVGPanel(tf){
-
-  return panel(
-
-    "🧩 شکاف قیمتی و ناحیه سفارش",
-
-    row(
-      "شکاف قیمتی",
-      fa(tf.fvg?.type)
-    )+
-
-    row(
-      "محدوده شکاف",
-
-      tf.fvg?.low!==null &&
-      tf.fvg?.low!==undefined
-
-        ?num(tf.fvg.low)+
-          " ← "+
-          num(tf.fvg.high)
-
-        :"—"
-    )+
-
-    row(
-      "ناحیه سفارش",
-      fa(tf.orderBlock?.type)
-    )+
-
-    row(
-      "محدوده ناحیه سفارش",
-
-      tf.orderBlock?.low!==null &&
-      tf.orderBlock?.low!==undefined
-
-        ?num(tf.orderBlock.low)+
-          " ← "+
-          num(tf.orderBlock.high)
-
-        :"—"
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-جریان سفارش
-========================================================= */
-
-function buildFootprintPanel(d){
+  const tf15 =
+    d.timeframes?.["15"] ||
+    d.timeframes?.["15m"] ||
+    {};
 
   const fp =
-    d.footprint||{};
+    d.footprint || {};
 
-  return panel(
-
-    "👣 جریان سفارش",
-
-    row(
-      "حجم خرید",
-      num(fp.buyVolume)
-    )+
-
-    row(
-      "حجم فروش",
-      num(fp.sellVolume)
-    )+
-
-    row(
-      "اختلاف خرید و فروش",
-      num(fp.delta)
-    )+
-
-    row(
-      "درصد اختلاف",
-      pct(fp.deltaPercent)
-    )+
-
-    row(
-      "سهم خرید",
-      pct(fp.buyShare)
-    )+
-
-    row(
-      "سهم فروش",
-      pct(fp.sellShare)
-    )+
-
-    row(
-      "فشار بازار",
-      fa(fp.pressure)
-    )+
-
-    row(
-      "معامله بزرگ",
-      num(fp.largeTradeNotional,2)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-دفتر سفارشات
-========================================================= */
-
-function buildOrderBookPanel(d){
-
-  const w =
-    d.walls||{};
-
-  return panel(
-
-    "📚 دفتر سفارشات",
-
-    row(
-      "نقدینگی خرید",
-      num(w.buyLiquidity,2)
-    )+
-
-    row(
-      "نقدینگی فروش",
-      num(w.sellLiquidity,2)
-    )+
-
-    row(
-      "سهم خرید",
-      pct(w.buyShare)
-    )+
-
-    row(
-      "سهم فروش",
-      pct(w.sellShare)
-    )+
-
-    row(
-      "عدم تعادل",
-      pct(w.imbalance)
-    )+
-
-    row(
-      "دیوار خرید",
-      w.buy
-        ?num(w.buy.price)
-        :"—"
-    )+
-
-    row(
-      "دیوار فروش",
-      w.sell
-        ?num(w.sell.price)
-        :"—"
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-حمایت مقاومت
-========================================================= */
-
-function buildSupportResistancePanel(d){
+  const wall =
+    d.walls || {};
 
   const sr =
-    d.supportResistance||{};
+    d.supportResistance || {};
 
-  return panel(
+  const market =
+    d.market || {};
 
-    "🧱 حمایت و مقاومت",
+  const movement =
+    d.movement || {};
 
-    row(
-      "نزدیک‌ترین حمایت",
-      sr.nearestSupport
-        ?num(sr.nearestSupport.price)
-        :"—"
-    )+
+  const reversal =
+    d.reversal || {};
 
-    row(
-      "نزدیک‌ترین مقاومت",
-      sr.nearestResistance
-        ?num(sr.nearestResistance.price)
-        :"—"
-    )+
+  const styles =
+    d.styles || {};
 
-    row(
-      "قوی‌ترین حمایت",
-      sr.strongestSupport
-        ?num(sr.strongestSupport.price)
-        :"—"
-    )+
+  const plan =
+    d.tradePlan || {};
 
-    row(
-      "قوی‌ترین مقاومت",
-      sr.strongestResistance
-        ?num(sr.strongestResistance.price)
-        :"—"
-    )
 
-  );
+  return `
 
+    <div class="deep-grid">
+
+      ${panel(
+        "🧭 جهت اصلی بازار",
+        row(
+          "وضعیت ۱۵ دقیقه",
+          fa(
+            tf15.trend ||
+            d.marketTrend15 ||
+            d.direction
+          )
+        )+
+        row(
+          "وضعیت یک دقیقه",
+          fa(
+            tf1.trend
+          )
+        )+
+        row(
+          "جهت تحلیل",
+          fa(d.direction)
+        )+
+        row(
+          "امتیاز تحلیل",
+          d.score
+        )+
+        row(
+          "امتیاز خرید",
+          d.longScore
+        )+
+        row(
+          "امتیاز فروش",
+          d.shortScore
+        )+
+        row(
+          "سطح سیگنال",
+          fa(d.signalLevel)
+        )
+      )}
+
+
+      ${panel(
+        "⏱️ تحلیل یک دقیقه",
+        row(
+          "وضعیت",
+          fa(tf1.trend)
+        )+
+        row(
+          "قیمت",
+          num(tf1.price)
+        )+
+        row(
+          "میانگین ۲۰",
+          num(tf1.ma20)
+        )+
+        row(
+          "میانگین ۷",
+          num(tf1.ma7)
+        )+
+        row(
+          "شیب میانگین ۲۰",
+          fa(tf1.maSlope)
+        )+
+        row(
+          "برخورد با میانگین ۲۰",
+          tf1.touchMA20
+            ? "بله"
+            : "خیر"
+        )+
+        row(
+          "برخورد با میانگین ۷",
+          tf1.touchMA7
+            ? "بله"
+            : "خیر"
+        )
+      )}
+
+
+      ${panel(
+        "🧭 وضعیت بازار در ۱۵ دقیقه",
+        row(
+          "روند",
+          fa(tf15.trend)
+        )+
+        row(
+          "شیب میانگین ۲۰",
+          fa(tf15.maSlope)
+        )+
+        row(
+          "برخورد میانگین ۲۰",
+          tf15.touchMA20
+            ? "بله"
+            : "خیر"
+        )+
+        row(
+          "قیمت",
+          num(tf15.price)
+        )+
+        row(
+          "میانگین ۲۰",
+          num(tf15.ma20)
+        )+
+        row(
+          "میانگین ۷",
+          num(tf15.ma7)
+        )
+      )}
+
+
+      ${panel(
+        "🏗️ ساختار بازار ۱۵ دقیقه",
+        row(
+          "شکار نقدینگی",
+          fa(tf15.hunt?.type)
+        )+
+        row(
+          "سمت شکار",
+          fa(tf15.hunt?.side)
+        )+
+        row(
+          "تأیید شکار",
+          tf15.hunt?.confirmed
+            ? "بله"
+            : "خیر"
+        )+
+        row(
+          "شکست ساختار",
+          fa(tf15.bos)
+        )+
+        row(
+          "تغییر ساختار",
+          fa(tf15.choch)
+        )+
+        row(
+          "نوع کندل",
+          fa(tf15.candle)
+        )
+      )}
+
+
+      ${panel(
+        "🎯 شکار نقدینگی یک دقیقه",
+        row(
+          "نوع شکار",
+          fa(tf1.hunt?.type)
+        )+
+        row(
+          "سمت شکار",
+          fa(tf1.hunt?.side)
+        )+
+        row(
+          "تأیید",
+          tf1.hunt?.confirmed
+            ? "بله"
+            : "خیر"
+        )+
+        row(
+          "شکست ساختار",
+          fa(tf1.bos)
+        )+
+        row(
+          "تغییر ساختار",
+          fa(tf1.choch)
+        )+
+        row(
+          "نوع کندل",
+          fa(tf1.candle)
+        )
+      )}
+
+
+      ${panel(
+        "🧩 شکاف قیمتی و ناحیه سفارش",
+        row(
+          "شکاف قیمتی",
+          fa(tf1.fvg?.type)
+        )+
+        row(
+          "محدوده شکاف",
+          tf1.fvg?.low !== null &&
+          tf1.fvg?.low !== undefined
+            ? num(tf1.fvg.low)+
+              " → "+
+              num(tf1.fvg.high)
+            : "—"
+        )+
+        row(
+          "ناحیه سفارش",
+          fa(tf1.orderBlock?.type)
+        )+
+        row(
+          "محدوده ناحیه سفارش",
+          tf1.orderBlock?.low
+            ? num(tf1.orderBlock.low)+
+              " → "+
+              num(tf1.orderBlock.high)
+            : "—"
+        )
+      )}
+
+
+      ${panel(
+        "👣 جریان سفارش",
+        row(
+          "حجم خرید",
+          num(fp.buyVolume)
+        )+
+        row(
+          "حجم فروش",
+          num(fp.sellVolume)
+        )+
+        row(
+          "اختلاف خرید و فروش",
+          num(fp.delta)
+        )+
+        row(
+          "درصد اختلاف",
+          pct(fp.deltaPercent)
+        )+
+        row(
+          "سهم خرید",
+          pct(fp.buyShare)
+        )+
+        row(
+          "سهم فروش",
+          pct(fp.sellShare)
+        )+
+        row(
+          "فشار بازار",
+          fa(fp.pressure)
+        )+
+        row(
+          "معامله بزرگ",
+          num(fp.largeTradeNotional,2)
+        )
+      )}
+
+
+      ${panel(
+        "📚 دفتر سفارشات",
+        row(
+          "نقدینگی خرید",
+          num(wall.buyLiquidity,2)
+        )+
+        row(
+          "نقدینگی فروش",
+          num(wall.sellLiquidity,2)
+        )+
+        row(
+          "سهم خرید",
+          pct(wall.buyShare)
+        )+
+        row(
+          "سهم فروش",
+          pct(wall.sellShare)
+        )+
+        row(
+          "عدم تعادل",
+          pct(wall.imbalance)
+        )+
+        row(
+          "دیوار خرید",
+          wall.buy
+            ? num(wall.buy.price)
+            : "—"
+        )+
+        row(
+          "دیوار فروش",
+          wall.sell
+            ? num(wall.sell.price)
+            : "—"
+        )
+      )}
+
+
+      ${panel(
+        "🧱 حمایت و مقاومت",
+        row(
+          "نزدیک‌ترین حمایت",
+          sr.nearestSupport
+            ? num(sr.nearestSupport.price)
+            : "—"
+        )+
+        row(
+          "نزدیک‌ترین مقاومت",
+          sr.nearestResistance
+            ? num(sr.nearestResistance.price)
+            : "—"
+        )+
+        row(
+          "قوی‌ترین حمایت",
+          sr.strongestSupport
+            ? num(sr.strongestSupport.price)
+            : "—"
+        )+
+        row(
+          "قوی‌ترین مقاومت",
+          sr.strongestResistance
+            ? num(sr.strongestResistance.price)
+            : "—"
+        )
+      )}
+
+
+      ${panel(
+        "📌 اطلاعات بازار",
+        row(
+          "سود باز",
+          num(market.openInterest,2)
+        )+
+        row(
+          "تغییر سود باز",
+          pct(market.openInterestChange)
+        )+
+        row(
+          "نرخ تأمین مالی",
+          market.fundingRate !== null &&
+          market.fundingRate !== undefined
+            ? Number(
+                market.fundingRate
+              ).toFixed(6)
+            : "—"
+        )+
+        row(
+          "تغییر قیمت ۲۴ ساعت",
+          pct(market.priceChange24h)
+        )+
+        row(
+          "گردش مالی ۲۴ ساعت",
+          num(market.turnover24h,2)
+        )
+      )}
+
+
+      ${panel(
+        "🚀 بررسی پامپ و دامپ",
+        row(
+          "امتیاز پامپ",
+          movement.pumpScore
+        )+
+        row(
+          "امتیاز دامپ",
+          movement.dumpScore
+        )+
+        row(
+          "تغییر ۱۵ دقیقه",
+          pct(movement.change15m)
+        )+
+        row(
+          "تغییر ۳۰ دقیقه",
+          pct(movement.change30m)
+        )+
+        row(
+          "نسبت حجم",
+          num(movement.volumeRatio,2)
+        )+
+        row(
+          "فاصله از میانگین ۲۰",
+          pct(movement.distanceFromMA20)
+        )+
+        row(
+          "وضعیت",
+          fa(d.pumpDumpStatus)
+        )
+      )}
+
+
+      ${panel(
+        "🔄 احتمال برگشت",
+        row(
+          "برگشت پامپ",
+          reversal.pumpScore
+        )+
+        row(
+          "برگشت دامپ",
+          reversal.dumpScore
+        )+
+        row(
+          "هشدار",
+          fa(reversal.alert)
+        )
+      )}
+
+
+      ${panel(
+        "🧠 روش‌های تحلیل",
+        row(
+          "ساختار پول هوشمند",
+          styles.SMC
+        )+
+        row(
+          "نقدینگی",
+          styles.Liquidity
+        )+
+        row(
+          "میانگین‌های متحرک",
+          styles.MA
+        )+
+        row(
+          "حجم",
+          styles.Volume
+        )+
+        row(
+          "کندل‌ها",
+          styles.Candles
+        )+
+        row(
+          "جریان سفارش",
+          styles.OrderFlow
+        )
+      )}
+
+
+      ${
+        plan.available
+          ? panel(
+              "🎯 برنامه معامله",
+              row(
+                "جهت",
+                fa(plan.direction)
+              )+
+              row(
+                "ورود",
+                num(plan.entry)
+              )+
+              row(
+                "حد ضرر",
+                num(plan.sl)
+              )+
+              row(
+                "هدف اول",
+                num(plan.tp1)
+              )+
+              row(
+                "هدف دوم",
+                num(plan.tp2)
+              )+
+              row(
+                "هدف سوم",
+                num(plan.tp3)
+              )+
+              row(
+                "ریسک",
+                pct(plan.riskPercent)
+              )
+            )
+          : panel(
+              "🎯 برنامه معامله",
+              `<div class="reason">
+                ${
+                  escapeHtml(
+                    plan.reason ||
+                    "سیگنال قطعی وجود ندارد."
+                  )
+                }
+              </div>`
+            )
+      }
+
+
+      ${reasonsPanel(d)}
+
+    </div>
+  `;
 }
 
 
 /* =========================================================
-بازار
+پنل
 ========================================================= */
 
-function buildMarketPanel(d){
-
-  const m =
-    d.market||{};
-
-  return panel(
-
-    "📌 اطلاعات بازار",
-
-    row(
-      "سود باز",
-      num(m.openInterest,2)
-    )+
-
-    row(
-      "تغییر سود باز",
-      pct(m.openInterestChange)
-    )+
-
-    row(
-      "نرخ تأمین مالی",
-      m.fundingRate!==null &&
-      m.fundingRate!==undefined
-        ?Number(m.fundingRate).toFixed(6)
-        :"—"
-    )+
-
-    row(
-      "تغییر قیمت ۲۴ ساعت",
-      pct(m.priceChange24h)
-    )+
-
-    row(
-      "گردش مالی ۲۴ ساعت",
-      num(m.turnover24h,2)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-پامپ دامپ
-========================================================= */
-
-function buildPumpDumpPanel(d){
-
-  const m =
-    d.movement||{};
-
-  return panel(
-
-    "🚀 بررسی پامپ و دامپ",
-
-    row(
-      "امتیاز پامپ",
-      m.pumpScore
-    )+
-
-    row(
-      "امتیاز دامپ",
-      m.dumpScore
-    )+
-
-    row(
-      "تغییر ۱۵ دقیقه",
-      pct(m.change15m)
-    )+
-
-    row(
-      "تغییر ۳۰ دقیقه",
-      pct(m.change30m)
-    )+
-
-    row(
-      "نسبت حجم",
-      num(m.volumeRatio,2)
-    )+
-
-    row(
-      "فاصله از میانگین ۲۰",
-      pct(m.distanceFromMA20)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-برگشت
-========================================================= */
-
-function buildReversalPanel(d){
-
-  const r =
-    d.reversal||{};
-
-  return panel(
-
-    "🔄 احتمال برگشت",
-
-    row(
-      "برگشت پامپ",
-      r.pumpScore
-    )+
-
-    row(
-      "برگشت دامپ",
-      r.dumpScore
-    )+
-
-    row(
-      "هشدار",
-      fa(r.alert)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-سبک‌های تحلیل
-========================================================= */
-
-function buildStylesPanel(d){
-
-  const s =
-    d.styles||{};
-
-  return panel(
-
-    "🧠 روش‌های تحلیل",
-
-    row(
-      "ساختار پول هوشمند",
-      fa(s.SMC)
-    )+
-
-    row(
-      "نقدینگی",
-      fa(s.ICT)
-    )+
-
-    row(
-      "میانگین‌های متحرک",
-      fa(s.MA)
-    )+
-
-    row(
-      "حجم",
-      fa(s.Volume)
-    )+
-
-    row(
-      "کندل‌ها",
-      fa(s.Candles)
-    )+
-
-    row(
-      "جریان سفارش",
-      fa(s.OrderFlow)
-    )+
-
-    row(
-      "نقدینگی",
-      fa(s.Liquidity)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-برنامه معامله
-========================================================= */
-
-function buildTradePlanPanel(d){
-
-  const p =
-    d.tradePlan||{};
-
-  if(!p.available){
-
-    return panel(
-
-      "🎯 برنامه معامله",
-
-      `<div class="reason">
-        ${escapeHtml(
-          p.reason||
-          "هنوز شرایط کافی برای برنامه معامله وجود ندارد."
-        )}
-      </div>`
-
-    );
-
-  }
-
-  return panel(
-
-    "🎯 برنامه معامله",
-
-    row(
-      "جهت",
-      fa(p.direction)
-    )+
-
-    row(
-      "ورود",
-      num(p.entry)
-    )+
-
-    row(
-      "حد ضرر",
-      num(p.sl)
-    )+
-
-    row(
-      "هدف اول",
-      num(p.tp1)
-    )+
-
-    row(
-      "هدف دوم",
-      num(p.tp2)
-    )+
-
-    row(
-      "هدف سوم",
-      num(p.tp3)
-    )+
-
-    row(
-      "ریسک",
-      pct(p.riskPercent)
-    )+
-
-    row(
-      "نسبت هدف اول",
-      num(p.rr1,2)
-    )+
-
-    row(
-      "نسبت هدف دوم",
-      num(p.rr2,2)
-    )+
-
-    row(
-      "نسبت هدف سوم",
-      num(p.rr3,2)
-    )
-
-  );
-
-}
-
-
-/* =========================================================
-دلایل
-========================================================= */
-
-function buildReasonsPanel(d){
-
-  const reasons =
-    d.reasons||[];
-
-  if(!reasons.length){
-
-    return panel(
-
-      "📝 دلایل تحلیل",
-
-      `<div class="reason">
-        دلیل جدیدی ثبت نشده است.
-      </div>`
-
-    );
-
-  }
-
-  return panel(
-
-    "📝 دلایل تحلیل",
-
-    reasons
-      .map(
-        x=>
-          `<div class="reason">
-            ${escapeHtml(x)}
-          </div>`
-      )
-      .join("")
-
-  );
-
-}
-
-
-/* =========================================================
-پنل عمومی
-========================================================= */
-
-function panel(title,content){
-
-  return`
-
+function panel(
+  title,
+  content
+){
+
+  return `
     <div class="panel">
 
       <h3>
@@ -3108,16 +2948,16 @@ function panel(title,content){
       ${content}
 
     </div>
-
   `;
-
 }
 
 
-function row(label,value){
+function row(
+  label,
+  value
+){
 
-  return`
-
+  return `
     <div class="row">
 
       <span class="label">
@@ -3125,21 +2965,131 @@ function row(label,value){
       </span>
 
       <b class="value">
-
         ${escapeHtml(
-          value===null||
-          value===undefined||
-          value===""
-            ?"—"
-            :String(value)
+          value === null ||
+          value === undefined ||
+          value === ""
+            ? "—"
+            : String(value)
         )}
-
       </b>
 
     </div>
-
   `;
+}
 
+
+function reasonsPanel(d){
+
+  const reasons =
+    d.reasons || [];
+
+  if(!reasons.length){
+
+    return panel(
+      "📝 دلایل تحلیل",
+      `
+        <div class="reason">
+          دلیل قطعی برای سیگنال ثبت نشده است.
+        </div>
+      `
+    );
+  }
+
+  return panel(
+    "📝 دلایل تحلیل",
+    reasons
+      .map(
+        x =>
+          `
+          <div class="reason">
+            ${escapeHtml(
+              translateReason(x)
+            )}
+          </div>
+          `
+      )
+      .join("")
+  );
+}
+
+
+/* =========================================================
+ترجمه دلایل
+========================================================= */
+
+function translateReason(x){
+
+  let s =
+    String(x);
+
+  s =
+    s.replace(
+      /Footprint Delta/gi,
+      "اختلاف حجم خرید و فروش"
+    );
+
+  s =
+    s.replace(
+      /Order Block/gi,
+      "ناحیه سفارش"
+    );
+
+  s =
+    s.replace(
+      /MA20/gi,
+      "میانگین ۲۰"
+    );
+
+  s =
+    s.replace(
+      /MA7/gi,
+      "میانگین ۷"
+    );
+
+  s =
+    s.replace(
+      /15m/gi,
+      "۱۵ دقیقه"
+    );
+
+  s =
+    s.replace(
+      /1m/gi,
+      "۱ دقیقه"
+    );
+
+  s =
+    s.replace(
+      /Bullish/gi,
+      "صعودی"
+    );
+
+  s =
+    s.replace(
+      /Bearish/gi,
+      "نزولی"
+    );
+
+  s =
+    s.replace(
+      /BUY_PRESSURE/gi,
+      "فشار خرید"
+    );
+
+  s =
+    s.replace(
+      /SELL_PRESSURE/gi,
+      "فشار فروش"
+    );
+
+  s =
+    s.replace(
+      /NONE/gi,
+      "ندارد"
+    );
+
+  return s;
 }
 
 
@@ -3149,24 +3099,34 @@ function row(label,value){
 
 function closeDeep(){
 
-  $("deepPanel").style.display=
+  $("deepPanel")
+    .style
+    .display =
     "none";
 
-  document.body.style.overflow="";
+  document.body.style.overflow =
+    "";
+
+  if(analyzeTimer){
+
+    clearInterval(
+      analyzeTimer
+    );
+
+    analyzeTimer =
+      null;
+  }
 
   /*
-    انتخاب را عمداً پاک نمی‌کنیم.
-    بنابراین وقتی دوباره باز شود
-    همان ارز انتخاب‌شده باقی می‌ماند.
+    انتخاب همچنان در حافظه می‌ماند.
   */
 
-  saveSelected();
-
+  renderSignals();
 }
 
 
 /* =========================================================
-سلامت Worker
+بررسی اتصال Worker
 ========================================================= */
 
 async function health(){
@@ -3187,7 +3147,7 @@ async function health(){
     if(d.ok){
 
       setStatus(
-        "🟢 ارتباط با سرور برقرار است",
+        "🟢 Worker متصل است",
         true
       );
 
@@ -3197,7 +3157,7 @@ async function health(){
   }catch(e){
 
     setStatus(
-      "🔴 سرور در دسترس نیست"
+      "🔴 Worker در دسترس نیست"
     );
 
   }
@@ -3207,151 +3167,180 @@ async function health(){
 
 
 /* =========================================================
-بازگردانی انتخاب بعد از ورود
+بازیابی ارز انتخاب شده
 ========================================================= */
 
 async function restoreSelected(){
 
-  const saved =
-    loadSelected();
-
-  if(!saved)return;
-
-  /*
-    ابتدا از سیگنال‌های ذخیره‌شده پیدا کن.
-  */
-
-  let id=saved.id;
-
-  let s=signals.get(id);
-
-  /*
-    اگر شناسه قدیمی بود،
-    بر اساس نماد پیدا کن.
-  */
-
-  if(!s){
-
-    const arr =
-      [...signals.values()]
-        .filter(
-          x=>
-            x.symbol===
-            saved.symbol
-        )
-        .sort(
-          (a,b)=>
-            b.receivedAt-a.receivedAt
-        );
-
-    s=arr[0];
-
-    if(s){
-      id=s.id;
-    }
-
-  }
-
-  if(!s){
-
-    currentSelectedSymbol=
-      saved.symbol;
-
-    currentSelectedCategory=
-      saved.category||"linear";
-
-    currentSignalId=
-      saved.id||null;
-
-    /*
-      حتی اگر کارت دیگر موجود نباشد،
-      تحلیل ارز را مستقیم باز می‌کنیم.
-    */
-
-    if(
-      currentSelectedSymbol
-    ){
-
-      await openDeep(
-        encodeURIComponent(
-          currentSelectedSymbol
-        ),
-        currentSelectedCategory,
-        currentSignalId ||
-          (
-            currentSelectedSymbol+
-            "_saved"
-          )
-      );
-
-    }
-
+  if(!selectedSymbol){
     return;
   }
 
-  currentSignalId=id;
+  /*
+    اگر صفحه بسته و دوباره باز شده،
+    ارز انتخاب شده دوباره از Worker
+    دریافت می‌شود.
+  */
 
-  currentSelectedSymbol=
-    s.symbol;
+  try{
 
-  currentSelectedCategory=
-    s.category||"linear";
+    const url =
+      ANALYZE_URL +
+      "?symbol=" +
+      encodeURIComponent(
+        selectedSymbol
+      )+
+      "&category=linear";
 
-  renderSignals();
+    const r =
+      await fetch(
+        url,
+        {
+          cache:"no-store"
+        }
+      );
 
+    if(!r.ok)return;
+
+    const d =
+      await r.json();
+
+    if(!d.ok)return;
+
+    const tf =
+      d.timeframes?.["1"] ||
+      {};
+
+    const s = {
+
+      symbol:selectedSymbol,
+
+      category:"linear",
+
+      direction:
+        d.direction ||
+        "WAIT",
+
+      price:
+        Number(
+          d.price ||
+          tf.price
+        ),
+
+      ma20:
+        Number(tf.ma20),
+
+      distancePct:
+        tf.ma20
+          ? (
+              Number(
+                d.price ||
+                tf.price
+              ) -
+              Number(tf.ma20)
+            ) /
+            Number(tf.ma20) *
+            100
+          : 0,
+
+      maSlope:
+        tf.maSlope,
+
+      trend:
+        tf.trend,
+
+      type:
+        tf.touchMA20
+          ? "TOUCH"
+          : "NONE",
+
+      volumeConfirmed:
+        tf.volume?.spike ||
+        false,
+
+      hunt:
+        tf.hunt ||
+        null,
+
+      deep:d,
+
+      id:
+        currentSignalId ||
+        signalKey({
+          symbol:selectedSymbol,
+          direction:
+            d.direction ||
+            "WAIT"
+        }),
+
+      receivedAt:
+        Date.now(),
+
+      updatedAt:
+        Date.now(),
+
+      active:true
+
+    };
+
+    currentSignalId =
+      s.id;
+
+    signals.set(
+      s.id,
+      s
+    );
+
+    renderSignals();
+
+  }catch(e){
+
+    console.log(
+      "restore selected error",
+      e
+    );
+  }
 }
 
 
 /* =========================================================
-بازگشت از برنامه دیگر
-========================================================= */
-
-document.addEventListener(
-  "visibilitychange",
-  ()=>{
-
-    if(
-      document.visibilityState===
-      "visible"
-    ){
-
-      /*
-        به محض برگشت کاربر،
-        بازار انتخاب‌شده را تازه کن.
-      */
-
-      if(
-        currentSelectedSymbol &&
-        currentSignalId
-      ){
-
-        refreshSelectedAnalysis();
-
-      }
-
-      scanNow();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-INITIAL
+اولیه
 ========================================================= */
 
 (async()=>{
 
-  loadSignals();
-
-  renderSignals();
+  updateStrictUI();
 
   await health();
 
   await restoreSelected();
 
   startRadar();
+
+  /*
+    اگر قبلاً صفحه بسته شده و ارز انتخاب شده بود،
+    تحلیل عمیق آن دوباره باز می‌شود.
+  */
+
+  if(selectedSymbol){
+
+    setTimeout(
+      ()=>{
+        openDeep(
+          encodeURIComponent(
+            selectedSymbol
+          ),
+          "linear",
+          currentSignalId ||
+          signalKey({
+            symbol:selectedSymbol,
+            direction:"WAIT"
+          })
+        );
+      },
+      1200
+    );
+  }
 
 })();
 
