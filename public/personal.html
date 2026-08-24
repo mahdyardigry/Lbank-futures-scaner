@@ -1,126 +1,147 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-
 <meta charset="utf-8">
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1"
->
-
-<title>اسکنر شخصی Bybit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اسکنر شخصی</title>
 
 <style>
-
-*{
-box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
-margin:0;
-background:#090e14;
-color:#edf4ff;
-font-family:Tahoma,Arial,sans-serif
+  margin:0;
+  background:#0b0f14;
+  color:#eaf2ff;
+  font-family:Tahoma,Arial,sans-serif
 }
 
 .wrap{
-max-width:1050px;
-margin:auto;
-padding:14px
+  max-width:1100px;
+  margin:auto;
+  padding:14px
 }
 
 .top{
-display:flex;
-gap:8px
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center
 }
 
-.input{
-flex:1;
-background:#0e151e;
-color:#fff;
-border:1px solid #334155;
-border-radius:11px;
-padding:12px
+.box,.card{
+  background:#111821;
+  border:1px solid #263241;
+  border-radius:14px;
+  padding:12px;
+  margin:10px 0
 }
 
 .btn{
-border:0;
-border-radius:10px;
-padding:11px 15px;
-background:#2563eb;
-color:#fff;
-font-weight:700
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  background:#1d6fff;
+  color:#fff;
+  font-weight:700
 }
 
-.card,.item,.box{
-background:#111923;
-border:1px solid #263446;
-border-radius:14px;
-margin:9px 0
+.input{
+  flex:1;
+  min-width:180px;
+  background:#0b1118;
+  color:#fff;
+  border:1px solid #334155;
+  border-radius:10px;
+  padding:11px
 }
 
-.card,.box,.content{
-padding:11px
+.muted{
+  color:#8fa1b7
 }
 
 .grid{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(210px,1fr));
-gap:9px
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+  gap:10px
 }
 
-.item>summary{
-cursor:pointer;
-padding:12px;
-font-weight:700
-}
+.green{color:#54e08a}
+.red{color:#ff6b7d}
+.yellow{color:#ffd166}
 
 .row{
-display:flex;
-justify-content:space-between;
-gap:10px;
-border-bottom:1px solid #263446;
-padding:8px 0
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  border-bottom:1px solid #202b38;
+  padding:8px 0
 }
 
-.green{color:#55e28a}
-.red{color:#ff7182}
-.yellow{color:#ffd166}
-.muted{color:#8fa1b7}
+.item{
+  background:#0d141d;
+  border:1px solid #263241;
+  border-radius:10px;
+  margin:7px 0
+}
+
+.item summary{
+  cursor:pointer;
+  padding:11px;
+  font-weight:700;
+  list-style:none
+}
+
+.item summary::-webkit-details-marker{
+  display:none
+}
+
+.content{
+  padding:0 11px 11px
+}
 
 .score{
-font-size:28px;
-font-weight:800
+  font-size:28px;
+  font-weight:800
 }
 
 .small{
-font-size:12px
+  font-size:12px
 }
 
-</style>
+.refresh{
+  font-size:12px;
+  color:#8fa1b7
+}
 
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:8px;
+  background:#1b2634
+}
+</style>
 </head>
 
 <body>
 
 <div class="wrap">
 
-<h2>📊 اسکنر شخصی Bybit</h2>
+<h2>📊 اسکنر شخصی</h2>
 
-<div class="card">
+<div class="box">
 
 <div class="top">
 
 <input
-id="symbol"
-class="input"
-placeholder="BTCUSDT"
+  id="symbol"
+  class="input"
+  placeholder="مثلاً BTCUSDT"
 >
 
 <button
-class="btn"
-onclick="analyze()"
+  class="btn"
+  onclick="analyze()"
 >
 تحلیل
 </button>
@@ -128,7 +149,7 @@ onclick="analyze()"
 </div>
 
 <div class="small muted">
-فقط 1 دقیقه و 15 دقیقه · بدون Radar و Pump/Dump · به‌روزرسانی زنده
+تحلیل خودکار فقط در تایم‌فریم‌های ۱ دقیقه و ۱۵ دقیقه · به‌روزرسانی زنده
 </div>
 
 </div>
@@ -140,557 +161,765 @@ onclick="analyze()"
 <script>
 
 let timer=null;
-let last='';
+let lastSymbol='';
 
-const $=x=>
-document.getElementById(x);
+const $=id=>
+  document.getElementById(id);
 
 const esc=s=>
-String(s??'')
-.replace(
-/[&<>"']/g,
-m=>({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#39;'
-}[m])
-);
+  String(s??'').replace(
+    /[&<>"']/g,
+    m=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":'&#39;'
+    }[m])
+  );
 
-const fmt=v=>
-v==null||v===''
-?'—'
-:typeof v==='number'
-?(Math.abs(v)>=1000
-?v.toLocaleString(
-'en-US',
-{maximumFractionDigits:4}
-)
-:v.toFixed(5))
-:esc(v);
+const DIR={
+  BULLISH:'صعودی',
+  BEARISH:'نزولی',
+  RANGE:'رنج',
+  LONG:'خرید',
+  SHORT:'فروش',
+  WAIT:'انتظار',
+  NONE:'ندارد',
+  UP:'صعودی',
+  DOWN:'نزولی',
+  FLAT:'خنثی',
+  NORMAL:'عادی',
+  SPIKE:'جهش'
+};
 
-const cls=d=>
-d==='BULLISH'||d==='LONG'
-?'green'
-:d==='BEARISH'||d==='SHORT'
-?'red'
-:'yellow';
+const TYPE={
+  BULLISH:'صعودی',
+  BEARISH:'نزولی',
+  BULLISH_DIVERGENCE:'واگرایی صعودی',
+  BEARISH_DIVERGENCE:'واگرایی نزولی',
+  NONE:'ندارد',
+  SWING_SUPPORT:'حمایت نوسانی',
+  SWING_RESISTANCE:'مقاومت نوسانی',
+  BUY_WALL:'دیوار خرید',
+  SELL_WALL:'دیوار فروش'
+};
 
-function styles(st){
+const label=v=>
+  DIR[v] ||
+  TYPE[v] ||
+  String(v??'—');
 
-return(st.items||[])
-.map(i=>`
+function dirClass(d){
 
-<details class="item">
+  return d==='BULLISH' ||
+         d==='LONG' ||
+         d==='UP'
+    ? 'green'
 
-<summary>
+    : d==='BEARISH' ||
+      d==='SHORT' ||
+      d==='DOWN'
+      ? 'red'
 
-${esc(i.name)}
-
-—
-
-<span class="${cls(i.direction)}">
-
-${esc(i.direction)}
-
-· ${i.score}/100
-
-</span>
-
-</summary>
-
-<div class="content">
-
-<div class="row">
-
-<span>
-امتیاز
-</span>
-
-<b>
-${i.score}/100
-</b>
-
-</div>
-
-<pre
-class="small"
-style="white-space:pre-wrap"
->${esc(
-JSON.stringify(
-i.details||{},
-null,
-2
-)
-)}</pre>
-
-</div>
-
-</details>
-
-`)
-.join('');
-
+      : 'yellow';
 }
 
-function tf(x){
+function fmt(v){
+
+  if(v==null || v==='')
+    return '—';
+
+  if(typeof v==='number'){
+
+    return Math.abs(v)>=1000
+
+      ? v.toLocaleString(
+          'fa-IR',
+          {
+            maximumFractionDigits:4
+          }
+        )
+
+      : v.toLocaleString(
+          'fa-IR',
+          {
+            maximumFractionDigits:6
+          }
+        );
+  }
+
+  return esc(v);
+}
+
+function rememberOpen(){
+
+  return [
+    ...document.querySelectorAll(
+      'details[data-key]'
+    )
+  ]
+  .filter(x=>x.open)
+  .map(x=>x.dataset.key);
+}
+
+function restoreOpen(keys){
 
-let a=x.analysis||{};
-let e=x.indicators||{};
-let f=x.footprint||{};
-let w=x.orderBook||{};
-let s=x.supportResistance||{};
-let st=x.style||{};
+  keys.forEach(k=>{
+
+    const x=
+      document.querySelector(
+        `details[data-key="${CSS.escape(k)}"]`
+      );
+
+    if(x)
+      x.open=true;
+  });
+}
+
+function renderStyles(x){
+
+  return (x.items||[])
+    .map(
+      (i,n)=>
+        `<div class="row">
+
+          <span>
+            ${esc(
+              i.name ||
+              [
+                'ساختار بازار',
+                'اسمارت مانی',
+                'ایچیموکو',
+                'مومنتوم',
+                'حجم',
+                'جریان سفارش',
+                'نقدینگی'
+              ][n] ||
+              'سبک'
+            )}
+          </span>
 
-return `
+          <b class="${dirClass(i.direction)}">
+            ${label(i.direction)}
+            ·
+            ${i.score||0}/100
+          </b>
 
-<details
-open
-class="item"
->
+        </div>`
+    )
+    .join('');
+}
 
-<summary>
+function renderTF(key,x){
 
-${esc(x.label)}
+  const a=x.analysis||{};
+  const e=x.indicators||{};
+  const f=x.footprint||{};
+  const w=x.orderBook||{};
+  const s=x.supportResistance||{};
+  const st=x.style||{};
 
-—
+  return `
 
-<span class="${cls(
-st.overall?.direction
-)}">
+  <details
+    class="item"
+    data-key="tf-${key}"
+  >
 
-${esc(
-st.overall?.direction
-)}
+  <summary>
 
-${st.overall?.score||0}/100
+    ${esc(x.label||key+' دقیقه')}
 
-</span>
+    —
 
-</summary>
+    <span
+      class="${dirClass(
+        st.overall?.direction
+      )}"
+    >
 
-<div class="content">
+      ${label(
+        st.overall?.direction ||
+        'RANGE'
+      )}
 
-<div class="grid">
+      ${st.overall?.score||0}/100
 
-<div class="box">
+    </span>
 
-<b>
-MA / Market
-</b>
+  </summary>
 
-<div>
-MA7:
-${fmt(a.ma7)}
-</div>
+  <div class="content">
 
-<div>
-MA20:
-${fmt(a.ma20)}
-</div>
+  <div class="grid">
 
-<div>
-شیب:
-${esc(a.maSlope)}
-</div>
+    <div class="box">
 
-<div>
-ADX:
-${fmt(a.market?.adx)}
-</div>
+      <b>میانگین‌های متحرک</b>
 
-</div>
+      <div>
+        MA7:
+        ${fmt(a.ma7)}
+      </div>
 
-<div class="box">
+      <div>
+        MA20:
+        ${fmt(a.ma20)}
+      </div>
 
-<b>
-MACD / RSI
-</b>
+      <div>
+        شیب:
+        ${label(a.maSlope)}
+      </div>
 
-<div>
-${esc(e.MACD?.direction)}
-· Hist
-${fmt(e.MACD?.hist)}
-</div>
+      <div>
+        قدرت روند:
+        ${fmt(a.adx)}
+      </div>
 
-<div>
-RSI:
-${fmt(e.RSI?.value)}
-</div>
+      <div>
+        دامنه نوسان:
+        ${fmt(a.atrPct)}%
+      </div>
 
-</div>
+    </div>
 
-<div class="box">
 
-<b>
-SMC / ICT
-</b>
+    <div class="box">
 
-<div>
-BOS:
-${esc(a.bos)}
-</div>
+      <b>MACD و RSI</b>
 
-<div>
-CHoCH:
-${esc(a.choch)}
-</div>
+      <div>
+        جهت MACD:
+        ${label(e.MACD?.direction)}
+      </div>
 
-<div>
-FVG:
-${esc(a.fvg?.type)}
-</div>
+      <div>
+        هیستوگرام:
+        ${fmt(e.MACD?.hist)}
+      </div>
 
-<div>
-OB:
-${esc(a.orderBlock?.type)}
-</div>
+      <div>
+        RSI:
+        ${fmt(e.RSI?.value)}
+      </div>
 
-</div>
+    </div>
 
-<div class="box">
 
-<b>
-Hunt
-</b>
+    <div class="box">
 
-<div>
-${esc(a.hunt?.side)}
-${a.hunt?.confirmed?'✓':''}
-</div>
+      <b>ایچیموکو و واگرایی</b>
 
-<div>
-Level:
-${fmt(a.hunt?.level)}
-</div>
+      <div>
+        ایچیموکو:
+        ${label(e.ICHIMOKU?.direction)}
+      </div>
 
-</div>
+      <div>
+        واگرایی:
+        ${label(e.DIVERGENCE?.type)}
+      </div>
 
-</div>
+    </div>
 
-<details class="item">
 
-<summary>
-▼ Footprint / Delta
-</summary>
+    <div class="box">
 
-<div class="content">
+      <b>SMC / ICT</b>
 
-<div class="row">
+      <div>
+        شکست ساختار:
+        ${label(a.bos)}
+      </div>
 
-<span>
-Buy
-</span>
+      <div>
+        تغییر ساختار:
+        ${label(a.choch)}
+      </div>
 
-<b>
-${fmt(f.buyVolume)}
-</b>
+      <div>
+        شکاف ارزش منصفانه:
+        ${label(a.fvg?.type)}
+      </div>
 
-</div>
+      <div>
+        بلوک سفارش:
+        ${label(a.orderBlock?.type)}
+      </div>
 
-<div class="row">
+    </div>
 
-<span>
-Sell
-</span>
+  </div>
 
-<b>
-${fmt(f.sellVolume)}
-</b>
 
-</div>
+  <details
+    class="item"
+    data-key="${key}-hunt"
+  >
 
-<div class="row">
+    <summary>
+      ▼ هانت / جمع‌آوری نقدینگی
+    </summary>
 
-<span>
-Delta
-</span>
+    <div class="content">
 
-<b class="${
-f.delta>0
-?'green'
-:f.delta<0
-?'red'
-:'yellow'
-}">
+      <div class="row">
 
-${fmt(f.delta)}
-(${fmt(f.deltaPercent)}%)
+        <span>
+          جهت هانت
+        </span>
 
-</b>
+        <b
+          class="${dirClass(
+            a.hunt?.side
+          )}"
+        >
+          ${label(a.hunt?.side)}
+        </b>
 
-</div>
+      </div>
 
-<div class="row">
 
-<span>
-Pressure
-</span>
+      <div class="row">
 
-<b>
-${esc(f.pressure)}
-</b>
+        <span>
+          تأیید شده
+        </span>
 
-</div>
+        <b>
+          ${
+            a.hunt?.confirmed
+              ? 'بله'
+              : 'خیر'
+          }
+        </b>
 
-</div>
+      </div>
 
-</details>
 
-<details class="item">
+      <div class="row">
 
-<summary>
-▼ Order Book / Walls
-</summary>
+        <span>
+          قیمت هانت
+        </span>
 
-<div class="content">
+        <b>
+          ${fmt(
+            a.hunt?.level ||
+            a.price
+          )}
+        </b>
 
-<div class="row">
+      </div>
 
-<span>
-Buy Wall
-</span>
+    </div>
 
-<b>
-${fmt(w.buy?.price)}
-·
-$${fmt(w.buy?.notional)}
-</b>
+  </details>
 
-</div>
 
-<div class="row">
+  <details
+    class="item"
+    data-key="${key}-foot"
+  >
 
-<span>
-Sell Wall
-</span>
+    <summary>
+      ▼ فوت‌پرینت / بید / آسک / دلتا
+    </summary>
 
-<b>
-${fmt(w.sell?.price)}
-·
-$${fmt(w.sell?.notional)}
-</b>
+    <div class="content">
 
-</div>
+      <div class="row">
+        <span>حجم خرید</span>
+        <b>${fmt(f.buyVolume)}</b>
+      </div>
 
-<div class="row">
+      <div class="row">
+        <span>حجم فروش</span>
+        <b>${fmt(f.sellVolume)}</b>
+      </div>
 
-<span>
-Buy/Sell Strength
-</span>
+      <div class="row">
 
-<b>
-${fmt(w.buyStrength)}
-/
-${fmt(w.sellStrength)}
-</b>
+        <span>دلتا</span>
 
-</div>
+        <b
+          class="${
+            f.delta>0
+              ? 'green'
+              : f.delta<0
+                ? 'red'
+                : 'yellow'
+          }"
+        >
 
-</div>
+          ${fmt(f.delta)}
+          (${fmt(f.deltaPercent)}%)
 
-</details>
+        </b>
 
-<details class="item">
+      </div>
 
-<summary>
-▼ Support / Resistance
-</summary>
+      <div class="row">
+        <span>فشار سفارش</span>
+        <b>${label(f.pressure)}</b>
+      </div>
 
-<div class="content">
+      <div class="row">
+        <span>ارزش خرید</span>
+        <b>${fmt(f.buyNotional)}</b>
+      </div>
 
-<div class="row">
+      <div class="row">
+        <span>ارزش فروش</span>
+        <b>${fmt(f.sellNotional)}</b>
+      </div>
 
-<span>
-حمایت
-</span>
+      <div class="row">
+        <span>تعداد معاملات</span>
+        <b>
+          ${fmt(
+            f.trades ||
+            f.availableTrades
+          )}
+        </b>
+      </div>
 
-<b>
-${fmt(
-s.nearestSupport?.price
-)}
-</b>
+    </div>
 
-</div>
+  </details>
 
-<div class="row">
 
-<span>
-مقاومت
-</span>
+  <details
+    class="item"
+    data-key="${key}-book"
+  >
 
-<b>
-${fmt(
-s.nearestResistance?.price
-)}
-</b>
+    <summary>
+      ▼ دفتر سفارش / دیوارهای خرید و فروش
+    </summary>
 
-</div>
+    <div class="content">
 
-</div>
+      <div class="row">
 
-</details>
+        <span>
+          دیوار خرید
+        </span>
 
-<details class="item">
+        <b>
+          ${fmt(w.buy?.price)}
+          ·
+          ${fmt(w.buy?.notional)}
+        </b>
 
-<summary>
-▼ سبک‌های معاملاتی
-</summary>
+      </div>
 
-<div class="content">
 
-${styles(st)}
+      <div class="row">
 
-</div>
+        <span>
+          دیوار فروش
+        </span>
 
-</details>
+        <b>
+          ${fmt(w.sell?.price)}
+          ·
+          ${fmt(w.sell?.notional)}
+        </b>
 
-</div>
+      </div>
 
-</details>
 
-`;
+      <div class="row">
 
+        <span>
+          قدرت خرید
+        </span>
+
+        <b>
+          ${fmt(w.buyStrength)}
+        </b>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          قدرت فروش
+        </span>
+
+        <b>
+          ${fmt(w.sellStrength)}
+        </b>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <details
+    class="item"
+    data-key="${key}-sr"
+  >
+
+    <summary>
+      ▼ حمایت و مقاومت
+    </summary>
+
+    <div class="content">
+
+      <div class="row">
+
+        <span>
+          حمایت نزدیک
+        </span>
+
+        <b>
+          ${fmt(
+            s.nearestSupport?.price
+          )}
+        </b>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          مقاومت نزدیک
+        </span>
+
+        <b>
+          ${fmt(
+            s.nearestResistance?.price
+          )}
+        </b>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          قوی‌ترین حمایت
+        </span>
+
+        <b>
+          ${fmt(
+            s.strongestSupport?.price
+          )}
+        </b>
+
+      </div>
+
+
+      <div class="row">
+
+        <span>
+          قوی‌ترین مقاومت
+        </span>
+
+        <b>
+          ${fmt(
+            s.strongestResistance?.price
+          )}
+        </b>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <details
+    class="item"
+    data-key="${key}-styles"
+  >
+
+    <summary>
+      ▼ سبک‌های معاملاتی
+    </summary>
+
+    <div class="content">
+
+      ${renderStyles(st)}
+
+    </div>
+
+  </details>
+
+  </div>
+
+  </details>
+
+  `;
 }
 
 function render(d){
 
-$('out').innerHTML=
+  const open=
+    rememberOpen();
 
-`
+  const main=`
 
-<div class="card">
+  <div class="card">
 
-<div class="score ${cls(
-d.marketState
-)}">
+    <div
+      class="score ${dirClass(
+        d.marketState
+      )}"
+    >
 
-${esc(d.marketState)}
-· ${d.score}/100
+      ${label(d.marketState)}
+      ·
+      ${d.score}/100
 
-</div>
+    </div>
 
-<div>
+    <div>
 
-${esc(d.symbol)}
+      قیمت:
+      <b>
+        ${fmt(d.price)}
+      </b>
 
-·
+    </div>
 
-${d.category==='linear'
-?'Futures'
-:'Spot'}
+    <div class="refresh">
 
-· قیمت
+      آخرین به‌روزرسانی:
+      ${
+        new Date(
+          d.generatedAt
+        ).toLocaleTimeString(
+          'fa-IR'
+        )
+      }
 
-<b>
-${fmt(d.price)}
-</b>
+    </div>
 
-</div>
+  </div>
 
-<div class="small muted">
+  `;
 
-${new Date(
-d.generatedAt
-).toLocaleTimeString(
-'fa-IR'
-)}
+  const wanted=[
+    '1',
+    '15'
+  ];
 
-</div>
+  const tfs=
+    Object.entries(
+      d.deepByTimeframe||{}
+    )
+    .filter(
+      ([k])=>
+        wanted.includes(
+          String(k)
+        )
+    )
+    .map(
+      ([k,x])=>
+        renderTF(k,x)
+    )
+    .join('');
 
-</div>
+  $('out').innerHTML=
+    main+tfs;
 
-`
-
-+
-
-['1','15']
-.map(
-k=>
-d.deepByTimeframe[k]
-?tf(
-d.deepByTimeframe[k]
-)
-:''
-)
-.join('');
-
+  restoreOpen(open);
 }
 
-async function get(s){
+async function get(sym){
 
-let r=
-await fetch(
-`/api/analyze?symbol=${
-encodeURIComponent(s)
-}&mode=personal&strictness=75`
-);
+  const u=
+    `/api/analyze?symbol=${
+      encodeURIComponent(sym)
+    }&mode=personal&strictness=75`;
 
-let d=await r.json();
+  const r=
+    await fetch(
+      u,
+      {
+        cache:'no-store'
+      }
+    );
 
-if(!d.ok)
-throw Error(
-d.error||'خطا'
-);
+  const d=
+    await r.json();
 
-return d;
+  if(!d.ok)
+    throw Error(
+      d.error ||
+      'خطا'
+    );
 
+  return d;
 }
 
 async function analyze(){
 
-let s=
+  const s=
+    $('symbol')
+      .value
+      .trim();
+
+  if(!s)
+    return;
+
+  if(timer)
+    clearInterval(timer);
+
+  lastSymbol=s;
+
+  try{
+
+    $('out').innerHTML=
+      '<div class="box">در حال تحلیل...</div>';
+
+    const d=
+      await get(s);
+
+    render(d);
+
+    timer=
+      setInterval(
+        async()=>{
+          try{
+            render(
+              await get(
+                lastSymbol
+              )
+            );
+          }
+          catch(e){}
+        },
+        8000
+      );
+
+  }
+  catch(e){
+
+    $('out').innerHTML=
+      `<div class="box red">
+        ${esc(e.message)}
+      </div>`;
+  }
+}
+
 $('symbol')
-.value
-.trim();
-
-if(!s)return;
-
-if(timer)
-clearInterval(timer);
-
-last=s;
-
-$('out').innerHTML=
-`
-<div class="card">
-در حال تحلیل...
-</div>
-`;
-
-try{
-
-render(
-await get(s)
-);
-
-timer=setInterval(
-async()=>{
-try{
-
-render(
-await get(last)
-);
-
-}catch(e){}
-
-},
-8000
-);
-
-}catch(e){
-
-$('out').innerHTML=
-`
-<div class="card red">
-${esc(e.message)}
-</div>
-`;
-
-}
-
-}
+  .addEventListener(
+    'keydown',
+    e=>{
+      if(e.key==='Enter')
+        analyze();
+    }
+  );
 
 </script>
 
