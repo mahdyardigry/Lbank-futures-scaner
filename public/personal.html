@@ -1,265 +1,434 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>اسکنر شخصی Bybit</title>
 
 <style>
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:#0b1017;
-  color:#e8eef7;
-  font-family:Tahoma,Arial,sans-serif
+*{
+  box-sizing:border-box;
 }
 
-body{min-height:100vh}
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:#07111f;
+  color:#e8f0fa;
+  font-family:
+    Tahoma,
+    Arial,
+    sans-serif;
+}
 
 .container{
-  width:min(1200px,100%);
+  width:min(1100px,94%);
   margin:auto;
-  padding:14px
+  padding:18px 0 50px;
 }
 
-header,.card,.controlBox,details{
-  background:#111923;
-  border:1px solid #263342;
-  border-radius:15px
+.header{
+  text-align:center;
+  margin-bottom:18px;
 }
 
-header{
-  padding:16px;
-  margin-bottom:12px
+.header h1{
+  margin:0 0 8px;
+  font-size:24px;
 }
 
-h1{
-  margin:0 0 6px;
-  font-size:22px
-}
-
-h2,h3{
-  margin-top:0
-}
-
-.sub,.muted{
-  color:#91a2b5;
-  font-size:13px
+.header p{
+  margin:0;
+  color:#91a5bb;
+  font-size:13px;
 }
 
 .status{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  margin-top:10px;
-  padding:7px 10px;
+  margin:14px 0;
+  padding:12px;
+  border-radius:12px;
+  background:#0d1b2c;
+  border:1px solid #20344d;
+  text-align:center;
+  font-size:14px;
+}
+
+.status.ok{
+  color:#54e39a;
+}
+
+.status.bad{
+  color:#ff7474;
+}
+
+.card{
+  background:#0c1828;
+  border:1px solid #20344d;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,.18);
+}
+
+.card h2{
+  font-size:17px;
+  margin:0 0 14px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+input,
+button{
+  border:0;
   border-radius:10px;
-  background:#0d1720;
-  font-size:12px
+  padding:12px;
+  font-family:inherit;
+  font-size:14px;
 }
 
-.dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#41e58a
-}
-
-.controlBox{
-  padding:13px;
-  margin-bottom:12px
-}
-
-.controls{
-  display:grid;
-  grid-template-columns:minmax(180px,1fr) auto;
-  gap:8px
-}
-
-input,button{
-  min-height:43px;
-  border-radius:10px;
-  border:1px solid #304052;
-  background:#0d151e;
-  color:#fff;
-  padding:9px 12px;
-  font:inherit
+input{
+  flex:1;
+  min-width:180px;
+  background:#07111f;
+  border:1px solid #29415e;
+  color:white;
+  outline:none;
 }
 
 button{
-  background:#1769e8;
-  border-color:#1769e8;
-  font-weight:700;
-  cursor:pointer
+  cursor:pointer;
+  background:#1b6ef3;
+  color:white;
+  font-weight:bold;
+}
+
+button:hover{
+  opacity:.9;
 }
 
 button.secondary{
-  background:#172230;
-  border-color:#304052
+  background:#26384e;
 }
 
-.rangeBox{
-  margin-top:12px
+button.danger{
+  background:#9b3030;
 }
 
-.rangeLine{
+.range-wrap{
+  margin-top:10px;
+}
+
+.range{
+  width:100%;
+  padding:0;
+}
+
+.range-label{
   display:flex;
   justify-content:space-between;
+  color:#a9bad0;
+  font-size:13px;
+}
+
+.strict-value{
+  text-align:center;
+  font-size:23px;
+  font-weight:bold;
+  margin:8px 0;
+}
+
+.strict-help{
+  text-align:center;
+  color:#8499b1;
+  font-size:12px;
+}
+
+.switch-row{
+  display:flex;
   align-items:center;
-  margin-bottom:7px
+  justify-content:space-between;
+  gap:10px;
+  margin-top:14px;
+  padding:12px;
+  background:#091524;
+  border-radius:10px;
 }
 
-input[type=range]{
+.switch{
+  width:48px;
+  height:25px;
+  position:relative;
+}
+
+.switch input{
+  display:none;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#34465c;
+  border-radius:30px;
+  cursor:pointer;
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:19px;
+  height:19px;
+  right:3px;
+  top:3px;
+  background:white;
+  border-radius:50%;
+  transition:.2s;
+}
+
+.switch input:checked + .slider{
+  background:#159b61;
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(-23px);
+}
+
+.volume-row{
+  margin-top:12px;
+}
+
+.volume-row label{
+  display:block;
+  color:#9eb1c7;
+  font-size:12px;
+  margin-bottom:5px;
+}
+
+.volume{
   width:100%;
-  min-height:auto;
-  padding:0;
-  accent-color:#2381ff
 }
 
-.rangeValue{
+.info{
+  color:#8ea3bb;
+  font-size:12px;
+  line-height:1.8;
+}
+
+.scan-status{
+  margin-top:12px;
+  padding:10px;
+  background:#091524;
+  border-radius:10px;
+  text-align:center;
+  color:#9bb0c7;
+  font-size:13px;
+}
+
+.signal{
+  border:1px solid #263d57;
+  border-radius:14px;
+  margin-top:12px;
+  overflow:hidden;
+  background:#091524;
+}
+
+.signal-head{
+  padding:14px;
+  cursor:pointer;
+}
+
+.signal-main{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.symbol{
+  font-size:18px;
+  font-weight:bold;
+}
+
+.badge{
+  padding:5px 9px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.long{
+  background:#123e2d;
+  color:#5bf0a5;
+}
+
+.short{
+  background:#451b24;
+  color:#ff7d8d;
+}
+
+.wait{
+  background:#3c3216;
+  color:#ffd768;
+}
+
+.score{
   font-size:20px;
-  font-weight:800
+  font-weight:bold;
+}
+
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+  color:#91a5bb;
+  font-size:12px;
+}
+
+.meta span{
+  background:#101f31;
+  padding:5px 8px;
+  border-radius:7px;
+}
+
+.deep{
+  display:none;
+  border-top:1px solid #263d57;
+  padding:14px;
+}
+
+.deep.open{
+  display:block;
+}
+
+.section-title{
+  margin:15px 0 8px;
+  font-size:14px;
+  color:#b8c9dc;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:10px
+  grid-template-columns:
+    repeat(auto-fit,minmax(145px,1fr));
+  gap:8px;
 }
 
-.card{
-  padding:13px
+.metric{
+  background:#0e1c2d;
+  border:1px solid #1d334c;
+  border-radius:9px;
+  padding:9px;
 }
 
-.big{
-  font-size:26px;
-  font-weight:800
+.metric small{
+  display:block;
+  color:#8197ae;
+  font-size:10px;
+  margin-bottom:4px;
 }
 
-.green{color:#49e58b}
-.red{color:#ff667b}
-.yellow{color:#ffd166}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:8px 0;
-  border-bottom:1px solid #202b38
+.metric b{
+  font-size:13px;
 }
 
-.row:last-child{
-  border-bottom:0
-}
-
-details{
-  margin:9px 0;
-  overflow:hidden
-}
-
-summary{
-  cursor:pointer;
-  padding:13px;
-  font-weight:700;
-  list-style:none
-}
-
-summary::-webkit-details-marker{
-  display:none
-}
-
-.content{
-  padding:12px;
-  border-top:1px solid #263342
-}
-
-.signal{
-  background:#0d151e;
-  border:1px solid #263342;
-  border-radius:13px;
-  margin:9px 0;
-  overflow:hidden
-}
-
-.signalHead{
-  padding:13px;
-  cursor:pointer
-}
-
-.signalTitle{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center
-}
-
-.score{
-  font-size:23px;
-  font-weight:800
-}
-
-.scorebar{
-  height:8px;
-  background:#202c39;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:9px
-}
-
-.scorebar div{
-  height:100%;
-  background:#2381ff
-}
-
-.badge{
-  display:inline-block;
-  padding:4px 8px;
+.reason{
+  padding:8px 10px;
+  margin:5px 0;
   border-radius:8px;
-  background:#1b2634;
-  font-size:11px
-}
-
-.notice{
-  padding:10px;
-  border-radius:10px;
-  background:#172230;
-  color:#b7c5d6;
+  background:#0e1c2d;
   font-size:12px;
-  margin-bottom:12px
 }
 
-.audio{
-  display:grid;
-  grid-template-columns:auto auto 1fr auto;
-  gap:10px;
-  align-items:center;
-  margin-top:12px
+.reason.longReason{
+  border-right:3px solid #27d98b;
 }
 
-.audio input[type=range]{
-  width:100%
+.reason.shortReason{
+  border-right:3px solid #ff6174;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+
+td,
+th{
+  padding:7px;
+  border-bottom:1px solid #1c3046;
+  text-align:center;
+}
+
+th{
+  color:#8fa5bc;
+}
+
+.error{
+  padding:12px;
+  border-radius:10px;
+  background:#351923;
+  color:#ff8998;
+  margin-top:10px;
 }
 
 .empty{
   text-align:center;
-  padding:25px;
-  color:#91a2b5
+  color:#8498af;
+  padding:20px;
 }
 
-.loading{
-  text-align:center;
-  padding:20px
+.loader{
+  display:inline-block;
+  width:14px;
+  height:14px;
+  border:2px solid #7890aa;
+  border-top-color:transparent;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  vertical-align:middle;
+  margin-left:5px;
 }
 
-@media(max-width:650px){
-  .controls{
-    grid-template-columns:1fr
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@media(max-width:600px){
+
+  .container{
+    width:96%;
   }
 
-  .audio{
-    grid-template-columns:1fr 1fr
+  .header h1{
+    font-size:20px;
+  }
+
+  .signal-main{
+    align-items:flex-start;
+  }
+
+  button{
+    width:100%;
+  }
+
+  input{
+    width:100%;
   }
 }
 </style>
@@ -269,1563 +438,1389 @@ summary::-webkit-details-marker{
 
 <div class="container">
 
-<header>
-  <h1>📊 اسکنر شخصی Bybit</h1>
-
-  <div class="sub">
-    سیگنال‌گیری بر پایه برخورد قیمت با MA20 در تایم‌فریم 1 دقیقه و تأیید با 15 دقیقه
+  <div class="header">
+    <h1>📊 اسکنر شخصی Bybit</h1>
+    <p>
+      سیگنال‌گیری بر پایه برخورد قیمت با MA20 در 1 دقیقه
+      و تأیید روند در 15 دقیقه
+    </p>
   </div>
 
-  <div class="status">
-    <span class="dot"></span>
-    <span id="status">در حال اتصال به Bybit...</span>
-  </div>
-</header>
-
-
-<div class="controlBox">
-
-  <div class="controls">
-
-    <input
-      id="symbol"
-      placeholder="نام ارز؛ مثال BTCUSDT یا PEPE"
-      autocomplete="off"
-    >
-
-    <button onclick="manualAnalyze()">
-      🔎 تحلیل
-    </button>
-
+  <div id="status" class="status">
+    در حال اتصال به Bybit...
   </div>
 
+  <!-- تحلیل دستی -->
+  <div class="card">
 
-  <div class="rangeBox">
+    <h2>🔎 تحلیل ارز</h2>
 
-    <div class="rangeLine">
+    <div class="row">
 
-      <span>
-        درجه سخت‌گیری سیگنال
-      </span>
-
-      <b
-        id="strictValue"
-        class="rangeValue"
+      <input
+        id="symbolInput"
+        type="text"
+        placeholder="نام ارز؛ مثال BTCUSDT یا PEPE"
+        autocomplete="off"
       >
-        50
-      </b>
 
+      <button id="analyzeBtn">
+        🔎 تحلیل
+      </button>
+
+    </div>
+
+    <div class="info" style="margin-top:10px">
+      فقط نام ارز را وارد کن.
+      سیستم خودش بررسی می‌کند که ارز در Spot یا Futures Bybit وجود دارد.
+    </div>
+
+  </div>
+
+  <!-- تنظیم سیگنال -->
+  <div class="card">
+
+    <h2>🎯 تنظیم سیگنال</h2>
+
+    <div class="range-label">
+      <span>آسان‌تر</span>
+      <span>سخت‌تر</span>
+    </div>
+
+    <div class="strict-value">
+      <span id="strictValue">50</span>
     </div>
 
     <input
       id="strictness"
+      class="range"
       type="range"
       min="0"
       max="100"
       value="50"
-      oninput="updateStrictness()"
     >
 
-    <div class="muted">
+    <div class="strict-help">
       0 = سیگنال بیشتر و آسان‌تر ·
       100 = سیگنال کمتر و بسیار سخت‌تر
     </div>
 
   </div>
 
+  <!-- هشدار -->
+  <div class="card">
 
-  <div class="audio">
+    <h2>🔔 هشدار سیگنال</h2>
+
+    <div class="switch-row">
+
+      <div>
+        <b id="soundText">
+          🔊 صدا روشن
+        </b>
+
+        <div class="info">
+          هشدارهای سیگنال فعال هستند.
+        </div>
+      </div>
+
+      <label class="switch">
+        <input
+          id="soundEnabled"
+          type="checkbox"
+          checked
+        >
+        <span class="slider"></span>
+      </label>
+
+    </div>
+
+    <div class="volume-row">
+
+      <label>
+        حجم صدا:
+        <span id="volumeText">100%</span>
+      </label>
+
+      <input
+        id="volume"
+        class="volume"
+        type="range"
+        min="0"
+        max="100"
+        value="100"
+      >
+
+    </div>
 
     <button
-      id="soundBtn"
+      id="testSound"
       class="secondary"
-      onclick="toggleSound()"
-    >
-      🔊 صدا روشن
-    </button>
-
-    <button
-      class="secondary"
-      onclick="testSound()"
+      style="margin-top:10px"
     >
       🔔 تست صدا
     </button>
 
-    <input
-      id="volume"
-      type="range"
-      min="0"
-      max="1"
-      step="0.05"
-      value="0.6"
-      oninput="saveSettings()"
-    >
-
-    <span id="volumeText">
-      60%
-    </span>
-
   </div>
 
-  <div
-    id="audioNotice"
-    class="muted"
-    style="margin-top:8px"
-  >
-    هشدارها فعال هستند؛ صدای هشدار روشن است.
-  </div>
-
-</div>
-
-
-<div class="notice">
-
-  <b>منطق اصلی:</b>
-  برخورد قیمت با MA20 تایم‌فریم 1 دقیقه ابتدا بررسی می‌شود.
-  شیب MA20، فاصله قیمت، نوع برخورد، حجم و تأیید تایم‌فریم 15 دقیقه
-  در قدرت سیگنال اثر می‌گذارند.
-
-</div>
-
-
-<div id="manualResult"></div>
-
-
-<div class="section">
-
+  <!-- اسکن -->
   <div class="card">
 
     <h2>🔎 اسکن چرخشی بازار</h2>
 
-    <div class="muted">
-      اسکنر به‌صورت چرخشی بازار Bybit را بررسی می‌کند و فقط ارزهایی
-      را نمایش می‌دهد که با درجه سخت‌گیری انتخاب‌شده شرایط سیگنال را داشته باشند.
+    <div class="info">
+      اسکنر به‌صورت چرخشی بازار Bybit را بررسی می‌کند.
+      هسته اصلی سیگنال برخورد قیمت با MA20 تایم‌فریم 1 دقیقه است.
+      شیب MA20، فاصله قیمت، نوع برخورد، حجم و تأیید 15 دقیقه
+      در قدرت سیگنال اثر دارند.
+    </div>
+
+    <div class="row" style="margin-top:12px">
+
+      <button id="scanBtn">
+        🔄 شروع اسکن
+      </button>
+
+      <button
+        id="stopScanBtn"
+        class="danger"
+      >
+        ⏹ توقف اسکن
+      </button>
+
     </div>
 
     <div
       id="scanStatus"
-      class="muted"
-      style="margin-top:8px"
+      class="scan-status"
     >
-      آماده اسکن
+      اسکن هنوز شروع نشده است.
     </div>
+
+    <div id="results"></div>
 
   </div>
 
 </div>
 
-
-<div id="results"></div>
-
-</div>
-
-
 <script>
 
-const $=id=>document.getElementById(id);
+/* =====================================================
+   CONFIG
+===================================================== */
 
-let scanTimer=null;
-let scanRunning=false;
-let scanOffset=0;
+const API_BASE = "";
 
-let soundEnabled=
-  localStorage.getItem(
-    'personalSound'
-  )!=='off';
+const SCAN_INTERVAL = 12000;
 
-let soundVolume=
-  Number(
-    localStorage.getItem(
-      'personalVolume'
-    ) ?? 0.6
+let scanTimer = null;
+
+let scanOffset = 0;
+
+let scanning = false;
+
+let previousSignals = new Set();
+
+let audioContext = null;
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const statusEl =
+  document.getElementById("status");
+
+const symbolInput =
+  document.getElementById("symbolInput");
+
+const analyzeBtn =
+  document.getElementById("analyzeBtn");
+
+const strictnessEl =
+  document.getElementById("strictness");
+
+const strictValueEl =
+  document.getElementById("strictValue");
+
+const soundEnabledEl =
+  document.getElementById("soundEnabled");
+
+const soundTextEl =
+  document.getElementById("soundText");
+
+const volumeEl =
+  document.getElementById("volume");
+
+const volumeTextEl =
+  document.getElementById("volumeText");
+
+const testSoundBtn =
+  document.getElementById("testSound");
+
+const scanBtn =
+  document.getElementById("scanBtn");
+
+const stopScanBtn =
+  document.getElementById("stopScanBtn");
+
+const scanStatusEl =
+  document.getElementById("scanStatus");
+
+const resultsEl =
+  document.getElementById("results");
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+}
+
+
+function n(value, digits = 8){
+
+  const x =
+    Number(value);
+
+  if(!Number.isFinite(x))
+    return "—";
+
+  if(x === 0)
+    return "0";
+
+  return x.toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:
+        digits
+    }
   );
+}
 
 
-function fmt(v){
+function pct(value){
 
-  if(v===undefined ||
-     v===null ||
-     v==='')
-    return '—';
+  const x =
+    Number(value);
 
-  if(typeof v==='number'){
+  if(!Number.isFinite(x))
+    return "—";
 
-    if(!Number.isFinite(v))
-      return '—';
+  return x.toFixed(3) + "%";
+}
 
-    return v.toLocaleString(
-      'fa-IR',
+
+function directionText(direction){
+
+  if(direction === "LONG")
+    return "🟢 LONG";
+
+  if(direction === "SHORT")
+    return "🔴 SHORT";
+
+  if(direction === "WAIT")
+    return "🟡 WAIT";
+
+  return "⚪ NONE";
+}
+
+
+function categoryText(category){
+
+  if(category === "linear")
+    return "Futures";
+
+  if(category === "spot")
+    return "Spot";
+
+  return category || "—";
+}
+
+
+/* =====================================================
+   API
+===================================================== */
+
+async function api(path){
+
+  const response =
+    await fetch(
+      API_BASE + path,
       {
-        maximumFractionDigits:
-          Math.abs(v)<0.001 ? 10 : 4
+        cache:"no-store"
       }
+    );
+
+  let data;
+
+  try{
+    data =
+      await response.json();
+  }
+  catch{
+    throw new Error(
+      "پاسخ نامعتبر از Worker"
     );
   }
 
-  return String(v);
-}
+  if(!response.ok || data.ok === false){
 
-
-function esc(s){
-
-  return String(s??'')
-    .replace(
-      /[&<>"']/g,
-      m=>({
-        '&':'&amp;',
-        '<':'&lt;',
-        '>':'&gt;',
-        '"':'&quot;',
-        "'":'&#39;'
-      }[m])
+    throw new Error(
+      data.error ||
+      "خطا در درخواست"
     );
+  }
+
+  return data;
 }
 
 
-function cls(d){
+/* =====================================================
+   HEALTH
+===================================================== */
 
-  if(
-    d==='LONG' ||
-    d==='BULLISH' ||
-    d==='UP' ||
-    d==='CONFIRMED_LONG'
-  )
-    return 'green';
-
-  if(
-    d==='SHORT' ||
-    d==='BEARISH' ||
-    d==='DOWN' ||
-    d==='CONFIRMED_SHORT'
-  )
-    return 'red';
-
-  return 'yellow';
-}
-
-
-function text(d){
-
-  return {
-
-    LONG:'خرید / Long',
-    SHORT:'فروش / Short',
-
-    BULLISH:'صعودی',
-    BEARISH:'نزولی',
-
-    UP:'صعودی',
-    DOWN:'نزولی',
-
-    RANGE:'رنج',
-    NONE:'ندارد',
-    NEUTRAL:'خنثی',
-
-    CONFIRMED_LONG:'تأیید صعودی',
-    CONFIRMED_SHORT:'تأیید نزولی',
-
-    TOUCH:'برخورد',
-    SPIKE:'جهش',
-
-    NORMAL:'عادی'
-
-  }[d] || d || '—';
-}
-
-
-function updateStrictness(){
-
-  const v=
-    Number(
-      $('strictness').value
-    );
-
-  $('strictValue').textContent=v;
-
-  saveSettings();
-}
-
-
-function saveSettings(){
-
-  const volume=
-    Number(
-      $('volume').value
-    );
-
-  soundVolume=volume;
-
-  localStorage.setItem(
-    'personalSound',
-    soundEnabled?'on':'off'
-  );
-
-  localStorage.setItem(
-    'personalVolume',
-    String(volume)
-  );
-
-  $('volumeText').textContent=
-    Math.round(volume*100)+'%';
-
-  updateSoundUI();
-}
-
-
-function updateSoundUI(){
-
-  $('soundBtn').textContent=
-    soundEnabled
-      ? '🔊 صدا روشن'
-      : '🔇 صدا خاموش';
-
-  $('audioNotice').textContent=
-    soundEnabled
-      ? 'هشدارها فعال هستند؛ صدای هشدار روشن است.'
-      : 'هشدارها فعال هستند؛ فقط صدای هشدار خاموش است.';
-}
-
-
-function toggleSound(){
-
-  soundEnabled=!soundEnabled;
-
-  saveSettings();
-}
-
-
-function testSound(){
-
-  if(!soundEnabled)
-    return;
-
-  beep(880,0.12);
-}
-
-
-function beep(freq=880,duration=0.18){
+async function checkHealth(){
 
   try{
 
-    const AudioCtx=
-      window.AudioContext ||
-      window.webkitAudioContext;
+    const data =
+      await api(
+        "/api/personal/health"
+      );
 
-    if(!AudioCtx)
-      return;
+    statusEl.className =
+      "status ok";
 
-    const ctx=
-      new AudioCtx();
+    statusEl.innerHTML =
+      "🟢 اتصال برقرار است — Bybit";
 
-    const osc=
-      ctx.createOscillator();
+    return data;
 
-    const gain=
-      ctx.createGain();
+  }
+  catch(error){
 
-    osc.type='sine';
-    osc.frequency.value=freq;
+    statusEl.className =
+      "status bad";
+
+    statusEl.innerHTML =
+      "🔴 اتصال به Worker برقرار نیست";
+
+    return null;
+  }
+}
+
+
+/* =====================================================
+   STRICTNESS
+===================================================== */
+
+function updateStrictness(){
+
+  const value =
+    Number(
+      strictnessEl.value
+    );
+
+  strictValueEl.textContent =
+    value;
+}
+
+strictnessEl.addEventListener(
+  "input",
+  updateStrictness
+);
+
+
+/* =====================================================
+   SOUND
+===================================================== */
+
+function updateSoundUI(){
+
+  if(soundEnabledEl.checked){
+
+    soundTextEl.textContent =
+      "🔊 صدا روشن";
+
+  }
+  else{
+
+    soundTextEl.textContent =
+      "🔇 صدا خاموش";
+
+  }
+}
+
+
+soundEnabledEl.addEventListener(
+  "change",
+  updateSoundUI
+);
+
+
+volumeEl.addEventListener(
+  "input",
+  () => {
+
+    volumeTextEl.textContent =
+      volumeEl.value + "%";
+
+  }
+);
+
+
+function playBeep(){
+
+  if(
+    !soundEnabledEl.checked
+  )
+    return;
+
+  try{
+
+    if(!audioContext){
+
+      audioContext =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+    if(
+      audioContext.state ===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    const volume =
+      Number(
+        volumeEl.value
+      ) / 100;
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.setValueAtTime(
+      720,
+      audioContext.currentTime
+    );
+
+    oscillator.frequency.setValueAtTime(
+      980,
+      audioContext.currentTime + .13
+    );
 
     gain.gain.setValueAtTime(
       0,
-      ctx.currentTime
+      audioContext.currentTime
     );
 
     gain.gain.linearRampToValueAtTime(
-      soundVolume,
-      ctx.currentTime+0.02
+      0.18 * volume,
+      audioContext.currentTime + .02
     );
 
     gain.gain.exponentialRampToValueAtTime(
       0.001,
-      ctx.currentTime+duration
+      audioContext.currentTime + .5
     );
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+    oscillator.connect(gain);
 
-    osc.start();
-
-    osc.stop(
-      ctx.currentTime+duration
+    gain.connect(
+      audioContext.destination
     );
 
-  }catch(e){}
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime + .5
+    );
+
+  }
+  catch(error){
+
+    console.log(
+      "Audio error:",
+      error
+    );
+
+  }
 }
 
 
-function alertSignal(){
+testSoundBtn.addEventListener(
+  "click",
+  () => {
 
-  if(!soundEnabled)
-    return;
+    playBeep();
 
-  beep(740,0.15);
+  }
+);
 
-  setTimeout(
-    ()=>beep(980,0.18),
-    180
-  );
+
+/* =====================================================
+   REASONS
+===================================================== */
+
+function renderReasons(
+  reasons
+){
+
+  if(
+    !Array.isArray(reasons) ||
+    !reasons.length
+  ){
+
+    return `
+      <div class="empty">
+        دلیل مشخصی ثبت نشده است.
+      </div>
+    `;
+  }
+
+  return reasons
+    .map(reason => {
+
+      const cls =
+        reason.side === "LONG"
+          ? "longReason"
+          : "shortReason";
+
+      return `
+        <div class="reason ${cls}">
+          ${reason.side === "LONG" ? "🟢" : "🔴"}
+          ${esc(reason.text)}
+        </div>
+      `;
+
+    })
+    .join("");
 }
 
 
-function scoreNumber(x){
+/* =====================================================
+   ORDER BOOK
+===================================================== */
 
-  const n=
-    Number(x);
+function renderLevels(
+  title,
+  levels
+){
 
-  return Number.isFinite(n)
-    ? Math.round(n)
-    : 0;
+  if(
+    !Array.isArray(levels) ||
+    !levels.length
+  )
+    return "";
+
+  return `
+
+    <div class="section-title">
+      ${title}
+    </div>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>قیمت</th>
+            <th>حجم</th>
+            <th>ارزش</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          ${levels.map(x => `
+
+            <tr>
+
+              <td>
+                ${n(x.price,12)}
+              </td>
+
+              <td>
+                ${n(x.size,2)}
+              </td>
+
+              <td>
+                ${n(
+                  Number(x.price) *
+                  Number(x.size),
+                  2
+                )}
+              </td>
+
+            </tr>
+
+          `).join("")}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  `;
 }
 
 
-function renderManual(d){
+/* =====================================================
+   DEEP ANALYSIS
+===================================================== */
 
-  const tfs=
-    d.timeframes || {};
+function renderDeep(data){
 
-  $('manualResult').innerHTML=`
+  const one =
+    data.oneMinute || {};
 
-  <div class="card">
+  const fifteen =
+    data.fifteenMinute || {};
 
-    <h2>
-      🔎 تحلیل ${esc(d.symbol)}
-    </h2>
+  const book =
+    data.orderBook || {};
+
+  return `
+
+    <div class="section-title">
+      📌 وضعیت سیگنال
+    </div>
 
     <div class="grid">
 
-      <div class="card">
-
-        <h3>جهت کلی</h3>
-
-        <div class="big ${cls(d.direction)}">
-          ${text(d.direction)}
-        </div>
-
-        <div>
-          امتیاز:
-          <b>${fmt(d.score)}/100</b>
-        </div>
-
+      <div class="metric">
+        <small>جهت</small>
+        <b>${directionText(data.direction)}</b>
       </div>
 
-
-      <div class="card">
-
-        <h3>Long</h3>
-
-        <div class="big green">
-          ${fmt(d.longScore)}
-        </div>
-
+      <div class="metric">
+        <small>امتیاز</small>
+        <b>${n(data.score,0)}/100</b>
       </div>
 
+      <div class="metric">
+        <small>Long</small>
+        <b>${n(data.longScore,0)}</b>
+      </div>
 
-      <div class="card">
+      <div class="metric">
+        <small>Short</small>
+        <b>${n(data.shortScore,0)}</b>
+      </div>
 
-        <h3>Short</h3>
+      <div class="metric">
+        <small>آستانه</small>
+        <b>${n(data.threshold,0)}</b>
+      </div>
 
-        <div class="big red">
-          ${fmt(d.shortScore)}
-        </div>
-
+      <div class="metric">
+        <small>بازار</small>
+        <b>${categoryText(data.category)}</b>
       </div>
 
     </div>
 
-    ${renderDeep(d)}
 
-  </div>
-
-  `;
-}
-
-
-function renderDeep(d){
-
-  const tfs=
-    d.timeframes || {};
-
-  const wanted=[
-    '1',
-    '15'
-  ];
-
-  return `
-
-  <details>
-
-    <summary>
-      🧠 تحلیل عمیق
-    </summary>
-
-    <div class="content">
-
-      ${
-        wanted
-          .filter(k=>tfs[k])
-          .map(
-            k=>renderTF(
-              k,
-              tfs[k]
-            )
-          )
-          .join('')
-      }
-
-      ${renderFootprint(d.footprint)}
-
-      ${renderWalls(d.walls)}
-
-      ${renderMarket(d.market)}
-
-      ${renderReasons(d.reasons)}
-
+    <div class="section-title">
+      🕐 تایم‌فریم 1 دقیقه — MA20
     </div>
 
-  </details>
-
-  `;
-}
-
-
-function renderTF(k,x){
-
-  const ma7=x.ma7;
-  const ma20=x.ma20;
-  const price=x.price;
-
-  const dist=
-    ma20
-      ? ((price-ma20)/ma20)*100
-      : null;
-
-  return `
-
-  <details>
-
-    <summary>
-      تایم‌فریم ${esc(k)} دقیقه
-      —
-      <span class="${cls(x.trend)}">
-        ${text(x.trend)}
-      </span>
-    </summary>
-
-    <div class="content">
-
-      <div class="grid">
-
-        <div class="card">
-
-          <h3>🎯 MA20</h3>
-
-          <div class="row">
-            <span>قیمت</span>
-            <b>${fmt(price)}</b>
-          </div>
-
-          <div class="row">
-            <span>MA20</span>
-            <b>${fmt(ma20)}</b>
-          </div>
-
-          <div class="row">
-            <span>MA7</span>
-            <b>${fmt(ma7)}</b>
-          </div>
-
-          <div class="row">
-            <span>فاصله قیمت تا MA20</span>
-            <b>${fmt(dist)}%</b>
-          </div>
-
-          <div class="row">
-            <span>برخورد MA20</span>
-            <b>
-              ${
-                x.touchMA20
-                  ? 'بله'
-                  : 'خیر'
-              }
-            </b>
-          </div>
-
-          <div class="row">
-            <span>شیب MA20</span>
-            <b class="${cls(x.maSlope)}">
-              ${text(x.maSlope)}
-            </b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>📊 حجم</h3>
-
-          <div class="row">
-            <span>حجم فعلی</span>
-            <b>${fmt(x.volume?.current)}</b>
-          </div>
-
-          <div class="row">
-            <span>میانگین</span>
-            <b>${fmt(x.volume?.average)}</b>
-          </div>
-
-          <div class="row">
-            <span>نسبت</span>
-            <b>${fmt(x.volume?.ratio)}</b>
-          </div>
-
-          <div class="row">
-            <span>Spike</span>
-            <b>
-              ${
-                x.volume?.spike
-                  ? 'بله'
-                  : 'خیر'
-              }
-            </b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>📈 MACD / RSI</h3>
-
-          <div class="row">
-            <span>MACD</span>
-            <b class="${cls(
-              x.macd?.direction
-            )}">
-              ${text(
-                x.macd?.direction
-              )}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>Histogram</span>
-            <b>${fmt(
-              x.macd?.histogram
-            )}</b>
-          </div>
-
-          <div class="row">
-            <span>RSI</span>
-            <b>${fmt(x.rsi)}</b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>☁️ Ichimoku</h3>
-
-          <div class="row">
-            <span>جهت</span>
-            <b class="${cls(
-              x.ichimoku?.direction
-            )}">
-              ${text(
-                x.ichimoku?.direction
-              )}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>Tenkan</span>
-            <b>${fmt(
-              x.ichimoku?.tenkan
-            )}</b>
-          </div>
-
-          <div class="row">
-            <span>Kijun</span>
-            <b>${fmt(
-              x.ichimoku?.kijun
-            )}</b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>🏗 ساختار</h3>
-
-          <div class="row">
-            <span>BOS</span>
-            <b class="${cls(x.bos)}">
-              ${text(x.bos)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>CHoCH</span>
-            <b class="${cls(x.choch)}">
-              ${text(x.choch)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>FVG</span>
-            <b>${text(
-              x.fvg?.type
-            )}</b>
-          </div>
-
-          <div class="row">
-            <span>Order Block</span>
-            <b>${text(
-              x.orderBlock?.type
-            )}</b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>💧 Liquidity Hunt</h3>
-
-          <div class="row">
-            <span>جهت</span>
-            <b class="${cls(
-              x.hunt?.side
-            )}">
-              ${text(
-                x.hunt?.side
-              )}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>تأیید</span>
-            <b>
-              ${
-                x.hunt?.confirmed
-                  ? 'بله'
-                  : 'خیر'
-              }
-            </b>
-          </div>
-
-          <div class="row">
-            <span>قدرت</span>
-            <b>${fmt(
-              x.hunt?.strength
-            )}</b>
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>⚡ واگرایی</h3>
-
-          <div class="big ${cls(
-            x.divergence?.side
-          )}">
-            ${text(
-              x.divergence?.type
-            )}
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>📐 نوسان</h3>
-
-          <div class="row">
-            <span>ATR</span>
-            <b>${fmt(x.atr)}</b>
-          </div>
-
-          <div class="row">
-            <span>ADX</span>
-            <b>${fmt(x.adx)}</b>
-          </div>
-
-          <div class="row">
-            <span>Bollinger Width</span>
-            <b>${fmt(
-              x.bollingerWidth
-            )}</b>
-          </div>
-
-        </div>
-
+    <div class="grid">
+
+      <div class="metric">
+        <small>قیمت</small>
+        <b>${n(one.price,12)}</b>
+      </div>
+
+      <div class="metric">
+        <small>MA20</small>
+        <b>${n(one.ma20,12)}</b>
+      </div>
+
+      <div class="metric">
+        <small>شیب MA20</small>
+        <b>${pct(one.maSlopePct)}</b>
+      </div>
+
+      <div class="metric">
+        <small>فاصله قیمت تا MA20</small>
+        <b>${pct(one.distancePct)}</b>
+      </div>
+
+      <div class="metric">
+        <small>برخورد</small>
+        <b>${one.touched ? "✅ بله" : "❌ خیر"}</b>
+      </div>
+
+      <div class="metric">
+        <small>نزدیکی</small>
+        <b>${one.near ? "✅ نزدیک" : "❌ دور"}</b>
+      </div>
+
+      <div class="metric">
+        <small>Cross صعودی</small>
+        <b>${one.crossedUp ? "✅" : "—"}</b>
+      </div>
+
+      <div class="metric">
+        <small>Cross نزولی</small>
+        <b>${one.crossedDown ? "✅" : "—"}</b>
+      </div>
+
+      <div class="metric">
+        <small>Rejection بالا</small>
+        <b>${one.rejectionUp ? "✅" : "—"}</b>
+      </div>
+
+      <div class="metric">
+        <small>Rejection پایین</small>
+        <b>${one.rejectionDown ? "✅" : "—"}</b>
+      </div>
+
+      <div class="metric">
+        <small>حجم</small>
+        <b>${n(one.volume,2)}</b>
+      </div>
+
+      <div class="metric">
+        <small>نسبت حجم</small>
+        <b>${n(one.volumeRatio,2)}x</b>
+      </div>
+
+      <div class="metric">
+        <small>RSI</small>
+        <b>${n(one.rsi,2)}</b>
+      </div>
+
+      <div class="metric">
+        <small>ATR</small>
+        <b>${n(one.atr,12)}</b>
       </div>
 
     </div>
 
-  </details>
 
-  `;
-}
+    <div class="section-title">
+      🕒 تایم‌فریم 15 دقیقه — تأیید
+    </div>
 
+    <div class="grid">
 
-function renderFootprint(fp){
+      <div class="metric">
+        <small>روند</small>
+        <b>${directionText(fifteen.direction)}</b>
+      </div>
 
-  if(!fp || fp.error)
-    return '';
+      <div class="metric">
+        <small>قیمت</small>
+        <b>${n(fifteen.price,12)}</b>
+      </div>
 
-  return `
+      <div class="metric">
+        <small>MA7</small>
+        <b>${n(fifteen.ma7,12)}</b>
+      </div>
 
-  <details>
+      <div class="metric">
+        <small>MA20</small>
+        <b>${n(fifteen.ma20,12)}</b>
+      </div>
 
-    <summary>
-      📊 Footprint / Delta
-    </summary>
+      <div class="metric">
+        <small>شیب MA20</small>
+        <b>${pct(fifteen.slopePct)}</b>
+      </div>
 
-    <div class="content">
-
-      <div class="grid">
-
-        <div class="card">
-          <h3>حجم خرید</h3>
-          <div class="big green">
-            ${fmt(fp.buyVolume)}
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>حجم فروش</h3>
-          <div class="big red">
-            ${fmt(fp.sellVolume)}
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Delta</h3>
-          <div class="big ${cls(
-            fp.delta>0?'LONG':
-            fp.delta<0?'SHORT':'NONE'
-          )}">
-            ${fmt(fp.delta)}
-          </div>
-          <div>
-            ${fmt(fp.deltaPercent)}%
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Pressure</h3>
-          <div class="big">
-            ${text(fp.pressure)}
-          </div>
-        </div>
-
+      <div class="metric">
+        <small>RSI</small>
+        <b>${n(fifteen.rsi,2)}</b>
       </div>
 
     </div>
 
-  </details>
 
-  `;
-}
-
-
-function renderWalls(w){
-
-  if(!w || w.error)
-    return '';
-
-  return `
-
-  <details>
-
-    <summary>
-      🧱 Order Book / Walls
-    </summary>
-
-    <div class="content">
-
-      <div class="grid">
-
-        <div class="card">
-
-          <h3>دیوار خرید</h3>
-
-          <div class="big green">
-            ${fmt(w.buy?.price)}
-          </div>
-
-          <div>
-            ارزش:
-            ${fmt(w.buy?.notional)}
-          </div>
-
-          <div>
-            فاصله:
-            ${fmt(w.buy?.distancePct)}%
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>دیوار فروش</h3>
-
-          <div class="big red">
-            ${fmt(w.sell?.price)}
-          </div>
-
-          <div>
-            ارزش:
-            ${fmt(w.sell?.notional)}
-          </div>
-
-          <div>
-            فاصله:
-            ${fmt(w.sell?.distancePct)}%
-          </div>
-
-        </div>
-
-
-        <div class="card">
-
-          <h3>نقدینگی</h3>
-
-          <div class="row">
-            <span>خرید</span>
-            <b>${fmt(w.buyLiquidity)}</b>
-          </div>
-
-          <div class="row">
-            <span>فروش</span>
-            <b>${fmt(w.sellLiquidity)}</b>
-          </div>
-
-          <div class="row">
-            <span>سهم خرید</span>
-            <b>${fmt(w.buyShare)}%</b>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </details>
-
-  `;
-}
-
-
-function renderMarket(m){
-
-  if(!m)
-    return '';
-
-  return `
-
-  <details>
-
-    <summary>
-      📈 OI / Funding
-    </summary>
-
-    <div class="content">
-
-      ${
-        m.error
-          ? `<div class="muted">
-              ${esc(m.error)}
-             </div>`
-          : `
-          <div class="grid">
-
-            <div class="card">
-              <h3>Open Interest</h3>
-              <div class="big">
-                ${fmt(m.openInterest)}
-              </div>
-            </div>
-
-            <div class="card">
-              <h3>Funding</h3>
-              <div class="big">
-                ${fmt(m.fundingRate)}
-              </div>
-            </div>
-
-          </div>
-          `
-      }
-
-    </div>
-
-  </details>
-
-  `;
-}
-
-
-function renderReasons(reasons){
-
-  if(!Array.isArray(reasons) ||
-     !reasons.length)
-    return '';
-
-  return `
-
-  <details>
-
-    <summary>
+    <div class="section-title">
       🧠 دلایل سیگنال
-    </summary>
-
-    <div class="content">
-
-      ${
-        reasons
-          .map(
-            r=>`
-
-            <div class="row">
-
-              <span class="${cls(r.side)}">
-                ${text(r.side)}
-              </span>
-
-              <b>
-                ${esc(r.text)}
-              </b>
-
-            </div>
-
-            `
-          )
-          .join('')
-      }
-
     </div>
 
-  </details>
-
-  `;
-}
+    ${renderReasons(data.reasons)}
 
 
-function renderScan(d){
+    ${
+      book &&
+      !book.error
+      ?
 
-  const results=
-    Array.isArray(d.results)
-      ? d.results
-      : [];
+      `
 
-  if(!results.length){
-
-    $('results').innerHTML=`
-
-      <div class="card empty">
-        در این مرحله سیگنال مطابق درجه سخت‌گیری پیدا نشد.
+      <div class="section-title">
+        📚 Order Book
       </div>
 
-    `;
+      <div class="grid">
 
-    return;
-  }
+        <div class="metric">
+          <small>نقدینگی خرید</small>
+          <b>${n(book.buyLiquidity,2)}</b>
+        </div>
 
-  $('results').innerHTML=`
+        <div class="metric">
+          <small>نقدینگی فروش</small>
+          <b>${n(book.sellLiquidity,2)}</b>
+        </div>
 
-  <div class="card">
+        <div class="metric">
+          <small>سهم خرید</small>
+          <b>${pct(book.buyShare)}</b>
+        </div>
 
-    <h2>🎯 سیگنال‌های پیدا شده</h2>
+        <div class="metric">
+          <small>سهم فروش</small>
+          <b>${pct(book.sellShare)}</b>
+        </div>
 
-    <div class="muted">
+        <div class="metric">
+          <small>بهترین خرید</small>
+          <b>
+            ${n(book.bestBid?.price,12)}
+          </b>
+        </div>
 
-      ${fmt(d.batchSize)}
-      ارز بررسی شد ·
-      ${fmt(d.totalMarkets)}
-      بازار
+        <div class="metric">
+          <small>بهترین فروش</small>
+          <b>
+            ${n(book.bestAsk?.price,12)}
+          </b>
+        </div>
 
-    </div>
+      </div>
 
-  </div>
+      ${renderLevels(
+        "🟢 دیوارهای خرید",
+        book.buyLevels
+      )}
 
-  ${
-    results
-      .map(
-        (x,n)=>
-          renderSignal(
-            x,
-            n
+      ${renderLevels(
+        "🔴 دیوارهای فروش",
+        book.sellLevels
+      )}
+
+      `
+
+      :
+
+      `
+      <div class="section-title">
+        📚 Order Book
+      </div>
+
+      <div class="info">
+        ${
+          esc(
+            book?.error ||
+            "داده Order Book موجود نیست."
           )
-      )
-      .join('')
-  }
+        }
+      </div>
+      `
+    }
 
   `;
 }
 
 
-function renderSignal(x,n){
+/* =====================================================
+   SIGNAL CARD
+===================================================== */
 
-  const score=
-    scoreNumber(
-      x.score ??
-      x.signalScore ??
-      x.maScore
-    );
+function renderSignal(
+  data,
+  index = 0
+){
 
-  const direction=
-    x.direction ||
-    x.side ||
-    x.signal;
+  const direction =
+    data.direction || "WAIT";
+
+  const cls =
+    direction === "LONG"
+      ? "long"
+      : direction === "SHORT"
+        ? "short"
+        : "wait";
+
+  const id =
+    "deep_" +
+    Date.now() +
+    "_" +
+    index;
 
   return `
 
-  <div class="signal">
-
-    <div
-      class="signalHead"
-      onclick="toggleSignal(this)"
-    >
-
-      <div class="signalTitle">
-
-        <div>
-
-          <div>
-            <b>
-              ${esc(x.symbol)}
-            </b>
-
-            <span class="badge">
-              ${esc(
-                x.category ||
-                'Bybit'
-              )}
-            </span>
-
-          </div>
-
-          <div
-            class="${cls(direction)}"
-            style="margin-top:6px"
-          >
-            ${text(direction)}
-          </div>
-
-        </div>
-
-
-        <div
-          class="score ${cls(direction)}"
-        >
-          ${score}/100
-        </div>
-
-      </div>
-
-
-      <div class="scorebar">
-
-        <div
-          style="
-            width:${Math.min(
-              100,
-              Math.max(
-                0,
-                score
-              )
-            )}%
-          "
-        ></div>
-
-      </div>
-
+    <div class="signal">
 
       <div
-        class="muted"
-        style="margin-top:7px"
+        class="signal-head"
+        onclick="toggleDeep('${id}')"
       >
-        ${esc(
-          x.reason ||
-          x.signalReason ||
-          'برخورد و تأیید MA20'
-        )}
+
+        <div class="signal-main">
+
+          <div>
+
+            <div class="symbol">
+              ${esc(data.symbol)}
+            </div>
+
+            <div class="meta">
+
+              <span>
+                ${categoryText(data.category)}
+              </span>
+
+              <span>
+                قیمت:
+                ${n(data.price,12)}
+              </span>
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <div class="badge ${cls}">
+              ${directionText(direction)}
+            </div>
+
+            <div class="score">
+              ${n(data.score,0)}/100
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="meta">
+
+          <span>
+            MA20 1m:
+            ${n(
+              data.oneMinute?.ma20,
+              12
+            )}
+          </span>
+
+          <span>
+            فاصله:
+            ${pct(
+              data.oneMinute?.distancePct
+            )}
+          </span>
+
+          <span>
+            شیب:
+            ${pct(
+              data.oneMinute?.maSlopePct
+            )}
+          </span>
+
+          <span>
+            15m:
+            ${directionText(
+              data.fifteenMinute?.direction
+            )}
+          </span>
+
+          <span>
+            ▼ تحلیل عمیق
+          </span>
+
+        </div>
+
+      </div>
+
+      <div
+        id="${id}"
+        class="deep"
+      >
+        ${renderDeep(data)}
       </div>
 
     </div>
-
-
-    <div class="content deepSignal" style="display:none">
-
-      ${renderSignalDeep(x)}
-
-    </div>
-
-  </div>
 
   `;
 }
 
 
-function renderSignalDeep(x){
+/* =====================================================
+   TOGGLE
+===================================================== */
 
-  if(
-    x.timeframes ||
-    x.deepByTimeframe
-  ){
+window.toggleDeep =
+function(id){
 
-    const tfs=
-      x.timeframes ||
-      x.deepByTimeframe ||
-      {};
+  const el =
+    document.getElementById(id);
 
-    return `
+  if(!el)
+    return;
 
-      <div class="grid">
+  el.classList.toggle("open");
 
-        ${
-          ['1','15']
-            .filter(k=>tfs[k])
-            .map(
-              k=>renderTF(
-                k,
-                tfs[k]
-              )
-            )
-            .join('')
-        }
+};
 
+
+/* =====================================================
+   MANUAL ANALYSIS
+===================================================== */
+
+async function analyzeManual(){
+
+  const symbol =
+    symbolInput.value.trim();
+
+  if(!symbol){
+
+    symbolInput.focus();
+
+    return;
+
+  }
+
+  analyzeBtn.disabled =
+    true;
+
+  analyzeBtn.innerHTML =
+    '<span class="loader"></span> در حال تحلیل...';
+
+  resultsEl.innerHTML =
+    "";
+
+  try{
+
+    const strictness =
+      Number(
+        strictnessEl.value
+      );
+
+    const data =
+      await api(
+        "/api/personal/analyze" +
+        "?symbol=" +
+        encodeURIComponent(symbol) +
+        "&strictness=" +
+        strictness
+      );
+
+    resultsEl.innerHTML =
+      renderSignal(
+        data,
+        0
+      );
+
+    const signalKey =
+      data.symbol +
+      "_" +
+      data.direction;
+
+    if(
+      data.qualifies &&
+      !previousSignals.has(signalKey)
+    ){
+
+      previousSignals.add(
+        signalKey
+      );
+
+      playBeep();
+
+    }
+
+  }
+  catch(error){
+
+    resultsEl.innerHTML =
+      `
+      <div class="error">
+        ${esc(error.message)}
       </div>
-
-      ${renderFootprint(x.footprint)}
-
-      ${renderWalls(x.walls)}
-
-      ${renderMarket(x.market)}
-
-      ${renderReasons(x.reasons)}
-
-    `;
-  }
-
-  return `
-
-    <div class="notice">
-      برای دریافت تحلیل عمیق، روی «تحلیل» نماد بزن.
-    </div>
-
-  `;
-}
-
-
-function toggleSignal(head){
-
-  const content=
-    head.nextElementSibling;
-
-  const open=
-    content.style.display!=='none';
-
-  content.style.display=
-    open?'none':'block';
-
-  if(!open){
-
-    const symbol=
-      head
-        .parentElement
-        .querySelector('b')
-        ?.textContent
-        ?.trim();
-
-    if(symbol)
-      loadDeepForSignal(
-        head.parentElement,
-        symbol
-      );
-  }
-}
-
-
-async function loadDeepForSignal(box,symbol){
-
-  const content=
-    box.querySelector(
-      '.deepSignal'
-    );
-
-  if(!content)
-    return;
-
-  if(
-    content.dataset.loaded==='1'
-  )
-    return;
-
-  content.dataset.loaded='1';
-
-  try{
-
-    const strict=
-      Number(
-        $('strictness').value
-      );
-
-    const r=
-      await fetch(
-        `/api/analyze?symbol=${
-          encodeURIComponent(
-            symbol
-          )
-        }&mode=personal&strictness=${
-          strict
-        }`,
-        {
-          cache:'no-store'
-        }
-      );
-
-    const d=
-      await r.json();
-
-    if(!d.ok)
-      throw Error(
-        d.error ||
-        'تحلیل انجام نشد'
-      );
-
-    content.innerHTML=
-      renderSignalDeep(d);
-
-  }
-  catch(e){
-
-    content.innerHTML=
-      `<div class="red">
-        ${esc(e.message)}
-      </div>`;
-
-  }
-}
-
-
-async function manualAnalyze(){
-
-  const symbol=
-    $('symbol')
-      .value
-      .trim();
-
-  if(!symbol)
-    return;
-
-  $('manualResult').innerHTML=
-    '<div class="card loading">در حال تحلیل...</div>';
-
-  try{
-
-    const strict=
-      Number(
-        $('strictness').value
-      );
-
-    const r=
-      await fetch(
-        `/api/analyze?symbol=${
-          encodeURIComponent(symbol)
-        }&mode=personal&strictness=${
-          strict
-        }`,
-        {
-          cache:'no-store'
-        }
-      );
-
-    const d=
-      await r.json();
-
-    if(!d.ok)
-      throw Error(
-        d.error ||
-        'تحلیل انجام نشد'
-      );
-
-    renderManual(d);
-
-  }
-  catch(e){
-
-    $('manualResult').innerHTML=
-      `<div class="card red">
-        ${esc(e.message)}
-      </div>`;
-
-  }
-}
-
-
-async function scanNow(){
-
-  if(scanRunning)
-    return;
-
-  scanRunning=true;
-
-  const strict=
-    Number(
-      $('strictness').value
-    );
-
-  $('scanStatus').textContent=
-    `در حال اسکن چرخشی بازار · سخت‌گیری ${strict}/100`;
-
-  try{
-
-    const r=
-      await fetch(
-        `/api/scan?offset=${
-          scanOffset
-        }&mode=personal&strictness=${
-          strict
-        }`,
-        {
-          cache:'no-store'
-        }
-      );
-
-    const d=
-      await r.json();
-
-    if(!d.ok)
-      throw Error(
-        d.error ||
-        'اسکن انجام نشد'
-      );
-
-    scanOffset=
-      d.nextOffset ??
-      0;
-
-    renderScan(d);
-
-    $('scanStatus').textContent=
-      `اسکن چرخشی فعال · سخت‌گیری ${strict}/100 · بخش بعدی بازار: ${scanOffset}`;
-
-    const results=
-      Array.isArray(d.results)
-        ? d.results
-        : [];
-
-    if(results.length)
-      alertSignal();
-
-  }
-  catch(e){
-
-    $('scanStatus').textContent=
-      'خطا در اسکن';
-
-    $('results').innerHTML=
-      `<div class="card red">
-        ${esc(e.message)}
-      </div>`;
+      `;
 
   }
   finally{
 
-    scanRunning=false;
+    analyzeBtn.disabled =
+      false;
+
+    analyzeBtn.innerHTML =
+      "🔎 تحلیل";
 
   }
 }
 
 
-async function health(){
+analyzeBtn.addEventListener(
+  "click",
+  analyzeManual
+);
+
+
+symbolInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      analyzeManual();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   ROTATING SCAN
+===================================================== */
+
+async function scanOnce(){
+
+  if(!scanning)
+    return;
+
+  const strictness =
+    Number(
+      strictnessEl.value
+    );
+
+  scanStatusEl.innerHTML =
+    '<span class="loader"></span> در حال بررسی بازار...';
 
   try{
 
-    const r=
-      await fetch(
-        '/api/health',
-        {
-          cache:'no-store'
-        }
+    const data =
+      await api(
+        "/api/personal/scan" +
+        "?offset=" +
+        encodeURIComponent(
+          scanOffset
+        ) +
+        "&strictness=" +
+        strictness
       );
 
-    const d=
-      await r.json();
+    scanOffset =
+      Number(
+        data.nextOffset || 0
+      );
 
-    $('status').textContent=
-      d.ok
-        ? 'اتصال برقرار است — Bybit'
-        : 'خطا در Worker';
+    const signals =
+      Array.isArray(data.results)
+        ? data.results
+        : [];
+
+    scanStatusEl.innerHTML =
+      `
+      بررسی شد:
+      ${n(data.checked,0)}
+      از
+      ${n(data.totalMarkets,0)}
+      بازار
+      ·
+      سیگنال:
+      ${n(signals.length,0)}
+      `;
+
+    if(signals.length){
+
+      resultsEl.innerHTML =
+        signals
+          .map(
+            (x,i) =>
+              renderSignal(
+                x,
+                i
+              )
+          )
+          .join("");
+
+      let newSignal =
+        false;
+
+      for(
+        const signal
+        of signals
+      ){
+
+        const key =
+          signal.symbol +
+          "_" +
+          signal.direction;
+
+        if(
+          !previousSignals.has(key)
+        ){
+
+          previousSignals.add(
+            key
+          );
+
+          newSignal =
+            true;
+
+        }
+
+      }
+
+      if(newSignal)
+        playBeep();
+
+    }
+    else{
+
+      if(
+        !resultsEl.children.length
+      ){
+
+        resultsEl.innerHTML =
+          `
+          <div class="empty">
+            در این مرحله سیگنال مطابق درجه سخت‌گیری پیدا نشد.
+          </div>
+          `;
+
+      }
+
+    }
 
   }
-  catch(e){
+  catch(error){
 
-    $('status').textContent=
-      'اتصال برقرار نیست';
+    scanStatusEl.innerHTML =
+      "خطا در اسکن";
+
+    resultsEl.innerHTML =
+      `
+      <div class="error">
+        ${esc(error.message)}
+      </div>
+      `;
 
   }
 }
 
 
-function loadSettings(){
+/* =====================================================
+   START / STOP
+===================================================== */
 
-  $('volume').value=
-    soundVolume;
+function startScan(){
 
-  $('volumeText').textContent=
-    Math.round(
-      soundVolume*100
-    )+'%';
+  if(scanning)
+    return;
 
-  $('strictValue').textContent=
-    $('strictness').value;
+  scanning =
+    true;
 
-  updateSoundUI();
+  scanOffset =
+    0;
+
+  scanBtn.textContent =
+    "⏳ اسکن فعال است";
+
+  scanBtn.disabled =
+    true;
+
+  scanOnce();
+
+  scanTimer =
+    setInterval(
+      scanOnce,
+      SCAN_INTERVAL
+    );
+
 }
 
 
-$('symbol').addEventListener(
-  'keydown',
-  e=>{
-    if(e.key==='Enter')
-      manualAnalyze();
+function stopScan(){
+
+  scanning =
+    false;
+
+  if(scanTimer){
+
+    clearInterval(
+      scanTimer
+    );
+
+    scanTimer =
+      null;
+
   }
+
+  scanBtn.disabled =
+    false;
+
+  scanBtn.textContent =
+    "🔄 شروع اسکن";
+
+  scanStatusEl.textContent =
+    "اسکن متوقف شد.";
+
+}
+
+
+scanBtn.addEventListener(
+  "click",
+  startScan
 );
 
 
-$('strictness').addEventListener(
-  'change',
-  ()=>{
-    scanOffset=0;
-  }
+stopScanBtn.addEventListener(
+  "click",
+  stopScan
 );
 
 
-loadSettings();
-health();
+/* =====================================================
+   INITIALIZATION
+===================================================== */
 
+updateStrictness();
 
-/*
-  اسکن چرخشی خودکار.
-  هر 12 ثانیه یک بخش جدید از بازار بررسی می‌شود.
-*/
-scanTimer=
-  setInterval(
-    scanNow,
-    12000
-  );
+updateSoundUI();
+
+checkHealth();
 
 </script>
 
