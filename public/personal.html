@@ -3,153 +3,469 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Personal MA20 Radar</title>
+<title>رادار شخصی MA20</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
-margin:0;background:#080c12;color:#e8eef7;
-font-family:Tahoma,Arial,sans-serif
+  margin:0;
+  background:#080c12;
+  color:#e8eef7;
+  font-family:Tahoma,Arial,sans-serif;
 }
-button,input{font:inherit}
-button{cursor:pointer}
+
+button,input{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
 .header{
-padding:18px 14px;
-background:linear-gradient(135deg,#101925,#0b111a);
-border-bottom:1px solid #202c3a
+  padding:18px 14px;
+  background:linear-gradient(135deg,#101925,#0b111a);
+  border-bottom:1px solid #202c3a;
 }
-.header h1{margin:0 0 8px;font-size:21px}
-.header p{margin:0;color:#91a0b3;font-size:12px}
+
+.header h1{
+  margin:0 0 8px;
+  font-size:21px;
+}
+
+.header p{
+  margin:0;
+  color:#91a0b3;
+  font-size:12px;
+}
+
 .toolbar{
-padding:12px;display:flex;gap:8px;flex-wrap:wrap;
-background:#0b1119;border-bottom:1px solid #20202b
+  padding:12px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  background:#0b1119;
+  border-bottom:1px solid #20202b;
 }
+
 .toolbar button{
-border:1px solid #273548;background:#111a25;color:#dce7f5;
-padding:9px 13px;border-radius:9px
+  border:1px solid #273548;
+  background:#111a25;
+  color:#dce7f5;
+  padding:9px 13px;
+  border-radius:9px;
 }
+
 .toolbar button.active{
-background:#174e35;border-color:#2ca968
+  background:#174e35;
+  border-color:#2ca968;
 }
+
 .status{
-padding:10px 13px;font-size:12px;color:#9caabd;
-border-bottom:1px solid #1b2532
+  padding:10px 13px;
+  font-size:12px;
+  color:#9caabd;
+  border-bottom:1px solid #1b2532;
 }
-.status strong{color:#5ee69b}
-.container{max-width:1100px;margin:auto;padding:12px}
+
+.status strong{
+  color:#5ee69b;
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:12px;
+}
+
 .section-title{
-display:flex;justify-content:space-between;align-items:center;
-margin:10px 0
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:10px 0;
 }
-.section-title h2{margin:0;font-size:16px}
-.counter{color:#8d9aae;font-size:12px}
+
+.section-title h2{
+  margin:0;
+  font-size:16px;
+}
+
+.counter{
+  color:#8d9aae;
+  font-size:12px;
+}
+
 .signals{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:10px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:10px;
 }
+
 .empty{
-padding:35px 15px;text-align:center;background:#0d141e;
-border:1px dashed #293747;border-radius:12px;color:#7f8da0
+  padding:35px 15px;
+  text-align:center;
+  background:#0d141e;
+  border:1px dashed #293747;
+  border-radius:12px;
+  color:#7f8da0;
 }
+
 .signal{
-background:#0d141e;border:1px solid #263344;border-radius:13px;
-padding:13px;position:relative;overflow:hidden
+  background:#0d141e;
+  border:1px solid #263344;
+  border-radius:13px;
+  padding:13px;
+  position:relative;
+  overflow:hidden;
 }
-.signal.long{border-color:#1f8d59}
-.signal.short{border-color:#a14343}
+
+.signal.long{
+  border-color:#1f8d59;
+}
+
+.signal.short{
+  border-color:#a14343;
+}
+
 .signal.current{
-box-shadow:0 0 0 2px #f0b84b55,0 0 18px #f0b84b22
+  border-color:#f0b84b;
+  box-shadow:
+    0 0 0 2px #f0b84b33,
+    0 0 22px #f0b84b18;
 }
+
+.selected-bar{
+  display:none;
+  background:#302615;
+  border:1px solid #7d6025;
+  color:#f1ce72;
+  padding:7px 9px;
+  border-radius:8px;
+  margin-bottom:10px;
+  font-size:11px;
+}
+
+.signal.current .selected-bar{
+  display:block;
+}
+
 .signal-head{
-display:flex;justify-content:space-between;align-items:center;
-margin-bottom:12px
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
-.symbol{font-size:18px;font-weight:bold}
+
+.symbol{
+  font-size:18px;
+  font-weight:bold;
+}
+
 .badge{
-padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:bold;
 }
-.badge.long{background:#123e2b;color:#62e6a1}
-.badge.short{background:#4a1d1d;color:#ff8c8c}
-.badge.wait{background:#302a16;color:#e6c76c}
+
+.badge.long{
+  background:#123e2b;
+  color:#62e6a1;
+}
+
+.badge.short{
+  background:#4a1d1d;
+  color:#ff8c8c;
+}
+
+.badge.wait{
+  background:#302a16;
+  color:#e6c76c;
+}
+
 .signal-grid{
-display:grid;grid-template-columns:1fr 1fr;gap:7px
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
 }
+
 .metric{
-background:#101923;border-radius:8px;padding:8px
+  background:#101923;
+  border-radius:8px;
+  padding:8px;
 }
+
 .metric small{
-display:block;color:#758397;font-size:10px;margin-bottom:4px
+  display:block;
+  color:#758397;
+  font-size:10px;
+  margin-bottom:4px;
 }
-.metric b{font-size:13px}
-.ma{color:#67c7ff}
-.time{color:#9caabd;font-size:11px;margin-top:10px}
-.signal-actions{display:flex;gap:7px;margin-top:10px}
+
+.metric b{
+  font-size:13px;
+}
+
+.ma{
+  color:#67c7ff;
+}
+
+.time{
+  color:#9caabd;
+  font-size:11px;
+  margin-top:10px;
+}
+
+.signal-actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
 .signal-actions button{
-flex:1;border:1px solid #29394d;background:#121d29;
-color:#e8eef7;padding:9px;border-radius:8px
+  flex:1;
+  border:1px solid #29394d;
+  background:#121d29;
+  color:#e8eef7;
+  padding:9px;
+  border-radius:8px;
 }
-.signal-actions button:hover{background:#192838}
+
+.signal-actions button:hover{
+  background:#192838;
+}
 
 #deepPanel{
-display:none;position:fixed;inset:0;z-index:50;
-background:#070b10ee;overflow:auto
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:#070b10ee;
+  overflow:auto;
 }
-.deep{max-width:1100px;margin:20px auto;padding:12px}
+
+.deep{
+  max-width:1100px;
+  margin:20px auto;
+  padding:12px;
+}
+
 .deep-head{
-background:#0d141e;border:1px solid #293748;border-radius:13px;
-padding:14px;position:sticky;top:8px;z-index:3
+  background:#0d141e;
+  border:1px solid #293748;
+  border-radius:13px;
+  padding:14px;
+  position:sticky;
+  top:8px;
+  z-index:3;
 }
+
 .deep-head-row{
-display:flex;justify-content:space-between;align-items:center;gap:10px
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
 }
+
 .close{
-background:#3a1d1d;color:#ffaaaa;border:1px solid #6d3535;
-border-radius:8px;padding:8px 12px
+  background:#3a1d1d;
+  color:#ffaaaa;
+  border:1px solid #6d3535;
+  border-radius:8px;
+  padding:8px 12px;
 }
-.deep-title{font-size:19px;font-weight:bold}
-.deep-sub{color:#8290a2;font-size:11px;margin-top:5px}
+
+.deep-title{
+  font-size:19px;
+  font-weight:bold;
+}
+
+.deep-sub{
+  color:#8290a2;
+  font-size:11px;
+  margin-top:5px;
+}
+
 .live{
-margin-top:8px;padding:7px 9px;border-radius:7px;
-background:#10251b;color:#62e6a1;font-size:11px
+  margin-top:8px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
 }
-.live.alert{
-background:#3a2415;color:#ffc46b
+
+.live span{
+  background:#111c28;
+  border:1px solid #263548;
+  border-radius:7px;
+  padding:5px 8px;
+  font-size:10px;
+  color:#9eacbd;
 }
+
+.live .on{
+  color:#62e6a1;
+  border-color:#246c48;
+}
+
+.important{
+  margin-top:10px;
+  background:#2c2110;
+  border:1px solid #75551e;
+  color:#f0cd70;
+  border-radius:9px;
+  padding:10px;
+  font-size:11px;
+  line-height:1.9;
+}
+
+.direction-box{
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  text-align:center;
+  font-size:15px;
+  font-weight:bold;
+  border:1px solid #263445;
+  background:#101923;
+}
+
+.direction-box.up{
+  color:#62e6a1;
+  border-color:#237b4e;
+  background:#0d2118;
+}
+
+.direction-box.down{
+  color:#ff8c8c;
+  border-color:#863f3f;
+  background:#261313;
+}
+
+.direction-box.flat{
+  color:#e6c76c;
+  border-color:#6b5a2d;
+  background:#211d12;
+}
+
+.tf-title{
+  margin:18px 0 8px;
+  font-size:15px;
+  color:#dce7f5;
+  padding-bottom:7px;
+  border-bottom:1px solid #263445;
+}
+
 .deep-grid{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:10px;margin-top:10px
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:10px;
+  margin-top:10px;
 }
+
 .panel{
-background:#0d141e;border:1px solid #263445;border-radius:12px;
-padding:12px
+  background:#0d141e;
+  border:1px solid #263445;
+  border-radius:12px;
+  padding:12px;
 }
+
 .panel h3{
-margin:0 0 10px;font-size:14px;color:#dbe6f3
+  margin:0 0 10px;
+  font-size:14px;
+  color:#dbe6f3;
 }
+
 .row{
-display:flex;justify-content:space-between;gap:10px;
-padding:6px 0;border-bottom:1px solid #18222e;font-size:12px
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 0;
+  border-bottom:1px solid #18222e;
+  font-size:12px;
 }
-.row:last-child{border-bottom:0}
-.label{color:#7f8c9e}
-.value{text-align:left;direction:ltr}
+
+.row:last-child{
+  border-bottom:0;
+}
+
+.label{
+  color:#7f8c9e;
+}
+
+.value{
+  text-align:left;
+  direction:ltr;
+}
+
 .reason{
-background:#111c28;border-radius:7px;padding:7px;
-margin:5px 0;font-size:11px;color:#bdc9d7
+  background:#111c28;
+  border-radius:7px;
+  padding:7px;
+  margin:5px 0;
+  font-size:11px;
+  color:#bdc9d7;
+  line-height:1.8;
 }
+
 .reason.important{
-background:#3b2717;color:#ffd080;border:1px solid #76501f
+  margin-top:5px;
 }
-.loading{text-align:center;padding:35px;color:#8b99aa}
+
+.wall{
+  padding:8px;
+  background:#111a24;
+  border-radius:8px;
+  margin:5px 0;
+  font-size:11px;
+}
+
+.loading{
+  text-align:center;
+  padding:35px;
+  color:#8b99aa;
+}
+
 .toast{
-position:fixed;left:12px;bottom:12px;z-index:100;
-background:#152131;border:1px solid #32455b;border-radius:10px;
-padding:10px 13px;display:none;max-width:330px;font-size:12px
+  position:fixed;
+  left:12px;
+  bottom:12px;
+  z-index:100;
+  background:#152131;
+  border:1px solid #32455b;
+  border-radius:10px;
+  padding:10px 13px;
+  display:none;
+  max-width:330px;
+  font-size:12px;
 }
+
+.change-up{
+  color:#62e6a1 !important;
+}
+
+.change-down{
+  color:#ff8c8c !important;
+}
+
 @media(max-width:600px){
-.deep{margin:5px auto}
-.deep-head{top:0;border-radius:8px}
-.signals{grid-template-columns:1fr}
+
+  .deep{
+    margin:5px auto;
+  }
+
+  .deep-head{
+    top:0;
+    border-radius:8px;
+  }
+
+  .signals{
+    grid-template-columns:1fr;
+  }
+
+  .deep-grid{
+    grid-template-columns:1fr;
+  }
 }
 </style>
 </head>
@@ -157,1348 +473,2885 @@ padding:10px 13px;display:none;max-width:330px;font-size:12px
 <body>
 
 <div class="header">
-<h1>🎯 رادار شخصی MA20</h1>
-<p>شکار برخورد قیمت با MA20 تایم‌فریم ۱ دقیقه + پایش زنده</p>
+  <h1>🎯 رادار شخصی MA20</h1>
+  <p>شکار برخورد قیمت با میانگین متحرک ۲۰ در تایم‌فریم یک دقیقه</p>
 </div>
 
 <div class="toolbar">
-<button id="startBtn" class="active" onclick="startRadar()">▶ شروع رادار</button>
-<button onclick="stopRadar()">⏸ توقف</button>
-<button onclick="scanNow()">🔄 بررسی دستی</button>
-<button onclick="clearSignals()">🗑 پاک کردن سیگنال‌ها</button>
-<button id="soundBtn" onclick="toggleSound()">🔊 صدا روشن</button>
+
+  <button
+    id="startBtn"
+    class="active"
+    onclick="startRadar()">
+    ▶ شروع رادار
+  </button>
+
+  <button onclick="stopRadar()">
+    ⏸ توقف
+  </button>
+
+  <button onclick="scanNow()">
+    🔄 بررسی دستی
+  </button>
+
+  <button onclick="clearSignals()">
+    🗑 پاک کردن سیگنال‌ها
+  </button>
+
+  <button
+    id="soundBtn"
+    onclick="toggleSound()">
+    🔊 صدا روشن
+  </button>
+
 </div>
 
 <div class="status">
-وضعیت:
-<strong id="statusText">در حال آماده‌سازی...</strong>
-<span id="lastScan"></span>
+
+  وضعیت:
+  <strong id="statusText">
+    در حال آماده‌سازی...
+  </strong>
+
+  <span id="lastScan"></span>
+
 </div>
 
 <div class="container">
 
-<div class="section-title">
-<h2>🚨 سیگنال‌های MA20 یک‌دقیقه</h2>
-<span class="counter" id="signalCount">0 سیگنال</span>
+  <div class="section-title">
+
+    <h2>
+      🚨 سیگنال‌های MA20 یک‌دقیقه
+    </h2>
+
+    <span
+      class="counter"
+      id="signalCount">
+      0 سیگنال
+    </span>
+
+  </div>
+
+  <div id="signals" class="signals">
+
+    <div class="empty">
+      هنوز سیگنال جدیدی دریافت نشده است.<br>
+      رادار برخورد MA20 در حال انتظار است.
+    </div>
+
+  </div>
+
 </div>
 
-<div id="signals" class="signals">
-<div class="empty">
-هنوز سیگنال جدیدی دریافت نشده است.<br>
-رادار برخورد MA20 در حال انتظار است.
-</div>
-</div>
-
-</div>
 
 <div id="deepPanel">
-<div class="deep">
 
-<div class="deep-head">
-<div class="deep-head-row">
-<div>
-<div class="deep-title" id="deepTitle">تحلیل عمیق</div>
-<div class="deep-sub" id="deepSub"></div>
-<div id="liveStatus" class="live">🟢 پایش زنده فعال است</div>
+  <div class="deep">
+
+    <div class="deep-head">
+
+      <div class="deep-head-row">
+
+        <div>
+
+          <div
+            class="deep-title"
+            id="deepTitle">
+            تحلیل عمیق
+          </div>
+
+          <div
+            class="deep-sub"
+            id="deepSub">
+          </div>
+
+          <div
+            class="live"
+            id="liveStatus">
+          </div>
+
+        </div>
+
+        <button
+          class="close"
+          onclick="closeDeep()">
+          ✕ بستن
+        </button>
+
+      </div>
+
+    </div>
+
+    <div id="importantEvent"></div>
+
+    <div id="deepContent">
+
+      <div class="loading">
+        در حال دریافت تحلیل...
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
-<button class="close" onclick="closeDeep()">✕ بستن</button>
-</div>
-</div>
-
-<div id="deepContent">
-<div class="loading">در حال دریافت تحلیل...</div>
-</div>
-
-</div>
-</div>
 
 <div id="toast" class="toast"></div>
 
+
 <script>
 
-const WORKER="https://soft-flower-2790.29mah12.workers.dev";
-const SCAN_URL=WORKER+"/api/scan";
-const ANALYZE_URL=WORKER+"/api/analyze";
+/* =========================================================
+تنظیمات
+========================================================= */
 
-const SCAN_INTERVAL=15000;
-const LIVE_INTERVAL=15000;
+const WORKER =
+  "https://soft-flower-2790.29mah12.workers.dev";
 
-const STORAGE_KEY="PERSONAL_MA20_SIGNALS_V2";
-const SELECTED_KEY="PERSONAL_MA20_SELECTED_V2";
+const SCAN_URL =
+  WORKER + "/api/scan";
 
-const seenSignals=new Set();
-const signals=new Map();
+const ANALYZE_URL =
+  WORKER + "/api/analyze";
 
-let currentSignalId=null;
-let radarTimer=null;
-let liveTimer=null;
-let running=false;
-let soundEnabled=true;
-let offset=0;
+const SCAN_INTERVAL = 15000;
 
-let lastLiveData=null;
-let lastImportantState=null;
+/*
+  تحلیل ارز انتخاب‌شده سریع‌تر تازه می‌شود.
+*/
+const SELECTED_REFRESH = 12000;
 
-/* =========================
+
+/* =========================================================
+حافظه سیگنال‌ها
+========================================================= */
+
+const seenSignals = new Set();
+
+const signals = new Map();
+
+let currentSignalId = null;
+
+let currentSelectedSymbol = null;
+
+let currentSelectedCategory = "linear";
+
+let radarTimer = null;
+
+let selectedRefreshTimer = null;
+
+let running = false;
+
+let soundEnabled = true;
+
+let offset = 0;
+
+let lastSelectedAnalysis = null;
+
+let importantEvents = [];
+
+
+/* =========================================================
+ذخیره انتخاب
+========================================================= */
+
+const STORAGE_KEY =
+  "personal_ma20_selected_signal";
+
+const SIGNALS_KEY =
+  "personal_ma20_signals";
+
+
+function saveSelected(){
+
+  if(!currentSignalId)return;
+
+  try{
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        id:currentSignalId,
+        symbol:currentSelectedSymbol,
+        category:currentSelectedCategory,
+        savedAt:Date.now()
+      })
+    );
+
+  }catch(e){}
+}
+
+
+function loadSelected(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        STORAGE_KEY
+      );
+
+    if(!raw)return null;
+
+    return JSON.parse(raw);
+
+  }catch(e){
+
+    return null;
+  }
+}
+
+
+/* =========================================================
+ذخیره سیگنال‌ها
+========================================================= */
+
+function saveSignals(){
+
+  try{
+
+    const arr =
+      [...signals.values()]
+        .slice(0,100)
+        .map(s=>({
+          ...s,
+          deep:null
+        }));
+
+    localStorage.setItem(
+      SIGNALS_KEY,
+      JSON.stringify(arr)
+    );
+
+  }catch(e){}
+}
+
+
+function loadSignals(){
+
+  try{
+
+    const raw =
+      localStorage.getItem(
+        SIGNALS_KEY
+      );
+
+    if(!raw)return;
+
+    const arr=JSON.parse(raw);
+
+    if(!Array.isArray(arr))return;
+
+    for(const s of arr){
+
+      if(!s.id || !s.symbol)continue;
+
+      signals.set(
+        s.id,
+        s
+      );
+
+      seenSignals.add(
+        s.id
+      );
+    }
+
+  }catch(e){}
+}
+
+
+/* =========================================================
 DOM
-========================= */
+========================================================= */
 
-const $=id=>document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
-/* =========================
-TIME
-========================= */
+
+/* =========================================================
+زمان
+========================================================= */
 
 function timeText(ts){
-const d=ts?new Date(ts):new Date();
-return d.toLocaleTimeString("fa-IR",{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-});
+
+  const d =
+    ts
+      ? new Date(ts)
+      : new Date();
+
+  return d.toLocaleTimeString(
+    "fa-IR",
+    {
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit"
+    }
+  );
 }
 
-/* =========================
-NUMBER
-========================= */
+
+/* =========================================================
+عدد
+========================================================= */
 
 function num(v,digits=4){
-if(v===null||v===undefined||v===""||Number.isNaN(Number(v)))return "-";
-return Number(v).toLocaleString("en-US",{maximumFractionDigits:digits});
+
+  if(
+    v===null||
+    v===undefined||
+    v===""||
+    Number.isNaN(Number(v))
+  ){
+    return "-";
+  }
+
+  return Number(v).toLocaleString(
+    "en-US",
+    {
+      maximumFractionDigits:digits
+    }
+  );
 }
+
 
 function pct(v){
-if(v===null||v===undefined||Number.isNaN(Number(v)))return "-";
-return Number(v).toFixed(2)+"%";
+
+  if(
+    v===null||
+    v===undefined||
+    Number.isNaN(Number(v))
+  ){
+    return "-";
+  }
+
+  return Number(v).toFixed(2)+"٪";
 }
 
-/* =========================
-STATUS
-========================= */
+
+/* =========================================================
+ترجمه
+========================================================= */
+
+function fa(v){
+
+  if(v===null||v===undefined)return "—";
+
+  const s=String(v);
+
+  const map={
+
+    LONG:"صعودی",
+    SHORT:"نزولی",
+    WAIT:"انتظار",
+
+    UP:"صعودی",
+    DOWN:"نزولی",
+    FLAT:"خنثی",
+
+    BULLISH:"صعودی",
+    BEARISH:"نزولی",
+    NEUTRAL:"خنثی",
+
+    TOUCH:"برخورد",
+    REJECTION:"برگشت",
+    BREAK:"شکست",
+
+    CONFIRMED:"تأیید شده",
+    true:"بله",
+    false:"خیر",
+
+    BUY:"خرید",
+    SELL:"فروش",
+
+    SMC:"پول هوشمند",
+    ICT:"تحلیل نقدینگی",
+    MA:"میانگین متحرک",
+    Volume:"حجم",
+    Candles:"کندل",
+    OrderFlow:"جریان سفارش",
+    Liquidity:"نقدینگی",
+
+    "Strong Buy":"خرید بسیار قوی",
+    "Strong Sell":"فروش بسیار قوی",
+    "Buy":"خرید",
+    "Sell":"فروش",
+    "Neutral":"خنثی"
+
+  };
+
+  return map[s] || s;
+}
+
+
+/* =========================================================
+وضعیت
+========================================================= */
 
 function setStatus(text,good=false){
-$("statusText").textContent=text;
-$("statusText").style.color=good?"#5ee69b":"#e6c76c";
+
+  $("statusText").textContent=text;
+
+  $("statusText").style.color =
+    good
+      ? "#5ee69b"
+      : "#e6c76c";
 }
 
-/* =========================
-TOAST
-========================= */
+
+/* =========================================================
+پیام
+========================================================= */
 
 let toastTimer;
 
 function toast(text){
-const el=$("toast");
-el.textContent=text;
-el.style.display="block";
-clearTimeout(toastTimer);
-toastTimer=setTimeout(()=>el.style.display="none",4000);
+
+  const el=$("toast");
+
+  el.textContent=text;
+
+  el.style.display="block";
+
+  clearTimeout(toastTimer);
+
+  toastTimer=setTimeout(()=>{
+    el.style.display="none";
+  },3500);
 }
 
-/* =========================
-SOUND
-========================= */
+
+/* =========================================================
+صدا
+========================================================= */
 
 function beep(){
-if(!soundEnabled)return;
 
-try{
-const Ctx=window.AudioContext||window.webkitAudioContext;
-if(!Ctx)return;
+  if(!soundEnabled)return;
 
-const ctx=new Ctx();
-const osc=ctx.createOscillator();
-const gain=ctx.createGain();
+  try{
 
-osc.type="sine";
-osc.frequency.setValueAtTime(740,ctx.currentTime);
-osc.frequency.exponentialRampToValueAtTime(1040,ctx.currentTime+.18);
+    const Ctx =
+      window.AudioContext ||
+      window.webkitAudioContext;
 
-gain.gain.setValueAtTime(.0001,ctx.currentTime);
-gain.gain.exponentialRampToValueAtTime(.22,ctx.currentTime+.02);
-gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.35);
+    if(!Ctx)return;
 
-osc.connect(gain);
-gain.connect(ctx.destination);
-osc.start();
-osc.stop(ctx.currentTime+.36);
-}catch(e){}
+    const ctx=new Ctx();
+
+    const osc=ctx.createOscillator();
+
+    const gain=ctx.createGain();
+
+    osc.type="sine";
+
+    osc.frequency.setValueAtTime(
+      740,
+      ctx.currentTime
+    );
+
+    osc.frequency.exponentialRampToValueAtTime(
+      1040,
+      ctx.currentTime+0.18
+    );
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.22,
+      ctx.currentTime+0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ctx.currentTime+0.35
+    );
+
+    osc.connect(gain);
+
+    gain.connect(ctx.destination);
+
+    osc.start();
+
+    osc.stop(
+      ctx.currentTime+0.36
+    );
+
+  }catch(e){}
 }
+
 
 function toggleSound(){
-soundEnabled=!soundEnabled;
-$("soundBtn").textContent=soundEnabled?"🔊 صدا روشن":"🔇 صدا خاموش";
-if(soundEnabled)beep();
+
+  soundEnabled=!soundEnabled;
+
+  $("soundBtn").textContent =
+    soundEnabled
+      ?"🔊 صدا روشن"
+      :"🔇 صدا خاموش";
+
+  if(soundEnabled)beep();
 }
 
-/* =========================
-LOCAL STORAGE
-========================= */
 
-function saveSignals(){
-
-try{
-const arr=[...signals.values()];
-localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));
-}catch(e){}
-}
-
-function loadSignals(){
-
-try{
-
-const raw=localStorage.getItem(STORAGE_KEY);
-if(!raw)return;
-
-const arr=JSON.parse(raw);
-
-if(!Array.isArray(arr))return;
-
-arr.forEach(s=>{
-if(!s||!s.id)return;
-signals.set(s.id,s);
-seenSignals.add(s.id);
-});
-
-}catch(e){
-console.log("load signals error",e);
-}
-}
-
-function saveSelected(){
-
-try{
-
-if(currentSignalId){
-localStorage.setItem(
-SELECTED_KEY,
-currentSignalId
-);
-}else{
-localStorage.removeItem(SELECTED_KEY);
-}
-
-}catch(e){}
-}
-
-function loadSelected(){
-
-try{
-
-const id=localStorage.getItem(SELECTED_KEY);
-
-if(id&&signals.has(id)){
-currentSignalId=id;
-}
-
-}catch(e){}
-}
-
-/* =========================
-MA20 SIGNAL
-========================= */
+/* =========================================================
+استخراج سیگنال MA20
+========================================================= */
 
 function extractMA20Signal(item){
 
-const tf=item?.timeframes?.["1"];
+  const tf =
+    item?.timeframes?.["1"];
 
-if(!tf||tf.error)return null;
-if(!tf.touchMA20)return null;
+  if(!tf || tf.error)return null;
 
-const price=Number(tf.price||item.price);
-const ma20=Number(tf.ma20);
+  if(!tf.touchMA20)return null;
 
-if(!price||!ma20)return null;
+  const price =
+    Number(
+      tf.price ||
+      item.price
+    );
 
-let direction="WAIT";
+  const ma20 =
+    Number(tf.ma20);
 
-if(price>=ma20&&tf.maSlope==="UP")direction="LONG";
-if(price<=ma20&&tf.maSlope==="DOWN")direction="SHORT";
+  if(!price || !ma20)return null;
 
-if(item.direction==="LONG")direction="LONG";
-if(item.direction==="SHORT")direction="SHORT";
+  let direction="WAIT";
 
-const event=item.convertedMA1m?.events?.find(
-x=>x.source==="1m"&&x.ma==="MA20"
-)||null;
+  if(
+    price>=ma20 &&
+    tf.maSlope==="UP"
+  ){
+    direction="LONG";
+  }
 
-return{
-symbol:item.symbol,
-category:item.category||"linear",
-direction,
-price,
-ma20,
-distancePct:(price-ma20)/ma20*100,
-maSlope:tf.maSlope,
-trend:tf.trend,
-type:event?.type||"TOUCH",
-rejection:event?.rejection||false,
-crossUp:event?.crossUp||false,
-crossDown:event?.crossDown||false,
-volumeConfirmed:event?.volumeConfirmed||tf.volume?.spike||false,
-score:item.score||0,
-longScore:item.longScore||0,
-shortScore:item.shortScore||0,
-hunt:tf.hunt||null,
-timestamp:tf.timestamp||item.generatedAt||Date.now(),
-deep:item,
-receivedAt:Date.now()
-};
+  if(
+    price<=ma20 &&
+    tf.maSlope==="DOWN"
+  ){
+    direction="SHORT";
+  }
+
+  if(item.direction==="LONG")
+    direction="LONG";
+
+  if(item.direction==="SHORT")
+    direction="SHORT";
+
+  const event =
+    item.convertedMA1m?.events
+      ?.find(x =>
+        x.source==="1m" &&
+        x.ma==="MA20"
+      ) || null;
+
+  const type =
+    event?.type ||
+    "TOUCH";
+
+  return{
+
+    symbol:item.symbol,
+
+    category:
+      item.category ||
+      "linear",
+
+    direction,
+
+    price,
+
+    ma20,
+
+    distancePct:
+      (price-ma20)/ma20*100,
+
+    maSlope:
+      tf.maSlope,
+
+    trend:
+      tf.trend,
+
+    type,
+
+    rejection:
+      event?.rejection||false,
+
+    crossUp:
+      event?.crossUp||false,
+
+    crossDown:
+      event?.crossDown||false,
+
+    volumeConfirmed:
+      event?.volumeConfirmed||
+      tf.volume?.spike||
+      false,
+
+    score:
+      item.score||0,
+
+    longScore:
+      item.longScore||0,
+
+    shortScore:
+      item.shortScore||0,
+
+    hunt:
+      tf.hunt||null,
+
+    timestamp:
+      tf.timestamp||
+      item.generatedAt||
+      Date.now(),
+
+    deep:item
+  };
 }
 
-/* =========================
-SIGNAL ID
-========================= */
+
+/* =========================================================
+شناسه
+========================================================= */
 
 function signalId(s){
 
-return[
-s.symbol,
-s.timestamp,
-s.direction,
-s.type
-].join("_");
-
+  return[
+    s.symbol,
+    s.timestamp,
+    s.direction,
+    s.type
+  ].join("_");
 }
 
-/* =========================
-ADD / UPDATE
-========================= */
+
+/* =========================================================
+ثبت سیگنال
+========================================================= */
 
 function addSignal(s){
 
-const id=signalId(s);
+  const id=signalId(s);
 
-if(seenSignals.has(id)){
+  if(seenSignals.has(id)){
+    return false;
+  }
 
-/*
-اطلاعات همان سیگنال را تازه می‌کنیم
-ولی زمان دریافت اولیه را نگه می‌داریم.
-*/
-const old=signals.get(id);
+  seenSignals.add(id);
 
-signals.set(id,{
-...old,
-...s,
-receivedAt:old?.receivedAt||Date.now()
-});
+  signals.set(
+    id,
+    {
+      id,
+      ...s,
+      receivedAt:Date.now(),
+      active:true
+    }
+  );
 
-saveSignals();
-renderSignals();
+  saveSignals();
 
-return false;
+  beep();
+
+  renderSignals();
+
+  toast(
+    `🚨 سیگنال جدید ${s.symbol} — ${fa(s.direction)}`
+  );
+
+  return true;
 }
 
-seenSignals.add(id);
 
-signals.set(id,{
-id,
-...s,
-receivedAt:Date.now(),
-active:true
-});
-
-saveSignals();
-beep();
-renderSignals();
-
-toast(
-`🚨 سیگنال جدید ${s.symbol} — ${
-s.direction==="LONG"?"LONG":
-s.direction==="SHORT"?"SHORT":"MA20"
-}`
-);
-
-return true;
-}
-
-/* =========================
-RENDER
-========================= */
+/* =========================================================
+نمایش سیگنال‌ها
+========================================================= */
 
 function renderSignals(){
 
-const box=$("signals");
+  const box=$("signals");
 
-if(!signals.size){
+  if(!signals.size){
 
-box.innerHTML=`
-<div class="empty">
-هنوز سیگنال جدیدی دریافت نشده است.<br>
-رادار برخورد MA20 در حال انتظار است.
-</div>`;
+    box.innerHTML=`
 
-$("signalCount").textContent="0 سیگنال";
-return;
+      <div class="empty">
+        هنوز سیگنال جدیدی دریافت نشده است.<br>
+        رادار برخورد MA20 در حال انتظار است.
+      </div>
+
+    `;
+
+    $("signalCount").textContent=
+      "0 سیگنال";
+
+    return;
+  }
+
+  const arr =
+    [...signals.values()]
+      .sort(
+        (a,b)=>
+          b.receivedAt-a.receivedAt
+      );
+
+  box.innerHTML =
+    arr.map(s=>{
+
+      const dirClass =
+        s.direction==="LONG"
+          ?"long"
+          :s.direction==="SHORT"
+            ?"short"
+            :"";
+
+      const badgeClass =
+        s.direction==="LONG"
+          ?"long"
+          :s.direction==="SHORT"
+            ?"short"
+            :"wait";
+
+      const directionText =
+        s.direction==="LONG"
+          ?"🟢 صعودی"
+          :s.direction==="SHORT"
+            ?"🔴 نزولی"
+            :"🟡 MA20";
+
+      const typeText={
+        TOUCH:"برخورد",
+        REJECTION:"برگشت از MA20",
+        BREAK:"شکست MA20"
+      }[s.type] ||
+      "برخورد MA20";
+
+      return`
+
+        <div
+          class="signal ${dirClass} ${
+            currentSignalId===s.id
+              ?"current"
+              :""
+          }"
+        >
+
+          <div class="selected-bar">
+            📌 این ارز در حال بررسی است
+          </div>
+
+          <div class="signal-head">
+
+            <div class="symbol">
+              ${escapeHtml(s.symbol)}
+            </div>
+
+            <div class="badge ${badgeClass}">
+              ${directionText}
+            </div>
+
+          </div>
+
+          <div class="signal-grid">
+
+            <div class="metric">
+              <small>قیمت</small>
+              <b>${num(s.price)}</b>
+            </div>
+
+            <div class="metric">
+              <small>میانگین ۲۰ یک دقیقه</small>
+              <b class="ma">
+                ${num(s.ma20)}
+              </b>
+            </div>
+
+            <div class="metric">
+              <small>فاصله از میانگین ۲۰</small>
+              <b>${pct(s.distancePct)}</b>
+            </div>
+
+            <div class="metric">
+              <small>نوع برخورد</small>
+              <b>${typeText}</b>
+            </div>
+
+            <div class="metric">
+              <small>شیب میانگین ۲۰</small>
+              <b>${fa(s.maSlope)}</b>
+            </div>
+
+            <div class="metric">
+              <small>تأیید حجم</small>
+              <b>
+                ${
+                  s.volumeConfirmed
+                    ?"بله"
+                    :"خیر"
+                }
+              </b>
+            </div>
+
+          </div>
+
+          <div class="time">
+
+            🕒 دریافت:
+            ${timeText(s.receivedAt)}
+
+            |
+
+            کندل:
+            ${timeText(s.timestamp)}
+
+          </div>
+
+          <div class="signal-actions">
+
+            <button
+              onclick="openDeep(
+                '${encodeURIComponent(s.symbol)}',
+                '${s.category}',
+                '${s.id}'
+              )"
+            >
+              🔬 بررسی عمیق
+            </button>
+
+            <button
+              onclick="focusSignal('${s.id}')"
+            >
+              🎯 انتخاب
+            </button>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+  $("signalCount").textContent =
+    `${arr.length} سیگنال`;
 }
 
-const arr=[...signals.values()].sort(
-(a,b)=>b.receivedAt-a.receivedAt
-);
 
-box.innerHTML=arr.map(s=>{
-
-const dirClass=
-s.direction==="LONG"?"long":
-s.direction==="SHORT"?"short":"";
-
-const badgeClass=
-s.direction==="LONG"?"long":
-s.direction==="SHORT"?"short":"wait";
-
-const directionText=
-s.direction==="LONG"?"🟢 LONG":
-s.direction==="SHORT"?"🔴 SHORT":"🟡 MA20";
-
-const typeText={
-TOUCH:"برخورد",
-REJECTION:"برگشت از MA20",
-BREAK:"شکست MA20"
-}[s.type]||"برخورد MA20";
-
-const selected=currentSignalId===s.id;
-
-return`
-
-<div class="signal ${dirClass} ${selected?"current":""}">
-
-<div class="signal-head">
-
-<div class="symbol">
-${escapeHtml(s.symbol)}
-${selected?" 🔒":""}
-</div>
-
-<div class="badge ${badgeClass}">
-${directionText}
-</div>
-
-</div>
-
-<div class="signal-grid">
-
-<div class="metric">
-<small>قیمت</small>
-<b>${num(s.price)}</b>
-</div>
-
-<div class="metric">
-<small>MA20 یک دقیقه</small>
-<b class="ma">${num(s.ma20)}</b>
-</div>
-
-<div class="metric">
-<small>فاصله</small>
-<b>${pct(s.distancePct)}</b>
-</div>
-
-<div class="metric">
-<small>نوع</small>
-<b>${typeText}</b>
-</div>
-
-<div class="metric">
-<small>شیب MA20</small>
-<b>${s.maSlope||"-"}</b>
-</div>
-
-<div class="metric">
-<small>حجم</small>
-<b>${s.volumeConfirmed?"تأیید":"عادی"}</b>
-</div>
-
-</div>
-
-<div class="time">
-🕒 ${timeText(s.receivedAt)}
-|
-کندل: ${timeText(s.timestamp)}
-</div>
-
-<div class="signal-actions">
-
-<button onclick="openDeep('${encodeURIComponent(s.symbol)}','${s.category}','${s.id}')">
-🔬 ${selected?"ادامه بررسی":"تحلیل عمیق"}
-</button>
-
-<button onclick="focusSignal('${s.id}')">
-${selected?"🔒 انتخاب شده":"🎯 انتخاب"}
-</button>
-
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-$("signalCount").textContent=`${arr.length} سیگنال`;
-
-}
-
-/* =========================
-ESCAPE
-========================= */
+/* =========================================================
+پاکسازی متن
+========================================================= */
 
 function escapeHtml(v){
 
-return String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
+  return String(v??"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
-/* =========================
-SELECT SIGNAL
-========================= */
+
+/* =========================================================
+انتخاب سیگنال
+========================================================= */
 
 function focusSignal(id){
 
-if(!signals.has(id))return;
+  const s=signals.get(id);
 
-currentSignalId=id;
+  if(!s)return;
 
-saveSelected();
-renderSignals();
+  currentSignalId=id;
 
-const s=signals.get(id);
+  currentSelectedSymbol=s.symbol;
 
-if(s){
-toast(`🔒 ${s.symbol} برای بررسی شما قفل شد و حذف نمی‌شود.`);
+  currentSelectedCategory=
+    s.category||"linear";
+
+  saveSelected();
+
+  renderSignals();
+
+  const cards =
+    document.querySelectorAll(
+      ".signal"
+    );
+
+  const arr =
+    [...signals.values()]
+      .sort(
+        (a,b)=>
+          b.receivedAt-a.receivedAt
+      );
+
+  const index =
+    arr.findIndex(
+      x=>x.id===id
+    );
+
+  if(cards[index]){
+
+    cards[index].scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+  }
+
+  /*
+    اگر انتخاب شد، تحلیل عمیق را هم باز کن.
+  */
+
+  openDeep(
+    encodeURIComponent(s.symbol),
+    s.category||"linear",
+    id
+  );
 }
 
-const cards=document.querySelectorAll(".signal");
 
-const arr=[...signals.values()].sort(
-(a,b)=>b.receivedAt-a.receivedAt
-);
-
-const index=arr.findIndex(x=>x.id===id);
-
-if(cards[index]){
-cards[index].scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-}
-
-}
-
-/* =========================
-SCAN
-========================= */
+/* =========================================================
+اسکن
+========================================================= */
 
 async function scanNow(){
 
-if(!running)setStatus("در حال بررسی دستی...",false);
+  if(!running){
 
-try{
+    setStatus(
+      "در حال بررسی دستی...",
+      false
+    );
 
-const url=SCAN_URL+"?offset="+encodeURIComponent(offset);
+  }
 
-const r=await fetch(url,{cache:"no-store"});
+  try{
 
-if(!r.ok)throw new Error("HTTP "+r.status);
+    const url =
+      SCAN_URL+
+      "?offset="+
+      encodeURIComponent(offset);
 
-const data=await r.json();
+    const r =
+      await fetch(
+        url,
+        {
+          cache:"no-store"
+        }
+      );
 
-if(!data.ok){
-throw new Error(data.error||"خطای Worker");
+    if(!r.ok){
+
+      throw new Error(
+        "خطای ارتباطی "+r.status
+      );
+
+    }
+
+    const data =
+      await r.json();
+
+    if(!data.ok){
+
+      throw new Error(
+        data.error||
+        "خطای نامشخص"
+      );
+
+    }
+
+    offset =
+      Number(data.nextOffset)||0;
+
+    let found=0;
+
+    for(
+      const item
+      of data.results||[]
+    ){
+
+      const signal =
+        extractMA20Signal(item);
+
+      if(!signal)continue;
+
+      if(addSignal(signal)){
+        found++;
+      }
+
+    }
+
+    $("lastScan").textContent =
+      ` | آخرین بررسی: ${timeText()}`;
+
+    if(running){
+
+      setStatus(
+        found
+          ?`🟢 ${found} سیگنال جدید`
+          :"🟡 بازار بررسی شد؛ سیگنال جدیدی نبود",
+        found>0
+      );
+
+    }else{
+
+      setStatus(
+        found
+          ?`🟢 ${found} سیگنال پیدا شد`
+          :"🟡 بررسی انجام شد"
+      );
+
+    }
+
+    /*
+      اگر ارز انتخاب شده در اسکن جدید
+      دوباره دیده شد، اطلاعات کارت آن
+      نیز تازه می‌شود.
+    */
+
+    if(
+      currentSelectedSymbol &&
+      data.results
+    ){
+
+      const updated =
+        data.results.find(
+          x=>
+            x.symbol===
+            currentSelectedSymbol
+        );
+
+      if(updated){
+
+        const fresh =
+          extractMA20Signal(updated);
+
+        if(fresh){
+
+          const old =
+            signals.get(
+              currentSignalId
+            );
+
+          if(old){
+
+            signals.set(
+              currentSignalId,
+              {
+                ...old,
+                ...fresh,
+                id:currentSignalId,
+                receivedAt:old.receivedAt
+              }
+            );
+
+            saveSignals();
+
+            renderSignals();
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }catch(e){
+
+    console.error(e);
+
+    setStatus(
+      "❌ خطا: "+e.message
+    );
+
+    toast(
+      "خطا در ارتباط با سرور"
+    );
+
+  }
+
 }
 
-offset=Number(data.nextOffset)||0;
 
-let found=0;
-
-for(const item of data.results||[]){
-
-const signal=extractMA20Signal(item);
-
-if(!signal)continue;
-
-if(addSignal(signal))found++;
-
-}
-
-$("lastScan").textContent=
-` | آخرین بررسی: ${timeText()}`;
-
-if(running){
-
-setStatus(
-found
-?`🟢 ${found} سیگنال جدید`
-:"🟡 اسکن انجام شد؛ سیگنال جدیدی نبود",
-found>0
-);
-
-}else{
-
-setStatus(
-found
-?`🟢 ${found} سیگنال پیدا شد`
-:"🟡 بررسی انجام شد"
-);
-
-}
-
-}catch(e){
-
-console.error(e);
-
-setStatus("❌ خطا: "+e.message);
-toast("خطا در اتصال به Worker: "+e.message);
-
-}
-
-}
-
-/* =========================
-START
-========================= */
+/* =========================================================
+شروع
+========================================================= */
 
 function startRadar(){
 
-if(running)return;
+  if(running)return;
 
-running=true;
+  running=true;
 
-$("startBtn").classList.add("active");
+  $("startBtn")
+    .classList
+    .add("active");
 
-setStatus("🟢 رادار فعال است",true);
+  setStatus(
+    "🟢 رادار فعال است",
+    true
+  );
 
-scanNow();
+  scanNow();
 
-radarTimer=setInterval(
-scanNow,
-SCAN_INTERVAL
-);
-
+  radarTimer =
+    setInterval(
+      scanNow,
+      SCAN_INTERVAL
+    );
 }
 
-/* =========================
-STOP
-========================= */
+
+/* =========================================================
+توقف
+========================================================= */
 
 function stopRadar(){
 
-running=false;
+  running=false;
 
-$("startBtn").classList.remove("active");
+  $("startBtn")
+    .classList
+    .remove("active");
 
-if(radarTimer){
-clearInterval(radarTimer);
-radarTimer=null;
+  if(radarTimer){
+
+    clearInterval(
+      radarTimer
+    );
+
+    radarTimer=null;
+
+  }
+
+  setStatus(
+    "⏸ رادار متوقف شد"
+  );
 }
 
-setStatus("⏸ رادار متوقف شد");
 
-}
-
-/* =========================
-CLEAR
-========================= */
+/* =========================================================
+پاک کردن
+========================================================= */
 
 function clearSignals(){
 
-signals.clear();
-seenSignals.clear();
+  signals.clear();
 
-currentSignalId=null;
+  seenSignals.clear();
 
-localStorage.removeItem(STORAGE_KEY);
-localStorage.removeItem(SELECTED_KEY);
+  currentSignalId=null;
 
-renderSignals();
+  currentSelectedSymbol=null;
 
-toast("🗑 همه سیگنال‌ها پاک شدند.");
+  localStorage.removeItem(
+    STORAGE_KEY
+  );
 
+  localStorage.removeItem(
+    SIGNALS_KEY
+  );
+
+  stopSelectedRefresh();
+
+  renderSignals();
+
+  $("deepPanel").style.display="none";
+
+  document.body.style.overflow="";
+
+  toast(
+    "سیگنال‌های صفحه پاک شدند."
+  );
 }
+
 
 /* =========================================================
-LIVE ANALYSIS
+باز کردن تحلیل عمیق
 ========================================================= */
 
-async function refreshLive(){
+async function openDeep(
+  encodedSymbol,
+  category,
+  id
+){
 
-if(!currentSignalId)return;
+  const symbol =
+    decodeURIComponent(
+      encodedSymbol
+    );
 
-const selected=signals.get(currentSignalId);
+  const saved =
+    signals.get(id);
 
-if(!selected)return;
+  currentSignalId=id;
 
-try{
+  currentSelectedSymbol=symbol;
 
-const url=
-ANALYZE_URL+
-"?symbol="+encodeURIComponent(selected.symbol)+
-"&category="+encodeURIComponent(selected.category||"linear");
+  currentSelectedCategory=
+    category||"linear";
 
-const r=await fetch(url,{cache:"no-store"});
+  saveSelected();
 
-if(!r.ok)throw new Error("HTTP "+r.status);
+  renderSignals();
 
-const data=await r.json();
+  $("deepPanel").style.display=
+    "block";
 
-if(!data.ok)throw new Error(data.error||"تحلیل دریافت نشد");
+  document.body.style.overflow=
+    "hidden";
 
-const changes=detectImportantChanges(lastLiveData,data);
+  $("deepTitle").textContent =
+    `🔬 بررسی عمیق ${symbol}`;
 
-lastLiveData=data;
+  $("deepSub").textContent =
+    "در حال دریافت آخرین اطلاعات بازار...";
 
-updateSelectedSignalFromLive(data);
+  $("liveStatus").innerHTML=`
+    <span class="on">
+      🟢 به‌روزرسانی زنده فعال
+    </span>
 
-$("deepSub").textContent=
-`قیمت: ${num(data.price)} | امتیاز: ${data.score}/100 | بروزرسانی: ${timeText()}`;
+    <span>
+      هر ${SELECTED_REFRESH/1000} ثانیه
+    </span>
+  `;
 
-if(changes.length){
+  $("importantEvent").innerHTML="";
 
-$("liveStatus").className="live alert";
+  $("deepContent").innerHTML=`
+    <div class="loading">
+      ⏳ در حال دریافت تحلیل عمیق...
+    </div>
+  `;
 
-$("liveStatus").textContent=
-"🚨 اتفاق مهم: "+changes.join(" | ");
+  startSelectedRefresh();
 
-toast(
-`🚨 ${selected.symbol}: ${changes.join(" | ")}`
-);
-
-}else{
-
-$("liveStatus").className="live";
-
-$("liveStatus").textContent=
-"🟢 پایش زنده فعال است — آخرین بروزرسانی "+timeText();
-
-}
-
-$("deepContent").innerHTML=buildDeep(data);
-
-}catch(e){
-
-console.error(e);
-
-$("liveStatus").className="live alert";
-
-$("liveStatus").textContent=
-"🟠 خطا در بروزرسانی زنده";
+  await refreshSelectedAnalysis();
 
 }
 
+
+/* =========================================================
+به‌روزرسانی تحلیل انتخاب‌شده
+========================================================= */
+
+function startSelectedRefresh(){
+
+  stopSelectedRefresh();
+
+  selectedRefreshTimer =
+    setInterval(
+      refreshSelectedAnalysis,
+      SELECTED_REFRESH
+    );
 }
 
-/* =========================
-UPDATE SELECTED CARD
-========================= */
 
-function updateSelectedSignalFromLive(d){
+function stopSelectedRefresh(){
 
-if(!currentSignalId)return;
+  if(selectedRefreshTimer){
 
-const s=signals.get(currentSignalId);
+    clearInterval(
+      selectedRefreshTimer
+    );
 
-if(!s)return;
+    selectedRefreshTimer=null;
+  }
+}
 
-const tf=d.timeframes?.["1"]||{};
 
-signals.set(currentSignalId,{
-...s,
-price:Number(tf.price||d.price||s.price),
-ma20:Number(tf.ma20||s.ma20),
-maSlope:tf.maSlope||s.maSlope,
-trend:tf.trend||s.trend,
-score:d.score??s.score,
-longScore:d.longScore??s.longScore,
-shortScore:d.shortScore??s.shortScore,
-volumeConfirmed:
-tf.volume?.spike??
-s.volumeConfirmed
-});
+/* =========================================================
+تحلیل انتخاب‌شده
+========================================================= */
 
-saveSignals();
-renderSignals();
+async function refreshSelectedAnalysis(){
+
+  if(
+    !currentSelectedSymbol ||
+    !currentSignalId
+  ){
+    return;
+  }
+
+  try{
+
+    const url =
+      ANALYZE_URL+
+      "?symbol="+
+      encodeURIComponent(
+        currentSelectedSymbol
+      )+
+      "&category="+
+      encodeURIComponent(
+        currentSelectedCategory
+      );
+
+    const r =
+      await fetch(
+        url,
+        {
+          cache:"no-store"
+        }
+      );
+
+    if(!r.ok){
+
+      throw new Error(
+        "خطای ارتباطی "+r.status
+      );
+
+    }
+
+    const data =
+      await r.json();
+
+    if(!data.ok){
+
+      throw new Error(
+        data.error||
+        "تحلیل دریافت نشد"
+      );
+
+    }
+
+    const previous =
+      lastSelectedAnalysis;
+
+    lastSelectedAnalysis=data;
+
+    detectImportantChanges(
+      previous,
+      data
+    );
+
+    renderDeep(data);
+
+    /*
+      زمان آخرین بروزرسانی
+    */
+
+    $("liveStatus").innerHTML=`
+
+      <span class="on">
+        🟢 بازار زنده
+      </span>
+
+      <span>
+        آخرین بروزرسانی:
+        ${timeText()}
+      </span>
+
+    `;
+
+  }catch(e){
+
+    console.error(e);
+
+    $("liveStatus").innerHTML=`
+
+      <span>
+        🔴 خطا در به‌روزرسانی
+      </span>
+
+    `;
+
+  }
 
 }
 
-/* =========================
-IMPORTANT EVENTS
-========================= */
+
+/* =========================================================
+تشخیص اتفاق مهم
+========================================================= */
 
 function detectImportantChanges(oldData,newData){
 
-if(!oldData)return[];
+  if(!oldData)return;
 
-const changes=[];
+  const events=[];
 
-const oldTf=oldData.timeframes?.["1"]||{};
-const newTf=newData.timeframes?.["1"]||{};
+  const old1 =
+    oldData.timeframes?.["1"]||{};
 
-const oldScore=Number(oldData.score||0);
-const newScore=Number(newData.score||0);
+  const new1 =
+    newData.timeframes?.["1"]||{};
 
-if(
-oldData.direction&&
-newData.direction&&
-oldData.direction!==newData.direction
+  const old15 =
+    oldData.timeframes?.["15"]||{};
+
+  const new15 =
+    newData.timeframes?.["15"]||{};
+
+
+  /*
+    تغییر جهت یک دقیقه
+  */
+
+  const oldDir =
+    normalizeDirection(
+      oldData.direction ||
+      old1.trend
+    );
+
+  const newDir =
+    normalizeDirection(
+      newData.direction ||
+      new1.trend
+    );
+
+  if(
+    oldDir &&
+    newDir &&
+    oldDir!==newDir
+  ){
+
+    events.push(
+      `⚠️ جهت یک دقیقه تغییر کرد: ${fa(oldDir)} ← ${fa(newDir)}`
+    );
+
+  }
+
+
+  /*
+    تغییر وضعیت ۱۵ دقیقه
+  */
+
+  const old15Dir =
+    normalizeDirection(
+      old15.trend
+    );
+
+  const new15Dir =
+    normalizeDirection(
+      new15.trend
+    );
+
+  if(
+    old15Dir &&
+    new15Dir &&
+    old15Dir!==new15Dir
+  ){
+
+    events.push(
+      `🚨 جهت ۱۵ دقیقه تغییر کرد: ${fa(old15Dir)} ← ${fa(new15Dir)}`
+    );
+
+  }
+
+
+  /*
+    شکست یا برخورد MA20
+  */
+
+  if(
+    !old1.touchMA20 &&
+    new1.touchMA20
+  ){
+
+    events.push(
+      "📌 قیمت دوباره به میانگین ۲۰ یک دقیقه رسید."
+    );
+
+  }
+
+
+  /*
+    تغییر امتیاز شدید
+  */
+
+  const oldScore =
+    Number(oldData.score)||0;
+
+  const newScore =
+    Number(newData.score)||0;
+
+  if(
+    Math.abs(
+      newScore-oldScore
+    )>=15
+  ){
+
+    events.push(
+      `📊 امتیاز تحلیل ${newScore>oldScore?"افزایش":"کاهش"} قابل‌توجه داشت: ${oldScore} ← ${newScore}`
+    );
+
+  }
+
+
+  /*
+    تغییر شدید دلتا
+  */
+
+  const oldDelta =
+    Number(
+      oldData.footprint?.delta
+    )||0;
+
+  const newDelta =
+    Number(
+      newData.footprint?.delta
+    )||0;
+
+  if(
+    oldDelta!==0 &&
+    newDelta!==0 &&
+    (
+      oldDelta>0 !==
+      newDelta>0
+    )
+  ){
+
+    events.push(
+      "👣 فشار خرید و فروش در جریان سفارش معکوس شد."
+    );
+
+  }
+
+
+  /*
+    تغییر فشار سفارشات
+  */
+
+  const oldPressure =
+    String(
+      oldData.footprint?.pressure||
+      ""
+    );
+
+  const newPressure =
+    String(
+      newData.footprint?.pressure||
+      ""
+    );
+
+  if(
+    oldPressure &&
+    newPressure &&
+    oldPressure!==newPressure
+  ){
+
+    events.push(
+      `📚 فشار سفارشات تغییر کرد: ${fa(oldPressure)}`
+    );
+
+  }
+
+
+  /*
+    تغییر وضعیت حجم
+  */
+
+  const oldSpike =
+    !!old1.volume?.spike;
+
+  const newSpike =
+    !!new1.volume?.spike;
+
+  if(
+    !oldSpike &&
+    newSpike
+  ){
+
+    events.push(
+      "🔥 افزایش غیرعادی حجم مشاهده شد."
+    );
+
+  }
+
+
+  if(events.length){
+
+    importantEvents = [
+      ...events,
+      ...importantEvents
+    ].slice(0,8);
+
+    renderImportantEvents();
+
+    for(
+      const e of events
+    ){
+
+      toast(e);
+
+    }
+
+    beep();
+
+  }
+
+}
+
+
+function normalizeDirection(v){
+
+  if(!v)return null;
+
+  const s=
+    String(v)
+      .toUpperCase();
+
+  if(
+    s==="LONG"||
+    s==="UP"||
+    s==="BULLISH"||
+    s.includes("BULL")
+  ){
+    return"LONG";
+  }
+
+  if(
+    s==="SHORT"||
+    s==="DOWN"||
+    s==="BEARISH"||
+    s.includes("BEAR")
+  ){
+    return"SHORT";
+  }
+
+  return"FLAT";
+}
+
+
+/* =========================================================
+اتفاقات مهم
+========================================================= */
+
+function renderImportantEvents(){
+
+  if(!importantEvents.length){
+
+    $("importantEvent").innerHTML="";
+
+    return;
+  }
+
+  $("importantEvent").innerHTML=`
+
+    <div class="important">
+
+      <b>
+        🚨 اتفاقات مهم بازار
+      </b>
+
+      ${importantEvents
+        .map(
+          x=>
+            `<div>
+              • ${escapeHtml(x)}
+            </div>`
+        )
+        .join("")
+      }
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+نمایش تحلیل
+========================================================= */
+
+function renderDeep(d){
+
+  const tf1 =
+    d.timeframes?.["1"]||{};
+
+  const tf15 =
+    d.timeframes?.["15"]||{};
+
+
+  $("deepSub").textContent =
+    `قیمت: ${num(d.price)} | امتیاز تحلیل: ${d.score||0} از 100`;
+
+
+  const dir15 =
+    normalizeDirection(
+      tf15.trend
+    );
+
+
+  const dir1 =
+    normalizeDirection(
+      tf1.trend ||
+      d.direction
+    );
+
+
+  let directionClass="flat";
+
+  if(dir15==="LONG")
+    directionClass="up";
+
+  if(dir15==="SHORT")
+    directionClass="down";
+
+
+  $("deepContent").innerHTML=`
+
+    <div class="direction-box ${directionClass}">
+
+      وضعیت اصلی ۱۵ دقیقه:
+
+      ${
+        dir15==="LONG"
+          ?"🟢 صعودی"
+          :dir15==="SHORT"
+            ?"🔴 نزولی"
+            :"🟡 خنثی"
+      }
+
+      <div style="
+        font-size:11px;
+        margin-top:7px;
+        color:#9caabd;
+      ">
+
+        وضعیت یک دقیقه:
+        ${
+          dir1==="LONG"
+            ?"🟢 صعودی"
+            :dir1==="SHORT"
+              ?"🔴 نزولی"
+              :"🟡 خنثی"
+        }
+
+      </div>
+
+    </div>
+
+
+    <div class="tf-title">
+      ⏱ تحلیل یک دقیقه
+    </div>
+
+    <div class="deep-grid">
+
+      ${buildTimeframePanel(
+        tf1,
+        "یک دقیقه",
+        20
+      )}
+
+      ${buildSignalPanel(d)}
+
+      ${buildHuntPanel(tf1)}
+
+      ${buildFVGPanel(tf1)}
+
+      ${buildFootprintPanel(d)}
+
+      ${buildOrderBookPanel(d)}
+
+      ${buildSupportResistancePanel(d)}
+
+    </div>
+
+
+    <div class="tf-title">
+      ⏱ تحلیل پانزده دقیقه
+    </div>
+
+    <div class="deep-grid">
+
+      ${build15MinuteOverview(
+        tf15
+      )}
+
+      ${buildTimeframePanel(
+        tf15,
+        "پانزده دقیقه",
+        20
+      )}
+
+      ${build15Structure(
+        tf15
+      )}
+
+    </div>
+
+
+    <div class="tf-title">
+      📌 اطلاعات کلی بازار
+    </div>
+
+    <div class="deep-grid">
+
+      ${buildMarketPanel(d)}
+
+      ${buildPumpDumpPanel(d)}
+
+      ${buildReversalPanel(d)}
+
+      ${buildStylesPanel(d)}
+
+      ${buildTradePlanPanel(d)}
+
+      ${buildReasonsPanel(d)}
+
+    </div>
+
+  `;
+
+  renderImportantEvents();
+
+}
+
+
+/* =========================================================
+پنل وضعیت تایم‌فریم
+========================================================= */
+
+function buildTimeframePanel(
+  tf,
+  title,
+  maPeriod
 ){
-changes.push(
-`تغییر جهت ${oldData.direction} ← ${newData.direction}`
-);
-}
 
-if(
-oldTf.maSlope&&
-newTf.maSlope&&
-oldTf.maSlope!==newTf.maSlope
-){
-changes.push(
-`تغییر شیب MA20 به ${newTf.maSlope}`
-);
-}
+  const dir =
+    normalizeDirection(
+      tf.trend
+    );
 
-if(
-oldTf.hunt?.type!==newTf.hunt?.type &&
-newTf.hunt?.type
-){
-changes.push(
-`Hunt جدید: ${newTf.hunt.type}`
-);
-}
+  return panel(
 
-if(
-oldTf.bos!==newTf.bos &&
-newTf.bos
-){
-changes.push(`BOS: ${newTf.bos}`);
-}
+    `📈 ${title}`,
 
-if(
-oldTf.choch!==newTf.choch &&
-newTf.choch
-){
-changes.push(`CHoCH: ${newTf.choch}`);
-}
+    row(
+      "وضعیت",
+      dir==="LONG"
+        ?"صعودی"
+        :dir==="SHORT"
+          ?"نزولی"
+          :"خنثی"
+    )+
 
-const oldDelta=Number(oldData.footprint?.delta||0);
-const newDelta=Number(newData.footprint?.delta||0);
+    row(
+      "قیمت",
+      num(tf.price)
+    )+
 
-if(oldDelta!==0&&newDelta!==0){
+    row(
+      `میانگین ${maPeriod}`,
+      num(tf.ma20)
+    )+
 
-if(
-oldDelta<0&&newDelta>0
-){
-changes.push("Delta از فروش به خرید برگشت");
-}
+    row(
+      "میانگین ۷",
+      num(tf.ma7)
+    )+
 
-if(
-oldDelta>0&&newDelta<0
-){
-changes.push("Delta از خرید به فروش برگشت");
-}
+    row(
+      "شیب میانگین ۲۰",
+      fa(tf.maSlope)
+    )+
 
-}
+    row(
+      "برخورد با میانگین ۲۰",
+      tf.touchMA20
+        ?"بله"
+        :"خیر"
+    )+
 
-const oldPump=Number(oldData.movement?.pumpScore||0);
-const newPump=Number(newData.movement?.pumpScore||0);
+    row(
+      "برخورد با میانگین ۷",
+      tf.touchMA7
+        ?"بله"
+        :"خیر"
+    )
 
-const oldDump=Number(oldData.movement?.dumpScore||0);
-const newDump=Number(newData.movement?.dumpScore||0);
-
-if(newPump-oldPump>=15){
-changes.push("افزایش Pump Score");
-}
-
-if(newDump-oldDump>=15){
-changes.push("افزایش Dump Score");
-}
-
-if(Math.abs(newScore-oldScore)>=10){
-
-changes.push(
-`Score تغییر کرد ${oldScore} → ${newScore}`
-);
+  );
 
 }
 
-const oldSR=oldData.supportResistance||{};
-const newSR=newData.supportResistance||{};
 
-if(
-oldSR.nearestResistance?.price&&
-newSR.nearestResistance?.price&&
-oldSR.nearestResistance.price!==newSR.nearestResistance.price
-){
-changes.push("مقاومت نزدیک تغییر کرد");
-}
+/* =========================================================
+خلاصه ۱۵ دقیقه
+========================================================= */
 
-if(
-oldSR.nearestSupport?.price&&
-newSR.nearestSupport?.price&&
-oldSR.nearestSupport.price!==newSR.nearestSupport.price
-){
-changes.push("حمایت نزدیک تغییر کرد");
-}
+function build15MinuteOverview(tf){
 
-const oldWall=oldData.walls||{};
-const newWall=newData.walls||{};
+  const dir =
+    normalizeDirection(
+      tf.trend
+    );
 
-if(
-oldWall.buy?.price&&
-newWall.buy?.price&&
-oldWall.buy.price!==newWall.buy.price
-){
-changes.push("Buy Wall جابه‌جا شد");
-}
+  const title =
+    dir==="LONG"
+      ?"🟢 ساختار ۱۵ دقیقه صعودی"
+      :dir==="SHORT"
+        ?"🔴 ساختار ۱۵ دقیقه نزولی"
+        :"🟡 ساختار ۱۵ دقیقه خنثی";
 
-if(
-oldWall.sell?.price&&
-newWall.sell?.price&&
-oldWall.sell.price!==newWall.sell.price
-){
-changes.push("Sell Wall جابه‌جا شد");
-}
+  return panel(
 
-return changes.slice(0,5);
+    "🧭 جهت بازار در ۱۵ دقیقه",
 
-}
+    `<div class="reason">
+      ${title}
+    </div>`+
 
-/* =========================
-DEEP OPEN
-========================= */
+    row(
+      "روند",
+      dir==="LONG"
+        ?"صعودی"
+        :dir==="SHORT"
+          ?"نزولی"
+          :"خنثی"
+    )+
 
-async function openDeep(encodedSymbol,category,id){
+    row(
+      "شیب میانگین ۲۰",
+      fa(tf.maSlope)
+    )+
 
-const symbol=decodeURIComponent(encodedSymbol);
+    row(
+      "برخورد میانگین ۲۰",
+      tf.touchMA20
+        ?"بله"
+        :"خیر"
+    )+
 
-if(signals.has(id)){
+    row(
+      "قیمت",
+      num(tf.price)
+    )
 
-currentSignalId=id;
-saveSelected();
-renderSignals();
-
-}
-
-$("deepPanel").style.display="block";
-document.body.style.overflow="hidden";
-
-$("deepTitle").textContent=
-`🔬 تحلیل زنده ${symbol}`;
-
-$("deepSub").textContent=
-"در حال دریافت داده‌های Bybit...";
-
-$("liveStatus").className="live";
-
-$("liveStatus").textContent=
-"🟢 پایش زنده فعال است";
-
-$("deepContent").innerHTML=
-`<div class="loading">
-⏳ در حال دریافت تحلیل...
-</div>`;
-
-lastLiveData=null;
-
-await refreshLive();
-
-if(liveTimer){
-clearInterval(liveTimer);
-}
-
-liveTimer=setInterval(
-refreshLive,
-LIVE_INTERVAL
-);
+  );
 
 }
 
-/* =========================
-DEEP BUILD
-========================= */
 
-function buildDeep(d){
+/* =========================================================
+ساختار ۱۵ دقیقه
+========================================================= */
 
-const tf=d.timeframes?.["1"]||{};
-const fp=d.footprint||{};
-const wall=d.walls||{};
-const sr=d.supportResistance||{};
-const market=d.market||{};
-const movement=d.movement||{};
-const reversal=d.reversal||{};
-const styles=d.styles||{};
-const plan=d.tradePlan||{};
+function build15Structure(tf){
 
-return`
+  return panel(
 
-<div class="deep-grid">
+    "🏗 ساختار بازار ۱۵ دقیقه",
 
-${panel(
-"📊 سیگنال",
-row("جهت",d.direction)+
-row("Score",d.score+"/100")+
-row("Long",d.longScore)+
-row("Short",d.shortScore)+
-row("سطح",d.signalLevel)+
-row("Pump/Dump",d.pumpDumpStatus)
-)}
+    row(
+      "شکار نقدینگی",
+      fa(tf.hunt?.type)
+    )+
 
-${panel(
-"📈 MA20 یک دقیقه",
-row("قیمت",num(tf.price))+
-row("MA20",num(tf.ma20))+
-row("MA7",num(tf.ma7))+
-row("شیب MA20",tf.maSlope)+
-row("روند",tf.trend)+
-row("برخورد MA20",tf.touchMA20?"بله":"خیر")+
-row("برخورد MA7",tf.touchMA7?"بله":"خیر")
-)}
+    row(
+      "سمت شکار",
+      fa(tf.hunt?.side)
+    )+
 
-${panel(
-"🎯 Hunt / Structure",
-row("Hunt",tf.hunt?.type)+
-row("سمت Hunt",tf.hunt?.side)+
-row("تأیید Hunt",tf.hunt?.confirmed?"بله":"خیر")+
-row("BOS",tf.bos)+
-row("CHoCH",tf.choch)+
-row("Candle",tf.candle)
-)}
+    row(
+      "تأیید شکار",
+      tf.hunt?.confirmed
+        ?"بله"
+        :"خیر"
+    )+
 
-${panel(
-"🧩 FVG / Order Block",
-row("FVG",tf.fvg?.type)+
-row(
-"FVG محدوده",
-tf.fvg?.low!==null&&tf.fvg?.low!==undefined
-?num(tf.fvg.low)+" → "+num(tf.fvg.high)
-:"—"
-)+
-row("Order Block",tf.orderBlock?.type)+
-row(
-"OB محدوده",
-tf.orderBlock?.low
-?num(tf.orderBlock.low)+" → "+num(tf.orderBlock.high)
-:"—"
-)
-)}
+    row(
+      "شکست ساختار",
+      fa(tf.bos)
+    )+
 
-${panel(
-"👣 Footprint",
-row("Buy Volume",num(fp.buyVolume))+
-row("Sell Volume",num(fp.sellVolume))+
-row("Delta",num(fp.delta))+
-row("Delta %",pct(fp.deltaPercent))+
-row("Buy Share",pct(fp.buyShare))+
-row("Sell Share",pct(fp.sellShare))+
-row("Pressure",fp.pressure)+
-row("Large Trade",num(fp.largeTradeNotional,2))
-)}
+    row(
+      "تغییر ساختار",
+      fa(tf.choch)
+    )+
 
-${panel(
-"📚 Order Book",
-row("Buy Liquidity",num(wall.buyLiquidity,2))+
-row("Sell Liquidity",num(wall.sellLiquidity,2))+
-row("Buy Share",pct(wall.buyShare))+
-row("Sell Share",pct(wall.sellShare))+
-row("Imbalance",pct(wall.imbalance))+
-row("Buy Wall",wall.buy?num(wall.buy.price):"—")+
-row("Sell Wall",wall.sell?num(wall.sell.price):"—")
-)}
+    row(
+      "کندل",
+      fa(tf.candle)
+    )
 
-${panel(
-"🧱 حمایت / مقاومت",
-row(
-"Nearest Support",
-sr.nearestSupport?num(sr.nearestSupport.price):"—"
-)+
-row(
-"Nearest Resistance",
-sr.nearestResistance?num(sr.nearestResistance.price):"—"
-)+
-row(
-"Strong Support",
-sr.strongestSupport?num(sr.strongestSupport.price):"—"
-)+
-row(
-"Strong Resistance",
-sr.strongestResistance?num(sr.strongestResistance.price):"—"
-)
-)}
-
-${panel(
-"📌 OI / Funding",
-row("Open Interest",num(market.openInterest,2))+
-row("OI Change",pct(market.openInterestChange))+
-row(
-"Funding",
-market.fundingRate!==null&&market.fundingRate!==undefined
-?Number(market.fundingRate).toFixed(6)
-:"—"
-)+
-row("24h Price",pct(market.priceChange24h))+
-row("24h Turnover",num(market.turnover24h,2))
-)}
-
-${panel(
-"🚀 Pump / Dump",
-row("Pump Score",movement.pumpScore)+
-row("Dump Score",movement.dumpScore)+
-row("15m Change",pct(movement.change15m))+
-row("30m Change",pct(movement.change30m))+
-row("Volume Ratio",num(movement.volumeRatio,2))+
-row("MA20 Distance",pct(movement.distanceFromMA20))
-)}
-
-${panel(
-"🔄 Reversal",
-row("Pump Reversal",reversal.pumpScore)+
-row("Dump Reversal",reversal.dumpScore)+
-row("Alert",reversal.alert)
-)}
-
-${panel(
-"🧠 سبک‌های تحلیل",
-row("SMC",styles.SMC)+
-row("ICT",styles.ICT)+
-row("MA",styles.MA)+
-row("Volume",styles.Volume)+
-row("Candles",styles.Candles)+
-row("Order Flow",styles.OrderFlow)+
-row("Liquidity",styles.Liquidity)
-)}
-
-${
-plan.available
-?panel(
-"🎯 Trade Plan",
-row("Direction",plan.direction)+
-row("Entry",num(plan.entry))+
-row("Stop Loss",num(plan.sl))+
-row("TP1",num(plan.tp1))+
-row("TP2",num(plan.tp2))+
-row("TP3",num(plan.tp3))+
-row("Risk",pct(plan.riskPercent))+
-row("RR1",num(plan.rr1,2))+
-row("RR2",num(plan.rr2,2))+
-row("RR3",num(plan.rr3,2))
-)
-:panel(
-"🎯 Trade Plan",
-`<div class="reason">
-${escapeHtml(plan.reason||"سیگنال قطعی وجود ندارد.")}
-</div>`
-)
-}
-
-${reasonsPanel(d)}
-
-</div>
-`;
+  );
 
 }
 
-/* =========================
-HELPERS
-========================= */
+
+/* =========================================================
+سیگنال
+========================================================= */
+
+function buildSignalPanel(d){
+
+  return panel(
+
+    "🎯 نتیجه تحلیل",
+
+    row(
+      "جهت",
+      fa(d.direction)
+    )+
+
+    row(
+      "امتیاز",
+      d.score
+    )+
+
+    row(
+      "امتیاز خرید",
+      d.longScore
+    )+
+
+    row(
+      "امتیاز فروش",
+      d.shortScore
+    )+
+
+    row(
+      "سطح سیگنال",
+      fa(d.signalLevel)
+    )+
+
+    row(
+      "وضعیت پامپ/دامپ",
+      fa(d.pumpDumpStatus)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+شکار نقدینگی
+========================================================= */
+
+function buildHuntPanel(tf){
+
+  return panel(
+
+    "🎯 شکار نقدینگی",
+
+    row(
+      "نوع",
+      fa(tf.hunt?.type)
+    )+
+
+    row(
+      "سمت",
+      fa(tf.hunt?.side)
+    )+
+
+    row(
+      "تأیید",
+      tf.hunt?.confirmed
+        ?"بله"
+        :"خیر"
+    )+
+
+    row(
+      "شکست ساختار",
+      fa(tf.bos)
+    )+
+
+    row(
+      "تغییر ساختار",
+      fa(tf.choch)
+    )+
+
+    row(
+      "نوع کندل",
+      fa(tf.candle)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+FVG
+========================================================= */
+
+function buildFVGPanel(tf){
+
+  return panel(
+
+    "🧩 شکاف قیمتی و ناحیه سفارش",
+
+    row(
+      "شکاف قیمتی",
+      fa(tf.fvg?.type)
+    )+
+
+    row(
+      "محدوده شکاف",
+
+      tf.fvg?.low!==null &&
+      tf.fvg?.low!==undefined
+
+        ?num(tf.fvg.low)+
+          " ← "+
+          num(tf.fvg.high)
+
+        :"—"
+    )+
+
+    row(
+      "ناحیه سفارش",
+      fa(tf.orderBlock?.type)
+    )+
+
+    row(
+      "محدوده ناحیه سفارش",
+
+      tf.orderBlock?.low!==null &&
+      tf.orderBlock?.low!==undefined
+
+        ?num(tf.orderBlock.low)+
+          " ← "+
+          num(tf.orderBlock.high)
+
+        :"—"
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+جریان سفارش
+========================================================= */
+
+function buildFootprintPanel(d){
+
+  const fp =
+    d.footprint||{};
+
+  return panel(
+
+    "👣 جریان سفارش",
+
+    row(
+      "حجم خرید",
+      num(fp.buyVolume)
+    )+
+
+    row(
+      "حجم فروش",
+      num(fp.sellVolume)
+    )+
+
+    row(
+      "اختلاف خرید و فروش",
+      num(fp.delta)
+    )+
+
+    row(
+      "درصد اختلاف",
+      pct(fp.deltaPercent)
+    )+
+
+    row(
+      "سهم خرید",
+      pct(fp.buyShare)
+    )+
+
+    row(
+      "سهم فروش",
+      pct(fp.sellShare)
+    )+
+
+    row(
+      "فشار بازار",
+      fa(fp.pressure)
+    )+
+
+    row(
+      "معامله بزرگ",
+      num(fp.largeTradeNotional,2)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+دفتر سفارشات
+========================================================= */
+
+function buildOrderBookPanel(d){
+
+  const w =
+    d.walls||{};
+
+  return panel(
+
+    "📚 دفتر سفارشات",
+
+    row(
+      "نقدینگی خرید",
+      num(w.buyLiquidity,2)
+    )+
+
+    row(
+      "نقدینگی فروش",
+      num(w.sellLiquidity,2)
+    )+
+
+    row(
+      "سهم خرید",
+      pct(w.buyShare)
+    )+
+
+    row(
+      "سهم فروش",
+      pct(w.sellShare)
+    )+
+
+    row(
+      "عدم تعادل",
+      pct(w.imbalance)
+    )+
+
+    row(
+      "دیوار خرید",
+      w.buy
+        ?num(w.buy.price)
+        :"—"
+    )+
+
+    row(
+      "دیوار فروش",
+      w.sell
+        ?num(w.sell.price)
+        :"—"
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+حمایت مقاومت
+========================================================= */
+
+function buildSupportResistancePanel(d){
+
+  const sr =
+    d.supportResistance||{};
+
+  return panel(
+
+    "🧱 حمایت و مقاومت",
+
+    row(
+      "نزدیک‌ترین حمایت",
+      sr.nearestSupport
+        ?num(sr.nearestSupport.price)
+        :"—"
+    )+
+
+    row(
+      "نزدیک‌ترین مقاومت",
+      sr.nearestResistance
+        ?num(sr.nearestResistance.price)
+        :"—"
+    )+
+
+    row(
+      "قوی‌ترین حمایت",
+      sr.strongestSupport
+        ?num(sr.strongestSupport.price)
+        :"—"
+    )+
+
+    row(
+      "قوی‌ترین مقاومت",
+      sr.strongestResistance
+        ?num(sr.strongestResistance.price)
+        :"—"
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+بازار
+========================================================= */
+
+function buildMarketPanel(d){
+
+  const m =
+    d.market||{};
+
+  return panel(
+
+    "📌 اطلاعات بازار",
+
+    row(
+      "سود باز",
+      num(m.openInterest,2)
+    )+
+
+    row(
+      "تغییر سود باز",
+      pct(m.openInterestChange)
+    )+
+
+    row(
+      "نرخ تأمین مالی",
+      m.fundingRate!==null &&
+      m.fundingRate!==undefined
+        ?Number(m.fundingRate).toFixed(6)
+        :"—"
+    )+
+
+    row(
+      "تغییر قیمت ۲۴ ساعت",
+      pct(m.priceChange24h)
+    )+
+
+    row(
+      "گردش مالی ۲۴ ساعت",
+      num(m.turnover24h,2)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+پامپ دامپ
+========================================================= */
+
+function buildPumpDumpPanel(d){
+
+  const m =
+    d.movement||{};
+
+  return panel(
+
+    "🚀 بررسی پامپ و دامپ",
+
+    row(
+      "امتیاز پامپ",
+      m.pumpScore
+    )+
+
+    row(
+      "امتیاز دامپ",
+      m.dumpScore
+    )+
+
+    row(
+      "تغییر ۱۵ دقیقه",
+      pct(m.change15m)
+    )+
+
+    row(
+      "تغییر ۳۰ دقیقه",
+      pct(m.change30m)
+    )+
+
+    row(
+      "نسبت حجم",
+      num(m.volumeRatio,2)
+    )+
+
+    row(
+      "فاصله از میانگین ۲۰",
+      pct(m.distanceFromMA20)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+برگشت
+========================================================= */
+
+function buildReversalPanel(d){
+
+  const r =
+    d.reversal||{};
+
+  return panel(
+
+    "🔄 احتمال برگشت",
+
+    row(
+      "برگشت پامپ",
+      r.pumpScore
+    )+
+
+    row(
+      "برگشت دامپ",
+      r.dumpScore
+    )+
+
+    row(
+      "هشدار",
+      fa(r.alert)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+سبک‌های تحلیل
+========================================================= */
+
+function buildStylesPanel(d){
+
+  const s =
+    d.styles||{};
+
+  return panel(
+
+    "🧠 روش‌های تحلیل",
+
+    row(
+      "ساختار پول هوشمند",
+      fa(s.SMC)
+    )+
+
+    row(
+      "نقدینگی",
+      fa(s.ICT)
+    )+
+
+    row(
+      "میانگین‌های متحرک",
+      fa(s.MA)
+    )+
+
+    row(
+      "حجم",
+      fa(s.Volume)
+    )+
+
+    row(
+      "کندل‌ها",
+      fa(s.Candles)
+    )+
+
+    row(
+      "جریان سفارش",
+      fa(s.OrderFlow)
+    )+
+
+    row(
+      "نقدینگی",
+      fa(s.Liquidity)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+برنامه معامله
+========================================================= */
+
+function buildTradePlanPanel(d){
+
+  const p =
+    d.tradePlan||{};
+
+  if(!p.available){
+
+    return panel(
+
+      "🎯 برنامه معامله",
+
+      `<div class="reason">
+        ${escapeHtml(
+          p.reason||
+          "هنوز شرایط کافی برای برنامه معامله وجود ندارد."
+        )}
+      </div>`
+
+    );
+
+  }
+
+  return panel(
+
+    "🎯 برنامه معامله",
+
+    row(
+      "جهت",
+      fa(p.direction)
+    )+
+
+    row(
+      "ورود",
+      num(p.entry)
+    )+
+
+    row(
+      "حد ضرر",
+      num(p.sl)
+    )+
+
+    row(
+      "هدف اول",
+      num(p.tp1)
+    )+
+
+    row(
+      "هدف دوم",
+      num(p.tp2)
+    )+
+
+    row(
+      "هدف سوم",
+      num(p.tp3)
+    )+
+
+    row(
+      "ریسک",
+      pct(p.riskPercent)
+    )+
+
+    row(
+      "نسبت هدف اول",
+      num(p.rr1,2)
+    )+
+
+    row(
+      "نسبت هدف دوم",
+      num(p.rr2,2)
+    )+
+
+    row(
+      "نسبت هدف سوم",
+      num(p.rr3,2)
+    )
+
+  );
+
+}
+
+
+/* =========================================================
+دلایل
+========================================================= */
+
+function buildReasonsPanel(d){
+
+  const reasons =
+    d.reasons||[];
+
+  if(!reasons.length){
+
+    return panel(
+
+      "📝 دلایل تحلیل",
+
+      `<div class="reason">
+        دلیل جدیدی ثبت نشده است.
+      </div>`
+
+    );
+
+  }
+
+  return panel(
+
+    "📝 دلایل تحلیل",
+
+    reasons
+      .map(
+        x=>
+          `<div class="reason">
+            ${escapeHtml(x)}
+          </div>`
+      )
+      .join("")
+
+  );
+
+}
+
+
+/* =========================================================
+پنل عمومی
+========================================================= */
 
 function panel(title,content){
 
-return`
-<div class="panel">
-<h3>${title}</h3>
-${content}
-</div>
-`;
+  return`
+
+    <div class="panel">
+
+      <h3>
+        ${title}
+      </h3>
+
+      ${content}
+
+    </div>
+
+  `;
 
 }
+
 
 function row(label,value){
 
-return`
-<div class="row">
-<span class="label">${escapeHtml(label)}</span>
-<b class="value">
-${escapeHtml(
-value===null||
-value===undefined||
-value===""
-?"—"
-:String(value)
-)}
-</b>
-</div>
-`;
+  return`
+
+    <div class="row">
+
+      <span class="label">
+        ${escapeHtml(label)}
+      </span>
+
+      <b class="value">
+
+        ${escapeHtml(
+          value===null||
+          value===undefined||
+          value===""
+            ?"—"
+            :String(value)
+        )}
+
+      </b>
+
+    </div>
+
+  `;
 
 }
 
-function reasonsPanel(d){
 
-const reasons=d.reasons||[];
-
-if(!reasons.length){
-
-return panel(
-"📝 دلایل",
-`<div class="reason">
-دلیل قطعی برای سیگنال ثبت نشده است.
-</div>`
-);
-
-}
-
-return panel(
-"📝 دلایل سیگنال",
-reasons.map(x=>
-`<div class="reason">${escapeHtml(x)}</div>`
-).join("")
-);
-
-}
-
-/* =========================
-CLOSE
-========================= */
+/* =========================================================
+بستن تحلیل
+========================================================= */
 
 function closeDeep(){
 
-if(liveTimer){
-clearInterval(liveTimer);
-liveTimer=null;
+  $("deepPanel").style.display=
+    "none";
+
+  document.body.style.overflow="";
+
+  /*
+    انتخاب را عمداً پاک نمی‌کنیم.
+    بنابراین وقتی دوباره باز شود
+    همان ارز انتخاب‌شده باقی می‌ماند.
+  */
+
+  saveSelected();
+
 }
 
-$("deepPanel").style.display="none";
-document.body.style.overflow="";
 
-lastLiveData=null;
-
-renderSignals();
-
-}
-
-/* =========================
-HEALTH
-========================= */
+/* =========================================================
+سلامت Worker
+========================================================= */
 
 async function health(){
 
-try{
+  try{
 
-const r=await fetch(
-WORKER+"/api/health",
-{cache:"no-store"}
-);
+    const r =
+      await fetch(
+        WORKER+"/api/health",
+        {
+          cache:"no-store"
+        }
+      );
 
-const d=await r.json();
+    const d =
+      await r.json();
 
-if(d.ok){
+    if(d.ok){
 
-setStatus("🟢 Worker متصل است",true);
-return true;
+      setStatus(
+        "🟢 ارتباط با سرور برقرار است",
+        true
+      );
+
+      return true;
+    }
+
+  }catch(e){
+
+    setStatus(
+      "🔴 سرور در دسترس نیست"
+    );
+
+  }
+
+  return false;
+}
+
+
+/* =========================================================
+بازگردانی انتخاب بعد از ورود
+========================================================= */
+
+async function restoreSelected(){
+
+  const saved =
+    loadSelected();
+
+  if(!saved)return;
+
+  /*
+    ابتدا از سیگنال‌های ذخیره‌شده پیدا کن.
+  */
+
+  let id=saved.id;
+
+  let s=signals.get(id);
+
+  /*
+    اگر شناسه قدیمی بود،
+    بر اساس نماد پیدا کن.
+  */
+
+  if(!s){
+
+    const arr =
+      [...signals.values()]
+        .filter(
+          x=>
+            x.symbol===
+            saved.symbol
+        )
+        .sort(
+          (a,b)=>
+            b.receivedAt-a.receivedAt
+        );
+
+    s=arr[0];
+
+    if(s){
+      id=s.id;
+    }
+
+  }
+
+  if(!s){
+
+    currentSelectedSymbol=
+      saved.symbol;
+
+    currentSelectedCategory=
+      saved.category||"linear";
+
+    currentSignalId=
+      saved.id||null;
+
+    /*
+      حتی اگر کارت دیگر موجود نباشد،
+      تحلیل ارز را مستقیم باز می‌کنیم.
+    */
+
+    if(
+      currentSelectedSymbol
+    ){
+
+      await openDeep(
+        encodeURIComponent(
+          currentSelectedSymbol
+        ),
+        currentSelectedCategory,
+        currentSignalId ||
+          (
+            currentSelectedSymbol+
+            "_saved"
+          )
+      );
+
+    }
+
+    return;
+  }
+
+  currentSignalId=id;
+
+  currentSelectedSymbol=
+    s.symbol;
+
+  currentSelectedCategory=
+    s.category||"linear";
+
+  renderSignals();
 
 }
 
-}catch(e){
 
-setStatus("🔴 Worker در دسترس نیست");
-
-}
-
-return false;
-
-}
-
-/* =========================
-VISIBILITY
-========================= */
+/* =========================================================
+بازگشت از برنامه دیگر
+========================================================= */
 
 document.addEventListener(
-"visibilitychange",
-()=>{
+  "visibilitychange",
+  ()=>{
 
-/*
-وقتی کاربر از برنامه خارج شده و برمی‌گردد،
-سیگنال انتخاب‌شده باقی می‌ماند و بلافاصله
-اطلاعات جدید گرفته می‌شود.
-*/
+    if(
+      document.visibilityState===
+      "visible"
+    ){
 
-if(document.visibilityState==="visible"){
+      /*
+        به محض برگشت کاربر،
+        بازار انتخاب‌شده را تازه کن.
+      */
 
-loadSignals();
-loadSelected();
-renderSignals();
+      if(
+        currentSelectedSymbol &&
+        currentSignalId
+      ){
 
-if(currentSignalId){
+        refreshSelectedAnalysis();
 
-const selected=signals.get(currentSignalId);
+      }
 
-if(selected){
+      scanNow();
 
-$("deepPanel").style.display="block";
-document.body.style.overflow="hidden";
+    }
 
-$("deepTitle").textContent=
-`🔬 تحلیل زنده ${selected.symbol}`;
-
-refreshLive();
-
-if(!liveTimer){
-
-liveTimer=setInterval(
-refreshLive,
-LIVE_INTERVAL
+  }
 );
 
-}
 
-}
-
-}
-
-}
-
-});
-
-/* =========================
-PAGE LOAD
-========================= */
+/* =========================================================
+INITIAL
+========================================================= */
 
 (async()=>{
 
-loadSignals();
-loadSelected();
-renderSignals();
+  loadSignals();
 
-await health();
+  renderSignals();
 
-startRadar();
+  await health();
 
-/*
-اگر قبل از بسته شدن صفحه سیگنال انتخاب شده بود،
-پنل تحلیل دوباره باز می‌شود.
-*/
+  await restoreSelected();
 
-if(currentSignalId){
-
-const s=signals.get(currentSignalId);
-
-if(s){
-
-setTimeout(()=>{
-
-openDeep(
-encodeURIComponent(s.symbol),
-s.category,
-s.id
-);
-
-},700);
-
-}
-
-}
+  startRadar();
 
 })();
 
