@@ -3,61 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>اسکنر شخصی</title>
+<title>اسکنر شخصی Bybit</title>
 
 <style>
 *{box-sizing:border-box}
 
-body{
+html,body{
   margin:0;
-  background:#0b0f14;
-  color:#eaf2ff;
+  padding:0;
+  background:#0b1017;
+  color:#e8eef7;
   font-family:Tahoma,Arial,sans-serif
 }
 
+body{min-height:100vh}
+
 .wrap{
-  max-width:1100px;
+  width:min(1150px,100%);
   margin:auto;
   padding:14px
 }
 
-.top{
-  display:flex;
+header,
+.box,
+.card,
+details{
+  background:#111923;
+  border:1px solid #263342;
+  border-radius:14px
+}
+
+header{
+  padding:16px;
+  margin-bottom:12px
+}
+
+h1{
+  margin:0 0 6px;
+  font-size:22px
+}
+
+.sub{
+  color:#91a2b5;
+  font-size:13px
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:10px;
+  padding:7px 10px;
+  border-radius:9px;
+  background:#0c151e;
+  font-size:12px
+}
+
+.dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#49e58b
+}
+
+.controls{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) auto auto auto;
   gap:8px;
-  flex-wrap:wrap;
-  align-items:center
+  margin-bottom:10px
 }
 
-.box,.card{
-  background:#111821;
-  border:1px solid #263241;
-  border-radius:14px;
-  padding:12px;
-  margin:10px 0
-}
-
-.btn{
-  border:0;
+input,
+select,
+button{
+  min-height:43px;
   border-radius:10px;
-  padding:10px 14px;
-  background:#1d6fff;
+  border:1px solid #304052;
+  background:#0d151e;
   color:#fff;
+  padding:9px 12px;
+  font:inherit
+}
+
+button{
+  background:#1769e8;
+  border-color:#1769e8;
   font-weight:700;
   cursor:pointer
 }
 
-.input{
-  flex:1;
-  min-width:180px;
-  background:#0b1118;
-  color:#fff;
-  border:1px solid #334155;
-  border-radius:10px;
-  padding:11px
+button.secondary{
+  background:#172230;
+  border-color:#304052
 }
 
-.muted{
-  color:#8fa1b7
+button.sound-off{
+  background:#52232b;
+  border-color:#74313b
+}
+
+.box{
+  padding:12px;
+  margin:10px 0
+}
+
+.notice{
+  padding:10px;
+  border-radius:10px;
+  background:#172230;
+  color:#b8c5d5;
+  font-size:12px;
+  margin-bottom:10px
 }
 
 .grid{
@@ -66,89 +122,169 @@ body{
   gap:10px
 }
 
-.green{color:#54e08a}
-.red{color:#ff6b7d}
+.card{
+  padding:12px
+}
+
+.card h3{
+  margin:0 0 10px;
+  font-size:14px
+}
+
+.big{
+  font-size:27px;
+  font-weight:800
+}
+
+.score{
+  font-size:30px;
+  font-weight:800
+}
+
+.green{color:#49e58b}
+.red{color:#ff667b}
 .yellow{color:#ffd166}
+.muted{color:#91a2b5}
 
 .row{
   display:flex;
   justify-content:space-between;
   gap:10px;
-  border-bottom:1px solid #202b38;
-  padding:8px 0
+  padding:8px 0;
+  border-bottom:1px solid #202b38
 }
 
-.item{
-  background:#0d141d;
-  border:1px solid #263241;
-  border-radius:10px;
-  margin:7px 0;
+.row:last-child{
+  border-bottom:0
+}
+
+details{
+  margin:9px 0;
   overflow:hidden
 }
 
-.item summary{
+summary{
   cursor:pointer;
-  padding:11px;
+  padding:13px;
   font-weight:700;
   list-style:none
 }
 
-.item summary::-webkit-details-marker{
+summary::-webkit-details-marker{
   display:none
 }
 
 .content{
-  padding:0 11px 11px
+  padding:12px;
+  border-top:1px solid #263342
 }
 
-.score{
-  font-size:28px;
+.signal{
+  background:#0c151e;
+  border:1px solid #263342;
+  border-radius:12px;
+  margin:8px 0;
+  padding:11px
+}
+
+.signal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.symbol{
+  font-size:17px;
   font-weight:800
-}
-
-.small{
-  font-size:12px
-}
-
-.refresh{
-  font-size:12px;
-  color:#8fa1b7;
-  margin-top:7px
 }
 
 .badge{
   display:inline-block;
   padding:4px 8px;
   border-radius:8px;
-  background:#1b2634
+  background:#1a2634;
+  font-size:12px
 }
 
-.notice{
-  padding:10px;
-  border-radius:10px;
-  background:#172230;
-  color:#b7c5d6;
-  font-size:12px;
-  margin:10px 0
-}
-
-.bar{
+.scorebar{
   height:8px;
-  background:#202b38;
+  background:#202c39;
   border-radius:20px;
   overflow:hidden;
-  margin-top:7px
+  margin-top:8px
 }
 
-.bar>div{
+.scorebar div{
   height:100%;
   background:#2381ff
 }
 
-@media(max-width:600px){
-  .wrap{padding:9px}
-  .top{flex-direction:column}
-  .input,.btn{width:100%}
+.strict{
+  text-align:center;
+  font-size:13px
+}
+
+.strict-value{
+  font-size:25px;
+  font-weight:800;
+  margin:5px 0
+}
+
+input[type=range]{
+  width:100%;
+  min-height:auto;
+  padding:0;
+  border:0
+}
+
+.sound-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap
+}
+
+.volume{
+  width:130px
+}
+
+.loading{
+  padding:18px;
+  text-align:center;
+  color:#91a2b5
+}
+
+.error{
+  color:#ff667b
+}
+
+.price{
+  direction:ltr;
+  display:inline-block
+}
+
+@media(max-width:720px){
+
+  .controls{
+    grid-template-columns:1fr 1fr
+  }
+
+  .controls input{
+    grid-column:1/-1
+  }
+}
+
+@media(max-width:430px){
+
+  .controls{
+    grid-template-columns:1fr
+  }
+
+  .controls input{
+    grid-column:auto
+  }
 }
 </style>
 </head>
@@ -157,111 +293,193 @@ body{
 
 <div class="wrap">
 
-<h2>📊 اسکنر شخصی</h2>
+<header>
+
+<h1>📊 اسکنر شخصی Bybit</h1>
+
+<div class="sub">
+سیگنال‌گیری بر پایه برخورد قیمت با MA20 در تایم‌فریم 1 دقیقه
+و تأیید با تایم‌فریم 15 دقیقه
+</div>
+
+<div class="status">
+<span class="dot"></span>
+<span id="status">در حال اتصال به Bybit...</span>
+</div>
+
+</header>
+
 
 <div class="box">
 
-<div class="top">
+<div class="controls">
 
 <input
  id="symbol"
- class="input"
- placeholder="مثلاً BTCUSDT"
+ placeholder="نام ارز؛ مثال PEPE یا PEPEUSDT"
  autocomplete="off"
 >
 
+<button onclick="manualAnalyze()">
+🔎 تحلیل
+</button>
+
+<select id="category">
+
+<option value="auto">
+بازار خودکار
+</option>
+
+<option value="linear">
+فیوچرز
+</option>
+
+<option value="spot">
+اسپات
+</option>
+
+</select>
+
 <button
- class="btn"
- onclick="analyze()"
+ id="scanBtn"
+ class="secondary"
+ onclick="scanNow()"
 >
-تحلیل
+🔄 اسکن
 </button>
 
 </div>
 
-<div class="small muted">
-تحلیل خودکار فقط در تایم‌فریم‌های ۱ دقیقه و ۱۵ دقیقه · به‌روزرسانی زنده
+
+<div class="strict">
+
+<div>درجه سخت‌گیری سیگنال</div>
+
+<div
+ id="strictValue"
+ class="strict-value"
+>
+۳
+</div>
+
+<input
+ id="strictness"
+ type="range"
+ min="1"
+ max="6"
+ value="3"
+ step="1"
+>
+
+<div class="muted">
+۱ = آسان · ۶ = بسیار سخت
 </div>
 
 </div>
 
-<div id="out"></div>
+</div>
+
+
+<div class="box">
+
+<div class="sound-box">
+
+<b>🔔 هشدار سیگنال</b>
+
+<button
+ id="soundBtn"
+ onclick="toggleSound()"
+>
+🔊 صدا روشن
+</button>
+
+<label>
+حجم صدا
+<input
+ id="volume"
+ class="volume"
+ type="range"
+ min="0"
+ max="100"
+ value="70"
+>
+</label>
+
+<button
+ class="secondary"
+ onclick="testSound()"
+>
+تست صدا
+</button>
 
 </div>
+
+<div
+ id="soundStatus"
+ class="muted small"
+>
+هشدارها فعال هستند؛ فقط صدای هشدار قابل قطع است.
+</div>
+
+</div>
+
+
+<div class="notice">
+
+سیگنال اصلی ابتدا با <b>MA20 تایم‌فریم 1 دقیقه</b>
+بررسی می‌شود.
+شیب MA20، فاصله قیمت، وضعیت برخورد،
+حجم و سایر تأییدها در امتیاز نهایی اثر می‌گذارند.
+تایم‌فریم 15 دقیقه برای تأیید روند و تحلیل عمیق استفاده می‌شود.
+
+</div>
+
+
+<div id="summary"></div>
+
+<div id="results"></div>
+
+</div>
+
 
 <script>
-
-let timer=null;
-let lastSymbol='';
 
 const $=id=>
   document.getElementById(id);
 
-const esc=s=>
-  String(s??'').replace(
-    /[&<>"']/g,
-    m=>({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;',
-      "'":'&#39;'
-    }[m])
+
+let scanning=false;
+let scanOffset=0;
+let timer=null;
+
+let soundEnabled=
+  localStorage.getItem(
+    'personalSound'
+  ) !== 'off';
+
+let volume=
+  Number(
+    localStorage.getItem(
+      'personalVolume'
+    ) || 70
   );
 
-const DIR={
-  BULLISH:'صعودی',
-  BEARISH:'نزولی',
-  RANGE:'رنج',
-  LONG:'خرید',
-  SHORT:'فروش',
-  WAIT:'انتظار',
-  NONE:'ندارد',
-  UP:'صعودی',
-  DOWN:'نزولی',
-  FLAT:'خنثی',
-  NEUTRAL:'خنثی',
-  NORMAL:'عادی',
-  SPIKE:'جهش'
-};
+let lastSignals=
+  new Set();
 
-const TYPE={
-  BULLISH:'صعودی',
-  BEARISH:'نزولی',
-  BULLISH_DIVERGENCE:'واگرایی صعودی',
-  BEARISH_DIVERGENCE:'واگرایی نزولی',
-  NONE:'ندارد',
-  SWING_SUPPORT:'حمایت نوسانی',
-  SWING_RESISTANCE:'مقاومت نوسانی',
-  BUY_WALL:'دیوار خرید',
-  SELL_WALL:'دیوار فروش'
-};
+let audioContext=null;
 
-function label(v){
 
-  return DIR[v] ||
-         TYPE[v] ||
-         String(v??'—');
+$('volume').value=volume;
 
-}
-
-function dirClass(d){
-
-  return d==='BULLISH' ||
-         d==='LONG' ||
-         d==='UP'
-    ? 'green'
-    : d==='BEARISH' ||
-      d==='SHORT' ||
-      d==='DOWN'
-      ? 'red'
-      : 'yellow';
-
-}
 
 function fmt(v){
 
-  if(v==null || v==='')
+  if(
+    v===undefined ||
+    v===null ||
+    v===''
+  )
     return '—';
 
   if(typeof v==='number'){
@@ -269,469 +487,1353 @@ function fmt(v){
     return v.toLocaleString(
       'fa-IR',
       {
-        maximumFractionDigits:
-          Math.abs(v)>=1000 ? 4 : 8
+        maximumFractionDigits:8
       }
     );
 
   }
 
-  return esc(v);
+  return String(v);
+}
+
+
+function esc(s){
+
+  return String(s??'')
+    .replace(
+      /[&<>"']/g,
+      m=>({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        '"':'&quot;',
+        "'":'&#39;'
+      }[m])
+    );
+}
+
+
+function dirText(d){
+
+  return {
+
+    LONG:'Long',
+
+    SHORT:'Short',
+
+    BULLISH:'صعودی',
+
+    BEARISH:'نزولی',
+
+    UP:'صعودی',
+
+    DOWN:'نزولی',
+
+    FLAT:'خنثی',
+
+    RANGE:'رنج',
+
+    WAIT:'انتظار',
+
+    NONE:'ندارد',
+
+    NEUTRAL:'خنثی'
+
+  }[d] || d || '—';
 
 }
 
-function rememberOpen(){
+
+function cls(d){
+
+  if(
+    d==='LONG' ||
+    d==='BULLISH' ||
+    d==='UP'
+  )
+    return 'green';
+
+  if(
+    d==='SHORT' ||
+    d==='BEARISH' ||
+    d==='DOWN'
+  )
+    return 'red';
+
+  return 'yellow';
+}
+
+
+function strictLabel(v){
+
+  return {
+
+    1:'آسان',
+
+    2:'نسبتاً آسان',
+
+    3:'متوسط',
+
+    4:'سخت',
+
+    5:'خیلی سخت',
+
+    6:'بسیار سخت'
+
+  }[v] || 'متوسط';
+
+}
+
+
+function currentStrictness(){
+
+  return Number(
+    $('strictness').value
+  );
+}
+
+
+$('strictness')
+.addEventListener(
+  'input',
+  ()=>{
+
+    const v=
+      currentStrictness();
+
+    $('strictValue').textContent=
+      `${v} — ${strictLabel(v)}`;
+
+  }
+);
+
+
+$('volume')
+.addEventListener(
+  'input',
+  ()=>{
+
+    volume=
+      Number(
+        $('volume').value
+      );
+
+    localStorage.setItem(
+      'personalVolume',
+      volume
+    );
+
+  }
+);
+
+
+function updateSoundUI(){
+
+  $('soundBtn').textContent=
+    soundEnabled
+      ? '🔊 صدا روشن'
+      : '🔇 صدا خاموش';
+
+  $('soundBtn').classList.toggle(
+    'sound-off',
+    !soundEnabled
+  );
+
+  $('soundStatus').textContent=
+    soundEnabled
+      ? 'هشدارها فعال هستند؛ صدای هشدار روشن است.'
+      : 'هشدارها فعال هستند؛ فقط صدای هشدار قطع شده است.';
+
+}
+
+
+function toggleSound(){
+
+  soundEnabled=
+    !soundEnabled;
+
+  localStorage.setItem(
+    'personalSound',
+    soundEnabled
+      ? 'on'
+      : 'off'
+  );
+
+  updateSoundUI();
+
+}
+
+
+function getAudio(){
+
+  if(!audioContext){
+
+    const AC=
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AC)
+      return null;
+
+    audioContext=
+      new AC();
+
+  }
+
+  if(
+    audioContext.state===
+    'suspended'
+  )
+    audioContext.resume();
+
+  return audioContext;
+
+}
+
+
+function beep(
+  frequency,
+  duration,
+  delay
+){
+
+  if(!soundEnabled)
+    return;
+
+  const ctx=
+    getAudio();
+
+  if(!ctx)
+    return;
+
+  const osc=
+    ctx.createOscillator();
+
+  const gain=
+    ctx.createGain();
+
+  const start=
+    ctx.currentTime+
+    (delay||0);
+
+  osc.frequency.value=
+    frequency;
+
+  osc.type='sine';
+
+  gain.gain.setValueAtTime(
+    0,
+    start
+  );
+
+  gain.gain.linearRampToValueAtTime(
+    Math.max(
+      0.01,
+      volume/100*0.25
+    ),
+    start+0.02
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    start+duration
+  );
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start(start);
+  osc.stop(
+    start+duration+0.03
+  );
+
+}
+
+
+function signalSound(){
+
+  beep(660,0.18,0);
+
+  beep(880,0.22,0.22);
+
+  beep(1040,0.28,0.48);
+
+}
+
+
+function testSound(){
+
+  soundEnabled=true;
+
+  localStorage.setItem(
+    'personalSound',
+    'on'
+  );
+
+  updateSoundUI();
+
+  signalSound();
+
+}
+
+
+function health(){
+
+  fetch(
+    '/api/health',
+    {
+      cache:'no-store'
+    }
+  )
+  .then(
+    r=>r.json()
+  )
+  .then(
+    d=>{
+
+      $('status').textContent=
+        d.ok
+          ? 'اتصال برقرار است — Bybit'
+          : 'خطا در Worker';
+
+    }
+  )
+  .catch(
+    ()=>{
+
+      $('status').textContent=
+        'اتصال برقرار نیست';
+
+    }
+  );
+
+}
+
+
+function preserveOpen(){
 
   return [
     ...document.querySelectorAll(
       'details[data-key]'
     )
   ]
-  .filter(x=>x.open)
-  .map(x=>x.dataset.key);
+  .filter(
+    x=>x.open
+  )
+  .map(
+    x=>x.dataset.key
+  );
 
 }
+
 
 function restoreOpen(keys){
 
-  keys.forEach(k=>{
+  keys.forEach(
+    key=>{
 
-    const x=
-      document.querySelector(
-        `details[data-key="${CSS.escape(k)}"]`
-      );
+      const el=
+        document.querySelector(
+          `details[data-key="${CSS.escape(key)}"]`
+        );
 
-    if(x)
-      x.open=true;
+      if(el)
+        el.open=true;
 
-  });
+    }
+  );
 
 }
 
-function renderStyles(x){
 
-  const items=x.items||[];
+function renderSummary(d){
 
-  if(!items.length)
-    return '<div class="muted">اطلاعات سبک‌ها موجود نیست.</div>';
+  const score=
+    Number(
+      d.score||0
+    );
 
-  return items.map(
-    (i,n)=>`
+  $('summary').innerHTML=`
 
-      <div class="row">
+  <div class="grid">
 
-        <span>
-          ${esc(
-            i.name ||
-            [
-              'ساختار بازار',
-              'اسمارت مانی',
-              'ایچیموکو',
-              'مومنتوم',
-              'حجم',
-              'جریان سفارش',
-              'نقدینگی'
-            ][n] ||
-            'سبک'
-          )}
-        </span>
+    <div class="card">
 
-        <b class="${dirClass(i.direction)}">
+      <h3>نماد</h3>
 
-          ${label(i.direction)}
-          ·
-          ${fmt(i.score||0)}/100
-
-        </b>
-
+      <div class="big">
+        ${esc(d.symbol)}
       </div>
 
-    `
-  ).join('');
+      <div class="muted">
+        ${
+          d.category==='linear'
+            ? 'فیوچرز'
+            : d.category==='spot'
+              ? 'اسپات'
+              : 'بازار خودکار'
+        }
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>سیگنال</h3>
+
+      <div
+        class="big ${cls(
+          d.direction
+        )}"
+      >
+        ${dirText(
+          d.direction
+        )}
+      </div>
+
+      <div>
+        امتیاز:
+        <b>${fmt(score)}/100</b>
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>Long</h3>
+
+      <div class="big green">
+        ${fmt(
+          d.longScore
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>Short</h3>
+
+      <div class="big red">
+        ${fmt(
+          d.shortScore
+        )}
+      </div>
+
+    </div>
+
+  </div>
+
+  `;
 
 }
 
-function renderConvertedMA(d){
 
-  const c=d.convertedMA1m;
+function renderMA1m(tf){
 
-  if(!c ||
-     !Array.isArray(c.events) ||
-     !c.events.length){
-
+  if(!tf)
     return `
-      <div class="muted">
-        اطلاعات MAهای تبدیل‌شده موجود نیست.
+      <div class="card">
+        <div class="muted">
+          اطلاعات 1m موجود نیست.
+        </div>
       </div>
     `;
 
-  }
+  const ma20=
+    Number(tf.ma20);
 
-  return c.events.map(
-    e=>`
+  const price=
+    Number(tf.price);
 
-      <div class="row">
+  const distance=
+    ma20
+      ? ((price-ma20)/ma20)*100
+      : null;
 
-        <span>
+  return `
 
-          ${esc(e.source)}
-          /
-          MA${fmt(
-            e.period1m
-          )}
+  <div class="card">
 
-        </span>
+    <h3>🎯 سیگنال اصلی — MA20 تایم‌فریم 1 دقیقه</h3>
 
-        <b class="${dirClass(
-          e.confirmation
-        )}">
+    <div class="row">
 
-          ${esc(
-            e.confirmation||'NONE'
-          )}
+      <span>قیمت</span>
 
-        </b>
+      <b class="price">
+        ${fmt(price)}
+      </b>
 
-      </div>
+    </div>
 
-      <div class="row small">
 
-        <span>
-          مقدار
-        </span>
+    <div class="row">
 
-        <b>
-          ${fmt(e.value)}
-        </b>
+      <span>MA20</span>
 
-      </div>
+      <b>
+        ${fmt(ma20)}
+      </b>
 
-    `
-  ).join('');
+    </div>
+
+
+    <div class="row">
+
+      <span>فاصله قیمت از MA20</span>
+
+      <b class="${
+        distance>0
+          ? 'green'
+          : distance<0
+            ? 'red'
+            : 'yellow'
+      }">
+        ${
+          distance===null
+            ? '—'
+            : fmt(distance)+'%'
+        }
+      </b>
+
+    </div>
+
+
+    <div class="row">
+
+      <span>شیب MA20</span>
+
+      <b class="${cls(
+        tf.maSlope
+      )}">
+        ${dirText(
+          tf.maSlope
+        )}
+      </b>
+
+    </div>
+
+
+    <div class="row">
+
+      <span>روند 1m</span>
+
+      <b class="${cls(
+        tf.trend
+      )}">
+        ${dirText(
+          tf.trend
+        )}
+      </b>
+
+    </div>
+
+
+    <div class="row">
+
+      <span>برخورد MA20</span>
+
+      <b>
+        ${
+          tf.touchMA20
+            ? '✅ تأیید شده'
+            : 'خیر'
+        }
+      </b>
+
+    </div>
+
+
+    <div class="row">
+
+      <span>نسبت حجم</span>
+
+      <b>
+        ${fmt(
+          tf.volume?.ratio
+        )}
+      </b>
+
+    </div>
+
+  </div>
+
+  `;
 
 }
 
-function renderTF(key,x){
 
-  const a=x||{};
+function render15m(tf){
 
-  const m=a.macd||{};
-  const i=a.ichimoku||{};
-  const dv=a.divergence||{};
-  const v=a.volume||{};
-  const h=a.hunt||{};
-  const f=a.fvg||{};
-  const ob=a.orderBlock||{};
-  const extra=a.extra||{};
+  if(!tf)
+    return `
+      <div class="card">
+        اطلاعات 15m موجود نیست.
+      </div>
+    `;
+
+  return `
+
+  <div class="card">
+
+    <h3>🧭 تأیید روند — 15 دقیقه</h3>
+
+    <div class="row">
+
+      <span>روند</span>
+
+      <b class="${cls(
+        tf.trend
+      )}">
+        ${dirText(
+          tf.trend
+        )}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>MA7</span>
+
+      <b>
+        ${fmt(tf.ma7)}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>MA20</span>
+
+      <b>
+        ${fmt(tf.ma20)}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>شیب MA</span>
+
+      <b class="${cls(
+        tf.maSlope
+      )}">
+        ${dirText(
+          tf.maSlope
+        )}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>RSI</span>
+
+      <b>
+        ${fmt(tf.rsi)}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>MACD</span>
+
+      <b class="${cls(
+        tf.macd?.direction
+      )}">
+        ${dirText(
+          tf.macd?.direction
+        )}
+      </b>
+
+    </div>
+
+    <div class="row">
+
+      <span>Ichimoku</span>
+
+      <b class="${cls(
+        tf.ichimoku?.direction
+      )}">
+        ${dirText(
+          tf.ichimoku?.direction
+        )}
+      </b>
+
+    </div>
+
+  </div>
+
+  `;
+
+}
+
+
+function renderDeep(
+  symbol,
+  d
+){
+
+  const tf=
+    d.timeframes||{};
+
+  const one=
+    tf['1']||{};
+
+  const fifteen=
+    tf['15']||{};
+
+  const fp=
+    d.footprint||{};
+
+  const walls=
+    d.walls||{};
+
+  const ma=
+    d.convertedMA1m||{};
+
+  const reasons=
+    d.reasons||[];
 
   return `
 
   <details
-    class="item"
-    data-key="tf-${esc(key)}"
+    data-key="deep-${esc(symbol)}"
   >
 
     <summary>
-
-      ${esc(
-        key==='1'
-          ? '۱ دقیقه'
-          : key==='3'
-            ? '۳ دقیقه'
-            : key==='5'
-              ? '۵ دقیقه'
-              : key==='15'
-                ? '۱۵ دقیقه'
-                : key==='60'
-                  ? '۱ ساعت'
-                  : key
-      )}
-
+      🔎 تحلیل عمیق ${esc(symbol)}
       —
-
-      <span class="${dirClass(a.trend)}">
-
-        ${label(a.trend)}
-
+      <span class="${cls(
+        d.direction
+      )}">
+        ${dirText(
+          d.direction
+        )}
       </span>
-
+      · ${fmt(d.score)}/100
     </summary>
 
     <div class="content">
 
       <div class="grid">
 
-        <div class="box">
+        ${renderMA1m(one)}
 
-          <b>میانگین‌های متحرک</b>
-
-          <div class="row">
-            <span>MA7</span>
-            <b>${fmt(a.ma7)}</b>
-          </div>
-
-          <div class="row">
-            <span>MA20</span>
-            <b>${fmt(a.ma20)}</b>
-          </div>
-
-          <div class="row">
-            <span>شیب</span>
-            <b class="${dirClass(a.maSlope)}">
-              ${label(a.maSlope)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>ADX</span>
-            <b>${fmt(a.adx)}</b>
-          </div>
-
-          <div class="row">
-            <span>ATR</span>
-            <b>${fmt(a.atr)}</b>
-          </div>
-
-          <div class="row">
-            <span>عرض بولینگر</span>
-            <b>${fmt(a.bollingerWidth)}%</b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>MACD و RSI</b>
-
-          <div class="row">
-            <span>MACD</span>
-            <b class="${dirClass(m.direction)}">
-              ${label(m.direction)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>Histogram</span>
-            <b>${fmt(m.histogram)}</b>
-          </div>
-
-          <div class="row">
-            <span>RSI</span>
-            <b>${fmt(a.rsi)}</b>
-          </div>
-
-          <div class="row">
-            <span>جهت RSI</span>
-            <b class="${dirClass(extra.RSI?.direction)}">
-              ${label(extra.RSI?.direction)}
-            </b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>ایچیموکو</b>
-
-          <div class="row">
-            <span>جهت</span>
-            <b class="${dirClass(i.direction)}">
-              ${label(i.direction)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>Tenkan</span>
-            <b>${fmt(i.tenkan)}</b>
-          </div>
-
-          <div class="row">
-            <span>Kijun</span>
-            <b>${fmt(i.kijun)}</b>
-          </div>
-
-          <div class="row">
-            <span>Span A</span>
-            <b>${fmt(i.spanA)}</b>
-          </div>
-
-          <div class="row">
-            <span>Span B</span>
-            <b>${fmt(i.spanB)}</b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>واگرایی</b>
-
-          <div class="score ${dirClass(dv.side)}">
-
-            ${label(
-              dv.type ||
-              'NONE'
-            )}
-
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>حجم</b>
-
-          <div class="row">
-            <span>حجم فعلی</span>
-            <b>${fmt(v.current)}</b>
-          </div>
-
-          <div class="row">
-            <span>میانگین</span>
-            <b>${fmt(v.average)}</b>
-          </div>
-
-          <div class="row">
-            <span>نسبت</span>
-            <b>${fmt(v.ratio)}</b>
-          </div>
-
-          <div class="row">
-            <span>وضعیت</span>
-            <b>${label(v.state)}</b>
-          </div>
-
-          <div class="row">
-            <span>Spike</span>
-            <b>${v.spike?'بله':'خیر'}</b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>ساختار بازار</b>
-
-          <div class="row">
-            <span>BOS</span>
-            <b class="${dirClass(a.bos)}">
-              ${label(a.bos)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>CHoCH</span>
-            <b class="${dirClass(a.choch)}">
-              ${label(a.choch)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>Candle</span>
-            <b class="${dirClass(a.candle?.direction)}">
-              ${label(a.candle?.direction)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>قدرت کندل</span>
-            <b>${fmt(a.candle?.strength)}</b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>Liquidity Hunt</b>
-
-          <div class="row">
-            <span>جهت</span>
-            <b class="${dirClass(h.side)}">
-              ${label(h.side)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>تأیید</span>
-            <b>${h.confirmed?'بله':'خیر'}</b>
-          </div>
-
-          <div class="row">
-            <span>قیمت Sweep</span>
-            <b>${fmt(h.sweepPrice)}</b>
-          </div>
-
-          <div class="row">
-            <span>قدرت</span>
-            <b>${fmt(h.strength)}</b>
-          </div>
-
-        </div>
-
-
-        <div class="box">
-
-          <b>FVG / Order Block</b>
-
-          <div class="row">
-            <span>FVG</span>
-            <b class="${dirClass(f.type)}">
-              ${label(f.type)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>بالا</span>
-            <b>${fmt(f.top)}</b>
-          </div>
-
-          <div class="row">
-            <span>پایین</span>
-            <b>${fmt(f.bottom)}</b>
-          </div>
-
-          <div class="row">
-            <span>OB</span>
-            <b class="${dirClass(ob.type)}">
-              ${label(ob.type)}
-            </b>
-          </div>
-
-          <div class="row">
-            <span>قیمت OB</span>
-            <b>${fmt(ob.price)}</b>
-          </div>
-
-        </div>
+        ${render15m(fifteen)}
 
       </div>
 
 
       <details
-        class="item"
-        data-key="${esc(key)}-sr"
+        data-key="ma-${esc(symbol)}"
       >
 
         <summary>
-          ▼ حمایت و مقاومت
+          📐 جزئیات MA و برخوردها
         </summary>
 
         <div class="content">
 
           <div class="row">
-            <span>حمایت</span>
-            <b>${fmt(a.support)}</b>
+            <span>MA7 تبدیل‌شده</span>
+            <b>
+              ${fmt(
+                ma.events?.find(
+                  x=>x.period1m===7
+                )?.value
+              )}
+            </b>
           </div>
 
           <div class="row">
-            <span>مقاومت</span>
-            <b>${fmt(a.resistance)}</b>
+            <span>MA20 تبدیل‌شده</span>
+            <b>
+              ${fmt(
+                ma.events?.find(
+                  x=>x.period1m===20
+                )?.value
+              )}
+            </b>
+          </div>
+
+          ${
+            (ma.events||[])
+              .map(
+                x=>`
+
+                <div class="row">
+
+                  <span>
+                    ${esc(x.source)}
+                    ·
+                    ${esc(x.ma)}
+                  </span>
+
+                  <b class="${cls(
+                    x.confirmation
+                  )}">
+
+                    ${esc(
+                      x.confirmation ||
+                      'NONE'
+                    )}
+
+                  </b>
+
+                </div>
+
+                `
+              )
+              .join('')
+          }
+
+        </div>
+
+      </details>
+
+
+      <details
+        data-key="ind-${esc(symbol)}"
+      >
+
+        <summary>
+          📊 اندیکاتورها و ساختار
+        </summary>
+
+        <div class="content">
+
+          <div class="grid">
+
+            <div class="card">
+
+              <h3>MACD</h3>
+
+              <div class="row">
+                <span>جهت</span>
+                <b class="${cls(
+                  one.macd?.direction
+                )}">
+                  ${dirText(
+                    one.macd?.direction
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>Histogram</span>
+                <b>
+                  ${fmt(
+                    one.macd?.histogram
+                  )}
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>RSI</h3>
+
+              <div class="big">
+                ${fmt(one.rsi)}
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>Ichimoku</h3>
+
+              <div class="row">
+                <span>جهت</span>
+                <b class="${cls(
+                  one.ichimoku?.direction
+                )}">
+                  ${dirText(
+                    one.ichimoku?.direction
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>Tenkan</span>
+                <b>
+                  ${fmt(
+                    one.ichimoku?.tenkan
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>Kijun</span>
+                <b>
+                  ${fmt(
+                    one.ichimoku?.kijun
+                  )}
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>واگرایی</h3>
+
+              <div class="big ${cls(
+                one.divergence?.side
+              )}">
+                ${esc(
+                  one.divergence?.type ||
+                  'NONE'
+                )}
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>ساختار بازار</h3>
+
+              <div class="row">
+                <span>BOS</span>
+                <b class="${cls(
+                  one.bos
+                )}">
+                  ${dirText(one.bos)}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>CHoCH</span>
+                <b class="${cls(
+                  one.choch
+                )}">
+                  ${dirText(one.choch)}
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>Liquidity Hunt</h3>
+
+              <div class="row">
+                <span>جهت</span>
+                <b class="${cls(
+                  one.hunt?.side
+                )}">
+                  ${dirText(
+                    one.hunt?.side
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>تأیید</span>
+                <b>
+                  ${
+                    one.hunt?.confirmed
+                      ? 'بله'
+                      : 'خیر'
+                  }
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>FVG</h3>
+
+              <div class="row">
+                <span>نوع</span>
+                <b>
+                  ${dirText(
+                    one.fvg?.type
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>اندازه</span>
+                <b>
+                  ${fmt(
+                    one.fvg?.sizePct
+                  )}%
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>Order Block</h3>
+
+              <div class="row">
+                <span>نوع</span>
+                <b>
+                  ${dirText(
+                    one.orderBlock?.type
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>قدرت</span>
+                <b>
+                  ${fmt(
+                    one.orderBlock?.strength
+                  )}
+                </b>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </details>
+
+
+      <details
+        data-key="flow-${esc(symbol)}"
+      >
+
+        <summary>
+          👣 Footprint / Delta
+        </summary>
+
+        <div class="content">
+
+          <div class="grid">
+
+            <div class="card">
+              <h3>حجم خرید</h3>
+              <div class="big green">
+                ${fmt(fp.buyVolume)}
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>حجم فروش</h3>
+              <div class="big red">
+                ${fmt(fp.sellVolume)}
+              </div>
+            </div>
+
+            <div class="card">
+
+              <h3>Delta</h3>
+
+              <div class="big ${
+                Number(fp.delta)>0
+                  ? 'green'
+                  : Number(fp.delta)<0
+                    ? 'red'
+                    : 'yellow'
+              }">
+                ${fmt(fp.delta)}
+              </div>
+
+              <div>
+                ${fmt(fp.deltaPercent)}%
+              </div>
+
+            </div>
+
+            <div class="card">
+
+              <h3>Pressure</h3>
+
+              <div class="big">
+                ${esc(
+                  fp.pressure ||
+                  'NEUTRAL'
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </details>
+
+
+      <details
+        data-key="walls-${esc(symbol)}"
+      >
+
+        <summary>
+          🧱 Order Book / دیوارها
+        </summary>
+
+        <div class="content">
+
+          <div class="grid">
+
+            <div class="card">
+
+              <h3>دیوار خرید</h3>
+
+              <div class="big green">
+                ${fmt(
+                  walls.buy?.price
+                )}
+              </div>
+
+              <div>
+                ارزش:
+                ${fmt(
+                  walls.buy?.notional
+                )}
+              </div>
+
+              <div>
+                فاصله:
+                ${fmt(
+                  walls.buy?.distancePct
+                )}%
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>دیوار فروش</h3>
+
+              <div class="big red">
+                ${fmt(
+                  walls.sell?.price
+                )}
+              </div>
+
+              <div>
+                ارزش:
+                ${fmt(
+                  walls.sell?.notional
+                )}
+              </div>
+
+              <div>
+                فاصله:
+                ${fmt(
+                  walls.sell?.distancePct
+                )}%
+              </div>
+
+            </div>
+
+
+            <div class="card">
+
+              <h3>نقدینگی</h3>
+
+              <div class="row">
+                <span>خرید</span>
+                <b>
+                  ${fmt(
+                    walls.buyLiquidity
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>فروش</span>
+                <b>
+                  ${fmt(
+                    walls.sellLiquidity
+                  )}
+                </b>
+              </div>
+
+              <div class="row">
+                <span>سهم خرید</span>
+                <b class="green">
+                  ${fmt(
+                    walls.buyShare
+                  )}%
+                </b>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </details>
+
+
+      <details
+        data-key="reasons-${esc(symbol)}"
+      >
+
+        <summary>
+          🧠 دلایل تشکیل سیگنال
+        </summary>
+
+        <div class="content">
+
+          ${
+            reasons.length
+
+            ?
+
+            reasons
+              .slice(0,50)
+              .map(
+                r=>`
+
+                <div class="signal">
+
+                  <b class="${cls(
+                    r.side
+                  )}">
+                    ${dirText(
+                      r.side
+                    )}
+                  </b>
+
+                  <div>
+                    ${esc(r.text)}
+                  </div>
+
+                </div>
+
+                `
+              )
+              .join('')
+
+            :
+
+            '<div class="muted">دلیل ثبت نشده است.</div>'
+          }
+
+        </div>
+
+      </details>
+
+
+      <details
+        data-key="15deep-${esc(symbol)}"
+      >
+
+        <summary>
+          🧭 مقایسه 1m با 15m
+        </summary>
+
+        <div class="content">
+
+          <div class="row">
+
+            <span>
+              جهت 1m
+            </span>
+
+            <b class="${cls(
+              one.trend
+            )}">
+              ${dirText(
+                one.trend
+              )}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              جهت 15m
+            </span>
+
+            <b class="${cls(
+              fifteen.trend
+            )}">
+              ${dirText(
+                fifteen.trend
+              )}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              MA20 1m
+            </span>
+
+            <b>
+              ${fmt(one.ma20)}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              MA20 15m
+            </span>
+
+            <b>
+              ${fmt(fifteen.ma20)}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              شیب MA 1m
+            </span>
+
+            <b class="${cls(
+              one.maSlope
+            )}">
+              ${dirText(
+                one.maSlope
+              )}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              شیب MA 15m
+            </span>
+
+            <b class="${cls(
+              fifteen.maSlope
+            )}">
+              ${dirText(
+                fifteen.maSlope
+              )}
+            </b>
+
           </div>
 
         </div>
@@ -746,718 +1848,294 @@ function renderTF(key,x){
 
 }
 
-function renderFootprint(fp){
 
-  if(!fp ||
-     fp.error){
-
-    return `
-      <div class="muted">
-        فوت‌پرینت در دسترس نیست.
-      </div>
-    `;
-
-  }
-
-  return `
-
-  <div class="grid">
-
-    <div class="box">
-      <b>حجم خرید</b>
-      <div class="score green">
-        ${fmt(fp.buyVolume)}
-      </div>
-    </div>
-
-    <div class="box">
-      <b>حجم فروش</b>
-      <div class="score red">
-        ${fmt(fp.sellVolume)}
-      </div>
-    </div>
-
-    <div class="box">
-
-      <b>Delta</b>
-
-      <div class="score ${
-        fp.delta>0
-          ? 'green'
-          : fp.delta<0
-            ? 'red'
-            : 'yellow'
-      }">
-
-        ${fmt(fp.delta)}
-
-      </div>
-
-      <div>
-        ${fmt(fp.deltaPercent)}%
-      </div>
-
-    </div>
-
-    <div class="box">
-
-      <b>فشار سفارش</b>
-
-      <div class="score">
-        ${label(fp.pressure)}
-      </div>
-
-    </div>
-
-    <div class="box">
-      <b>ارزش خرید</b>
-      <div>${fmt(fp.buyNotional)}</div>
-    </div>
-
-    <div class="box">
-      <b>ارزش فروش</b>
-      <div>${fmt(fp.sellNotional)}</div>
-    </div>
-
-    <div class="box">
-      <b>تعداد معاملات</b>
-      <div>${fmt(fp.trades)}</div>
-    </div>
-
-    <div class="box">
-      <b>معامله بزرگ</b>
-      <div>${fmt(fp.largeTradeNotional)}</div>
-    </div>
-
-  </div>
-
-  `;
-
-}
-
-function renderWalls(w){
-
-  if(!w ||
-     w.error){
-
-    return `
-      <div class="muted">
-        Order Book در دسترس نیست.
-      </div>
-    `;
-
-  }
-
-  return `
-
-  <div class="grid">
-
-    <div class="box">
-
-      <b>🟢 دیوار خرید</b>
-
-      <div class="score green">
-        ${fmt(w.buy?.price)}
-      </div>
-
-      <div>
-        ارزش:
-        ${fmt(w.buy?.notional)}
-      </div>
-
-      <div>
-        فاصله:
-        ${fmt(w.buy?.distancePct)}%
-      </div>
-
-      <div>
-        قدرت:
-        ${fmt(w.buyStrength)}
-      </div>
-
-    </div>
-
-
-    <div class="box">
-
-      <b>🔴 دیوار فروش</b>
-
-      <div class="score red">
-        ${fmt(w.sell?.price)}
-      </div>
-
-      <div>
-        ارزش:
-        ${fmt(w.sell?.notional)}
-      </div>
-
-      <div>
-        فاصله:
-        ${fmt(w.sell?.distancePct)}%
-      </div>
-
-      <div>
-        قدرت:
-        ${fmt(w.sellStrength)}
-      </div>
-
-    </div>
-
-
-    <div class="box">
-
-      <b>نقدینگی</b>
-
-      <div class="row">
-        <span>خرید</span>
-        <b class="green">
-          ${fmt(w.buyLiquidity)}
-        </b>
-      </div>
-
-      <div class="row">
-        <span>فروش</span>
-        <b class="red">
-          ${fmt(w.sellLiquidity)}
-        </b>
-      </div>
-
-      <div class="row">
-        <span>سهم خرید</span>
-        <b>${fmt(w.buyShare)}%</b>
-      </div>
-
-      <div class="row">
-        <span>سهم فروش</span>
-        <b>${fmt(w.sellShare)}%</b>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <details
-    class="item"
-    data-key="walls-buy"
-  >
-
-    <summary>
-      ▼ سطوح خرید
-    </summary>
-
-    <div class="content">
-
-      ${
-        (w.buyLevels||[])
-          .map(
-            x=>`
-
-            <div class="row">
-
-              <span>
-                ${fmt(x.price)}
-              </span>
-
-              <b>
-                ${fmt(x.notional)}
-                ·
-                ${fmt(x.distancePct)}%
-              </b>
-
-            </div>
-
-            `
-          )
-          .join('')
-        ||
-        '<div class="muted">—</div>'
-      }
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="walls-sell"
-  >
-
-    <summary>
-      ▼ سطوح فروش
-    </summary>
-
-    <div class="content">
-
-      ${
-        (w.sellLevels||[])
-          .map(
-            x=>`
-
-            <div class="row">
-
-              <span>
-                ${fmt(x.price)}
-              </span>
-
-              <b>
-                ${fmt(x.notional)}
-                ·
-                ${fmt(x.distancePct)}%
-              </b>
-
-            </div>
-
-            `
-          )
-          .join('')
-        ||
-        '<div class="muted">—</div>'
-      }
-
-    </div>
-
-  </details>
-
-  `;
-
-}
-
-function renderMarket(m){
-
-  if(!m ||
-     m.error){
-
-    return `
-      <div class="notice">
-        OI / Funding برای این نماد در پاسخ فعلی Bybit
-        قابل دریافت نیست.
-        ${
-          m?.error
-            ? '<br>'+esc(m.error)
-            : ''
-        }
-      </div>
-    `;
-
-  }
-
-  return `
-
-  <div class="grid">
-
-    <div class="box">
-      <b>Open Interest</b>
-      <div class="score">
-        ${fmt(m.openInterest)}
-      </div>
-    </div>
-
-    <div class="box">
-      <b>Funding Rate</b>
-      <div class="score">
-        ${fmt(m.fundingRate)}
-      </div>
-    </div>
-
-    <div class="box">
-      <b>تغییر OI</b>
-      <div>
-        فعلی: ${fmt(m.openInterest)}
-      </div>
-      <div>
-        قبلی: ${fmt(m.previousOpenInterest)}
-      </div>
-      <div>
-        تغییر: ${fmt(m.openInterestChange)}
-      </div>
-    </div>
-
-    <div class="box">
-      <b>تغییر Funding</b>
-      <div>
-        فعلی: ${fmt(m.fundingRate)}
-      </div>
-      <div>
-        قبلی: ${fmt(m.previousFundingRate)}
-      </div>
-      <div>
-        تغییر: ${fmt(m.fundingChange)}
-      </div>
-    </div>
-
-  </div>
-
-  `;
-
-}
-
-function renderReasons(reasons){
-
-  if(!Array.isArray(reasons) ||
-     !reasons.length){
-
-    return `
-      <div class="muted">
-        دلیل مشخصی برای سیگنال ثبت نشده است.
-      </div>
-    `;
-
-  }
-
-  return reasons.map(
-    r=>`
-
-      <div class="row">
-
-        <span class="${dirClass(r.side)}">
-
-          ${label(r.side)}
-
-        </span>
-
-        <b>
-          ${esc(r.text)}
-        </b>
-
-      </div>
-
-    `
-  ).join('');
-
-}
-
-function render(d){
+function renderManual(d){
 
   const open=
-    rememberOpen();
-
-  const direction=
-    d.direction ||
-    d.marketState ||
-    'NONE';
-
-  const score=
-    Number(d.score||0);
-
-  const main=`
-
-  <div class="card">
-
-    <div class="score ${dirClass(direction)}">
-
-      ${label(direction)}
-      ·
-      ${fmt(score)}/100
-
-    </div>
-
-    <div class="grid">
-
-      <div>
-
-        نماد:
-        <b>
-          ${esc(d.symbol)}
-        </b>
-
-      </div>
-
-      <div>
-
-        بازار:
-        <b>
-          ${
-            d.category==='spot'
-              ? 'اسپات'
-              : d.category==='linear'
-                ? 'فیوچرز'
-                : '—'
-          }
-        </b>
-
-      </div>
-
-      <div>
-
-        قیمت:
-        <b>
-          ${fmt(d.price)}
-        </b>
-
-      </div>
-
-      <div>
-
-        Long:
-        <b class="green">
-          ${fmt(d.longScore)}
-        </b>
-
-      </div>
-
-      <div>
-
-        Short:
-        <b class="red">
-          ${fmt(d.shortScore)}
-        </b>
-
-      </div>
-
-    </div>
-
-    <div class="refresh">
-
-      آخرین به‌روزرسانی:
-      ${
-        d.generatedAt
-          ? new Date(
-              d.generatedAt
-            ).toLocaleTimeString('fa-IR')
-          : '—'
-      }
-
-    </div>
-
-  </div>
-
-  `;
-
-
-  const wanted=[
-    '1',
-    '15'
-  ];
-
-  const tfs=
-    Object.entries(
-      d.timeframes||{}
-    )
-    .filter(
-      ([k])=>
-        wanted.includes(String(k))
-    )
-    .map(
-      ([k,x])=>
-        renderTF(k,x)
-    )
-    .join('');
-
-
-  $('out').innerHTML=
-
-  main+
-
-  `
-
-  <details
-    class="item"
-    data-key="timeframes"
-    open
-  >
-
-    <summary>
-      📊 تحلیل تایم‌فریم‌های شخصی
-      <span class="muted">
-        1m + 15m
-      </span>
-    </summary>
-
-    <div class="content">
-
-      ${tfs ||
-        '<div class="muted">داده تایم‌فریم موجود نیست.</div>'
-      }
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="converted-ma"
-  >
-
-    <summary>
-      📐 MAهای تبدیل‌شده روی 1m
-    </summary>
-
-    <div class="content">
-
-      ${renderConvertedMA(d)}
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="footprint"
-  >
-
-    <summary>
-      👣 Footprint / Delta
-    </summary>
-
-    <div class="content">
-
-      ${renderFootprint(
-        d.footprint
-      )}
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="walls"
-  >
-
-    <summary>
-      🧱 Order Book / Walls
-    </summary>
-
-    <div class="content">
-
-      ${renderWalls(
-        d.walls
-      )}
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="market"
-  >
-
-    <summary>
-      📈 OI / Funding
-    </summary>
-
-    <div class="content">
-
-      ${renderMarket(
-        d.market
-      )}
-
-    </div>
-
-  </details>
-
-
-  <details
-    class="item"
-    data-key="reasons"
-  >
-
-    <summary>
-      🧠 دلایل تشکیل سیگنال
-    </summary>
-
-    <div class="content">
-
-      ${renderReasons(
-        d.reasons
-      )}
-
-    </div>
-
-  </details>
-
-  `;
+    preserveOpen();
+
+  renderSummary(d);
+
+  $('results').innerHTML=
+    renderDeep(
+      d.symbol,
+      d
+    );
 
   restoreOpen(open);
 
 }
 
-async function get(sym){
 
-  const u=
-    `/api/analyze?symbol=${
-      encodeURIComponent(sym)
-    }&mode=personal&strictness=75`;
+function renderScan(d){
 
-  const r=
-    await fetch(
-      u,
-      {
-        cache:'no-store'
-      }
-    );
+  const open=
+    preserveOpen();
 
-  const d=
-    await r.json();
+  const rows=
+    (d.results||[])
+      .map(
+        x=>`
 
-  if(!d.ok)
-    throw Error(
-      d.error ||
-      'خطا در تحلیل'
-    );
+        <div
+          class="signal"
+          data-symbol="${esc(
+            x.symbol
+          )}"
+        >
 
-  return d;
+          <div class="signal-head">
+
+            <span class="symbol">
+              ${esc(
+                x.symbol
+              )}
+            </span>
+
+            <span class="badge ${cls(
+              x.direction
+            )}">
+              ${dirText(
+                x.direction
+              )}
+            </span>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              امتیاز
+            </span>
+
+            <b>
+              ${fmt(x.score)}/100
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              Long
+            </span>
+
+            <b class="green">
+              ${fmt(
+                x.longScore
+              )}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              Short
+            </span>
+
+            <b class="red">
+              ${fmt(
+                x.shortScore
+              )}
+            </b>
+
+          </div>
+
+
+          <div class="row">
+
+            <span>
+              MA20 / 1m
+            </span>
+
+            <b>
+              ${
+                x.ma20Touch
+                  ? '✅ برخورد'
+                  : '—'
+              }
+            </b>
+
+          </div>
+
+
+          <div class="scorebar">
+
+            <div
+              style="width:${Math.min(
+                100,
+                Math.max(
+                  0,
+                  Number(
+                    x.score||0
+                  )
+                )
+              )}%"
+            ></div>
+
+          </div>
+
+
+          <details
+            data-key="scan-${esc(
+              x.symbol
+            )}"
+            ontoggle="
+              if(this.open)
+                loadDeep('${esc(
+                  x.symbol
+                )}')
+            "
+          >
+
+            <summary>
+              🔎 تحلیل عمیق
+            </summary>
+
+            <div
+              class="content"
+              id="deep-${esc(
+                x.symbol
+              )}"
+            >
+              <div class="loading">
+                برای مشاهده تحلیل عمیق باز کن...
+              </div>
+            </div>
+
+          </details>
+
+        </div>
+
+        `
+      )
+      .join('');
+
+
+  $('results').innerHTML+=`
+
+    <div class="box">
+
+      <div class="row">
+
+        <span>
+          تعداد بررسی‌شده
+        </span>
+
+        <b>
+          ${fmt(
+            d.batchSize
+          )}
+        </b>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          کل بازار
+        </span>
+
+        <b>
+          ${fmt(
+            d.totalMarkets
+          )}
+        </b>
+
+      </div>
+
+      <div class="row">
+
+        <span>
+          سخت‌گیری
+        </span>
+
+        <b>
+          ${currentStrictness()}
+          — ${strictLabel(
+            currentStrictness()
+          )}
+        </b>
+
+      </div>
+
+    </div>
+
+  `;
+
+  restoreOpen(open);
+
+  checkNewSignals(
+    d.results||[]
+  );
 
 }
 
-async function analyze(){
 
-  const s=
-    $('symbol')
-      .value
-      .trim()
-      .toUpperCase();
+async function loadDeep(symbol){
 
-  if(!s)
+  const id=
+    `deep-${symbol}`;
+
+  const el=
+    $(id);
+
+  if(!el)
     return;
 
-  if(timer)
-    clearInterval(timer);
+  if(
+    el.dataset.loaded==='1'
+  )
+    return;
 
-  lastSymbol=s;
+  el.innerHTML=
+    '<div class="loading">در حال دریافت تحلیل عمیق...</div>';
 
   try{
 
-    $('out').innerHTML=
-      '<div class="box">در حال تحلیل...</div>';
+    const category=
+      $('category').value;
+
+    const url=
+      `/api/analyze?symbol=${
+        encodeURIComponent(symbol)
+      }&category=${
+        encodeURIComponent(category)
+      }&mode=personal&strictness=${
+        currentStrictness()
+      }`;
+
+    const r=
+      await fetch(
+        url,
+        {
+          cache:'no-store'
+        }
+      );
 
     const d=
-      await get(s);
+      await r.json();
 
-    render(d);
-
-    timer=
-      setInterval(
-        async()=>{
-
-          try{
-
-            const d=
-              await get(
-                lastSymbol
-              );
-
-            render(d);
-
-          }
-          catch(e){}
-
-        },
-        8000
+    if(!d.ok)
+      throw Error(
+        d.error ||
+        'تحلیل انجام نشد'
       );
+
+    el.innerHTML=
+      renderDeepContent(d);
+
+    el.dataset.loaded='1';
 
   }
   catch(e){
 
-    $('out').innerHTML=
-      `<div class="box red">
+    el.innerHTML=
+      `<div class="error">
         ${esc(e.message)}
       </div>`;
 
@@ -1465,16 +2143,627 @@ async function analyze(){
 
 }
 
-$('symbol')
-  .addEventListener(
-    'keydown',
-    e=>{
 
-      if(e.key==='Enter')
-        analyze();
+function renderDeepContent(d){
+
+  const tf=
+    d.timeframes||{};
+
+  const one=
+    tf['1']||{};
+
+  const fifteen=
+    tf['15']||{};
+
+  const fp=
+    d.footprint||{};
+
+  const w=
+    d.walls||{};
+
+  return `
+
+  <div class="grid">
+
+    ${renderMA1m(one)}
+
+    ${render15m(fifteen)}
+
+  </div>
+
+
+  <details>
+
+    <summary>
+      📊 اندیکاتورها و ساختار
+    </summary>
+
+    <div class="content">
+
+      <div class="grid">
+
+        <div class="card">
+
+          <h3>MACD</h3>
+
+          <div class="row">
+            <span>1m</span>
+            <b class="${cls(
+              one.macd?.direction
+            )}">
+              ${dirText(
+                one.macd?.direction
+              )}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>15m</span>
+            <b class="${cls(
+              fifteen.macd?.direction
+            )}">
+              ${dirText(
+                fifteen.macd?.direction
+              )}
+            </b>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>RSI</h3>
+
+          <div class="row">
+            <span>1m</span>
+            <b>
+              ${fmt(one.rsi)}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>15m</span>
+            <b>
+              ${fmt(fifteen.rsi)}
+            </b>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>واگرایی</h3>
+
+          <div class="row">
+            <span>1m</span>
+            <b>
+              ${esc(
+                one.divergence?.type ||
+                'NONE'
+              )}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>15m</span>
+            <b>
+              ${esc(
+                fifteen.divergence?.type ||
+                'NONE'
+              )}
+            </b>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>BOS / CHoCH</h3>
+
+          <div class="row">
+            <span>BOS 1m</span>
+            <b>
+              ${dirText(one.bos)}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>CHoCH 1m</span>
+            <b>
+              ${dirText(one.choch)}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>BOS 15m</span>
+            <b>
+              ${dirText(fifteen.bos)}
+            </b>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>Hunt / Liquidity</h3>
+
+          <div class="row">
+            <span>1m</span>
+            <b>
+              ${dirText(
+                one.hunt?.side
+              )}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>15m</span>
+            <b>
+              ${dirText(
+                fifteen.hunt?.side
+              )}
+            </b>
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>FVG / OB</h3>
+
+          <div class="row">
+            <span>FVG 1m</span>
+            <b>
+              ${dirText(
+                one.fvg?.type
+              )}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>OB 1m</span>
+            <b>
+              ${dirText(
+                one.orderBlock?.type
+              )}
+            </b>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <details>
+
+    <summary>
+      👣 Footprint / Delta
+    </summary>
+
+    <div class="content">
+
+      <div class="grid">
+
+        <div class="card">
+          <h3>Buy</h3>
+          <div class="big green">
+            ${fmt(
+              fp.buyVolume
+            )}
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Sell</h3>
+          <div class="big red">
+            ${fmt(
+              fp.sellVolume
+            )}
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Delta</h3>
+          <div class="big">
+            ${fmt(fp.delta)}
+          </div>
+          <div>
+            ${fmt(
+              fp.deltaPercent
+            )}%
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Pressure</h3>
+          <div class="big">
+            ${esc(
+              fp.pressure ||
+              'NEUTRAL'
+            )}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <details>
+
+    <summary>
+      🧱 Order Book / Walls
+    </summary>
+
+    <div class="content">
+
+      <div class="grid">
+
+        <div class="card">
+
+          <h3>Buy Wall</h3>
+
+          <div class="big green">
+            ${fmt(
+              w.buy?.price
+            )}
+          </div>
+
+          <div>
+            ارزش:
+            ${fmt(
+              w.buy?.notional
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>Sell Wall</h3>
+
+          <div class="big red">
+            ${fmt(
+              w.sell?.price
+            )}
+          </div>
+
+          <div>
+            ارزش:
+            ${fmt(
+              w.sell?.notional
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <h3>Liquidity</h3>
+
+          <div class="row">
+            <span>Buy</span>
+            <b>
+              ${fmt(
+                w.buyLiquidity
+              )}
+            </b>
+          </div>
+
+          <div class="row">
+            <span>Sell</span>
+            <b>
+              ${fmt(
+                w.sellLiquidity
+              )}
+            </b>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </details>
+
+
+  <details>
+
+    <summary>
+      🧠 دلایل سیگنال
+    </summary>
+
+    <div class="content">
+
+      ${
+        (d.reasons||[])
+          .map(
+            r=>`
+
+            <div class="signal">
+
+              <b class="${cls(
+                r.side
+              )}">
+                ${dirText(
+                  r.side
+                )}
+              </b>
+
+              <div>
+                ${esc(r.text)}
+              </div>
+
+            </div>
+
+            `
+          )
+          .join('')
+        ||
+        '<div class="muted">دلیلی ثبت نشده است.</div>'
+      }
+
+    </div>
+
+  </details>
+
+  `;
+
+}
+
+
+async function manualAnalyze(){
+
+  const symbol=
+    $('symbol')
+      .value
+      .trim();
+
+  if(!symbol){
+
+    $('results').innerHTML=
+      '<div class="box error">نام ارز را وارد کن.</div>';
+
+    return;
+
+  }
+
+  $('results').innerHTML=
+    '<div class="loading">در حال تحلیل عمیق...</div>';
+
+  try{
+
+    const category=
+      $('category').value;
+
+    const url=
+      `/api/analyze?symbol=${
+        encodeURIComponent(symbol)
+      }&category=${
+        encodeURIComponent(category)
+      }&mode=personal&strictness=${
+        currentStrictness()
+      }`;
+
+    const r=
+      await fetch(
+        url,
+        {
+          cache:'no-store'
+        }
+      );
+
+    const d=
+      await r.json();
+
+    if(!d.ok)
+      throw Error(
+        d.error ||
+        'تحلیل انجام نشد'
+      );
+
+    renderManual(d);
+
+  }
+  catch(e){
+
+    $('results').innerHTML=
+      `<div class="box error">
+        ${esc(e.message)}
+      </div>`;
+
+  }
+
+}
+
+
+async function scanNow(){
+
+  if(scanning)
+    return;
+
+  scanning=true;
+
+  $('scanBtn').disabled=true;
+
+  $('scanBtn').textContent=
+    '⏳ در حال اسکن...';
+
+  $('results').innerHTML=
+    '<div class="loading">در حال بررسی بازار...</div>';
+
+  try{
+
+    const category=
+      $('category').value;
+
+    const strictness=
+      currentStrictness();
+
+    const url=
+      `/api/scan?offset=${
+        scanOffset
+      }&mode=personal&strictness=${
+        strictness
+      }&category=${
+        encodeURIComponent(category)
+      }`;
+
+    const r=
+      await fetch(
+        url,
+        {
+          cache:'no-store'
+        }
+      );
+
+    const d=
+      await r.json();
+
+    if(!d.ok)
+      throw Error(
+        d.error ||
+        'اسکن انجام نشد'
+      );
+
+    scanOffset=
+      d.nextOffset ??
+      0;
+
+    renderScan(d);
+
+  }
+  catch(e){
+
+    $('results').innerHTML=
+      `<div class="box error">
+        ${esc(e.message)}
+      </div>`;
+
+  }
+  finally{
+
+    scanning=false;
+
+    $('scanBtn').disabled=false;
+
+    $('scanBtn').textContent=
+      '🔄 اسکن';
+
+  }
+
+}
+
+
+function checkNewSignals(results){
+
+  const current=
+    new Set();
+
+  results.forEach(
+    x=>{
+
+      const score=
+        Number(
+          x.score||0
+        );
+
+      const direction=
+        x.direction;
+
+      const strict=
+        currentStrictness();
+
+      const threshold=
+        strict===1 ? 45 :
+        strict===2 ? 52 :
+        strict===3 ? 60 :
+        strict===4 ? 68 :
+        strict===5 ? 76 :
+        84;
+
+      if(
+        (direction==='LONG' ||
+         direction==='SHORT') &&
+        score>=threshold
+      ){
+
+        const key=
+          `${x.symbol}:${direction}`;
+
+        current.add(key);
+
+        if(
+          !lastSignals.has(key)
+        )
+          signalSound();
+
+      }
 
     }
   );
+
+  lastSignals=
+    current;
+
+}
+
+
+function startAutoScan(){
+
+  if(timer)
+    clearInterval(timer);
+
+  timer=
+    setInterval(
+      ()=>{
+
+        if(
+          !scanning
+        )
+          scanNow();
+
+      },
+      15000
+    );
+
+}
+
+
+$('symbol')
+.addEventListener(
+  'keydown',
+  e=>{
+
+    if(e.key==='Enter')
+      manualAnalyze();
+
+  }
+);
+
+
+updateSoundUI();
+
+$('strictValue').textContent=
+  `${currentStrictness()} — ${strictLabel(
+    currentStrictness()
+  )}`;
+
+health();
 
 </script>
 
