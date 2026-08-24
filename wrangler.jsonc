@@ -1,9 +1,5 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bybit-dual-scanner-v11",
+  "name": "bybit-scanner",
   "main": "worker.js",
-  "compatibility_date": "2026-08-24",
-  "assets": {
-    "directory": "./public"
-  }
+  "compatibility_date": "2026-08-24"
 }
