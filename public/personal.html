@@ -15,13 +15,8 @@ body{
   font-family:Tahoma,Arial,sans-serif;
 }
 
-button,input{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
+button,input{font:inherit}
+button{cursor:pointer}
 
 .header{
   padding:18px 14px;
@@ -69,15 +64,83 @@ button{
   border-bottom:1px solid #1b2532;
 }
 
-.status strong{
-  color:#5ee69b;
-}
+.status strong{color:#5ee69b}
 
 .container{
   max-width:1100px;
   margin:auto;
   padding:12px;
 }
+
+/* =========================
+   STRICTNESS
+========================= */
+
+.strictness-box{
+  margin:12px;
+  padding:13px;
+  background:#0d141e;
+  border:1px solid #293748;
+  border-radius:12px;
+}
+
+.strictness-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.strictness-head b{
+  display:block;
+  font-size:13px;
+}
+
+.strictness-head small{
+  display:block;
+  color:#7f8da0;
+  font-size:10px;
+  margin-top:5px;
+}
+
+#strictnessValue{
+  min-width:52px;
+  text-align:center;
+  padding:7px 9px;
+  border-radius:8px;
+  background:#152131;
+  color:#67c7ff;
+  font-weight:bold;
+}
+
+#strictness{
+  width:100%;
+  margin:15px 0 7px;
+  accent-color:#2ca968;
+  cursor:pointer;
+}
+
+.strictness-labels{
+  display:flex;
+  justify-content:space-between;
+  color:#758397;
+  font-size:9px;
+  gap:3px;
+}
+
+.strictness-description{
+  margin-top:10px;
+  padding:8px;
+  background:#101923;
+  border-radius:8px;
+  color:#aebccc;
+  font-size:11px;
+  line-height:1.7;
+}
+
+/* =========================
+   SIGNALS
+========================= */
 
 .section-title{
   display:flex;
@@ -120,13 +183,8 @@ button{
   overflow:hidden;
 }
 
-.signal.long{
-  border-color:#1f8d59;
-}
-
-.signal.short{
-  border-color:#a14343;
-}
+.signal.long{border-color:#1f8d59}
+.signal.short{border-color:#a14343}
 
 .signal.current{
   box-shadow:0 0 0 2px #f0b84b33;
@@ -185,13 +243,8 @@ button{
   margin-bottom:4px;
 }
 
-.metric b{
-  font-size:13px;
-}
-
-.ma{
-  color:#67c7ff;
-}
+.metric b{font-size:13px}
+.ma{color:#67c7ff}
 
 .time{
   color:#9caabd;
@@ -217,6 +270,10 @@ button{
 .signal-actions button:hover{
   background:#192838;
 }
+
+/* =========================
+   DEEP
+========================= */
 
 #deepPanel{
   display:none;
@@ -298,13 +355,9 @@ button{
   font-size:12px;
 }
 
-.row:last-child{
-  border-bottom:0;
-}
+.row:last-child{border-bottom:0}
 
-.label{
-  color:#7f8c9e;
-}
+.label{color:#7f8c9e}
 
 .value{
   text-align:left;
@@ -349,9 +402,8 @@ button{
 }
 
 @media(max-width:600px){
-  .deep{
-    margin:5px auto;
-  }
+
+  .deep{margin:5px auto}
 
   .deep-head{
     top:0;
@@ -360,6 +412,10 @@ button{
 
   .signals{
     grid-template-columns:1fr;
+  }
+
+  .strictness-labels{
+    font-size:8px;
   }
 }
 </style>
@@ -373,11 +429,73 @@ button{
 </div>
 
 <div class="toolbar">
-  <button id="startBtn" class="active" onclick="startRadar()">▶ شروع رادار</button>
-  <button onclick="stopRadar()">⏸ توقف</button>
-  <button onclick="scanNow()">🔄 بررسی دستی</button>
-  <button onclick="clearSignals()">🗑 پاک کردن سیگنال‌ها</button>
-  <button id="soundBtn" onclick="toggleSound()">🔊 صدا روشن</button>
+
+  <button id="startBtn" class="active" onclick="startRadar()">
+    ▶ شروع رادار
+  </button>
+
+  <button onclick="stopRadar()">
+    ⏸ توقف
+  </button>
+
+  <button onclick="scanNow()">
+    🔄 بررسی دستی
+  </button>
+
+  <button onclick="clearSignals()">
+    🗑 پاک کردن سیگنال‌ها
+  </button>
+
+  <button id="soundBtn" onclick="toggleSound()">
+    🔊 صدا روشن
+  </button>
+
+</div>
+
+<!-- =========================
+     STRICTNESS CONTROL
+========================= -->
+
+<div class="strictness-box">
+
+  <div class="strictness-head">
+
+    <div>
+      <b>🎯 سخت‌گیری سیگنال MA20</b>
+      <small>
+        عدد بیشتر = سیگنال کمتر و فیلتر سخت‌تر
+      </small>
+    </div>
+
+    <div id="strictnessValue">
+      3 / 6
+    </div>
+
+  </div>
+
+  <input
+    id="strictness"
+    type="range"
+    min="1"
+    max="6"
+    step="1"
+    value="3"
+    oninput="changeStrictness(this.value)"
+  >
+
+  <div class="strictness-labels">
+    <span>1 آسان</span>
+    <span>2</span>
+    <span>3 متوسط</span>
+    <span>4</span>
+    <span>5</span>
+    <span>6 سخت</span>
+  </div>
+
+  <div id="strictnessDescription" class="strictness-description">
+    حالت متعادل؛ سیگنال‌های مناسب MA20 با فیلتر متوسط.
+  </div>
+
 </div>
 
 <div class="status">
@@ -394,33 +512,56 @@ button{
   </div>
 
   <div id="signals" class="signals">
+
     <div class="empty">
       هنوز سیگنال جدیدی دریافت نشده است.<br>
       رادار برخورد MA20 در حال انتظار است.
     </div>
+
   </div>
 
 </div>
 
+<!-- =========================
+     DEEP PANEL
+========================= -->
+
 <div id="deepPanel">
+
   <div class="deep">
 
     <div class="deep-head">
+
       <div class="deep-head-row">
+
         <div>
-          <div class="deep-title" id="deepTitle">تحلیل عمیق</div>
+
+          <div class="deep-title" id="deepTitle">
+            تحلیل عمیق
+          </div>
+
           <div class="deep-sub" id="deepSub"></div>
+
         </div>
 
-        <button class="close" onclick="closeDeep()">✕ بستن</button>
+        <button class="close" onclick="closeDeep()">
+          ✕ بستن
+        </button>
+
       </div>
+
     </div>
 
     <div id="deepContent">
-      <div class="loading">در حال دریافت تحلیل...</div>
+
+      <div class="loading">
+        در حال دریافت تحلیل...
+      </div>
+
     </div>
 
   </div>
+
 </div>
 
 <div id="toast" class="toast"></div>
@@ -428,7 +569,7 @@ button{
 <script>
 
 /* =========================================================
-CONFIG
+   CONFIG
 ========================================================= */
 
 const WORKER =
@@ -442,42 +583,120 @@ const ANALYZE_URL =
 
 const SCAN_INTERVAL = 15000;
 
+
+/* =========================================================
+   SIGNAL STRICTNESS
+========================================================= */
+
+let signalStrictness =
+  Number(
+    localStorage.getItem("ma20Strictness")
+  ) || 3;
+
+
 /*
-  سیگنال‌هایی که قبلاً دیده شده‌اند.
-  باعث می‌شود یک سیگنال در اسکن بعدی
-  دوباره به عنوان سیگنال جدید ثبت نشود.
+  حداقل امتیاز لازم
+  در هر سطح سخت‌گیری
 */
+
+const STRICT_SCORE = {
+
+  1: 0,
+
+  2: 25,
+
+  3: 40,
+
+  4: 50,
+
+  5: 60,
+
+  6: 72
+
+};
+
+
+/*
+  حداقل تعداد تأیید
+*/
+
+const STRICT_CONFIRMATIONS = {
+
+  1: 0,
+
+  2: 1,
+
+  3: 1,
+
+  4: 2,
+
+  5: 3,
+
+  6: 4
+
+};
+
+
+const STRICTNESS_TEXT = {
+
+  1:
+    "حالت آسان؛ برخوردهای بیشتری از MA20 نمایش داده می‌شود و فیلتر بسیار سبک است.",
+
+  2:
+    "حالت نسبتاً آسان؛ برخورد MA20 باید حداقل یک نشانه تأیید داشته باشد.",
+
+  3:
+    "حالت متعادل؛ برخورد MA20 همراه با تأییدهای پایه و امتیاز مناسب بررسی می‌شود.",
+
+  4:
+    "حالت سخت؛ MA20 باید همراه با چند تأیید معتبر باشد.",
+
+  5:
+    "حالت خیلی سخت؛ فقط موقعیت‌های قوی‌تر با ساختار مناسب نمایش داده می‌شوند.",
+
+  6:
+    "حالت بسیار سخت؛ فقط قوی‌ترین موقعیت‌های MA20 با امتیاز، ساختار و حجم مناسب نمایش داده می‌شوند."
+
+};
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
 const seenSignals = new Set();
 
-/*
-  سیگنال‌های فعال روی صفحه.
-*/
 const signals = new Map();
 
-/*
-  سیگنالی که فعلاً کاربر در حال بررسی آن است.
-*/
 let currentSignalId = null;
 
 let radarTimer = null;
+
 let running = false;
+
 let soundEnabled = true;
 
 let offset = 0;
 
+
 /* =========================================================
-DOM
+   DOM
 ========================================================= */
 
 const $ = id =>
   document.getElementById(id);
 
+
 /* =========================================================
-TIME
+   TIME
 ========================================================= */
 
 function timeText(ts){
-  const d = ts ? new Date(ts) : new Date();
+
+  const d =
+    ts
+      ? new Date(ts)
+      : new Date();
 
   return d.toLocaleTimeString(
     "fa-IR",
@@ -489,20 +708,23 @@ function timeText(ts){
   );
 }
 
+
 /* =========================================================
-NUMBER
+   NUMBER
 ========================================================= */
 
 function num(v,digits=4){
 
-  if(v===null||v===undefined||
-     v===""||Number.isNaN(Number(v))){
+  if(
+    v===null ||
+    v===undefined ||
+    v==="" ||
+    Number.isNaN(Number(v))
+  ){
     return "-";
   }
 
-  const n=Number(v);
-
-  return n.toLocaleString(
+  return Number(v).toLocaleString(
     "en-US",
     {
       maximumFractionDigits:digits
@@ -510,55 +732,75 @@ function num(v,digits=4){
   );
 }
 
+
 function pct(v){
 
-  if(v===null||v===undefined||
-     Number.isNaN(Number(v))){
+  if(
+    v===null ||
+    v===undefined ||
+    Number.isNaN(Number(v))
+  ){
     return "-";
   }
 
   return Number(v).toFixed(2)+"%";
 }
 
+
 /* =========================================================
-STATUS
+   STATUS
 ========================================================= */
 
 function setStatus(text,good=false){
 
-  $("statusText").textContent=text;
+  $("statusText").textContent =
+    text;
 
   $("statusText").style.color =
-    good ? "#5ee69b" : "#e6c76c";
+    good
+      ? "#5ee69b"
+      : "#e6c76c";
 }
 
+
 /* =========================================================
-TOAST
+   TOAST
 ========================================================= */
 
 let toastTimer;
 
 function toast(text){
 
-  const el=$("toast");
+  const el =
+    $("toast");
 
-  el.textContent=text;
-  el.style.display="block";
+  el.textContent =
+    text;
+
+  el.style.display =
+    "block";
 
   clearTimeout(toastTimer);
 
-  toastTimer=setTimeout(()=>{
-    el.style.display="none";
-  },3500);
+  toastTimer =
+    setTimeout(
+      ()=>{
+        el.style.display =
+          "none";
+      },
+      3500
+    );
 }
 
+
 /* =========================================================
-SOUND
+   SOUND
 ========================================================= */
 
 function beep(){
 
-  if(!soundEnabled)return;
+  if(!soundEnabled)
+    return;
 
   try{
 
@@ -566,14 +808,20 @@ function beep(){
       window.AudioContext ||
       window.webkitAudioContext;
 
-    if(!Ctx)return;
+    if(!Ctx)
+      return;
 
-    const ctx=new Ctx();
+    const ctx =
+      new Ctx();
 
-    const osc=ctx.createOscillator();
-    const gain=ctx.createGain();
+    const osc =
+      ctx.createOscillator();
 
-    osc.type="sine";
+    const gain =
+      ctx.createGain();
+
+    osc.type =
+      "sine";
 
     osc.frequency.setValueAtTime(
       740,
@@ -601,6 +849,7 @@ function beep(){
     );
 
     osc.connect(gain);
+
     gain.connect(ctx.destination);
 
     osc.start();
@@ -612,157 +861,483 @@ function beep(){
   }catch(e){}
 }
 
+
 function toggleSound(){
 
-  soundEnabled=!soundEnabled;
+  soundEnabled =
+    !soundEnabled;
 
   $("soundBtn").textContent =
     soundEnabled
-      ?"🔊 صدا روشن"
-      :"🔇 صدا خاموش";
+      ? "🔊 صدا روشن"
+      : "🔇 صدا خاموش";
 
-  if(soundEnabled){
+  if(soundEnabled)
     beep();
-  }
 }
 
+
 /* =========================================================
-MA20 SIGNAL FILTER
+   STRICTNESS
 ========================================================= */
 
-/*
-  فقط برخورد MA20 یک دقیقه.
-  MA20 تایم‌فریم 1 دقیقه از Worker:
-  tf["1"].touchMA20
+function changeStrictness(value){
 
-  و برای جلوگیری از نمایش سیگنال‌های ضعیف،
-  ترجیحاً باید MA دارای جهت و برخورد واقعی باشد.
-*/
+  signalStrictness =
+    Number(value);
+
+  localStorage.setItem(
+    "ma20Strictness",
+    signalStrictness
+  );
+
+  $("strictness").value =
+    signalStrictness;
+
+  $("strictnessValue").textContent =
+    signalStrictness + " / 6";
+
+  $("strictnessDescription").textContent =
+    STRICTNESS_TEXT[
+      signalStrictness
+    ];
+}
+
+
+/* =========================================================
+   MA20 SIGNAL FILTER
+========================================================= */
 
 function extractMA20Signal(item){
 
-  const tf=item?.timeframes?.["1"];
+  const tf =
+    item?.timeframes?.["1"];
 
-  if(!tf || tf.error)return null;
+  if(!tf || tf.error)
+    return null;
 
-  if(!tf.touchMA20)return null;
+  if(!tf.touchMA20)
+    return null;
 
-  const price=Number(tf.price||item.price);
-  const ma20=Number(tf.ma20);
 
-  if(!price || !ma20)return null;
-
-  let direction="WAIT";
-
-  /*
-    اگر قیمت بالای MA20 باشد و MA رو به بالا باشد:
-    LONG
-
-    اگر قیمت زیر MA20 باشد و MA رو به پایین باشد:
-    SHORT
-  */
-
-  if(
-    price>=ma20 &&
-    tf.maSlope==="UP"
-  ){
-    direction="LONG";
-  }
-
-  if(
-    price<=ma20 &&
-    tf.maSlope==="DOWN"
-  ){
-    direction="SHORT";
-  }
-
-  /*
-    اگر خود Worker سیگنال عمیق قطعی دارد،
-    از آن استفاده می‌کنیم.
-  */
-
-  if(item.direction==="LONG"){
-    direction="LONG";
-  }
-
-  if(item.direction==="SHORT"){
-    direction="SHORT";
-  }
-
-  const event=
-    item.convertedMA1m?.events
-      ?.find(x =>
-        x.source==="1m" &&
-        x.ma==="MA20"
-      )||null;
-
-  const type=
-    event?.type||
-    (
-      tf.touchMA20
-        ?"TOUCH"
-        :"NONE"
+  const price =
+    Number(
+      tf.price ||
+      item.price
     );
 
-  return{
+  const ma20 =
+    Number(tf.ma20);
+
+
+  if(!price || !ma20)
+    return null;
+
+
+  let direction =
+    "WAIT";
+
+
+  /* =========================
+     DIRECTION
+  ========================= */
+
+  if(
+    price >= ma20 &&
+    tf.maSlope === "UP"
+  ){
+
+    direction =
+      "LONG";
+  }
+
+
+  if(
+    price <= ma20 &&
+    tf.maSlope === "DOWN"
+  ){
+
+    direction =
+      "SHORT";
+  }
+
+
+  if(item.direction === "LONG")
+    direction = "LONG";
+
+
+  if(item.direction === "SHORT")
+    direction = "SHORT";
+
+
+  /* =========================
+     EVENT
+  ========================= */
+
+  const event =
+    item.convertedMA1m?.events?.find(
+      x =>
+        x.source === "1m" &&
+        x.ma === "MA20"
+    ) || null;
+
+
+  const crossUp =
+    !!event?.crossUp;
+
+  const crossDown =
+    !!event?.crossDown;
+
+  const rejection =
+    !!event?.rejection;
+
+
+  const volumeConfirmed =
+    !!(
+      event?.volumeConfirmed ||
+      tf.volume?.spike
+    );
+
+
+  /* =========================
+     CONFIRMATIONS
+  ========================= */
+
+  let confirmations = 0;
+
+
+  /* MA SLOPE */
+
+  if(
+    direction === "LONG" &&
+    tf.maSlope === "UP"
+  ){
+
+    confirmations++;
+  }
+
+
+  if(
+    direction === "SHORT" &&
+    tf.maSlope === "DOWN"
+  ){
+
+    confirmations++;
+  }
+
+
+  /* CROSS */
+
+  if(
+    direction === "LONG" &&
+    crossUp
+  ){
+
+    confirmations++;
+  }
+
+
+  if(
+    direction === "SHORT" &&
+    crossDown
+  ){
+
+    confirmations++;
+  }
+
+
+  /* REJECTION */
+
+  if(rejection)
+    confirmations++;
+
+
+  /* VOLUME */
+
+  if(volumeConfirmed)
+    confirmations++;
+
+
+  /* HUNT */
+
+  if(tf.hunt?.confirmed)
+    confirmations++;
+
+
+  /* BOS */
+
+  if(
+    tf.bos &&
+    tf.bos !== "NONE" &&
+    tf.bos !== false
+  ){
+
+    confirmations++;
+  }
+
+
+  /* CHOCH */
+
+  if(
+    tf.choch &&
+    tf.choch !== "NONE" &&
+    tf.choch !== false
+  ){
+
+    confirmations++;
+  }
+
+
+  /* FVG */
+
+  if(
+    tf.fvg &&
+    tf.fvg.type &&
+    tf.fvg.type !== "NONE"
+  ){
+
+    confirmations++;
+  }
+
+
+  /* =========================
+     SCORE
+  ========================= */
+
+  const workerScore =
+    Number(
+      item.score || 0
+    );
+
+
+  const longScore =
+    Number(
+      item.longScore || 0
+    );
+
+
+  const shortScore =
+    Number(
+      item.shortScore || 0
+    );
+
+
+  let directionScore =
+    workerScore;
+
+
+  if(direction === "LONG"){
+
+    directionScore =
+      Math.max(
+        workerScore,
+        longScore
+      );
+  }
+
+
+  if(direction === "SHORT"){
+
+    directionScore =
+      Math.max(
+        workerScore,
+        shortScore
+      );
+  }
+
+
+  /* =========================
+     STRICTNESS FILTER
+  ========================= */
+
+  const requiredScore =
+    STRICT_SCORE[
+      signalStrictness
+    ];
+
+
+  const requiredConfirmations =
+    STRICT_CONFIRMATIONS[
+      signalStrictness
+    ];
+
+
+  /*
+    سطح 1:
+    تقریباً آزاد
+  */
+
+  if(signalStrictness >= 2){
+
+    if(
+      directionScore <
+      requiredScore
+    ){
+
+      return null;
+    }
+
+
+    if(
+      confirmations <
+      requiredConfirmations
+    ){
+
+      return null;
+    }
+  }
+
+
+  /*
+    سطح 4 به بالا:
+    WAIT قبول نمی‌شود
+  */
+
+  if(
+    signalStrictness >= 4 &&
+    direction === "WAIT"
+  ){
+
+    return null;
+  }
+
+
+  /*
+    سطح 5 و 6:
+    حداقل یک تأیید ساختاری
+  */
+
+  if(
+    signalStrictness >= 5
+  ){
+
+    const structuralConfirmation =
+      crossUp ||
+      crossDown ||
+      rejection ||
+      tf.hunt?.confirmed ||
+      (
+        tf.bos &&
+        tf.bos !== "NONE"
+      ) ||
+      (
+        tf.choch &&
+        tf.choch !== "NONE"
+      );
+
+
+    if(!structuralConfirmation){
+
+      return null;
+    }
+  }
+
+
+  /*
+    سطح 6:
+    حجم اجباری
+  */
+
+  if(
+    signalStrictness >= 6 &&
+    !volumeConfirmed
+  ){
+
+    return null;
+  }
+
+
+  /* =========================
+     TYPE
+  ========================= */
+
+  let type =
+    "TOUCH";
+
+
+  if(rejection)
+    type =
+      "REJECTION";
+
+
+  if(
+    crossUp ||
+    crossDown
+  ){
+
+    type =
+      "BREAK";
+  }
+
+
+  return {
+
     symbol:item.symbol,
-    category:item.category||"linear",
+
+    category:
+      item.category ||
+      "linear",
 
     direction,
 
     price,
+
     ma20,
 
     distancePct:
-      (price-ma20)/ma20*100,
+      (price-ma20) /
+      ma20 *
+      100,
 
-    maSlope:tf.maSlope,
+    maSlope:
+      tf.maSlope,
 
-    trend:tf.trend,
+    trend:
+      tf.trend,
 
     type,
 
-    rejection:
-      event?.rejection||false,
+    rejection,
 
-    crossUp:
-      event?.crossUp||false,
+    crossUp,
 
-    crossDown:
-      event?.crossDown||false,
+    crossDown,
 
-    volumeConfirmed:
-      event?.volumeConfirmed||
-      tf.volume?.spike||
-      false,
+    volumeConfirmed,
 
-    score:item.score||0,
+    confirmations,
 
-    longScore:item.longScore||0,
+    requiredConfirmations,
 
-    shortScore:item.shortScore||0,
+    workerScore,
 
-    hunt:tf.hunt||null,
+    score:
+      directionScore,
+
+    longScore,
+
+    shortScore,
+
+    hunt:
+      tf.hunt ||
+      null,
 
     timestamp:
-      tf.timestamp||
-      item.generatedAt||
+      tf.timestamp ||
+      item.generatedAt ||
       Date.now(),
 
     deep:item
+
   };
 }
 
+
 /* =========================================================
-SIGNAL ID
+   SIGNAL ID
 ========================================================= */
 
 function signalId(s){
-
-  /*
-    نماد + زمان کندل + جهت
-    باعث می‌شود همان کندل دوباره ثبت نشود.
-  */
 
   return [
     s.symbol,
@@ -772,204 +1347,297 @@ function signalId(s){
   ].join("_");
 }
 
+
 /* =========================================================
-ADD SIGNAL
+   ADD SIGNAL
 ========================================================= */
 
 function addSignal(s){
 
-  const id=signalId(s);
+  const id =
+    signalId(s);
 
-  if(seenSignals.has(id)){
+
+  if(
+    seenSignals.has(id)
+  ){
+
     return false;
   }
 
+
   seenSignals.add(id);
 
-  signals.set(id,{
+
+  signals.set(
     id,
-    ...s,
-    receivedAt:Date.now(),
-    active:true
-  });
+    {
+      id,
+      ...s,
+      receivedAt:
+        Date.now(),
+      active:true
+    }
+  );
+
 
   beep();
 
+
   renderSignals();
+
 
   toast(
     `🚨 سیگنال جدید ${s.symbol} — ${
-      s.direction==="LONG"
-        ?"LONG"
-        :s.direction==="SHORT"
-          ?"SHORT"
-          :"برخورد MA20"
+      s.direction === "LONG"
+        ? "LONG"
+        : s.direction === "SHORT"
+          ? "SHORT"
+          : "برخورد MA20"
     }`
   );
+
 
   return true;
 }
 
+
 /* =========================================================
-RENDER SIGNALS
+   RENDER SIGNALS
 ========================================================= */
 
 function renderSignals(){
 
-  const box=$("signals");
+  const box =
+    $("signals");
+
 
   if(!signals.size){
 
-    box.innerHTML=`
+    box.innerHTML = `
       <div class="empty">
         هنوز سیگنال جدیدی دریافت نشده است.<br>
         رادار برخورد MA20 در حال انتظار است.
       </div>
     `;
 
-    $("signalCount").textContent="0 سیگنال";
+
+    $("signalCount").textContent =
+      "0 سیگنال";
+
 
     return;
   }
 
-  const arr=[
-    ...signals.values()
-  ].sort(
-    (a,b)=>b.receivedAt-a.receivedAt
-  );
 
-  box.innerHTML=
-    arr.map(s=>{
+  const arr =
+    [
+      ...signals.values()
+    ]
+    .sort(
+      (a,b)=>
+        b.receivedAt -
+        a.receivedAt
+    );
 
-      const dirClass=
-        s.direction==="LONG"
-          ?"long"
-          :s.direction==="SHORT"
-            ?"short"
-            :"";
 
-      const badgeClass=
-        s.direction==="LONG"
-          ?"long"
-          :s.direction==="SHORT"
-            ?"short"
-            :"wait";
+  box.innerHTML =
+    arr.map(
+      s => {
 
-      const directionText=
-        s.direction==="LONG"
-          ?"🟢 LONG"
-          :s.direction==="SHORT"
-            ?"🔴 SHORT"
-            :"🟡 MA20";
+        const dirClass =
+          s.direction === "LONG"
+            ? "long"
+            : s.direction === "SHORT"
+              ? "short"
+              : "";
 
-      const typeText={
-        TOUCH:"برخورد",
-        REJECTION:"برگشت از MA20",
-        BREAK:"شکست MA20"
-      }[s.type]||"برخورد MA20";
 
-      return`
+        const badgeClass =
+          s.direction === "LONG"
+            ? "long"
+            : s.direction === "SHORT"
+              ? "short"
+              : "wait";
 
-        <div
-          class="signal ${dirClass} ${
-            currentSignalId===s.id
-              ?"current"
-              :""
-          }"
-        >
 
-          <div class="signal-head">
+        const directionText =
+          s.direction === "LONG"
+            ? "🟢 LONG"
+            : s.direction === "SHORT"
+              ? "🔴 SHORT"
+              : "🟡 MA20";
 
-            <div class="symbol">
-              ${escapeHtml(s.symbol)}
+
+        const typeText = {
+
+          TOUCH:
+            "برخورد",
+
+          REJECTION:
+            "برگشت از MA20",
+
+          BREAK:
+            "شکست MA20"
+
+        }[
+          s.type
+        ] || "برخورد MA20";
+
+
+        return `
+
+          <div
+            class="signal ${dirClass} ${
+              currentSignalId === s.id
+                ? "current"
+                : ""
+            }"
+          >
+
+            <div class="signal-head">
+
+              <div class="symbol">
+                ${escapeHtml(
+                  s.symbol
+                )}
+              </div>
+
+              <div class="badge ${badgeClass}">
+                ${directionText}
+              </div>
+
             </div>
 
-            <div class="badge ${badgeClass}">
-              ${directionText}
+
+            <div class="signal-grid">
+
+              <div class="metric">
+                <small>قیمت</small>
+                <b>
+                  ${num(s.price)}
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>MA20 یک دقیقه</small>
+                <b class="ma">
+                  ${num(s.ma20)}
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>فاصله از MA20</small>
+                <b>
+                  ${pct(s.distancePct)}
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>نوع برخورد</small>
+                <b>
+                  ${typeText}
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>شیب MA20</small>
+                <b>
+                  ${s.maSlope || "-"}
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>حجم</small>
+                <b>
+                  ${
+                    s.volumeConfirmed
+                      ? "تأیید"
+                      : "عادی"
+                  }
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>قدرت سیگنال</small>
+                <b>
+                  ${num(s.score,0)}/100
+                </b>
+              </div>
+
+
+              <div class="metric">
+                <small>تأییدها</small>
+                <b>
+                  ${s.confirmations}/${
+                    s.requiredConfirmations
+                  }
+                </b>
+              </div>
+
+            </div>
+
+
+            <div class="time">
+
+              🕒 دریافت:
+              ${timeText(s.receivedAt)}
+
+              |
+
+              کندل:
+              ${timeText(s.timestamp)}
+
+            </div>
+
+
+            <div class="signal-actions">
+
+              <button
+                onclick="openDeep(
+                  '${encodeURIComponent(s.symbol)}',
+                  '${s.category}',
+                  '${s.id}'
+                )"
+              >
+                🔬 تحلیل عمیق
+              </button>
+
+
+              <button
+                onclick="focusSignal('${s.id}')"
+              >
+                🎯 انتخاب
+              </button>
+
             </div>
 
           </div>
 
-          <div class="signal-grid">
+        `;
 
-            <div class="metric">
-              <small>قیمت</small>
-              <b>${num(s.price)}</b>
-            </div>
+      }
+    ).join("");
 
-            <div class="metric">
-              <small>MA20 یک دقیقه</small>
-              <b class="ma">${num(s.ma20)}</b>
-            </div>
-
-            <div class="metric">
-              <small>فاصله از MA20</small>
-              <b>${pct(s.distancePct)}</b>
-            </div>
-
-            <div class="metric">
-              <small>نوع برخورد</small>
-              <b>${typeText}</b>
-            </div>
-
-            <div class="metric">
-              <small>شیب MA20</small>
-              <b>${s.maSlope||"-"}</b>
-            </div>
-
-            <div class="metric">
-              <small>حجم</small>
-              <b>
-                ${
-                  s.volumeConfirmed
-                    ?"تأیید"
-                    :"عادی"
-                }
-              </b>
-            </div>
-
-          </div>
-
-          <div class="time">
-            🕒 دریافت:
-            ${timeText(s.receivedAt)}
-            |
-            کندل:
-            ${timeText(s.timestamp)}
-          </div>
-
-          <div class="signal-actions">
-
-            <button
-              onclick="openDeep('${encodeURIComponent(s.symbol)}','${s.category}','${s.id}')"
-            >
-              🔬 تحلیل عمیق
-            </button>
-
-            <button
-              onclick="focusSignal('${s.id}')"
-            >
-              🎯 انتخاب
-            </button>
-
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
 
   $("signalCount").textContent =
     `${arr.length} سیگنال`;
 }
 
+
 /* =========================================================
-ESCAPE
+   ESCAPE
 ========================================================= */
 
 function escapeHtml(v){
 
-  return String(v??"")
+  return String(v ?? "")
     .replace(/&/g,"&amp;")
     .replace(/</g,"&lt;")
     .replace(/>/g,"&gt;")
@@ -977,27 +1645,42 @@ function escapeHtml(v){
     .replace(/'/g,"&#039;");
 }
 
+
 /* =========================================================
-FOCUS
+   FOCUS
 ========================================================= */
 
 function focusSignal(id){
 
-  currentSignalId=id;
+  currentSignalId =
+    id;
 
   renderSignals();
 
-  const cards=
-    document.querySelectorAll(".signal");
 
-  const index=
-    [...signals.values()]
-      .sort(
-        (a,b)=>b.receivedAt-a.receivedAt
-      )
-      .findIndex(x=>x.id===id);
+  const cards =
+    document.querySelectorAll(
+      ".signal"
+    );
+
+
+  const index =
+    [
+      ...signals.values()
+    ]
+    .sort(
+      (a,b)=>
+        b.receivedAt -
+        a.receivedAt
+    )
+    .findIndex(
+      x =>
+        x.id === id
+    );
+
 
   if(cards[index]){
+
     cards[index].scrollIntoView({
       behavior:"smooth",
       block:"center"
@@ -1005,147 +1688,208 @@ function focusSignal(id){
   }
 }
 
+
 /* =========================================================
-SCAN
+   SCAN
 ========================================================= */
 
 async function scanNow(){
 
   if(!running){
-    setStatus("در حال بررسی دستی...",false);
+
+    setStatus(
+      "در حال بررسی دستی...",
+      false
+    );
   }
+
 
   try{
 
-    const url=
-      SCAN_URL+
-      "?offset="+
-      encodeURIComponent(offset);
+    const url =
+      SCAN_URL +
+      "?offset=" +
+      encodeURIComponent(
+        offset
+      );
 
-    const r=await fetch(url,{
-      cache:"no-store"
-    });
+
+    const r =
+      await fetch(
+        url,
+        {
+          cache:"no-store"
+        }
+      );
+
 
     if(!r.ok){
+
       throw new Error(
-        "HTTP "+r.status
+        "HTTP " +
+        r.status
       );
     }
 
-    const data=await r.json();
+
+    const data =
+      await r.json();
+
 
     if(!data.ok){
 
       throw new Error(
-        data.error||
+        data.error ||
         "خطای نامشخص Worker"
       );
     }
 
-    offset=
-      Number(data.nextOffset)||0;
 
-    /*
-      فقط نتایجی که MA20 یک دقیقه
-      برخورد کرده را استخراج می‌کنیم.
-    */
+    offset =
+      Number(
+        data.nextOffset
+      ) || 0;
 
-    let found=0;
 
-    for(const item of data.results||[]){
+    let found = 0;
 
-      const signal=
-        extractMA20Signal(item);
 
-      if(!signal)continue;
+    for(
+      const item of
+      data.results || []
+    ){
 
-      if(addSignal(signal)){
+      const signal =
+        extractMA20Signal(
+          item
+        );
+
+
+      if(!signal)
+        continue;
+
+
+      if(
+        addSignal(signal)
+      ){
+
         found++;
       }
     }
 
-    $("lastScan").textContent=
+
+    $("lastScan").textContent =
       ` | آخرین بررسی: ${timeText()}`;
+
 
     if(running){
 
       setStatus(
         found
-          ?`🟢 ${found} سیگنال جدید`
-          :"🟡 اسکن انجام شد؛ سیگنال جدیدی نبود",
-        found>0
+          ? `🟢 ${found} سیگنال جدید`
+          : "🟡 اسکن انجام شد؛ سیگنال جدیدی نبود",
+        found > 0
       );
 
     }else{
 
       setStatus(
         found
-          ?`🟢 ${found} سیگنال پیدا شد`
-          :"🟡 بررسی انجام شد"
+          ? `🟢 ${found} سیگنال پیدا شد`
+          : "🟡 بررسی انجام شد"
       );
-
     }
+
 
   }catch(e){
 
     console.error(e);
 
+
     setStatus(
-      "❌ خطا: "+e.message
+      "❌ خطا: " +
+      e.message
     );
 
+
     toast(
-      "خطا در اتصال به Worker: "+
+      "خطا در اتصال به Worker: " +
       e.message
     );
   }
 }
 
+
 /* =========================================================
-START / STOP
+   START
 ========================================================= */
 
 function startRadar(){
 
-  if(running)return;
+  if(running)
+    return;
 
-  running=true;
 
-  $("startBtn").classList.add("active");
+  running =
+    true;
+
+
+  $("startBtn")
+    .classList
+    .add("active");
+
 
   setStatus(
-    "🟢 رادار فعال است",
+    `🟢 رادار فعال است | سخت‌گیری ${signalStrictness}/6`,
     true
   );
 
+
   scanNow();
 
-  radarTimer=setInterval(
-    scanNow,
-    SCAN_INTERVAL
-  );
+
+  radarTimer =
+    setInterval(
+      scanNow,
+      SCAN_INTERVAL
+    );
 }
+
+
+/* =========================================================
+   STOP
+========================================================= */
 
 function stopRadar(){
 
-  running=false;
+  running =
+    false;
 
-  $("startBtn").classList.remove("active");
+
+  $("startBtn")
+    .classList
+    .remove("active");
+
 
   if(radarTimer){
 
-    clearInterval(radarTimer);
+    clearInterval(
+      radarTimer
+    );
 
-    radarTimer=null;
+    radarTimer =
+      null;
   }
+
 
   setStatus(
     "⏸ رادار متوقف شد"
   );
 }
 
+
 /* =========================================================
-CLEAR
+   CLEAR
 ========================================================= */
 
 function clearSignals(){
@@ -1154,7 +1898,8 @@ function clearSignals(){
 
   seenSignals.clear();
 
-  currentSignalId=null;
+  currentSignalId =
+    null;
 
   renderSignals();
 
@@ -1163,8 +1908,9 @@ function clearSignals(){
   );
 }
 
+
 /* =========================================================
-DEEP ANALYSIS
+   DEEP ANALYSIS
 ========================================================= */
 
 async function openDeep(
@@ -1173,366 +1919,823 @@ async function openDeep(
   id
 ){
 
-  const symbol=
-    decodeURIComponent(encodedSymbol);
+  const symbol =
+    decodeURIComponent(
+      encodedSymbol
+    );
 
-  currentSignalId=id;
 
-  $("deepPanel").style.display="block";
+  currentSignalId =
+    id;
 
-  document.body.style.overflow="hidden";
 
-  $("deepTitle").textContent=
+  $("deepPanel")
+    .style
+    .display =
+      "block";
+
+
+  document.body.style.overflow =
+    "hidden";
+
+
+  $("deepTitle").textContent =
     `🔬 تحلیل عمیق ${symbol}`;
 
-  $("deepSub").textContent=
+
+  $("deepSub").textContent =
     "در حال دریافت داده‌های Bybit...";
 
-  $("deepContent").innerHTML=
-    `<div class="loading">
-      ⏳ در حال دریافت تحلیل عمیق...
-    </div>`;
+
+  $("deepContent").innerHTML =
+    `
+      <div class="loading">
+        ⏳ در حال دریافت تحلیل عمیق...
+      </div>
+    `;
+
 
   try{
 
-    const url=
-      ANALYZE_URL+
-      "?symbol="+
-      encodeURIComponent(symbol)+
-      "&category="+
-      encodeURIComponent(category||"linear");
+    const url =
+      ANALYZE_URL +
+      "?symbol=" +
+      encodeURIComponent(symbol) +
+      "&category=" +
+      encodeURIComponent(
+        category || "linear"
+      );
 
-    const r=await fetch(url,{
-      cache:"no-store"
-    });
+
+    const r =
+      await fetch(
+        url,
+        {
+          cache:"no-store"
+        }
+      );
+
 
     if(!r.ok){
 
       throw new Error(
-        "HTTP "+r.status
+        "HTTP " +
+        r.status
       );
     }
 
-    const data=await r.json();
+
+    const data =
+      await r.json();
+
 
     if(!data.ok){
 
       throw new Error(
-        data.error||
+        data.error ||
         "تحلیل دریافت نشد"
       );
     }
 
-    $("deepSub").textContent=
+
+    $("deepSub").textContent =
       `قیمت: ${num(data.price)} | امتیاز: ${data.score}/100`;
 
-    $("deepContent").innerHTML=
+
+    $("deepContent").innerHTML =
       buildDeep(data);
+
 
   }catch(e){
 
     console.error(e);
 
-    $("deepContent").innerHTML=
+
+    $("deepContent").innerHTML =
       `
-      <div class="panel">
-        <h3>❌ خطا</h3>
-        <div class="reason">
-          ${escapeHtml(e.message)}
+        <div class="panel">
+
+          <h3>❌ خطا</h3>
+
+          <div class="reason">
+            ${escapeHtml(
+              e.message
+            )}
+          </div>
+
         </div>
-      </div>
       `;
   }
 }
 
+
 /* =========================================================
-DEEP HTML
+   DEEP HTML
 ========================================================= */
 
 function buildDeep(d){
 
-  const tf=d.timeframes?.["1"]||{};
+  const tf =
+    d.timeframes?.["1"] || {};
 
-  const fp=d.footprint||{};
-  const wall=d.walls||{};
-  const sr=d.supportResistance||{};
-  const market=d.market||{};
-  const movement=d.movement||{};
-  const reversal=d.reversal||{};
-  const styles=d.styles||{};
-  const plan=d.tradePlan||{};
+  const fp =
+    d.footprint || {};
 
-  return`
+  const wall =
+    d.walls || {};
+
+  const sr =
+    d.supportResistance || {};
+
+  const market =
+    d.market || {};
+
+  const movement =
+    d.movement || {};
+
+  const reversal =
+    d.reversal || {};
+
+  const styles =
+    d.styles || {};
+
+  const plan =
+    d.tradePlan || {};
+
+
+  return `
 
     <div class="deep-grid">
 
       ${panel(
         "📊 سیگنال",
-        row("جهت",d.direction)+
-        row("Score",d.score+"/100")+
-        row("Long",d.longScore)+
-        row("Short",d.shortScore)+
-        row("سطح",d.signalLevel)+
-        row("وضعیت Pump/Dump",d.pumpDumpStatus)
+
+        row(
+          "جهت",
+          d.direction
+        ) +
+
+        row(
+          "Score",
+          d.score + "/100"
+        ) +
+
+        row(
+          "Long",
+          d.longScore
+        ) +
+
+        row(
+          "Short",
+          d.shortScore
+        ) +
+
+        row(
+          "سطح",
+          d.signalLevel
+        ) +
+
+        row(
+          "وضعیت Pump/Dump",
+          d.pumpDumpStatus
+        )
       )}
+
 
       ${panel(
         "📈 MA20 یک دقیقه",
-        row("قیمت",num(tf.price))+
-        row("MA20",num(tf.ma20))+
-        row("MA7",num(tf.ma7))+
-        row("شیب MA20",tf.maSlope)+
-        row("روند",tf.trend)+
-        row("برخورد MA20",tf.touchMA20?"بله":"خیر")+
-        row("برخورد MA7",tf.touchMA7?"بله":"خیر")
+
+        row(
+          "قیمت",
+          num(tf.price)
+        ) +
+
+        row(
+          "MA20",
+          num(tf.ma20)
+        ) +
+
+        row(
+          "MA7",
+          num(tf.ma7)
+        ) +
+
+        row(
+          "شیب MA20",
+          tf.maSlope
+        ) +
+
+        row(
+          "روند",
+          tf.trend
+        ) +
+
+        row(
+          "برخورد MA20",
+          tf.touchMA20
+            ? "بله"
+            : "خیر"
+        ) +
+
+        row(
+          "برخورد MA7",
+          tf.touchMA7
+            ? "بله"
+            : "خیر"
+        )
       )}
+
 
       ${panel(
         "🎯 Hunt / Structure",
-        row("Hunt",tf.hunt?.type)+
-        row("سمت Hunt",tf.hunt?.side)+
-        row("تأیید Hunt",tf.hunt?.confirmed?"بله":"خیر")+
-        row("BOS",tf.bos)+
-        row("CHoCH",tf.choch)+
-        row("Candle",tf.candle)
+
+        row(
+          "Hunt",
+          tf.hunt?.type
+        ) +
+
+        row(
+          "سمت Hunt",
+          tf.hunt?.side
+        ) +
+
+        row(
+          "تأیید Hunt",
+          tf.hunt?.confirmed
+            ? "بله"
+            : "خیر"
+        ) +
+
+        row(
+          "BOS",
+          tf.bos
+        ) +
+
+        row(
+          "CHoCH",
+          tf.choch
+        ) +
+
+        row(
+          "Candle",
+          tf.candle
+        )
       )}
+
 
       ${panel(
         "🧩 FVG / Order Block",
-        row("FVG",tf.fvg?.type)+
+
+        row(
+          "FVG",
+          tf.fvg?.type
+        ) +
+
         row(
           "FVG محدوده",
-          tf.fvg?.low!==null
-            ?num(tf.fvg.low)+" → "+num(tf.fvg.high)
-            :"—"
-        )+
-        row("Order Block",tf.orderBlock?.type)+
+
+          tf.fvg?.low !== null
+            ? num(tf.fvg.low) +
+              " → " +
+              num(tf.fvg.high)
+            : "—"
+        ) +
+
+        row(
+          "Order Block",
+          tf.orderBlock?.type
+        ) +
+
         row(
           "OB محدوده",
+
           tf.orderBlock?.low
-            ?num(tf.orderBlock.low)+" → "+num(tf.orderBlock.high)
-            :"—"
+            ? num(tf.orderBlock.low) +
+              " → " +
+              num(tf.orderBlock.high)
+            : "—"
         )
       )}
+
 
       ${panel(
         "👣 Footprint",
-        row("Buy Volume",num(fp.buyVolume))+
-        row("Sell Volume",num(fp.sellVolume))+
-        row("Delta",num(fp.delta))+
-        row("Delta %",pct(fp.deltaPercent))+
-        row("Buy Share",pct(fp.buyShare))+
-        row("Sell Share",pct(fp.sellShare))+
-        row("Pressure",fp.pressure)+
-        row("Large Trade",num(fp.largeTradeNotional,2))
-      )}
 
-      ${panel(
-        "📚 Order Book",
-        row("Buy Liquidity",num(wall.buyLiquidity,2))+
-        row("Sell Liquidity",num(wall.sellLiquidity,2))+
-        row("Buy Share",pct(wall.buyShare))+
-        row("Sell Share",pct(wall.sellShare))+
-        row("Imbalance",pct(wall.imbalance))+
-        row("Buy Wall",wall.buy?num(wall.buy.price):"—")+
-        row("Sell Wall",wall.sell?num(wall.sell.price):"—")
-      )}
+        row(
+          "Buy Volume",
+          num(fp.buyVolume)
+        ) +
 
-      ${panel(
-        "🧱 حمایت / مقاومت",
         row(
-          "Nearest Support",
-          sr.nearestSupport
-            ?num(sr.nearestSupport.price)
-            :"—"
-        )+
+          "Sell Volume",
+          num(fp.sellVolume)
+        ) +
+
         row(
-          "Nearest Resistance",
-          sr.nearestResistance
-            ?num(sr.nearestResistance.price)
-            :"—"
-        )+
+          "Delta",
+          num(fp.delta)
+        ) +
+
         row(
-          "Strong Support",
-          sr.strongestSupport
-            ?num(sr.strongestSupport.price)
-            :"—"
-        )+
+          "Delta %",
+          pct(fp.deltaPercent)
+        ) +
+
         row(
-          "Strong Resistance",
-          sr.strongestResistance
-            ?num(sr.strongestResistance.price)
-            :"—"
+          "Buy Share",
+          pct(fp.buyShare)
+        ) +
+
+        row(
+          "Sell Share",
+          pct(fp.sellShare)
+        ) +
+
+        row(
+          "Pressure",
+          fp.pressure
+        ) +
+
+        row(
+          "Large Trade",
+          num(
+            fp.largeTradeNotional,
+            2
+          )
         )
       )}
 
+
+      ${panel(
+        "📚 Order Book",
+
+        row(
+          "Buy Liquidity",
+          num(
+            wall.buyLiquidity,
+            2
+          )
+        ) +
+
+        row(
+          "Sell Liquidity",
+          num(
+            wall.sellLiquidity,
+            2
+          )
+        ) +
+
+        row(
+          "Buy Share",
+          pct(wall.buyShare)
+        ) +
+
+        row(
+          "Sell Share",
+          pct(wall.sellShare)
+        ) +
+
+        row(
+          "Imbalance",
+          pct(wall.imbalance)
+        ) +
+
+        row(
+          "Buy Wall",
+          wall.buy
+            ? num(wall.buy.price)
+            : "—"
+        ) +
+
+        row(
+          "Sell Wall",
+          wall.sell
+            ? num(wall.sell.price)
+            : "—"
+        )
+      )}
+
+
+      ${panel(
+        "🧱 حمایت / مقاومت",
+
+        row(
+          "Nearest Support",
+
+          sr.nearestSupport
+            ? num(
+                sr.nearestSupport.price
+              )
+            : "—"
+        ) +
+
+        row(
+          "Nearest Resistance",
+
+          sr.nearestResistance
+            ? num(
+                sr.nearestResistance.price
+              )
+            : "—"
+        ) +
+
+        row(
+          "Strong Support",
+
+          sr.strongestSupport
+            ? num(
+                sr.strongestSupport.price
+              )
+            : "—"
+        ) +
+
+        row(
+          "Strong Resistance",
+
+          sr.strongestResistance
+            ? num(
+                sr.strongestResistance.price
+              )
+            : "—"
+        )
+      )}
+
+
       ${panel(
         "📌 OI / Funding",
-        row("Open Interest",num(market.openInterest,2))+
-        row("OI Change",pct(market.openInterestChange))+
-        row("Funding",market.fundingRate!==null
-          ?Number(market.fundingRate).toFixed(6)
-          :"—"
-        )+
-        row("24h Price",pct(market.priceChange24h))+
-        row("24h Turnover",num(market.turnover24h,2))
+
+        row(
+          "Open Interest",
+          num(
+            market.openInterest,
+            2
+          )
+        ) +
+
+        row(
+          "OI Change",
+          pct(
+            market.openInterestChange
+          )
+        ) +
+
+        row(
+          "Funding",
+
+          market.fundingRate !== null
+            ? Number(
+                market.fundingRate
+              ).toFixed(6)
+            : "—"
+        ) +
+
+        row(
+          "24h Price",
+          pct(
+            market.priceChange24h
+          )
+        ) +
+
+        row(
+          "24h Turnover",
+          num(
+            market.turnover24h,
+            2
+          )
+        )
       )}
+
 
       ${panel(
         "🚀 Pump / Dump",
-        row("Pump Score",movement.pumpScore)+
-        row("Dump Score",movement.dumpScore)+
-        row("15m Change",pct(movement.change15m))+
-        row("30m Change",pct(movement.change30m))+
-        row("Volume Ratio",num(movement.volumeRatio,2))+
-        row("MA20 Distance",pct(movement.distanceFromMA20))
+
+        row(
+          "Pump Score",
+          movement.pumpScore
+        ) +
+
+        row(
+          "Dump Score",
+          movement.dumpScore
+        ) +
+
+        row(
+          "15m Change",
+          pct(
+            movement.change15m
+          )
+        ) +
+
+        row(
+          "30m Change",
+          pct(
+            movement.change30m
+          )
+        ) +
+
+        row(
+          "Volume Ratio",
+          num(
+            movement.volumeRatio,
+            2
+          )
+        ) +
+
+        row(
+          "MA20 Distance",
+          pct(
+            movement.distanceFromMA20
+          )
+        )
       )}
+
 
       ${panel(
         "🔄 Reversal",
-        row("Pump Reversal",reversal.pumpScore)+
-        row("Dump Reversal",reversal.dumpScore)+
-        row("Alert",reversal.alert)
+
+        row(
+          "Pump Reversal",
+          reversal.pumpScore
+        ) +
+
+        row(
+          "Dump Reversal",
+          reversal.dumpScore
+        ) +
+
+        row(
+          "Alert",
+          reversal.alert
+        )
       )}
+
 
       ${panel(
         "🧠 سبک‌های تحلیل",
-        row("SMC",styles.SMC)+
-        row("ICT",styles.ICT)+
-        row("MA",styles.MA)+
-        row("Volume",styles.Volume)+
-        row("Candles",styles.Candles)+
-        row("Order Flow",styles.OrderFlow)+
-        row("Liquidity",styles.Liquidity)
+
+        row(
+          "SMC",
+          styles.SMC
+        ) +
+
+        row(
+          "ICT",
+          styles.ICT
+        ) +
+
+        row(
+          "MA",
+          styles.MA
+        ) +
+
+        row(
+          "Volume",
+          styles.Volume
+        ) +
+
+        row(
+          "Candles",
+          styles.Candles
+        ) +
+
+        row(
+          "Order Flow",
+          styles.OrderFlow
+        ) +
+
+        row(
+          "Liquidity",
+          styles.Liquidity
+        )
       )}
+
 
       ${
         plan.available
-          ?panel(
-            "🎯 Trade Plan",
-            row("Direction",plan.direction)+
-            row("Entry",num(plan.entry))+
-            row("Stop Loss",num(plan.sl))+
-            row("TP1",num(plan.tp1))+
-            row("TP2",num(plan.tp2))+
-            row("TP3",num(plan.tp3))+
-            row("Risk",pct(plan.riskPercent))+
-            row("RR1",num(plan.rr1,2))+
-            row("RR2",num(plan.rr2,2))+
-            row("RR3",num(plan.rr3,2))
-          )
-          :panel(
-            "🎯 Trade Plan",
-            `<div class="reason">
-              ${escapeHtml(
-                plan.reason||
-                "سیگنال قطعی وجود ندارد."
-              )}
-            </div>`
-          )
+
+          ? panel(
+              "🎯 Trade Plan",
+
+              row(
+                "Direction",
+                plan.direction
+              ) +
+
+              row(
+                "Entry",
+                num(plan.entry)
+              ) +
+
+              row(
+                "Stop Loss",
+                num(plan.sl)
+              ) +
+
+              row(
+                "TP1",
+                num(plan.tp1)
+              ) +
+
+              row(
+                "TP2",
+                num(plan.tp2)
+              ) +
+
+              row(
+                "TP3",
+                num(plan.tp3)
+              ) +
+
+              row(
+                "Risk",
+                pct(
+                  plan.riskPercent
+                )
+              ) +
+
+              row(
+                "RR1",
+                num(
+                  plan.rr1,
+                  2
+                )
+              ) +
+
+              row(
+                "RR2",
+                num(
+                  plan.rr2,
+                  2
+                )
+              ) +
+
+              row(
+                "RR3",
+                num(
+                  plan.rr3,
+                  2
+                )
+              )
+            )
+
+          : panel(
+              "🎯 Trade Plan",
+
+              `<div class="reason">
+                ${escapeHtml(
+                  plan.reason ||
+                  "سیگنال قطعی وجود ندارد."
+                )}
+              </div>`
+            )
       }
+
 
       ${reasonsPanel(d)}
 
     </div>
+
   `;
 }
 
+
 /* =========================================================
-PANEL HELPERS
+   PANEL
 ========================================================= */
 
-function panel(title,content){
+function panel(
+  title,
+  content
+){
 
-  return`
+  return `
     <div class="panel">
-      <h3>${title}</h3>
+
+      <h3>
+        ${title}
+      </h3>
+
       ${content}
+
     </div>
   `;
 }
 
-function row(label,value){
 
-  return`
+/* =========================================================
+   ROW
+========================================================= */
+
+function row(
+  label,
+  value
+){
+
+  return `
     <div class="row">
+
       <span class="label">
         ${escapeHtml(label)}
       </span>
 
       <b class="value">
+
         ${escapeHtml(
-          value===null||
-          value===undefined||
-          value===""
-            ?"—"
-            :String(value)
+          value === null ||
+          value === undefined ||
+          value === ""
+            ? "—"
+            : String(value)
         )}
+
       </b>
+
     </div>
   `;
 }
 
+
+/* =========================================================
+   REASONS
+========================================================= */
+
 function reasonsPanel(d){
 
-  const reasons=d.reasons||[];
+  const reasons =
+    d.reasons || [];
+
 
   if(!reasons.length){
 
     return panel(
       "📝 دلایل",
+
       `<div class="reason">
         دلیل قطعی برای سیگنال ثبت نشده است.
       </div>`
     );
   }
 
+
   return panel(
     "📝 دلایل سیگنال",
+
     reasons
-      .map(x=>
-        `<div class="reason">
-          ${escapeHtml(x)}
-        </div>`
+      .map(
+        x =>
+          `<div class="reason">
+            ${escapeHtml(x)}
+          </div>`
       )
       .join("")
   );
 }
 
+
 /* =========================================================
-CLOSE DEEP
+   CLOSE DEEP
 ========================================================= */
 
 function closeDeep(){
 
-  $("deepPanel").style.display="none";
+  $("deepPanel")
+    .style
+    .display =
+      "none";
 
-  document.body.style.overflow="";
+  document.body.style.overflow =
+    "";
 
   renderSignals();
 }
 
+
 /* =========================================================
-HEALTH CHECK
+   HEALTH
 ========================================================= */
 
 async function health(){
 
   try{
 
-    const r=await fetch(
-      WORKER+"/api/health",
-      {
-        cache:"no-store"
-      }
-    );
+    const r =
+      await fetch(
+        WORKER +
+        "/api/health",
+        {
+          cache:"no-store"
+        }
+      );
 
-    const d=await r.json();
+
+    const d =
+      await r.json();
+
 
     if(d.ok){
 
       setStatus(
-        "🟢 Worker متصل است",
+        `🟢 Worker متصل است | سخت‌گیری ${signalStrictness}/6`,
         true
       );
 
@@ -1544,23 +2747,24 @@ async function health(){
     setStatus(
       "🔴 Worker در دسترس نیست"
     );
-
   }
+
 
   return false;
 }
 
+
 /* =========================================================
-INITIAL
+   INITIAL
 ========================================================= */
 
 (async()=>{
 
-  await health();
+  changeStrictness(
+    signalStrictness
+  );
 
-  /*
-    شروع خودکار رادار.
-  */
+  await health();
 
   startRadar();
 
