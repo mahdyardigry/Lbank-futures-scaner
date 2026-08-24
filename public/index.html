@@ -16,9 +16,7 @@ html,body{
   font-family:Tahoma,Arial,sans-serif
 }
 
-body{
-  min-height:100vh
-}
+body{min-height:100vh}
 
 .container{
   width:min(1200px,100%);
@@ -64,11 +62,7 @@ h1{
 
 .controls{
   display:grid;
-  grid-template-columns:
-    minmax(180px,1fr)
-    auto
-    auto
-    auto;
+  grid-template-columns:minmax(180px,1fr) auto auto auto;
   gap:8px;
   margin-bottom:12px
 }
@@ -97,8 +91,7 @@ button.secondary{
 
 .grid{
   display:grid;
-  grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:10px
 }
 
@@ -124,9 +117,7 @@ button.secondary{
 .yellow{color:#ffd166}
 .muted{color:#91a2b5}
 
-.section{
-  margin-top:12px
-}
+.section{margin-top:12px}
 
 details{
   background:#111923;
@@ -155,22 +146,7 @@ summary{
   border-bottom:1px solid #202b38
 }
 
-.row:last-child{
-  border-bottom:0
-}
-
-.table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px
-}
-
-.table th,
-.table td{
-  padding:8px;
-  border-bottom:1px solid #263342;
-  text-align:center
-}
+.row:last-child{border-bottom:0}
 
 .signal{
   padding:12px;
@@ -238,7 +214,6 @@ summary{
 
 </header>
 
-
 <div class="controls">
 
 <input
@@ -276,57 +251,40 @@ summary{
 
 </div>
 
-
 <div class="notice">
 در اسکن بازار، ارزها به‌صورت چرخشی بررسی می‌شوند.
 حجم ۲۴ ساعته معیار اصلی انتخاب سیگنال نیست.
 </div>
 
+<div id="summary" class="section"></div>
 
-<div
- id="summary"
- class="section"
-></div>
-
-
-<div
- id="results"
- class="section"
-></div>
+<div id="results" class="section"></div>
 
 </div>
 
-
 <script>
 
-const $=id=>
-  document.getElementById(id);
-
+const $=id=>document.getElementById(id);
 
 let scanOffset=0;
 let scanning=false;
 
-
 function fmt(v){
 
-  if(v===undefined ||
-     v===null ||
-     v==='')
+  if(v===undefined||v===null||v==='')
     return '—';
 
   if(typeof v==='number'){
 
     return v.toLocaleString(
       'fa-IR',
-      {
-        maximumFractionDigits:6
-      }
+      {maximumFractionDigits:8}
     );
+
   }
 
   return String(v);
 }
-
 
 function esc(s){
 
@@ -343,7 +301,6 @@ function esc(s){
     );
 }
 
-
 function dirText(d){
 
   return {
@@ -357,29 +314,27 @@ function dirText(d){
     DOWN:'نزولی',
     FLAT:'خنثی',
     NEUTRAL:'خنثی'
-  }[d] || d || '—';
+  }[d]||d||'—';
 }
-
 
 function cls(d){
 
   if(
-    d==='LONG' ||
-    d==='BULLISH' ||
+    d==='LONG'||
+    d==='BULLISH'||
     d==='UP'
   )
     return 'green';
 
   if(
-    d==='SHORT' ||
-    d==='BEARISH' ||
+    d==='SHORT'||
+    d==='BEARISH'||
     d==='DOWN'
   )
     return 'red';
 
   return 'yellow';
 }
-
 
 async function health(){
 
@@ -388,39 +343,28 @@ async function health(){
     const r=
       await fetch(
         '/api/health',
-        {
-          cache:'no-store'
-        }
+        {cache:'no-store'}
       );
 
     const d=
       await r.json();
 
-    if(d.ok){
+    $('status').textContent=
+      d.ok
+        ? 'اتصال برقرار است — Bybit'
+        : 'خطا در Worker';
 
-      $('status').textContent=
-        'اتصال برقرار است — Bybit';
-
-    }else{
-
-      $('status').textContent=
-        'خطا در Worker';
-
-    }
-
-  }catch(e){
+  }
+  catch(e){
 
     $('status').textContent=
       'اتصال برقرار نیست';
 
   }
+
 }
 
-
 function renderSummary(d){
-
-  const score=
-    Number(d.score||0);
 
   $('summary').innerHTML=`
 
@@ -446,47 +390,36 @@ function renderSummary(d){
 
     </div>
 
-
     <div class="card">
 
       <h3>جهت کلی</h3>
 
-      <div
-        class="big ${cls(
-          d.direction
-        )}"
-      >
+      <div class="big ${cls(d.direction)}">
         ${dirText(d.direction)}
       </div>
 
       <div>
         امتیاز:
-        ${fmt(score)}/100
+        ${fmt(d.score)}/100
       </div>
 
     </div>
-
 
     <div class="card">
 
       <h3>Long</h3>
 
-      <div
-        class="big green"
-      >
+      <div class="big green">
         ${fmt(d.longScore)}
       </div>
 
     </div>
 
-
     <div class="card">
 
       <h3>Short</h3>
 
-      <div
-        class="big red"
-      >
+      <div class="big red">
         ${fmt(d.shortScore)}
       </div>
 
@@ -495,13 +428,12 @@ function renderSummary(d){
   </div>
 
   `;
-}
 
+}
 
 function renderReasons(reasons){
 
-  if(!Array.isArray(reasons) ||
-     !reasons.length)
+  if(!Array.isArray(reasons)||!reasons.length)
     return `
       <div class="muted">
         دلیل مشخصی برای سیگنال ثبت نشده است.
@@ -509,15 +441,13 @@ function renderReasons(reasons){
     `;
 
   return reasons
-    .slice(0,30)
+    .slice(0,40)
     .map(
       x=>`
 
       <div class="signal">
 
-        <b class="${cls(
-          x.side
-        )}">
+        <b class="${cls(x.side)}">
           ${esc(x.side)}
         </b>
 
@@ -530,13 +460,10 @@ function renderReasons(reasons){
       `
     )
     .join('');
+
 }
 
-
-function renderTimeframe(
-  key,
-  x
-){
+function renderTimeframe(key,x){
 
   if(!x)
     return '';
@@ -545,6 +472,7 @@ function renderTimeframe(
 
     return `
     <details>
+
       <summary>
         تایم‌فریم ${esc(key)}
       </summary>
@@ -555,6 +483,7 @@ function renderTimeframe(
 
     </details>
     `;
+
   }
 
   const m=x.macd||{};
@@ -570,13 +499,14 @@ function renderTimeframe(
   <details>
 
     <summary>
+
       تایم‌فریم ${esc(key)}
       —
-      <span class="${cls(
-        x.trend
-      )}">
+
+      <span class="${cls(x.trend)}">
         ${dirText(x.trend)}
       </span>
+
     </summary>
 
     <div class="content">
@@ -599,15 +529,12 @@ function renderTimeframe(
 
           <div class="row">
             <span>شیب MA</span>
-            <b class="${cls(
-              x.maSlope
-            )}">
+            <b class="${cls(x.maSlope)}">
               ${dirText(x.maSlope)}
             </b>
           </div>
 
         </div>
-
 
         <div class="card">
 
@@ -615,84 +542,55 @@ function renderTimeframe(
 
           <div class="row">
             <span>MACD</span>
-            <b class="${cls(
-              m.direction
-            )}">
-              ${dirText(
-                m.direction
-              )}
+            <b class="${cls(m.direction)}">
+              ${dirText(m.direction)}
             </b>
           </div>
 
           <div class="row">
             <span>Histogram</span>
-            <b>${fmt(
-              m.histogram
-            )}</b>
+            <b>${fmt(m.histogram)}</b>
           </div>
 
           <div class="row">
             <span>RSI</span>
-            <b>${fmt(
-              x.rsi
-            )}</b>
+            <b>${fmt(x.rsi)}</b>
           </div>
 
         </div>
-
 
         <div class="card">
 
           <h3>Ichimoku</h3>
 
           <div class="row">
-
             <span>جهت</span>
-
-            <b class="${cls(
-              i.direction
-            )}">
-              ${dirText(
-                i.direction
-              )}
+            <b class="${cls(i.direction)}">
+              ${dirText(i.direction)}
             </b>
-
           </div>
 
           <div class="row">
             <span>Tenkan</span>
-            <b>${fmt(
-              i.tenkan
-            )}</b>
+            <b>${fmt(i.tenkan)}</b>
           </div>
 
           <div class="row">
             <span>Kijun</span>
-            <b>${fmt(
-              i.kijun
-            )}</b>
+            <b>${fmt(i.kijun)}</b>
           </div>
 
         </div>
-
 
         <div class="card">
 
           <h3>واگرایی</h3>
 
-          <div class="big ${
-            cls(dv.side)
-          }">
-
-            ${esc(
-              dv.type ||
-              'NONE'
-            )}
-
+          <div class="big ${cls(dv.side)}">
+            ${esc(dv.type||'NONE')}
           </div>
 
         </div>
-
 
         <div class="card">
 
@@ -700,31 +598,20 @@ function renderTimeframe(
 
           <div class="row">
             <span>نسبت حجم</span>
-            <b>${fmt(
-              v.ratio
-            )}</b>
+            <b>${fmt(v.ratio)}</b>
           </div>
 
           <div class="row">
             <span>وضعیت</span>
-            <b>${esc(
-              v.state
-            )}</b>
+            <b>${esc(v.state)}</b>
           </div>
 
           <div class="row">
             <span>Spike</span>
-            <b>
-              ${
-                v.spike
-                  ? 'بله'
-                  : 'خیر'
-              }
-            </b>
+            <b>${v.spike?'بله':'خیر'}</b>
           </div>
 
         </div>
-
 
         <div class="card">
 
@@ -732,28 +619,19 @@ function renderTimeframe(
 
           <div class="row">
             <span>BOS</span>
-            <b class="${cls(
-              x.bos
-            )}">
-              ${dirText(
-                x.bos
-              )}
+            <b class="${cls(x.bos)}">
+              ${dirText(x.bos)}
             </b>
           </div>
 
           <div class="row">
             <span>CHoCH</span>
-            <b class="${cls(
-              x.choch
-            )}">
-              ${dirText(
-                x.choch
-              )}
+            <b class="${cls(x.choch)}">
+              ${dirText(x.choch)}
             </b>
           </div>
 
         </div>
-
 
         <div class="card">
 
@@ -761,35 +639,22 @@ function renderTimeframe(
 
           <div class="row">
             <span>جهت</span>
-            <b class="${cls(
-              h.side
-            )}">
-              ${dirText(
-                h.side
-              )}
+            <b class="${cls(h.side)}">
+              ${dirText(h.side)}
             </b>
           </div>
 
           <div class="row">
             <span>تأیید</span>
-            <b>
-              ${
-                h.confirmed
-                  ? 'بله'
-                  : 'خیر'
-              }
-            </b>
+            <b>${h.confirmed?'بله':'خیر'}</b>
           </div>
 
           <div class="row">
             <span>قیمت Sweep</span>
-            <b>${fmt(
-              h.sweepPrice
-            )}</b>
+            <b>${fmt(h.sweepPrice)}</b>
           </div>
 
         </div>
-
 
         <div class="card">
 
@@ -797,23 +662,15 @@ function renderTimeframe(
 
           <div class="row">
             <span>FVG</span>
-            <b class="${cls(
-              f.type
-            )}">
-              ${dirText(
-                f.type
-              )}
+            <b class="${cls(f.type)}">
+              ${dirText(f.type)}
             </b>
           </div>
 
           <div class="row">
             <span>OB</span>
-            <b class="${cls(
-              ob.type
-            )}">
-              ${dirText(
-                ob.type
-              )}
+            <b class="${cls(ob.type)}">
+              ${dirText(ob.type)}
             </b>
           </div>
 
@@ -826,20 +683,17 @@ function renderTimeframe(
   </details>
 
   `;
-}
 
+}
 
 function renderFootprint(fp){
 
-  if(!fp ||
-     fp.error){
-
+  if(!fp||fp.error)
     return `
       <div class="muted">
         فوت‌پرینت در دسترس نیست.
       </div>
     `;
-  }
 
   return `
 
@@ -886,10 +740,7 @@ function renderFootprint(fp){
       <h3>Pressure</h3>
 
       <div class="big">
-        ${esc(
-          fp.pressure||
-          'NEUTRAL'
-        )}
+        ${esc(fp.pressure||'NEUTRAL')}
       </div>
 
     </div>
@@ -897,20 +748,17 @@ function renderFootprint(fp){
   </div>
 
   `;
-}
 
+}
 
 function renderWalls(w){
 
-  if(!w ||
-     w.error){
-
+  if(!w||w.error)
     return `
       <div class="muted">
         Order Book در دسترس نیست.
       </div>
     `;
-  }
 
   return `
 
@@ -921,54 +769,40 @@ function renderWalls(w){
       <h3>دیوار خرید</h3>
 
       <div class="big green">
-        ${fmt(
-          w.buy?.price
-        )}
+        ${fmt(w.buy?.price)}
       </div>
 
       <div>
         ارزش:
-        ${fmt(
-          w.buy?.notional
-        )}
+        ${fmt(w.buy?.notional)}
       </div>
 
       <div>
         قدرت:
-        ${fmt(
-          w.buyStrength
-        )}
+        ${fmt(w.buyStrength)}
       </div>
 
     </div>
-
 
     <div class="card">
 
       <h3>دیوار فروش</h3>
 
       <div class="big red">
-        ${fmt(
-          w.sell?.price
-        )}
+        ${fmt(w.sell?.price)}
       </div>
 
       <div>
         ارزش:
-        ${fmt(
-          w.sell?.notional
-        )}
+        ${fmt(w.sell?.notional)}
       </div>
 
       <div>
         قدرت:
-        ${fmt(
-          w.sellStrength
-        )}
+        ${fmt(w.sellStrength)}
       </div>
 
     </div>
-
 
     <div class="card">
 
@@ -976,16 +810,22 @@ function renderWalls(w){
 
       <div class="row">
         <span>خرید</span>
-        <b>${fmt(
-          w.buyLiquidity
-        )}</b>
+        <b>${fmt(w.buyLiquidity)}</b>
       </div>
 
       <div class="row">
         <span>فروش</span>
-        <b>${fmt(
-          w.sellLiquidity
-        )}</b>
+        <b>${fmt(w.sellLiquidity)}</b>
+      </div>
+
+      <div class="row">
+        <span>سهم خرید</span>
+        <b>${fmt(w.buyShare)}%</b>
+      </div>
+
+      <div class="row">
+        <span>سهم فروش</span>
+        <b>${fmt(w.sellShare)}%</b>
       </div>
 
     </div>
@@ -993,67 +833,72 @@ function renderWalls(w){
   </div>
 
   `;
-}
 
+}
 
 function renderMarket(m){
 
-  if(!m)
-    return '';
+  if(!m||m.error)
+    return `
+      <div class="notice">
+        OI / Funding در این پاسخ در دسترس نیست.
+        ${
+          m?.error
+            ? '<br>'+esc(m.error)
+            : ''
+        }
+      </div>
+    `;
 
   return `
 
   <div class="grid">
 
     <div class="card">
-
       <h3>Open Interest</h3>
-
       <div class="big">
-        ${fmt(
-          m.openInterest
-        )}
+        ${fmt(m.openInterest)}
       </div>
-
     </div>
 
-
     <div class="card">
-
       <h3>Funding Rate</h3>
-
       <div class="big">
-        ${fmt(
-          m.fundingRate
-        )}
+        ${fmt(m.fundingRate)}
       </div>
-
     </div>
 
+    <div class="card">
+      <h3>تغییر OI</h3>
+      <div>
+        فعلی: ${fmt(m.openInterest)}
+      </div>
+      <div>
+        قبلی: ${fmt(m.previousOpenInterest)}
+      </div>
+      <div>
+        تغییر: ${fmt(m.openInterestChange)}
+      </div>
+    </div>
 
     <div class="card">
-
-      <h3>تغییر ۲۴ ساعته</h3>
-
-      <div class="big ${
-        m.change24h>=0
-          ? 'green'
-          : 'red'
-      }">
-
-        ${fmt(
-          m.change24h
-        )}%
-
+      <h3>تغییر Funding</h3>
+      <div>
+        فعلی: ${fmt(m.fundingRate)}
       </div>
-
+      <div>
+        قبلی: ${fmt(m.previousFundingRate)}
+      </div>
+      <div>
+        تغییر: ${fmt(m.fundingChange)}
+      </div>
     </div>
 
   </div>
 
   `;
-}
 
+}
 
 function renderAnalysis(d){
 
@@ -1065,15 +910,11 @@ function renderAnalysis(d){
     )
     .map(
       ([k,x])=>
-        renderTimeframe(
-          k,
-          x
-        )
+        renderTimeframe(k,x)
     )
     .join('');
 
-  const converted=
-    d.convertedMA1m;
+  const converted=d.convertedMA1m;
 
   $('results').innerHTML=`
 
@@ -1085,12 +926,13 @@ function renderAnalysis(d){
 
     <div class="content">
 
-      ${tf}
+      ${tf||
+        '<div class="muted">داده‌ای موجود نیست.</div>'
+      }
 
     </div>
 
   </details>
-
 
   <details>
 
@@ -1102,38 +944,36 @@ function renderAnalysis(d){
 
       ${
         converted &&
-        converted.events &&
+        Array.isArray(converted.events) &&
         converted.events.length
 
         ?
 
-        converted.events
-          .map(
-            e=>`
+        converted.events.map(
+          e=>`
 
-            <div class="row">
+          <div class="row">
 
-              <span>
-                ${esc(e.source)}
-                /
-                ${esc(e.ma)}
-              </span>
+            <span>
+              ${esc(e.source)}
+              /
+              MA${fmt(e.period1m)}
+            </span>
 
-              <b class="${cls(
-                e.confirmation
-              )}">
+            <b class="${cls(
+              e.confirmation
+            )}">
 
-                ${esc(
-                  e.confirmation
-                )}
+              ${esc(
+                e.confirmation||'NONE'
+              )}
 
-              </b>
+            </b>
 
-            </div>
+          </div>
 
-            `
-          )
-          .join('')
+          `
+        ).join('')
 
         :
 
@@ -1144,7 +984,6 @@ function renderAnalysis(d){
 
   </details>
 
-
   <details>
 
     <summary>
@@ -1152,15 +991,10 @@ function renderAnalysis(d){
     </summary>
 
     <div class="content">
-
-      ${renderFootprint(
-        d.footprint
-      )}
-
+      ${renderFootprint(d.footprint)}
     </div>
 
   </details>
-
 
   <details>
 
@@ -1169,15 +1003,10 @@ function renderAnalysis(d){
     </summary>
 
     <div class="content">
-
-      ${renderWalls(
-        d.walls
-      )}
-
+      ${renderWalls(d.walls)}
     </div>
 
   </details>
-
 
   <details>
 
@@ -1186,15 +1015,10 @@ function renderAnalysis(d){
     </summary>
 
     <div class="content">
-
-      ${renderMarket(
-        d.market
-      )}
-
+      ${renderMarket(d.market)}
     </div>
 
   </details>
-
 
   <details>
 
@@ -1203,25 +1027,22 @@ function renderAnalysis(d){
     </summary>
 
     <div class="content">
-
-      ${renderReasons(
-        d.reasons
-      )}
-
+      ${renderReasons(d.reasons)}
     </div>
 
   </details>
 
   `;
-}
 
+}
 
 async function manualAnalyze(){
 
   const symbol=
     $('symbol')
       .value
-      .trim();
+      .trim()
+      .toUpperCase();
 
   if(!symbol){
 
@@ -1241,21 +1062,15 @@ async function manualAnalyze(){
 
     const url=
       `/api/analyze?symbol=${
-        encodeURIComponent(
-          symbol
-        )
+        encodeURIComponent(symbol)
       }&category=${
-        encodeURIComponent(
-          category
-        )
+        encodeURIComponent(category)
       }`;
 
     const r=
       await fetch(
         url,
-        {
-          cache:'no-store'
-        }
+        {cache:'no-store'}
       );
 
     const d=
@@ -1263,7 +1078,7 @@ async function manualAnalyze(){
 
     if(!d.ok)
       throw Error(
-        d.error ||
+        d.error||
         'تحلیل انجام نشد'
       );
 
@@ -1278,8 +1093,8 @@ async function manualAnalyze(){
       </div>`;
 
   }
-}
 
+}
 
 async function scanNow(){
 
@@ -1293,12 +1108,17 @@ async function scanNow(){
 
   try{
 
+    const category=
+      $('category').value;
+
     const r=
       await fetch(
-        `/api/scan?offset=${scanOffset}`,
-        {
-          cache:'no-store'
-        }
+        `/api/scan?offset=${
+          scanOffset
+        }&category=${
+          encodeURIComponent(category)
+        }`,
+        {cache:'no-store'}
       );
 
     const d=
@@ -1306,12 +1126,12 @@ async function scanNow(){
 
     if(!d.ok)
       throw Error(
-        d.error ||
+        d.error||
         'اسکن انجام نشد'
       );
 
     scanOffset=
-      d.nextOffset ?? 0;
+      d.nextOffset??0;
 
     renderScan(d);
 
@@ -1329,8 +1149,8 @@ async function scanNow(){
     scanning=false;
 
   }
-}
 
+}
 
 function renderScan(d){
 
@@ -1344,23 +1164,14 @@ function renderScan(d){
           <div class="row">
 
             <b>
-              ${esc(
-                x.symbol
-              )}
+              ${esc(x.symbol)}
             </b>
 
-            <b class="${cls(
-              x.direction
-            )}">
-
-              ${dirText(
-                x.direction
-              )}
-
+            <b class="${cls(x.direction)}">
+              ${dirText(x.direction)}
             </b>
 
           </div>
-
 
           <div class="row">
 
@@ -1369,13 +1180,10 @@ function renderScan(d){
             </span>
 
             <b>
-              ${fmt(
-                x.score
-              )}/100
+              ${fmt(x.score)}/100
             </b>
 
           </div>
-
 
           <div class="row">
 
@@ -1384,13 +1192,10 @@ function renderScan(d){
             </span>
 
             <b class="green">
-              ${fmt(
-                x.longScore
-              )}
+              ${fmt(x.longScore)}
             </b>
 
           </div>
-
 
           <div class="row">
 
@@ -1399,13 +1204,10 @@ function renderScan(d){
             </span>
 
             <b class="red">
-              ${fmt(
-                x.shortScore
-              )}
+              ${fmt(x.shortScore)}
             </b>
 
           </div>
-
 
           <div class="scorebar">
 
@@ -1413,9 +1215,7 @@ function renderScan(d){
               style="
                 width:${Math.min(
                   100,
-                  Number(
-                    x.score||0
-                  )
+                  Number(x.score||0)
                 )}%
               "
             ></div>
@@ -1437,27 +1237,24 @@ function renderScan(d){
     </h3>
 
     <div class="muted">
-      ${fmt(
-        d.batchSize
-      )}
+
+      ${fmt(d.batchSize)}
       ارز از
-      ${fmt(
-        d.totalMarkets
-      )}
+      ${fmt(d.totalMarkets)}
       بازار بررسی شد.
+
     </div>
 
   </div>
 
   ${
-    rows ||
+    rows||
     '<div class="card">سیگنال قابل‌قبولی پیدا نشد.</div>'
   }
 
   `;
 
 }
-
 
 health();
 
