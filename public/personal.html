@@ -1,992 +1,603 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<meta
-  name="viewport"
-  content="width=device-width,initial-scale=1,maximum-scale=1"
->
-
-<title>Personal Smart Scanner</title>
+<title>Personal Smart Radar</title>
 
 <style>
-
 *{
   box-sizing:border-box;
 }
 
-html{
-  scroll-behavior:smooth;
+html,body{
+  margin:0;
+  padding:0;
+  background:#080c12;
+  color:#e8edf5;
+  font-family:Tahoma,Arial,sans-serif;
 }
 
 body{
-  margin:0;
-  background:#080c12;
-  color:#eef3f8;
-  font-family:
-    Tahoma,
-    Arial,
-    sans-serif;
-}
-
-button,
-input{
-  font-family:inherit;
+  min-height:100vh;
 }
 
 button{
-  cursor:pointer;
+  font-family:inherit;
 }
-
-.app{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
-  padding:12px;
-}
-
-/* ================= HEADER ================= */
 
 .header{
-  background:
-    linear-gradient(
-      145deg,
-      #101722,
-      #0b111a
-    );
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#0c1119;
+  border-bottom:1px solid #202938;
+  padding:14px;
+}
 
-  border:1px solid #202b38;
-  border-radius:18px;
-
-  padding:18px;
-
-  margin-bottom:12px;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,.25);
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
 }
 
 .title{
-  font-size:22px;
-  font-weight:900;
-}
-
-.subtitle{
-  color:#8e9aaa;
-  margin-top:6px;
-  font-size:13px;
-}
-
-.header-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
+  font-size:20px;
+  font-weight:bold;
 }
 
 .status{
-  display:flex;
-  align-items:center;
-  gap:7px;
-
-  background:#0d141d;
-  border:1px solid #263341;
-
-  padding:8px 12px;
-
-  border-radius:12px;
-
-  font-size:13px;
+  font-size:12px;
+  padding:7px 10px;
+  border-radius:20px;
+  background:#152019;
+  color:#45e08b;
 }
 
-.status-dot{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#777;
+.status.off{
+  background:#261619;
+  color:#ff6b6b;
 }
 
-.status-dot.active{
-  background:#22c55e;
-  box-shadow:0 0 12px #22c55e;
-}
-
-.status-dot.error{
-  background:#ef4444;
-}
-
-/* ================= CONTROL ================= */
-
-.control{
-  background:#0d141d;
-
-  border:1px solid #202c39;
-
-  border-radius:16px;
-
-  padding:14px;
-
-  margin-bottom:12px;
-}
-
-.control-grid{
-  display:grid;
-
-  grid-template-columns:
-    1fr
-    auto
-    auto;
-
-  gap:10px;
-}
-
-.control input{
-  width:100%;
-
-  background:#080d14;
-
-  border:1px solid #293746;
-
-  color:#fff;
-
-  border-radius:11px;
-
-  padding:12px;
-
-  outline:none;
-}
-
-.control input:focus{
-  border-color:#3b82f6;
-}
-
-.btn{
-  border:0;
-
-  border-radius:11px;
-
-  padding:11px 16px;
-
-  font-weight:800;
-
-  color:#fff;
-
-  background:#1d4ed8;
-}
-
-.btn:hover{
-  filter:brightness(1.12);
-}
-
-.btn.stop{
-  background:#7f1d1d;
-}
-
-.small-info{
-  margin-top:10px;
-
-  color:#8491a0;
-
+.sub{
+  margin-top:8px;
+  color:#8792a4;
   font-size:12px;
 }
 
-/* ================= SECTION ================= */
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:14px;
+}
 
-.section{
-  margin-bottom:12px;
+.control-box{
+  background:#0d131c;
+  border:1px solid #202938;
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:14px;
+}
+
+.control-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+}
+
+.control-row button{
+  border:1px solid #293445;
+  background:#151c27;
+  color:#fff;
+  border-radius:9px;
+  padding:9px 14px;
+  cursor:pointer;
+}
+
+.control-row button:hover{
+  background:#1d2735;
+}
+
+.control-row button.active{
+  background:#163b2a;
+  border-color:#287b51;
+}
+
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:12px;
+}
+
+.info{
+  background:#0a1018;
+  border:1px solid #202938;
+  border-radius:10px;
+  padding:10px;
+}
+
+.info-label{
+  color:#7d8899;
+  font-size:11px;
+}
+
+.info-value{
+  margin-top:5px;
+  font-weight:bold;
+  font-size:14px;
 }
 
 .section-title{
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  margin-bottom:8px;
-
-  font-weight:900;
+  margin:18px 0 10px;
+  font-size:16px;
+  font-weight:bold;
 }
 
-.counter{
-  color:#8794a4;
-  font-size:12px;
-}
-
-/* ================= SIGNALS ================= */
-
-.signals{
+.signal-list{
   display:grid;
-
   gap:10px;
 }
 
 .signal{
-  background:
-    linear-gradient(
-      145deg,
-      #101821,
-      #0b1118
-    );
-
-  border:1px solid #253342;
-
-  border-radius:17px;
-
-  padding:14px;
-
-  position:relative;
-
-  transition:.2s;
-}
-
-.signal:hover{
-  border-color:#405366;
+  background:#0d131c;
+  border:1px solid #263143;
+  border-radius:14px;
+  overflow:hidden;
 }
 
 .signal.long{
-  border-right:4px solid #22c55e;
+  border-right:4px solid #28c979;
 }
 
 .signal.short{
-  border-right:4px solid #ef4444;
+  border-right:4px solid #ff5d68;
 }
 
-.signal-top{
+.signal-head{
+  padding:12px;
   display:flex;
-
   justify-content:space-between;
-
   align-items:center;
-
   gap:10px;
 }
 
 .symbol{
-  font-size:18px;
-  font-weight:900;
+  font-weight:bold;
+  font-size:17px;
 }
 
 .direction{
-  font-weight:900;
-  font-size:14px;
+  font-weight:bold;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:12px;
 }
 
 .direction.long{
-  color:#22c55e;
+  background:#123522;
+  color:#45e08b;
 }
 
 .direction.short{
-  color:#ef4444;
+  background:#3b171b;
+  color:#ff6872;
 }
 
-.score{
-  font-size:20px;
-  font-weight:900;
+.signal-meta{
+  padding:0 12px 10px;
+  color:#8994a5;
+  font-size:11px;
 }
 
-.score.good{
-  color:#22c55e;
+.score-row{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  padding:0 12px 12px;
 }
 
-.score.medium{
-  color:#f59e0b;
+.badge{
+  padding:6px 9px;
+  border-radius:8px;
+  background:#151c27;
+  border:1px solid #263143;
+  font-size:11px;
 }
 
-.signal-time{
-  color:#7f8b99;
+.badge.green{
+  color:#4be58e;
+}
+
+.badge.red{
+  color:#ff6872;
+}
+
+.badge.yellow{
+  color:#ffd166;
+}
+
+.signal-actions{
+  border-top:1px solid #202938;
+  padding:10px 12px;
+}
+
+.deep-btn{
+  width:100%;
+  border:1px solid #334157;
+  background:#151d29;
+  color:#fff;
+  padding:10px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+.deep-btn:hover{
+  background:#202b3c;
+}
+
+.empty{
+  text-align:center;
+  padding:35px 10px;
+  color:#737f91;
+  background:#0d131c;
+  border:1px dashed #263143;
+  border-radius:14px;
+}
+
+.deep-panel{
+  position:fixed;
+  top:0;
+  bottom:0;
+  left:0;
+  width:min(620px,100%);
+  background:#080d14;
+  border-right:1px solid #293445;
+  z-index:100;
+  transform:translateX(-105%);
+  transition:.25s ease;
+  overflow:auto;
+  box-shadow:10px 0 40px rgba(0,0,0,.45);
+}
+
+.deep-panel.open{
+  transform:translateX(0);
+}
+
+.deep-header{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#0d131c;
+  border-bottom:1px solid #202938;
+  padding:12px;
+}
+
+.deep-header-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.close{
+  background:#24161a;
+  color:#ff7078;
+  border:1px solid #54262d;
+  border-radius:8px;
+  padding:8px 12px;
+  cursor:pointer;
+}
+
+.deep-content{
+  padding:12px;
+}
+
+.deep-section{
+  background:#0d131c;
+  border:1px solid #202938;
+  border-radius:12px;
+  margin-bottom:10px;
+  overflow:hidden;
+}
+
+.deep-section-title{
+  padding:10px 12px;
+  background:#111923;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.deep-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  padding:10px;
+}
+
+.metric{
+  background:#090f16;
+  border:1px solid #202938;
+  border-radius:8px;
+  padding:9px;
+}
+
+.metric small{
+  display:block;
+  color:#778397;
+  font-size:10px;
+}
+
+.metric strong{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+}
+
+.bull{
+  color:#42df89;
+}
+
+.bear{
+  color:#ff6872;
+}
+
+.neutral{
+  color:#ffd166;
+}
+
+.level{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:9px 12px;
+  border-bottom:1px solid #1b2430;
+  font-size:12px;
+}
+
+.level:last-child{
+  border-bottom:0;
+}
+
+.reason{
+  padding:8px 12px;
+  border-bottom:1px solid #1b2430;
+  font-size:12px;
+  color:#cbd3df;
+}
+
+.trade-box{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  padding:10px;
+}
+
+.trade{
+  padding:10px;
+  border-radius:9px;
+  background:#090f16;
+  border:1px solid #202938;
+  text-align:center;
+}
+
+.trade small{
+  display:block;
+  color:#7d8899;
+  font-size:10px;
+}
+
+.trade strong{
+  display:block;
+  margin-top:5px;
+  font-size:13px;
+}
+
+.alert{
+  position:fixed;
+  left:15px;
+  right:15px;
+  bottom:15px;
+  z-index:200;
+  background:#111923;
+  border:1px solid #344257;
+  border-radius:12px;
+  padding:12px;
+  display:none;
+  box-shadow:0 10px 35px rgba(0,0,0,.4);
+}
+
+.alert.show{
+  display:block;
+}
+
+.alert-title{
+  font-weight:bold;
+}
+
+.alert-text{
+  color:#aab4c3;
   font-size:11px;
   margin-top:5px;
 }
 
-.trade-grid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
-  gap:7px;
-
-  margin-top:12px;
-}
-
-.trade-box{
-  background:#080d13;
-
-  border:1px solid #1d2935;
-
-  border-radius:10px;
-
-  padding:9px;
-
-  text-align:center;
-}
-
-.trade-label{
-  color:#778493;
-  font-size:10px;
-}
-
-.trade-value{
-  margin-top:4px;
-  font-size:12px;
-  font-weight:800;
-}
-
-.entry{
-  color:#60a5fa;
-}
-
-.sl{
-  color:#f87171;
-}
-
-.tp{
-  color:#4ade80;
-}
-
-.rr{
-  color:#fbbf24;
-}
-
-/* ================= STYLES ================= */
-
-.styles{
-  display:grid;
-
-  grid-template-columns:
-    repeat(7,1fr);
-
-  gap:6px;
-
-  margin-top:12px;
-}
-
-.style{
-  background:#080d13;
-
-  border:1px solid #1c2834;
-
-  border-radius:9px;
-
-  padding:7px 4px;
-
-  text-align:center;
-
-  font-size:10px;
-}
-
-.style-name{
-  color:#798694;
-}
-
-.style-state{
-  margin-top:4px;
-
-  font-weight:900;
-}
-
-.bull{
-  color:#22c55e;
-}
-
-.bear{
-  color:#ef4444;
-}
-
-.neutral{
-  color:#9ca3af;
-}
-
-/* ================= DEEP BUTTON ================= */
-
-.deep-btn{
-  width:100%;
-
-  margin-top:11px;
-
-  border:1px solid #304050;
-
-  background:#111b26;
-
-  color:#dbeafe;
-
-  border-radius:10px;
-
-  padding:10px;
-
-  font-weight:800;
-}
-
-.deep-btn:hover{
-  background:#172333;
-}
-
-/* ================= EMPTY ================= */
-
-.empty{
-  background:#0d141d;
-
-  border:1px dashed #283645;
-
-  border-radius:15px;
-
-  padding:25px;
-
-  text-align:center;
-
-  color:#7e8a98;
-
-  font-size:13px;
-}
-
-/* ================= DEEP PANEL ================= */
-
-.deep-panel{
-  display:none;
-
-  background:
-    linear-gradient(
-      145deg,
-      #101822,
-      #0a1017
-    );
-
-  border:1px solid #314254;
-
-  border-radius:18px;
-
-  padding:15px;
-
-  margin-bottom:12px;
-
-  box-shadow:
-    0 12px 45px rgba(0,0,0,.35);
-}
-
-.deep-panel.show{
-  display:block;
-}
-
-.deep-head{
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  gap:10px;
-
-  margin-bottom:12px;
-}
-
-.deep-title{
-  font-size:18px;
-  font-weight:900;
-}
-
-.close-btn{
-  border:0;
-
-  background:#1d2732;
-
-  color:#fff;
-
-  width:36px;
-  height:36px;
-
-  border-radius:10px;
-
-  font-size:18px;
-}
-
-.deep-summary{
-  display:grid;
-
-  grid-template-columns:
-    repeat(3,1fr);
-
-  gap:8px;
-
-  margin-bottom:12px;
-}
-
-.summary-box{
-  background:#080e15;
-
-  border:1px solid #202d3a;
-
-  border-radius:11px;
-
-  padding:10px;
-
-  text-align:center;
-}
-
-.summary-label{
-  color:#7f8c9b;
-  font-size:10px;
-}
-
-.summary-value{
-  margin-top:5px;
-  font-weight:900;
-}
-
-/* ================= ACCORDION ================= */
-
-.accordion{
-  border:1px solid #202d3a;
-
-  border-radius:12px;
-
-  overflow:hidden;
-
-  margin-top:8px;
-}
-
-.acc-head{
-  width:100%;
-
-  border:0;
-
-  background:#111a24;
-
-  color:#fff;
-
-  padding:12px;
-
-  display:flex;
-
-  justify-content:space-between;
-
-  align-items:center;
-
-  font-weight:800;
-
-  text-align:right;
-}
-
-.acc-body{
-  display:none;
-
-  background:#090f16;
-
-  padding:12px;
-
-  font-size:12px;
-
-  line-height:1.9;
-
-  color:#cbd5df;
-}
-
-.acc-body.show{
-  display:block;
-}
-
-.data-grid{
-  display:grid;
-
-  grid-template-columns:
-    repeat(2,1fr);
-
-  gap:7px;
-}
-
-.data{
-  background:#0d151e;
-
-  border:1px solid #1e2a36;
-
-  border-radius:8px;
-
-  padding:8px;
-}
-
-.data b{
-  color:#8d9aaa;
-  font-size:10px;
-}
-
-.data div{
-  margin-top:3px;
-  font-weight:700;
-}
-
-/* ================= LOADING ================= */
-
-.loading{
-  padding:25px;
-
-  text-align:center;
-
-  color:#8d9aaa;
-}
-
-.spinner{
-  width:24px;
-  height:24px;
-
-  border:3px solid #253443;
-
-  border-top-color:#3b82f6;
-
-  border-radius:50%;
-
-  animation:
-    spin .8s linear infinite;
-
-  margin:
-    0 auto 10px;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-/* ================= TOAST ================= */
-
-.toast{
-  position:fixed;
-
-  left:12px;
-  right:12px;
-
-  bottom:15px;
-
-  max-width:500px;
-
-  margin:auto;
-
-  background:#111a24;
-
-  border:1px solid #354758;
-
-  border-radius:13px;
-
-  padding:12px 14px;
-
-  box-shadow:
-    0 12px 40px rgba(0,0,0,.4);
-
-  transform:
-    translateY(120px);
-
-  opacity:0;
-
-  transition:.25s;
-
-  z-index:9999;
-}
-
-.toast.show{
-  transform:
-    translateY(0);
-
-  opacity:1;
-}
-
-.toast-title{
-  font-weight:900;
-}
-
-.toast-text{
-  color:#9aa7b5;
-
-  font-size:12px;
-
-  margin-top:3px;
-}
-
-/* ================= RESPONSIVE ================= */
-
 @media(max-width:700px){
 
-  .control-grid{
-    grid-template-columns:1fr 1fr;
+  .info-grid{
+    grid-template-columns:repeat(2,1fr);
   }
 
-  .control-grid input{
-    grid-column:1/-1;
+  .deep-grid{
+    grid-template-columns:repeat(2,1fr);
   }
 
-  .trade-grid{
-    grid-template-columns:
-      repeat(2,1fr);
+  .trade-box{
+    grid-template-columns:repeat(2,1fr);
   }
-
-  .styles{
-    grid-template-columns:
-      repeat(4,1fr);
-  }
-
-  .deep-summary{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
-
 }
-
-@media(max-width:420px){
-
-  .app{
-    padding:8px;
-  }
-
-  .header{
-    padding:14px;
-  }
-
-  .title{
-    font-size:19px;
-  }
-
-  .styles{
-    grid-template-columns:
-      repeat(2,1fr);
-  }
-
-}
-
-/* ================= NOTIFICATION ================= */
-
-.new-signal{
-  animation:
-    signalPulse 1.2s ease;
-}
-
-@keyframes signalPulse{
-
-  0%{
-    transform:scale(1);
-  }
-
-  40%{
-    transform:scale(1.015);
-  }
-
-  100%{
-    transform:scale(1);
-  }
-
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="app">
+<header class="header">
 
-  <!-- HEADER -->
+  <div class="header-top">
 
-  <div class="header">
+    <div class="title">
+      📡 Personal Smart Radar
+    </div>
 
-    <div class="header-row">
-
-      <div>
-
-        <div class="title">
-          🔥 اسکنر شخصی
-        </div>
-
-        <div class="subtitle">
-          MA20 یک‌دقیقه‌ای + Smart Confirmation
-        </div>
-
-      </div>
-
-      <div class="status">
-
-        <span
-          id="statusDot"
-          class="status-dot"
-        ></span>
-
-        <span id="statusText">
-          آماده
-        </span>
-
-      </div>
-
+    <div id="status" class="status">
+      در حال اتصال...
     </div>
 
   </div>
 
+  <div class="sub">
+    اسکن خودکار برخورد قیمت با MA20 تایم‌فریم 1 دقیقه و تأیید چندگانه
+  </div>
 
-  <!-- CONTROL -->
+</header>
 
-  <div class="control">
+<main class="container">
 
-    <div class="control-grid">
+  <div class="control-box">
 
-      <input
-        id="scanInterval"
-        type="number"
-        min="5"
-        max="120"
-        value="15"
-        placeholder="ثانیه"
-      >
+    <div class="control-row">
 
       <button
         id="startBtn"
-        class="btn"
-        onclick="startScanner()"
-      >
+        class="active"
+        onclick="startScanner()">
         ▶ شروع اسکن
       </button>
 
       <button
         id="stopBtn"
-        class="btn stop"
-        onclick="stopScanner()"
-      >
-        ■ توقف
+        onclick="stopScanner()">
+        ⏸ توقف اسکن
+      </button>
+
+      <button onclick="scanNow()">
+        🔄 اسکن فوری
+      </button>
+
+      <button onclick="clearSignals()">
+        🗑 پاک کردن
       </button>
 
     </div>
 
-    <div class="small-info">
+    <div class="info-grid">
 
-      Trigger اصلی:
-      <b>برخورد قیمت با MA20 در تایم 1 دقیقه</b>
+      <div class="info">
+        <div class="info-label">وضعیت اسکن</div>
+        <div id="scanState" class="info-value">فعال</div>
+      </div>
 
-      — سپس بررسی چندلایه تأییدیه‌ها.
+      <div class="info">
+        <div class="info-label">آخرین اسکن</div>
+        <div id="lastScan" class="info-value">---</div>
+      </div>
 
-      <br>
+      <div class="info">
+        <div class="info-label">تعداد سیگنال</div>
+        <div id="signalCount" class="info-value">0</div>
+      </div>
 
-      اسکن در پس‌زمینه ادامه پیدا می‌کند و
-      تحلیل عمیق هیچ سیگنالی را متوقف نمی‌کند.
+      <div class="info">
+        <div class="info-label">حداقل قدرت</div>
+        <div class="info-value">75 / 100</div>
+      </div>
 
     </div>
 
   </div>
 
+  <div class="section-title">
+    🔥 سیگنال‌های جدید
+  </div>
 
-  <!-- DEEP ANALYSIS -->
+  <div id="signals" class="signal-list">
 
-  <div
-    id="deepPanel"
-    class="deep-panel"
-  >
+    <div class="empty">
+      هنوز سیگنال قوی پیدا نشده است.
+      <br>
+      اسکن خودکار در حال بررسی بازار است.
+    </div>
 
-    <div class="deep-head">
+  </div>
 
-      <div
-        id="deepTitle"
-        class="deep-title"
-      >
-        🔍 تحلیل عمیق
-      </div>
+</main>
+
+<!-- DEEP PANEL -->
+
+<aside id="deepPanel" class="deep-panel">
+
+  <div class="deep-header">
+
+    <div class="deep-header-row">
+
+      <strong id="deepTitle">
+        تحلیل عمیق
+      </strong>
 
       <button
-        class="close-btn"
-        onclick="closeDeep()"
-      >
-        ×
+        class="close"
+        onclick="closeDeep()">
+        ✕ بستن
       </button>
 
     </div>
 
-    <div
-      id="deepContent"
-    ></div>
-
-  </div>
-
-
-  <!-- SIGNALS -->
-
-  <div class="section">
-
-    <div class="section-title">
-
-      <span>
-        🚨 سیگنال‌های پیدا شده
-      </span>
-
-      <span
-        id="signalCounter"
-        class="counter"
-      >
-        0 سیگنال
-      </span>
-
-    </div>
-
-    <div
-      id="signals"
-      class="signals"
-    >
-
-      <div class="empty">
-
-        هنوز سیگنالی پیدا نشده است.
-
-        <br><br>
-
-        اسکنر بعد از فعال شدن،
-        برخوردهای MA20 را بررسی می‌کند.
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- TOAST -->
-
-<div
-  id="toast"
-  class="toast"
->
-
-  <div
-    id="toastTitle"
-    class="toast-title"
-  >
-    🔔 سیگنال جدید
   </div>
 
   <div
-    id="toastText"
-    class="toast-text"
-  ></div>
+    id="deepContent"
+    class="deep-content">
+
+  </div>
+
+</aside>
+
+<div id="alert" class="alert">
+
+  <div id="alertTitle" class="alert-title">
+    🚨 سیگنال جدید
+  </div>
+
+  <div id="alertText" class="alert-text">
+  </div>
 
 </div>
-
 
 <script>
 
 /* =========================================================
-STATE
+CONFIG
 ========================================================= */
 
-let scannerTimer=null;
+const API_BASE = "";
 
-let scanning=false;
+const SCAN_INTERVAL = 15000;
 
-let signals=[];
+const MIN_SCORE = 75;
 
-let knownSignals=new Set();
+let timer = null;
 
-let currentDeepSymbol=null;
+let scanning = false;
 
-let lastScanTime=0;
+let scanOffset = 0;
 
-const MAX_SIGNALS=30;
+let signals = [];
+
+let seen = new Set();
+
+let currentDeep = null;
 
 
 /* =========================================================
@@ -998,18 +609,32 @@ const $ = id =>
 
 
 /* =========================================================
+STATUS
+========================================================= */
+
+function setStatus(text,on=true){
+
+  $("status").textContent=text;
+
+  $("status").classList.toggle(
+    "off",
+    !on
+  );
+}
+
+
+/* =========================================================
 FORMAT
 ========================================================= */
 
-function num(v,d=4){
+function num(v,d=2){
 
-  const n=Number(v);
+  const x=Number(v);
 
-  if(!Number.isFinite(n)){
-    return "—";
-  }
+  if(!Number.isFinite(x))
+    return "---";
 
-  return n.toLocaleString(
+  return x.toLocaleString(
     "en-US",
     {
       maximumFractionDigits:d
@@ -1017,258 +642,227 @@ function num(v,d=4){
   );
 }
 
+function price(v){
 
-function percent(v){
+  const x=Number(v);
 
-  const n=Number(v);
+  if(!Number.isFinite(x))
+    return "---";
 
-  if(!Number.isFinite(n)){
-    return "—";
-  }
+  if(x>=1000)
+    return x.toLocaleString(
+      "en-US",
+      {maximumFractionDigits:2}
+    );
 
-  return (
-    n>=0 ? "+" : ""
-  )+
-  n.toFixed(2)+
-  "%";
+  if(x>=1)
+    return x.toLocaleString(
+      "en-US",
+      {maximumFractionDigits:5}
+    );
+
+  return x.toLocaleString(
+    "en-US",
+    {maximumFractionDigits:10}
+  );
 }
-
 
 function time(v){
 
+  if(!v)
+    return "---";
+
+  return new Date(v)
+    .toLocaleTimeString(
+      "fa-IR",
+      {
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }
+    );
+}
+
+
+/* =========================================================
+API
+========================================================= */
+
+async function api(path){
+
+  const r=
+    await fetch(
+      API_BASE+path,
+      {
+        cache:"no-store"
+      }
+    );
+
   const d=
-    v
-      ? new Date(v)
-      : new Date();
+    await r.json();
 
-  return d.toLocaleTimeString(
-    "fa-IR",
-    {
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
-    }
-  );
-}
+  if(!r.ok || d.ok===false){
 
-
-/* =========================================================
-STATUS
-========================================================= */
-
-function setStatus(
-  text,
-  state="active"
-){
-
-  $("statusText").textContent=text;
-
-  $("statusDot").className=
-    "status-dot "+
-    state;
-}
-
-
-/* =========================================================
-TOAST
-========================================================= */
-
-let toastTimer=null;
-
-function showToast(
-  title,
-  text
-){
-
-  $("toastTitle").textContent=title;
-
-  $("toastText").textContent=text;
-
-  $("toast").classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer=
-    setTimeout(
-      ()=>
-        $("toast").classList.remove("show"),
-      5000
+    throw new Error(
+      d.error ||
+      `HTTP ${r.status}`
     );
-}
-
-
-/* =========================================================
-BEEP
-========================================================= */
-
-let audioContext=null;
-
-function beep(){
-
-  try{
-
-    if(!audioContext){
-
-      audioContext=
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
-
-    }
-
-    const osc=
-      audioContext.createOscillator();
-
-    const gain=
-      audioContext.createGain();
-
-    osc.frequency.value=880;
-
-    osc.type="sine";
-
-    gain.gain.setValueAtTime(
-      .001,
-      audioContext.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      .18,
-      audioContext.currentTime+.03
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      .001,
-      audioContext.currentTime+.45
-    );
-
-    osc.connect(gain);
-
-    gain.connect(
-      audioContext.destination
-    );
-
-    osc.start();
-
-    osc.stop(
-      audioContext.currentTime+.5
-    );
-
-  }catch(e){}
-
-}
-
-
-/* =========================================================
-BROWSER NOTIFICATION
-========================================================= */
-
-async function notification(
-  symbol,
-  direction,
-  score
-){
-
-  try{
-
-    if(
-      "Notification" in window &&
-      Notification.permission==="default"
-    ){
-
-      await Notification.requestPermission();
-
-    }
-
-    if(
-      "Notification" in window &&
-      Notification.permission==="granted"
-    ){
-
-      new Notification(
-        "🚨 سیگنال جدید",
-        {
-          body:
-            `${symbol} ${direction} — ${score}/100`
-        }
-      );
-
-    }
-
-  }catch(e){}
-
-}
-
-
-/* =========================================================
-SIGNAL KEY
-========================================================= */
-
-function signalKey(x){
-
-  const symbol=
-    x.symbol || "";
-
-  const direction=
-    x.direction || "";
-
-  const score=
-    Math.round(
-      Number(x.score)||0
-    );
-
-  /*
-   * فعلاً کلید بر اساس نماد + جهت + دقیقه ساخته می‌شود.
-   * بعداً Worker زمان Trigger واقعی MA20 را می‌دهد.
-   */
-
-  const minute=
-    new Date()
-      .toISOString()
-      .slice(0,16);
-
-  return (
-    symbol+
-    "|" +
-    direction+
-    "|" +
-    minute
-  );
-
-}
-
-
-/* =========================================================
-SIGNAL FILTER
-========================================================= */
-
-function isUsableSignal(x){
-
-  if(!x){
-    return false;
   }
 
-  const score=
-    Number(x.score)||0;
+  return d;
+}
 
-  const direction=
-    String(
-      x.direction||""
-    ).toUpperCase();
 
-  /*
-   * در نسخه نهایی:
-   * Trigger واقعی MA20 در Worker
-   * کنترل خواهد شد.
-   */
+/* =========================================================
+HEALTH
+========================================================= */
 
-  return (
-    (
-      direction==="LONG" ||
-      direction==="SHORT"
-    ) &&
-    score>=75
-  );
+async function health(){
+
+  try{
+
+    await api("/api/health");
+
+    setStatus(
+      "🟢 متصل",
+      true
+    );
+
+  }catch(e){
+
+    setStatus(
+      "🔴 خطا",
+      false
+    );
+
+  }
+}
+
+
+/* =========================================================
+START / STOP
+========================================================= */
+
+function startScanner(){
+
+  if(scanning)
+    return;
+
+  scanning=true;
+
+  $("scanState").textContent=
+    "فعال";
+
+  $("startBtn")
+    .classList.add("active");
+
+  runScan();
+
+  timer=
+    setInterval(
+      runScan,
+      SCAN_INTERVAL
+    );
+}
+
+
+function stopScanner(){
+
+  scanning=false;
+
+  $("scanState").textContent=
+    "متوقف";
+
+  $("startBtn")
+    .classList.remove("active");
+
+  if(timer){
+
+    clearInterval(timer);
+
+    timer=null;
+  }
+}
+
+
+function scanNow(){
+
+  runScan();
+}
+
+
+/* =========================================================
+SCAN
+========================================================= */
+
+async function runScan(){
+
+  try{
+
+    setStatus(
+      "🟢 در حال اسکن",
+      true
+    );
+
+    const data=
+      await api(
+        `/api/scan?offset=${scanOffset}`
+      );
+
+    $("lastScan").textContent=
+      time(Date.now());
+
+    scanOffset=
+      Number(
+        data.nextOffset || 0
+      );
+
+    const results=
+      Array.isArray(data.results)
+        ? data.results
+        : [];
+
+    for(const x of results){
+
+      if(!x)
+        continue;
+
+      const score=
+        Number(x.score || 0);
+
+      if(score<MIN_SCORE)
+        continue;
+
+      /*
+       * فقط سیگنال‌هایی که واقعاً
+       * جهت مشخص دارند.
+       */
+
+      if(
+        x.direction!=="LONG" &&
+        x.direction!=="SHORT"
+      ){
+        continue;
+      }
+
+      addSignal(x);
+    }
+
+    setStatus(
+      "🟢 آماده",
+      true
+    );
+
+  }catch(e){
+
+    console.error(e);
+
+    setStatus(
+      "🔴 خطای اتصال",
+      false
+    );
+
+  }
 
 }
 
@@ -1279,65 +873,49 @@ ADD SIGNAL
 
 function addSignal(x){
 
-  if(!isUsableSignal(x)){
-    return false;
-  }
+  /*
+   * کلید سیگنال
+   * برای جلوگیری از تکرار
+   */
 
   const key=
-    signalKey(x);
+    [
+      x.symbol,
+      x.direction,
+      x.timeframes?.["1"]?.timestamp || ""
+    ].join("_");
 
-  if(
-    knownSignals.has(key)
-  ){
+  if(seen.has(key))
+    return;
 
-    return false;
-  }
-
-  knownSignals.add(key);
+  seen.add(key);
 
   const signal={
     ...x,
-
-    foundAt:
-      Date.now(),
-
-    signalTime:
-      time()
+    detectedAt:Date.now(),
+    key
   };
 
   signals.unshift(signal);
 
-  if(
-    signals.length>MAX_SIGNALS
-  ){
+  /*
+   * حداکثر 100 سیگنال
+   */
+
+  if(signals.length>100){
 
     const removed=
       signals.pop();
 
-    /*
-     * برای جلوگیری از رشد بی‌نهایت
-     * حافظه هم محدود می‌ماند.
-     */
-
+    if(removed)
+      seen.delete(
+        removed.key
+      );
   }
 
   renderSignals();
 
-  beep();
-
-  notification(
-    signal.symbol,
-    signal.direction,
-    signal.score
-  );
-
-  showToast(
-    "🚨 سیگنال جدید",
-    `${signal.symbol} — ${signal.direction} — ${signal.score}/100`
-  );
-
-  return true;
-
+  notifySignal(signal);
 }
 
 
@@ -1347,1328 +925,1330 @@ RENDER SIGNALS
 
 function renderSignals(){
 
-  const box=
-    $("signals");
-
-  $("signalCounter").textContent=
-    `${signals.length} سیگنال`;
+  $("signalCount").textContent=
+    signals.length;
 
   if(!signals.length){
 
-    box.innerHTML=
-      `
+    $("signals").innerHTML=`
       <div class="empty">
-        هنوز سیگنالی پیدا نشده است.
+        هنوز سیگنال قوی پیدا نشده است.
       </div>
-      `;
+    `;
 
     return;
   }
 
-  box.innerHTML=
-    signals
-      .map(
-        (x,i)=>
-          signalHTML(x,i)
-      )
-      .join("");
-
+  $("signals").innerHTML=
+    signals.map(
+      (x,i)=>
+        signalHTML(x,i)
+    ).join("");
 }
 
 
-/* =========================================================
-SIGNAL HTML
-========================================================= */
+function signalHTML(x,index){
 
-function signalHTML(
-  x,
-  index
-){
+  const long=
+    x.direction==="LONG";
 
   const dir=
-    String(
-      x.direction||"WAIT"
-    ).toUpperCase();
-
-  const isLong=
-    dir==="LONG";
+    long
+      ? "LONG"
+      : "SHORT";
 
   const score=
-    Number(x.score)||0;
+    Number(x.score||0);
 
-  const scoreClass=
-    score>=85
-      ? "good"
-      : score>=75
-        ? "medium"
-        : "";
+  const one=
+    x.timeframes?.["1"] || {};
+
+  const ma=
+    one.ma20;
+
+  const fp=
+    x.footprint || {};
+
+  const wall=
+    x.walls || {};
 
   const movement=
     x.movement || {};
 
-  const entry=
-    x.entry ??
-    movement.entry ??
-    null;
-
-  const sl=
-    x.sl ??
-    movement.sl ??
-    null;
-
-  const tp1=
-    x.tp1 ??
-    movement.tp1 ??
-    null;
-
-  const tp2=
-    x.tp2 ??
-    movement.tp2 ??
-    null;
-
-  const tp3=
-    x.tp3 ??
-    movement.tp3 ??
-    null;
-
-  const rr=
-    x.rr ??
-    movement.rr ??
-    null;
-
-  const styles=
-    x.styles || {};
-
   return `
 
-    <div
-      class="signal ${isLong?"long":"short"}"
-      id="signal-${index}"
-    >
+    <div class="signal ${long?"long":"short"}">
 
-      <div class="signal-top">
+      <div class="signal-head">
 
         <div>
 
           <div class="symbol">
-            ${escapeHTML(x.symbol||"—")}
+            ${escapeHTML(x.symbol)}
           </div>
 
-          <div
-            class="direction ${isLong?"long":"short"}"
-          >
-            ${isLong?"🟢 LONG":"🔴 SHORT"}
+          <div class="signal-meta">
+            قیمت: ${price(x.price)}
           </div>
 
         </div>
 
-        <div
-          class="score ${scoreClass}"
-        >
-          ${score}/100
+        <div class="direction ${long?"long":"short"}">
+          ${dir}
         </div>
 
       </div>
 
+      <div class="score-row">
 
-      <div class="signal-time">
+        <div class="badge ${long?"green":"red"}">
+          قدرت ${score}/100
+        </div>
 
-        🕒 پیدا شد:
-        ${escapeHTML(
-          x.signalTime ||
-          time(x.generatedAt)
-        )}
+        <div class="badge">
+          MA20: ${price(ma)}
+        </div>
+
+        <div class="badge">
+          زمان: ${time(x.detectedAt)}
+        </div>
+
+        ${
+          fp && !fp.error
+          ? `
+            <div class="badge ${
+              fp.deltaPercent>=0
+                ? "green"
+                : "red"
+            }">
+              Delta ${num(fp.deltaPercent,1)}%
+            </div>
+          `
+          :""
+        }
+
+        ${
+          wall && !wall.error
+          ? `
+            <div class="badge yellow">
+              Liquidity ${num(
+                Math.max(
+                  wall.buyStrength||0,
+                  wall.sellStrength||0
+                ),0
+              )}
+            </div>
+          `
+          :""
+        }
+
+        ${
+          movement
+          ? `
+            <div class="badge">
+              Pump ${num(movement.pumpScore,0)}
+              /
+              Dump ${num(movement.dumpScore,0)}
+            </div>
+          `
+          :""
+        }
 
       </div>
 
+      <div class="signal-meta">
 
-      <div class="trade-grid">
-
-        <div class="trade-box">
-
-          <div class="trade-label">
-            ENTRY
-          </div>
-
-          <div class="trade-value entry">
-            ${num(entry)}
-          </div>
-
-        </div>
-
-        <div class="trade-box">
-
-          <div class="trade-label">
-            SL
-          </div>
-
-          <div class="trade-value sl">
-            ${num(sl)}
-          </div>
-
-        </div>
-
-        <div class="trade-box">
-
-          <div class="trade-label">
-            TP1
-          </div>
-
-          <div class="trade-value tp">
-            ${num(tp1)}
-          </div>
-
-        </div>
-
-        <div class="trade-box">
-
-          <div class="trade-label">
-            R:R
-          </div>
-
-          <div class="trade-value rr">
-            ${num(rr,2)}
-          </div>
-
-        </div>
+        ${
+          x.signalLevel
+          ? `سطح سیگنال: ${escapeHTML(
+              x.signalLevel
+            )}`
+          :""
+        }
 
       </div>
 
+      <div class="signal-actions">
 
-      <div class="styles">
+        <button
+          class="deep-btn"
+          onclick="openDeep(${index})">
 
-        ${styleBox(
-          "MA",
-          styles.MA
-        )}
+          🔍 مشاهده تحلیل عمیق
 
-        ${styleBox(
-          "SMC",
-          styles.SMC
-        )}
+        </button>
 
-        ${styleBox(
-          "ICT",
-          styles.ICT
-        )}
-
-        ${styleBox(
-          "Flow",
-          styles.OrderFlow
-        )}
-
-        ${styleBox(
-          "Liquidity",
-          styles.Liquidity
-        )}
-
-        ${styleBox(
-          "Volume",
-          styles.Volume
-        )}
-
-        ${styleBox(
-          "Candle",
-          styles.Candles
-        )}
-
-      </div>
-
-
-      <button
-        class="deep-btn"
-        onclick="openDeep(${index})"
-      >
-        🔍 تحلیل عمیق
-      </button>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =========================================================
-STYLE BOX
-========================================================= */
-
-function styleBox(
-  name,
-  value
-){
-
-  const v=
-    Number(value);
-
-  let cls="neutral";
-
-  let state="⚪ خنثی";
-
-  if(v>=70){
-
-    cls="bull";
-
-    state="🟢 قوی";
-
-  }else if(v<=35){
-
-    cls="bear";
-
-    state="🔴 ضعیف";
-
-  }
-
-  return `
-
-    <div class="style">
-
-      <div class="style-name">
-        ${name}
-      </div>
-
-      <div class="style-state ${cls}">
-        ${state}
       </div>
 
     </div>
 
   `;
-
 }
 
 
 /* =========================================================
-DEEP ANALYSIS
+DEEP
 ========================================================= */
 
-async function openDeep(index){
+function openDeep(index){
 
-  const signal=
+  const x=
     signals[index];
 
-  if(!signal){
+  if(!x)
     return;
-  }
 
-  currentDeepSymbol=
-    signal.symbol;
-
-  $("deepPanel")
-    .classList.add("show");
+  currentDeep=x;
 
   $("deepTitle").textContent=
-    `🔍 تحلیل عمیق — ${signal.symbol}`;
+    `تحلیل عمیق ${x.symbol}`;
 
   $("deepContent").innerHTML=
-    `
-    <div class="loading">
+    deepHTML(x);
 
-      <div class="spinner"></div>
-
-      دریافت تحلیل عمیق...
-
-    </div>
-    `;
-
-  /*
-   * مهم:
-   * باز شدن این پنل هیچ ارتباطی با
-   * تایمر اسکن ندارد.
-   *
-   * اسکنر در پس‌زمینه ادامه می‌دهد.
-   */
-
-  try{
-
-    const r=
-      await fetch(
-        `/api/analyze?symbol=${encodeURIComponent(signal.symbol)}&category=linear`,
-        {
-          cache:"no-store"
-        }
-      );
-
-    const data=
-      await r.json();
-
-    if(!data.ok){
-
-      throw new Error(
-        data.error ||
-        "خطا در تحلیل"
-      );
-
-    }
-
-    renderDeep(data);
-
-  }catch(e){
-
-    $("deepContent").innerHTML=
-      `
-      <div class="empty">
-        خطا در دریافت تحلیل:
-        <br><br>
-        ${escapeHTML(e.message)}
-      </div>
-      `;
-
-  }
-
+  $("deepPanel")
+    .classList.add("open");
 }
 
-
-/* =========================================================
-CLOSE DEEP
-========================================================= */
 
 function closeDeep(){
 
   $("deepPanel")
-    .classList.remove("show");
+    .classList.remove("open");
 
-  currentDeepSymbol=null;
-
+  currentDeep=null;
 }
 
 
 /* =========================================================
-RENDER DEEP
+DEEP HTML
 ========================================================= */
 
-function renderDeep(d){
-
-  const dir=
-    String(
-      d.direction||"WAIT"
-    ).toUpperCase();
-
-  const isLong=
-    dir==="LONG";
-
-  const tf=
-    d.timeframes || {};
+function deepHTML(x){
 
   const one=
-    tf["1"] || {};
+    x.timeframes?.["1"] || {};
+
+  const three=
+    x.timeframes?.["3"] || {};
+
+  const five=
+    x.timeframes?.["5"] || {};
+
+  const fifteen=
+    x.timeframes?.["15"] || {};
+
+  const hour=
+    x.timeframes?.["60"] || {};
 
   const fp=
-    d.footprint || {};
+    x.footprint || {};
 
   const wall=
-    d.walls || {};
+    x.walls || {};
 
   const sr=
-    d.supportResistance || {};
-
-  const movement=
-    d.movement || {};
+    x.supportResistance || {};
 
   const market=
-    d.market || {};
-
-  const reversal=
-    d.reversal || {};
+    x.market || {};
 
   const styles=
-    d.styles || {};
+    x.styles || {};
 
-  $("deepContent").innerHTML=
+  const movement=
+    x.movement || {};
 
-    `
+  const reversal=
+    x.reversal || {};
 
-    <div class="deep-summary">
+  const reasons=
+    Array.isArray(x.reasons)
+      ? x.reasons
+      : [];
 
-      <div class="summary-box">
+  const trade=
+    calculateTradePlan(x);
 
-        <div class="summary-label">
-          جهت
-        </div>
+  return `
 
-        <div
-          class="summary-value ${
-            isLong
-              ? "bull"
-              : dir==="SHORT"
-                ? "bear"
-                : "neutral"
-          }"
-        >
-          ${
-            dir==="LONG"
-              ? "🟢 LONG"
-              : dir==="SHORT"
-                ? "🔴 SHORT"
-                : "⚪ WAIT"
-          }
-        </div>
+    ${tradeHTML(trade)}
 
-      </div>
-
-
-      <div class="summary-box">
-
-        <div class="summary-label">
-          امتیاز
-        </div>
-
-        <div class="summary-value">
-          ${num(d.score,0)}/100
-        </div>
-
-      </div>
-
-
-      <div class="summary-box">
-
-        <div class="summary-label">
-          قیمت
-        </div>
-
-        <div class="summary-value">
-          ${num(d.price)}
-        </div>
-
-      </div>
-
-    </div>
-
-
-    ${accordion(
-      "📐 MA20 و ساختار",
+    ${section(
+      "📊 خلاصه سیگنال",
       `
-      <div class="data-grid">
+      <div class="deep-grid">
 
-        ${dataBox(
-          "MA7",
-          num(one.ma7)
+        ${metric(
+          "جهت",
+          x.direction,
+          x.direction==="LONG"
+            ? "bull"
+            : "bear"
         )}
 
-        ${dataBox(
+        ${metric(
+          "قدرت",
+          `${num(x.score,0)} / 100`
+        )}
+
+        ${metric(
+          "قیمت",
+          price(x.price)
+        )}
+
+        ${metric(
+          "زمان کشف",
+          time(x.detectedAt)
+        )}
+
+        ${metric(
+          "سطح",
+          x.signalLevel
+        )}
+
+        ${metric(
+          "وضعیت Pump/Dump",
+          movement.pumpDumpStatus
+        )}
+
+      </div>
+      `
+    )}
+
+    ${section(
+      "🎯 وضعیت سبک‌های معاملاتی",
+      `
+      <div class="deep-grid">
+
+        ${styleMetric(
+          "SMC",
+          styles.SMC
+        )}
+
+        ${styleMetric(
+          "ICT",
+          styles.ICT
+        )}
+
+        ${styleMetric(
+          "MA",
+          styles.MA
+        )}
+
+        ${styleMetric(
+          "Volume",
+          styles.Volume
+        )}
+
+        ${styleMetric(
+          "Candles",
+          styles.Candles
+        )}
+
+        ${styleMetric(
+          "Order Flow",
+          styles.OrderFlow
+        )}
+
+        ${styleMetric(
+          "Liquidity",
+          styles.Liquidity
+        )}
+
+      </div>
+      `
+    )}
+
+    ${section(
+      "📈 MA20 تایم 1 دقیقه",
+      `
+      <div class="deep-grid">
+
+        ${metric(
+          "قیمت",
+          price(one.price)
+        )}
+
+        ${metric(
           "MA20",
-          num(one.ma20)
+          price(one.ma20)
         )}
 
-        ${dataBox(
+        ${metric(
+          "MA7",
+          price(one.ma7)
+        )}
+
+        ${metric(
           "شیب MA",
-          one.maSlope || "—"
+          one.maSlope
         )}
 
-        ${dataBox(
-          "روند",
-          one.trend || "—"
+        ${metric(
+          "Trend",
+          one.trend
         )}
 
-        ${dataBox(
+        ${metric(
           "برخورد MA20",
           one.touchMA20
-            ? "تأیید"
+            ? "بله"
             : "خیر"
         )}
 
-        ${dataBox(
+        ${metric(
           "برخورد MA7",
           one.touchMA7
-            ? "تأیید"
+            ? "بله"
             : "خیر"
         )}
 
-        ${dataBox(
-          "BOS",
-          one.bos || "NONE"
-        )}
-
-        ${dataBox(
-          "CHoCH",
-          one.choch || "NONE"
+        ${metric(
+          "Volume Spike",
+          one.volume?.spike
+            ? "بله"
+            : "خیر"
         )}
 
       </div>
       `
     )}
 
-
-    ${accordion(
-      "💧 Liquidity / Hunt",
+    ${section(
+      "🧠 ساختار بازار",
       `
-      <div class="data-grid">
+      <div class="deep-grid">
 
-        ${dataBox(
+        ${metric(
+          "BOS",
+          one.bos
+        )}
+
+        ${metric(
+          "CHoCH",
+          one.choch
+        )}
+
+        ${metric(
+          "Swing High",
+          price(
+            one.structure?.swingHigh
+          )
+        )}
+
+        ${metric(
+          "Swing Low",
+          price(
+            one.structure?.swingLow
+          )
+        )}
+
+        ${metric(
+          "FVG",
+          one.fvg?.type
+        )}
+
+        ${metric(
+          "Order Block",
+          one.orderBlock?.type
+        )}
+
+        ${metric(
           "Hunt",
-          one.hunt?.type || "NONE"
+          one.hunt?.side
         )}
 
-        ${dataBox(
-          "Side",
-          one.hunt?.side || "NONE"
+        ${metric(
+          "Hunt Confirm",
+          one.hunt?.confirmed
+            ? "تأیید"
+            : "ندارد"
         )}
 
-        ${dataBox(
-          "Level",
-          num(one.hunt?.level)
+      </div>
+      `
+    )}
+
+    ${section(
+      "🕯️ کندل‌شناسی",
+      `
+      <div class="deep-grid">
+
+        ${metric(
+          "الگوی کندل",
+          one.candle
         )}
 
-        ${dataBox(
-          "Wick",
-          one.hunt?.wickPct != null
-            ? percent(one.hunt.wickPct)
-            : "—"
+        ${metric(
+          "Bullish",
+          one.candleDetails?.bullish
+            ? "بله"
+            : "خیر"
         )}
 
-        ${dataBox(
+        ${metric(
+          "Bearish",
+          one.candleDetails?.bearish
+            ? "بله"
+            : "خیر"
+        )}
+
+        ${metric(
+          "Body Ratio",
+          num(
+            (one.candleDetails?.bodyRatio||0)*100,
+            1
+          )+"%"
+        )}
+
+      </div>
+      `
+    )}
+
+    ${section(
+      "🟢 Footprint / جریان سفارش",
+      fp.error
+        ? `<div class="reason">
+             ${escapeHTML(fp.error)}
+           </div>`
+        :
+        `
+        <div class="deep-grid">
+
+          ${metric(
+            "Buy Volume",
+            num(fp.buyVolume)
+          )}
+
+          ${metric(
+            "Sell Volume",
+            num(fp.sellVolume)
+          )}
+
+          ${metric(
+            "Delta",
+            num(fp.delta)
+          )}
+
+          ${metric(
+            "Delta %",
+            num(fp.deltaPercent,1)+"%"
+          )}
+
+          ${metric(
+            "Buy Notional",
+            num(fp.buyNotional)
+          )}
+
+          ${metric(
+            "Sell Notional",
+            num(fp.sellNotional)
+          )}
+
+          ${metric(
+            "Large Trade",
+            num(fp.largeTradeNotional)
+          )}
+
+          ${metric(
+            "Pressure",
+            fp.pressure
+          )}
+
+        </div>
+        `
+    )}
+
+    ${section(
+      "🧱 دیوارهای سفارش",
+      wall.error
+        ? `<div class="reason">
+             ${escapeHTML(wall.error)}
+           </div>`
+        :
+        `
+        <div class="deep-grid">
+
+          ${metric(
+            "Buy Wall",
+            wall.buy
+              ? price(wall.buy.price)
+              : "---"
+          )}
+
+          ${metric(
+            "Buy Strength",
+            num(wall.buyStrength,0)
+          )}
+
+          ${metric(
+            "Sell Wall",
+            wall.sell
+              ? price(wall.sell.price)
+              : "---"
+          )}
+
+          ${metric(
+            "Sell Strength",
+            num(wall.sellStrength,0)
+          )}
+
+          ${metric(
+            "Buy Share",
+            num(wall.buyShare,1)+"%"
+          )}
+
+          ${metric(
+            "Sell Share",
+            num(wall.sellShare,1)+"%"
+          )}
+
+          ${metric(
+            "Imbalance",
+            num(wall.imbalance,1)+"%"
+          )}
+
+        </div>
+
+        <div class="deep-section-title">
+          نزدیک‌ترین Buy Walls
+        </div>
+
+        ${
+          (wall.buyLevels||[])
+            .slice(0,5)
+            .map(
+              z=>levelHTML(
+                z.price,
+                z.notional,
+                z.distancePct
+              )
+            ).join("")
+        }
+
+        <div class="deep-section-title">
+          نزدیک‌ترین Sell Walls
+        </div>
+
+        ${
+          (wall.sellLevels||[])
+            .slice(0,5)
+            .map(
+              z=>levelHTML(
+                z.price,
+                z.notional,
+                z.distancePct
+              )
+            ).join("")
+        }
+        `
+    )}
+
+    ${section(
+      "📍 حمایت و مقاومت",
+      `
+      ${
+        sr.nearestSupport
+        ? levelHTML(
+            sr.nearestSupport.price,
+            sr.nearestSupport.liquidity,
+            sr.nearestSupport.distancePct,
+            "حمایت"
+          )
+        :""
+      }
+
+      ${
+        sr.nearestResistance
+        ? levelHTML(
+            sr.nearestResistance.price,
+            sr.nearestResistance.liquidity,
+            sr.nearestResistance.distancePct,
+            "مقاومت"
+          )
+        :""
+      }
+
+      ${
+        sr.strongestSupport
+        ? levelHTML(
+            sr.strongestSupport.price,
+            sr.strongestSupport.liquidity,
+            sr.strongestSupport.distancePct,
+            "قوی‌ترین حمایت"
+          )
+        :""
+      }
+
+      ${
+        sr.strongestResistance
+        ? levelHTML(
+            sr.strongestResistance.price,
+            sr.strongestResistance.liquidity,
+            sr.strongestResistance.distancePct,
+            "قوی‌ترین مقاومت"
+          )
+        :""
+      }
+      `
+    )}
+
+    ${section(
+      "💧 Hunt / Liquidity Sweep",
+      `
+      <div class="deep-grid">
+
+        ${metric(
+          "نوع",
+          one.hunt?.type
+        )}
+
+        ${metric(
+          "جهت",
+          one.hunt?.side
+        )}
+
+        ${metric(
+          "سطح",
+          price(one.hunt?.level)
+        )}
+
+        ${metric(
+          "Wick %",
+          num(one.hunt?.wickPct,1)+"%"
+        )}
+
+        ${metric(
           "Volume Confirm",
           one.hunt?.volumeConfirmed
-            ? "YES"
-            : "NO"
+            ? "بله"
+            : "خیر"
         )}
 
-        ${dataBox(
+        ${metric(
           "Confirmed",
           one.hunt?.confirmed
-            ? "YES"
-            : "NO"
+            ? "بله"
+            : "خیر"
         )}
 
       </div>
       `
     )}
 
-
-    ${accordion(
-      "📊 Footprint / Order Flow",
+    ${section(
+      "📊 OI / Funding",
       `
-      <div class="data-grid">
+      <div class="deep-grid">
 
-        ${dataBox(
-          "Buy Volume",
-          num(fp.buyVolume)
-        )}
-
-        ${dataBox(
-          "Sell Volume",
-          num(fp.sellVolume)
-        )}
-
-        ${dataBox(
-          "Delta",
-          num(fp.delta)
-        )}
-
-        ${dataBox(
-          "Delta %",
-          percent(fp.deltaPercent)
-        )}
-
-        ${dataBox(
-          "Buy Notional",
-          num(fp.buyNotional)
-        )}
-
-        ${dataBox(
-          "Sell Notional",
-          num(fp.sellNotional)
-        )}
-
-        ${dataBox(
-          "Notional Delta",
-          num(fp.notionalDelta)
-        )}
-
-        ${dataBox(
-          "Pressure",
-          fp.pressure || "—"
-        )}
-
-        ${dataBox(
-          "Large Trade",
-          num(fp.largeTradeNotional)
-        )}
-
-        ${dataBox(
-          "Trades",
-          num(fp.trades,0)
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "📚 Order Book / Walls",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
-          "Buy Wall",
-          wall.buy
-            ? num(wall.buy.price)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Buy Wall Size",
-          wall.buy
-            ? num(wall.buy.notional)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Sell Wall",
-          wall.sell
-            ? num(wall.sell.price)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Sell Wall Size",
-          wall.sell
-            ? num(wall.sell.notional)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Buy Strength",
-          num(wall.buyStrength,1)
-        )}
-
-        ${dataBox(
-          "Sell Strength",
-          num(wall.sellStrength,1)
-        )}
-
-        ${dataBox(
-          "Buy Liquidity",
-          num(wall.buyLiquidity)
-        )}
-
-        ${dataBox(
-          "Sell Liquidity",
-          num(wall.sellLiquidity)
-        )}
-
-        ${dataBox(
-          "Imbalance",
-          percent(wall.imbalance)
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "🧱 Support / Resistance",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
-          "Nearest Support",
-          sr.nearestSupport
-            ? num(sr.nearestSupport.price)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Nearest Resistance",
-          sr.nearestResistance
-            ? num(sr.nearestResistance.price)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Strong Support",
-          sr.strongestSupport
-            ? num(sr.strongestSupport.price)
-            : "—"
-        )}
-
-        ${dataBox(
-          "Strong Resistance",
-          sr.strongestResistance
-            ? num(sr.strongestResistance.price)
-            : "—"
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "🕯️ Candle Analysis",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
-          "Candle",
-          one.candle || "—"
-        )}
-
-        ${dataBox(
-          "Body Ratio",
-          one.candleDetails
-            ? percent(
-                one.candleDetails.bodyRatio*100
-              )
-            : "—"
-        )}
-
-        ${dataBox(
-          "Upper Wick",
-          one.candleDetails
-            ? num(
-                one.candleDetails.upperWick
-              )
-            : "—"
-        )}
-
-        ${dataBox(
-          "Lower Wick",
-          one.candleDetails
-            ? num(
-                one.candleDetails.lowerWick
-              )
-            : "—"
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "📈 Volume / Market",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
-          "Volume",
-          num(one.volume?.current)
-        )}
-
-        ${dataBox(
-          "Volume MA7",
-          num(one.volume?.ma7)
-        )}
-
-        ${dataBox(
-          "Volume MA20",
-          num(one.volume?.ma20)
-        )}
-
-        ${dataBox(
-          "Volume Ratio",
-          num(one.volume?.ratio20,2)
-        )}
-
-        ${dataBox(
-          "ADX",
-          num(one.market?.adx,2)
-        )}
-
-        ${dataBox(
-          "ATR %",
-          percent(one.market?.atrPct)
-        )}
-
-        ${dataBox(
-          "Boll Width",
-          percent(one.market?.bollWidth)
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "💰 Open Interest / Funding",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
+        ${metric(
           "Open Interest",
           num(market.openInterest)
         )}
 
-        ${dataBox(
+        ${metric(
           "OI Change",
-          percent(
-            market.openInterestChange
-          )
+          num(
+            market.openInterestChange,
+            2
+          )+"%"
         )}
 
-        ${dataBox(
+        ${metric(
           "Funding",
-          market.fundingRate != null
-            ? String(
-                market.fundingRate
-              )
-            : "—"
-        )}
-
-        ${dataBox(
-          "24h Change",
-          percent(
-            market.priceChange24h
+          num(
+            market.fundingRate,
+            6
           )
         )}
 
-        ${dataBox(
+        ${metric(
+          "24h Price",
+          num(
+            market.priceChange24h,
+            2
+          )+"%"
+        )}
+
+        ${metric(
           "24h Turnover",
-          num(market.turnover24h)
+          num(
+            market.turnover24h
+          )
         )}
 
       </div>
       `
     )}
 
-
-    ${accordion(
-      "🧠 سبک‌های معاملاتی",
+    ${section(
+      "⏱️ تأیید تایم‌فریم‌ها",
       `
-      <div class="data-grid">
+      <div class="deep-grid">
 
-        ${dataBox(
-          "SMC",
-          num(styles.SMC,0)
-        )}
-
-        ${dataBox(
-          "ICT",
-          num(styles.ICT,0)
-        )}
-
-        ${dataBox(
-          "MA",
-          num(styles.MA,0)
-        )}
-
-        ${dataBox(
-          "Volume",
-          num(styles.Volume,0)
-        )}
-
-        ${dataBox(
-          "Candles",
-          num(styles.Candles,0)
-        )}
-
-        ${dataBox(
-          "Order Flow",
-          num(styles.OrderFlow,0)
-        )}
-
-        ${dataBox(
-          "Liquidity",
-          num(styles.Liquidity,0)
-        )}
+        ${tfMetric("1m",one)}
+        ${tfMetric("3m",three)}
+        ${tfMetric("5m",five)}
+        ${tfMetric("15m",fifteen)}
+        ${tfMetric("1h",hour)}
 
       </div>
       `
     )}
 
-
-    ${accordion(
-      "🚀 Pump / Dump / Reversal",
+    ${section(
+      "🚀 Pump / Dump",
       `
-      <div class="data-grid">
+      <div class="deep-grid">
 
-        ${dataBox(
-          "Pump",
+        ${metric(
+          "Pump Score",
           num(movement.pumpScore,0)
         )}
 
-        ${dataBox(
-          "Dump",
+        ${metric(
+          "Dump Score",
           num(movement.dumpScore,0)
         )}
 
-        ${dataBox(
+        ${metric(
           "Pump Reversal",
-          num(reversal.pumpScore,0)
+          num(
+            reversal.pumpScore,
+            0
+          )
         )}
 
-        ${dataBox(
+        ${metric(
           "Dump Reversal",
-          num(reversal.dumpScore,0)
+          num(
+            reversal.dumpScore,
+            0
+          )
         )}
 
-        ${dataBox(
+        ${metric(
           "15m Change",
-          percent(movement.change15m)
-        )}
-
-        ${dataBox(
-          "30m Change",
-          percent(movement.change30m)
-        )}
-
-      </div>
-      `
-    )}
-
-
-    ${accordion(
-      "🎯 Trade Plan",
-      `
-      <div class="data-grid">
-
-        ${dataBox(
-          "Entry",
           num(
-            d.entry ??
-            movement.entry
-          )
-        )}
-
-        ${dataBox(
-          "Stop Loss",
-          num(
-            d.sl ??
-            movement.sl
-          )
-        )}
-
-        ${dataBox(
-          "TP1",
-          num(
-            d.tp1 ??
-            movement.tp1
-          )
-        )}
-
-        ${dataBox(
-          "TP2",
-          num(
-            d.tp2 ??
-            movement.tp2
-          )
-        )}
-
-        ${dataBox(
-          "TP3",
-          num(
-            d.tp3 ??
-            movement.tp3
-          )
-        )}
-
-        ${dataBox(
-          "Risk / Reward",
-          num(
-            d.rr ??
-            movement.rr,
+            movement.change15m,
             2
-          )
+          )+"%"
+        )}
+
+        ${metric(
+          "30m Change",
+          num(
+            movement.change30m,
+            2
+          )+"%"
         )}
 
       </div>
       `
     )}
 
-    `;
+    ${section(
+      "📝 دلایل سیگنال",
+      reasons.length
+        ? reasons.map(
+            r=>
+              `<div class="reason">
+                ✓ ${escapeHTML(r)}
+              </div>`
+          ).join("")
+        :
+          `<div class="reason">
+             دلیل مشخصی ثبت نشده است.
+           </div>`
+    )}
 
+  `;
 }
 
 
 /* =========================================================
-ACCORDION
+TRADE PLAN
 ========================================================= */
 
-function accordion(
-  title,
-  body
-){
+function calculateTradePlan(x){
 
-  const id=
-    "acc_"+Math.random()
-      .toString(36)
-      .slice(2);
+  const one=
+    x.timeframes?.["1"] || {};
 
-  return `
+  const p=
+    Number(x.price||0);
 
-    <div class="accordion">
+  const atrV=
+    Number(
+      one.market?.atr ||
+      one.atr ||
+      0
+    );
 
-      <button
-        class="acc-head"
-        onclick="toggleAccordion('${id}')"
-      >
+  const sr=
+    x.supportResistance || {};
 
-        <span>
-          ${title}
-        </span>
+  const support=
+    Number(
+      sr.nearestSupport?.price || 0
+    );
 
-        <span>
-          ▼
-        </span>
+  const resistance=
+    Number(
+      sr.nearestResistance?.price || 0
+    );
 
-      </button>
+  /*
+   * برای جلوگیری از SL/TP غیرمنطقی،
+   * اگر ATR موجود نباشد از فاصله
+   * حمایت/مقاومت استفاده می‌کنیم.
+   */
 
-      <div
-        id="${id}"
-        class="acc-body"
-      >
-        ${body}
-      </div>
+  let risk=0;
 
-    </div>
+  if(atrV>0){
 
-  `;
+    risk=atrV*1.2;
 
-}
+  }else if(
+    x.direction==="LONG" &&
+    support>0 &&
+    support<p
+  ){
 
+    risk=p-support;
 
-function toggleAccordion(id){
+  }else if(
+    x.direction==="SHORT" &&
+    resistance>0 &&
+    resistance>p
+  ){
 
-  const el=
-    $(id);
+    risk=resistance-p;
 
-  if(el){
+  }else{
 
-    el.classList.toggle("show");
-
+    risk=p*0.003;
   }
 
+  risk=
+    Math.max(
+      risk,
+      p*0.001
+    );
+
+  let entry=p;
+
+  let sl=0;
+
+  let tp1=0;
+  let tp2=0;
+
+  if(x.direction==="LONG"){
+
+    sl=
+      Math.min(
+        p-risk,
+        support>0
+          ? support-risk*0.15
+          : p-risk
+      );
+
+    tp1=
+      p+risk*1.5;
+
+    tp2=
+      p+risk*2.5;
+
+    if(
+      resistance>p &&
+      resistance>tp1
+    ){
+
+      tp1=resistance;
+    }
+
+  }else{
+
+    sl=
+      Math.max(
+        p+risk,
+        resistance>p
+          ? resistance+risk*0.15
+          : p+risk
+      );
+
+    tp1=
+      p-risk*1.5;
+
+    tp2=
+      p-risk*2.5;
+
+    if(
+      support>0 &&
+      support<p &&
+      support<tp1
+    ){
+
+      tp1=support;
+    }
+  }
+
+  const rr=
+    risk>0
+      ? Math.abs(tp1-entry)/risk
+      : 0;
+
+  return {
+    entry,
+    sl,
+    tp1,
+    tp2,
+    risk,
+    rr
+  };
 }
 
 
-/* =========================================================
-DATA BOX
-========================================================= */
-
-function dataBox(
-  label,
-  value
-){
+function tradeHTML(t){
 
   return `
 
-    <div class="data">
+    <div class="deep-section">
 
-      <b>
-        ${label}
-      </b>
+      <div class="deep-section-title">
+        🎯 نقطه ورود / حد ضرر / اهداف
+      </div>
 
-      <div>
-        ${escapeHTML(
-          String(
-            value ?? "—"
-          )
-        )}
+      <div class="trade-box">
+
+        <div class="trade">
+
+          <small>Entry</small>
+
+          <strong>
+            ${price(t.entry)}
+          </strong>
+
+        </div>
+
+        <div class="trade">
+
+          <small>SL</small>
+
+          <strong class="bear">
+            ${price(t.sl)}
+          </strong>
+
+        </div>
+
+        <div class="trade">
+
+          <small>TP1</small>
+
+          <strong class="bull">
+            ${price(t.tp1)}
+          </strong>
+
+        </div>
+
+        <div class="trade">
+
+          <small>TP2</small>
+
+          <strong class="bull">
+            ${price(t.tp2)}
+          </strong>
+
+        </div>
+
+      </div>
+
+      <div class="reason">
+        نسبت تقریبی R/R تا TP1:
+        <b>${num(t.rr,2)}</b>
+      </div>
+
+      <div class="reason">
+        ⚠️ Entry / SL / TP محاسباتی هستند و قبل از معامله باید
+        با ساختار، نقدینگی و شرایط لحظه‌ای بازار بررسی شوند.
       </div>
 
     </div>
 
   `;
-
 }
 
 
 /* =========================================================
-ESCAPE
+HELPERS
 ========================================================= */
+
+function section(title,content){
+
+  return `
+
+    <div class="deep-section">
+
+      <div class="deep-section-title">
+        ${title}
+      </div>
+
+      ${content}
+
+    </div>
+
+  `;
+}
+
+
+function metric(label,value,cls=""){
+
+  return `
+
+    <div class="metric">
+
+      <small>
+        ${label}
+      </small>
+
+      <strong class="${cls}">
+        ${escapeHTML(
+          value===null ||
+          value===undefined ||
+          value===""
+            ? "---"
+            : String(value)
+        )}
+      </strong>
+
+    </div>
+
+  `;
+}
+
+
+function styleMetric(label,value){
+
+  const v=
+    Number(value||0);
+
+  const cls=
+    v>=75
+      ? "bull"
+      : v<=45
+        ? "bear"
+        : "neutral";
+
+  return metric(
+    label,
+    `${v}/100`,
+    cls
+  );
+}
+
+
+function tfMetric(label,x){
+
+  if(!x || x.error){
+
+    return metric(
+      label,
+      "خطا",
+      "bear"
+    );
+  }
+
+  const state=
+    x.trend ||
+    x.maSlope ||
+    "---";
+
+  const cls=
+    state==="BULLISH" ||
+    state==="UP"
+      ? "bull"
+      : state==="BEARISH" ||
+        state==="DOWN"
+        ? "bear"
+        : "neutral";
+
+  return metric(
+    label,
+    `${state} | MA20 ${price(x.ma20)}`,
+    cls
+  );
+}
+
+
+function levelHTML(
+  p,
+  liquidity,
+  distance,
+  label=""
+){
+
+  return `
+
+    <div class="level">
+
+      <span>
+        ${label || "Level"}
+      </span>
+
+      <span>
+        ${price(p)}
+      </span>
+
+      <span>
+        ${liquidity
+          ? num(liquidity)
+          : "---"}
+      </span>
+
+      <span>
+        ${num(distance,2)}%
+      </span>
+
+    </div>
+
+  `;
+}
+
 
 function escapeHTML(value){
 
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 }
 
 
 /* =========================================================
-SCAN API
+NOTIFICATION
 ========================================================= */
 
-async function runScan(){
+function notifySignal(x){
 
-  if(!scanning){
-    return;
-  }
+  const dir=
+    x.direction==="LONG"
+      ? "🟢 LONG"
+      : "🔴 SHORT";
 
-  try{
+  const title=
+    `🚨 سیگنال جدید ${x.symbol}`;
 
-    setStatus(
-      "در حال اسکن...",
-      "active"
-    );
+  const text=
+    `${dir} | قدرت ${x.score}/100 | ${time(
+      x.detectedAt
+    )}`;
 
-    const r=
-      await fetch(
-        `/api/scan?offset=0&_=${Date.now()}`,
-        {
-          cache:"no-store"
-        }
-      );
+  $("alertTitle").textContent=
+    title;
 
-    if(!r.ok){
+  $("alertText").textContent=
+    text;
 
-      throw new Error(
-        `HTTP ${r.status}`
-      );
+  $("alert").classList.add("show");
 
-    }
-
-    const data=
-      await r.json();
-
-    if(!data.ok){
-
-      throw new Error(
-        data.error ||
-        "خطای اسکن"
-      );
-
-    }
-
-    lastScanTime=
-      Date.now();
-
-    setStatus(
-      `اسکن فعال — ${time()}`,
-      "active"
-    );
-
-    /*
-     * API فعلی چند نتیجه عمیق برمی‌گرداند.
-     * هر نتیجه‌ای که شرایط سیگنال را داشته باشد
-     * وارد لیست می‌شود.
-     */
-
-    for(
-      const x of
-      (data.results || [])
-    ){
-
-      addSignal(x);
-
-    }
-
-  }catch(e){
-
-    console.error(e);
-
-    setStatus(
-      "خطا در اتصال",
-      "error"
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-START
-========================================================= */
-
-async function startScanner(){
-
-  if(scanning){
-    return;
-  }
-
-  scanning=true;
-
-  setStatus(
-    "در حال شروع...",
-    "active"
+  setTimeout(
+    ()=>
+      $("alert")
+        .classList.remove("show"),
+    7000
   );
 
   /*
-   * درخواست اجازه اعلان بعد از
-   * کلیک کاربر انجام می‌شود.
+   * صدای هشدار
    */
 
   try{
 
-    if(
-      "Notification" in window &&
-      Notification.permission==="default"
-    ){
+    const AudioContext=
+      window.AudioContext ||
+      window.webkitAudioContext;
 
-      await Notification.requestPermission();
+    if(!AudioContext)
+      return;
 
-    }
+    const ctx=
+      new AudioContext();
+
+    const osc=
+      ctx.createOscillator();
+
+    const gain=
+      ctx.createGain();
+
+    osc.frequency.value=880;
+
+    osc.type="sine";
+
+    gain.gain.value=0.08;
+
+    osc.connect(gain);
+
+    gain.connect(
+      ctx.destination
+    );
+
+    osc.start();
+
+    setTimeout(
+      ()=>{
+        osc.frequency.value=660;
+      },
+      150
+    );
+
+    setTimeout(
+      ()=>{
+        osc.stop();
+        ctx.close();
+      },
+      350
+    );
 
   }catch(e){}
 
-  runScan();
-
-  const seconds=
-    Math.max(
-      5,
-      Math.min(
-        120,
-        Number(
-          $("scanInterval").value
-        ) || 15
-      )
-    );
-
-  scannerTimer=
-    setInterval(
-      runScan,
-      seconds*1000
-    );
-
 }
 
 
 /* =========================================================
-STOP
+CLEAR
 ========================================================= */
 
-function stopScanner(){
+function clearSignals(){
 
-  scanning=false;
+  signals=[];
 
-  if(scannerTimer){
+  seen.clear();
 
-    clearInterval(
-      scannerTimer
-    );
-
-    scannerTimer=null;
-
-  }
-
-  setStatus(
-    "اسکن متوقف است",
-    ""
-  );
-
+  renderSignals();
 }
 
 
 /* =========================================================
-INITIAL
+INIT
 ========================================================= */
 
-setStatus(
-  "آماده",
-  ""
-);
+async function init(){
 
+  await health();
 
-/*
- * قبل از شروع اسکن، هیچ درخواست خودکاری
- * ارسال نمی‌شود.
- *
- * این باعث می‌شود صفحه دستی کنترل شود
- * و در زمان تحلیل عمیق نیز اسکنر بتواند
- * مستقل کار کند.
- */
+  startScanner();
+
+}
+
+init();
 
 </script>
 
 </body>
-
 </html>
