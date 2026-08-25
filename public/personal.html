@@ -7,14 +7,9 @@
 <title>اسکنر شخصی Bybit</title>
 
 <style>
+*{box-sizing:border-box}
 
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
+html{scroll-behavior:smooth}
 
 body{
   margin:0;
@@ -23,33 +18,7 @@ body{
   color:#e8f0fa;
 }
 
-button,
-input,
-select{
-  font:inherit;
-}
-
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 16px;
-  cursor:pointer;
-  background:#1c75d8;
-  color:#fff;
-}
-
-button.stop{
-  background:#9c2d3c;
-}
-
-button.secondary{
-  background:#26384d;
-}
-
-button:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
+button,input,select{font:inherit}
 
 .container{
   width:min(1100px,96%);
@@ -70,7 +39,6 @@ header p{
   margin:0;
   color:#91a4ba;
   font-size:13px;
-  line-height:1.8;
 }
 
 .status{
@@ -115,15 +83,30 @@ input[type=text]{
   text-align:left;
 }
 
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 16px;
+  cursor:pointer;
+  background:#1c75d8;
+  color:#fff;
+}
+
+button.stop{background:#9c2d3c}
+button.secondary{background:#26384d}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
 .rangeRow{
   display:flex;
   align-items:center;
   gap:12px;
 }
 
-input[type=range]{
-  flex:1;
-}
+input[type=range]{flex:1}
 
 .value{
   min-width:48px;
@@ -135,7 +118,7 @@ input[type=range]{
 .small{
   font-size:12px;
   color:#8ea2b8;
-  line-height:1.9;
+  line-height:1.8;
 }
 
 .alertRow{
@@ -162,9 +145,7 @@ input[type=checkbox]{
   gap:8px;
 }
 
-.volume input{
-  width:140px;
-}
+.volume input{width:140px}
 
 .scanState{
   padding:10px;
@@ -172,7 +153,6 @@ input[type=checkbox]{
   border-radius:10px;
   margin-top:12px;
   color:#9fb1c6;
-  line-height:1.8;
 }
 
 .cards{
@@ -188,9 +168,7 @@ input[type=checkbox]{
   overflow:hidden;
 }
 
-.signalHead{
-  padding:14px;
-}
+.signalHead{padding:14px}
 
 .signalTop{
   display:flex;
@@ -212,17 +190,9 @@ input[type=checkbox]{
   color:#a9bed3;
 }
 
-.long{
-  color:#35df89;
-}
-
-.short{
-  color:#ff6474;
-}
-
-.wait{
-  color:#ffc857;
-}
+.long{color:#35df89}
+.short{color:#ff6474}
+.wait{color:#ffc857}
 
 .score{
   font-size:22px;
@@ -241,7 +211,6 @@ input[type=checkbox]{
   background:#07101d;
   border-radius:8px;
   font-size:11px;
-  line-height:1.8;
 }
 
 .deepBtn{
@@ -251,10 +220,6 @@ input[type=checkbox]{
   text-align:center;
 }
 
-.deepBtn.openBtn{
-  background:#1a3853;
-}
-
 .deep{
   display:none;
   padding:12px;
@@ -262,9 +227,7 @@ input[type=checkbox]{
   background:#091321;
 }
 
-.deep.open{
-  display:block;
-}
+.deep.open{display:block}
 
 .deepBox{
   border:1px solid #263c55;
@@ -282,7 +245,7 @@ input[type=checkbox]{
 }
 
 .deepTitle:hover{
-  background:#152b43;
+  background:#162a40;
 }
 
 .deepContent{
@@ -296,6 +259,45 @@ input[type=checkbox]{
   display:block;
 }
 
+.styleBox{
+  border:1px solid #263c55;
+  border-radius:10px;
+  margin:8px 0;
+  overflow:hidden;
+}
+
+.styleTitle{
+  padding:11px;
+  background:#0f2032;
+  cursor:pointer;
+  font-weight:bold;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.styleTitle:hover{
+  background:#162b42;
+}
+
+.styleContent{
+  display:none;
+  padding:11px;
+  background:#091521;
+}
+
+.styleBox.open .styleContent{
+  display:block;
+}
+
+.styleResult{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:7px;
+  background:#07101d;
+  margin-right:5px;
+}
+
 .grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -306,11 +308,10 @@ input[type=checkbox]{
   background:#07101d;
   padding:8px;
   border-radius:7px;
-  line-height:1.8;
 }
 
 .reason{
-  padding:8px;
+  padding:7px;
   border-radius:7px;
   margin:5px 0;
   background:#101d2c;
@@ -324,9 +325,11 @@ input[type=checkbox]{
   border-right:3px solid #ff6474;
 }
 
-.tableWrap{
-  overflow:auto;
+.reason.neutral{
+  border-right:3px solid #718096;
 }
+
+.tableWrap{overflow:auto}
 
 table{
   width:100%;
@@ -334,24 +337,20 @@ table{
   min-width:500px;
 }
 
-th,
-td{
+th,td{
   padding:7px;
   border-bottom:1px solid #20334b;
   text-align:center;
   font-size:11px;
 }
 
-th{
-  color:#8fb1d1;
-}
+th{color:#8fb1d1}
 
 .error{
   padding:12px;
   border-radius:10px;
   background:#35151c;
   color:#ff8895;
-  line-height:1.8;
 }
 
 .empty{
@@ -360,82 +359,47 @@ th{
   color:#7f93a8;
 }
 
-.live{
-  color:#4de59a;
-}
+.live{color:#4de59a}
 
-.analysisPanel{
-  margin:10px 0;
-}
-
-.analysisHeader{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.analysisMeta{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.analysisContent{
-  margin-top:10px;
-}
-
-.refreshDot{
+.liveDot{
   display:inline-block;
   width:7px;
   height:7px;
   border-radius:50%;
-  background:#4de59a;
+  background:#35df89;
   margin-left:5px;
 }
 
-.warning{
+.updateTime{
+  margin-top:10px;
+  color:#6f859d;
+  font-size:11px;
+}
+
+.signalLogic{
+  margin-top:10px;
   padding:9px;
   border-radius:8px;
-  background:#2b2410;
-  color:#ffd86b;
-  margin-top:8px;
+  background:#0d1e30;
+  font-size:12px;
+  line-height:1.9;
 }
 
-.good{
-  color:#4de59a;
-}
-
-.bad{
-  color:#ff6474;
-}
-
-.neutral{
-  color:#9db0c5;
+.noData{
+  padding:10px;
+  border-radius:8px;
+  background:#101b28;
+  color:#8296aa;
 }
 
 @media(max-width:600px){
 
-  header h1{
-    font-size:20px;
-  }
+  header h1{font-size:20px}
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+  .grid{grid-template-columns:1fr}
 
-  .cards{
-    grid-template-columns:1fr;
-  }
-
-  .rangeRow{
-    flex-wrap:wrap;
-  }
-
+  .cards{grid-template-columns:1fr}
 }
-
 </style>
 </head>
 
@@ -444,23 +408,16 @@ th{
 <div class="container">
 
 <header>
-
   <h1>📊 اسکنر شخصی Bybit</h1>
-
   <p>
     سیگنال‌گیری بر پایه برخورد قیمت با MA20 در 1 دقیقه
     و تأیید روند در 15 دقیقه
   </p>
-
 </header>
-
 
 <div id="status" class="status">
   ⏳ در حال اتصال به Bybit...
 </div>
-
-
-<!-- تحلیل دستی -->
 
 <section class="panel">
 
@@ -487,9 +444,6 @@ th{
 
 </section>
 
-
-<!-- تنظیم سیگنال -->
-
 <section class="panel">
 
   <h2>🎯 تنظیم سیگنال</h2>
@@ -508,23 +462,17 @@ th{
 
     <span>سخت‌تر</span>
 
-    <div
-      id="strictValue"
-      class="value"
-    >
+    <div id="strictValue" class="value">
       50
     </div>
 
   </div>
 
   <div class="small">
-    0 = سیگنال بیشتر · 100 = سیگنال سخت‌تر و انتخابی‌تر
+    0 = سیگنال بیشتر · 100 = سیگنال سخت‌تر
   </div>
 
 </section>
-
-
-<!-- هشدار -->
 
 <section class="panel">
 
@@ -533,15 +481,12 @@ th{
   <div class="alertRow">
 
     <label class="switch">
-
       <input
         id="soundEnabled"
         type="checkbox"
         checked
       >
-
       🔊 صدا روشن
-
     </label>
 
     <div class="volume">
@@ -571,34 +516,21 @@ th{
 
   </div>
 
-  <div
-    id="soundStatus"
-    class="small"
-  >
-    هشدارهای سیگنال فعال هستند.
-  </div>
+  <div id="soundStatus" class="small"></div>
 
 </section>
-
-
-<!-- اسکن -->
 
 <section class="panel">
 
   <h2>🔎 اسکن چرخشی بازار</h2>
 
   <div class="small">
-
-    اسکنر به‌صورت خودکار و دائمی بازار Bybit را بررسی می‌کند.
-    بعد از پایان هر بخش، بخش بعدی بازار بررسی می‌شود.
-    اسکن فقط با دکمه «توقف اسکن» متوقف می‌شود.
-
+    تا زمانی که «توقف اسکن» را نزنی، اسکنر به‌صورت خودکار و
+    چرخشی بازار Bybit را بررسی می‌کند و پس از پایان هر دور،
+    دوباره از ابتدای بازار ادامه می‌دهد.
   </div>
 
-  <div
-    class="row"
-    style="margin-top:12px"
-  >
+  <div class="row" style="margin-top:12px">
 
     <button id="startScan">
       ▶ شروع اسکن
@@ -613,45 +545,32 @@ th{
 
   </div>
 
-  <div
-    id="scanState"
-    class="scanState"
-  >
-    ⏳ در حال آماده‌سازی اسکن خودکار...
+  <div id="scanState" class="scanState">
+    ⏳ آماده شروع اسکن...
   </div>
 
 </section>
-
-
-<!-- سیگنال‌ها -->
 
 <section class="panel">
 
   <h2>📡 سیگنال‌ها</h2>
 
   <div id="signals">
-
     <div class="empty">
-      در حال دریافت اولین نتایج...
+      اسکن خودکار آماده است.
     </div>
-
   </div>
 
 </section>
-
-
-<!-- تحلیل‌های باز -->
 
 <section class="panel">
 
   <h2>📖 تحلیل‌های باز</h2>
 
   <div class="small">
-
-    تحلیل‌های بازشده جدا از سیگنال‌ها هستند.
-    تا زمانی که خودت «بستن» را نزنی باز می‌مانند.
-    بروزرسانی زنده باعث بسته‌شدن منوها نمی‌شود.
-
+    تحلیل‌های بازشده مستقل از کارت سیگنال هستند.
+    با بروزرسانی زنده بسته نمی‌شوند و تا زمانی که خودت
+    نبندی باقی می‌مانند.
   </div>
 
   <div
@@ -663,30 +582,16 @@ th{
 
 </div>
 
-
 <script>
-
-/* =========================================================
-   PERSONAL.HTML
-   ========================================================= */
 
 const API_BASE = "";
 
 const SCAN_DELAY = 1800;
-
-const OPEN_ANALYSIS_REFRESH = 15000;
-
-
-/* =========================================================
-   STATE
-   ========================================================= */
+const REFRESH_OPEN_ANALYSIS = 10000;
 
 let scanRunning = false;
-
 let scanOffset = Number(
-  localStorage.getItem(
-    "personal_scan_offset"
-  ) || 0
+  localStorage.getItem("personal_scan_offset") || 0
 );
 
 let scanTimer = null;
@@ -695,12 +600,12 @@ let opened = new Map();
 
 let previousSignals = new Set();
 
-let scanRequestBusy = false;
+let refreshingOpened = false;
 
 
-/* =========================================================
-   ELEMENTS
-   ========================================================= */
+/* =========================
+   عناصر
+========================= */
 
 const statusEl =
   document.getElementById("status");
@@ -739,25 +644,17 @@ const soundStatus =
   document.getElementById("soundStatus");
 
 
-/* =========================================================
-   SETTINGS
-   ========================================================= */
+/* =========================
+   تنظیمات
+========================= */
 
 const savedStrict =
-  localStorage.getItem(
-    "personal_strictness"
-  );
+  localStorage.getItem("personal_strictness");
 
 if(savedStrict !== null){
 
   strictnessEl.value =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number(savedStrict)
-      )
-    );
+    savedStrict;
 
 }
 
@@ -782,9 +679,7 @@ strictnessEl.addEventListener(
 
 
 const savedSound =
-  localStorage.getItem(
-    "personal_sound"
-  );
+  localStorage.getItem("personal_sound");
 
 if(savedSound !== null){
 
@@ -794,43 +689,33 @@ if(savedSound !== null){
 }
 
 
+const savedVolume =
+  localStorage.getItem("personal_volume");
+
+if(savedVolume !== null){
+
+  volumeEl.value =
+    savedVolume;
+
+}
+
+volumeValue.textContent =
+  volumeEl.value + "%";
+
+
 soundEnabled.addEventListener(
   "change",
   () => {
 
     localStorage.setItem(
       "personal_sound",
-      soundEnabled.checked
-        ? "1"
-        : "0"
+      soundEnabled.checked ? "1" : "0"
     );
 
     updateSoundText();
 
   }
 );
-
-
-const savedVolume =
-  localStorage.getItem(
-    "personal_volume"
-  );
-
-if(savedVolume !== null){
-
-  volumeEl.value =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number(savedVolume)
-      )
-    );
-
-}
-
-volumeValue.textContent =
-  volumeEl.value + "%";
 
 
 volumeEl.addEventListener(
@@ -859,12 +744,11 @@ function updateSoundText(){
 }
 
 
-/* =========================================================
-   AUDIO
-   ========================================================= */
+/* =========================
+   صدا
+========================= */
 
 let audioContext = null;
-
 
 function playAlert(){
 
@@ -883,14 +767,8 @@ function playAlert(){
 
     }
 
-    if(
-      audioContext.state ===
-      "suspended"
-    ){
-
+    if(audioContext.state === "suspended")
       audioContext.resume();
-
-    }
 
     const oscillator =
       audioContext.createOscillator();
@@ -898,16 +776,12 @@ function playAlert(){
     const gain =
       audioContext.createGain();
 
-    oscillator.type =
-      "sine";
+    oscillator.type = "sine";
 
-    oscillator.frequency.value =
-      880;
+    oscillator.frequency.value = 880;
 
     gain.gain.value =
-      Number(volumeEl.value) /
-      100 *
-      0.18;
+      Number(volumeEl.value) / 100 * 0.18;
 
     oscillator.connect(gain);
 
@@ -929,10 +803,7 @@ function playAlert(){
   }
   catch(e){
 
-    console.log(
-      "Audio error",
-      e
-    );
+    console.log(e);
 
   }
 
@@ -947,9 +818,9 @@ document
   );
 
 
-/* =========================================================
+/* =========================
    API
-   ========================================================= */
+========================= */
 
 async function api(path){
 
@@ -968,7 +839,7 @@ async function api(path){
   const text =
     await response.text();
 
-  let data = null;
+  let data;
 
   try{
 
@@ -976,43 +847,22 @@ async function api(path){
       JSON.parse(text);
 
   }
-  catch(parseError){
-
-    const preview =
-      String(text || "")
-        .replace(/\s+/g," ")
-        .slice(0,180);
+  catch(e){
 
     throw new Error(
-      "Worker پاسخ JSON معتبر برنگرداند" +
-      (
-        preview
-          ? " — " + preview
-          : ""
-      )
-    );
-
-  }
-
-  if(!response.ok){
-
-    throw new Error(
-      data?.error ||
-      data?.message ||
-      "HTTP " + response.status
+      "Worker پاسخ JSON معتبر برنگرداند."
     );
 
   }
 
   if(
-    data &&
+    !response.ok ||
     data.ok === false
   ){
 
     throw new Error(
       data.error ||
-      data.message ||
-      "خطای Worker"
+      "خطای API Worker"
     );
 
   }
@@ -1022,9 +872,9 @@ async function api(path){
 }
 
 
-/* =========================================================
-   HEALTH
-   ========================================================= */
+/* =========================
+   Health
+========================= */
 
 async function checkHealth(){
 
@@ -1040,32 +890,23 @@ async function checkHealth(){
     statusEl.style.color =
       "#64e69a";
 
-    return true;
-
   }
   catch(e){
 
     statusEl.textContent =
-      "🔴 اتصال Worker برقرار نیست";
+      "🔴 اتصال به Worker برقرار نیست";
 
     statusEl.style.color =
       "#ff6474";
-
-    console.log(
-      "Health error:",
-      e
-    );
-
-    return false;
 
   }
 
 }
 
 
-/* =========================================================
-   FORMAT
-   ========================================================= */
+/* =========================
+   فرمت
+========================= */
 
 function formatPrice(n){
 
@@ -1084,23 +925,12 @@ function formatPrice(n){
     return n.toFixed(10);
 
   if(n < 1)
-    return n.toFixed(8);
+    return n.toFixed(7);
 
   if(n < 100)
-    return n.toFixed(5);
+    return n.toFixed(4);
 
   return n.toFixed(2);
-
-}
-
-
-function numberValue(n){
-
-  n = Number(n);
-
-  return Number.isFinite(n)
-    ? n
-    : null;
 
 }
 
@@ -1145,42 +975,66 @@ function clsDirection(direction){
 function directionText(direction){
 
   if(direction === "LONG")
-    return "🟢 LONG";
+    return "🟢 صعودی";
 
   if(direction === "SHORT")
-    return "🔴 SHORT";
+    return "🔴 نزولی";
 
-  return "🟡 WAIT";
-
-}
-
-
-function yesNo(value){
-
-  return value
-    ? "✅ بله"
-    : "❌ خیر";
+  return "🟡 رنج / نامشخص";
 
 }
 
 
-function hasValue(value){
+function styleText(value){
 
-  return (
-    value !== undefined &&
-    value !== null &&
-    value !== "" &&
-    Number.isFinite(
-      Number(value)
-    )
-  );
+  if(!value)
+    return "نامشخص";
+
+  const v =
+    String(value).toUpperCase();
+
+  if(
+    v === "BULLISH" ||
+    v === "LONG" ||
+    v === "UP"
+  )
+    return "صعودی";
+
+  if(
+    v === "BEARISH" ||
+    v === "SHORT" ||
+    v === "DOWN"
+  )
+    return "نزولی";
+
+  if(
+    v === "RANGE" ||
+    v === "SIDEWAYS" ||
+    v === "NEUTRAL"
+  )
+    return "رنج";
+
+  return String(value);
+}
+
+
+function safe(v){
+
+  if(
+    v === null ||
+    v === undefined ||
+    v === ""
+  )
+    return "-";
+
+  return escapeHtml(v);
 
 }
 
 
-/* =========================================================
-   MANUAL ANALYSIS
-   ========================================================= */
+/* =========================
+   تحلیل دستی
+========================= */
 
 analyzeBtn.addEventListener(
   "click",
@@ -1192,13 +1046,8 @@ symbolInput.addEventListener(
   "keydown",
   e => {
 
-    if(e.key === "Enter"){
-
-      e.preventDefault();
-
+    if(e.key === "Enter")
       analyzeManual();
-
-    }
 
   }
 );
@@ -1207,15 +1056,12 @@ symbolInput.addEventListener(
 async function analyzeManual(){
 
   const symbol =
-    symbolInput.value
-      .trim()
-      .toUpperCase();
+    symbolInput.value.trim();
 
   if(!symbol)
     return;
 
-  analyzeBtn.disabled =
-    true;
+  analyzeBtn.disabled = true;
 
   analyzeBtn.textContent =
     "⏳ در حال تحلیل...";
@@ -1223,26 +1069,24 @@ async function analyzeManual(){
   try{
 
     const data =
-      await requestAnalysis(
-        symbol
+      await api(
+        "/api/personal/analyze?symbol=" +
+        encodeURIComponent(symbol) +
+        "&strictness=" +
+        encodeURIComponent(strictnessEl.value)
       );
 
-    openAnalysis(
-      data
-    );
+    openAnalysis(data,true);
 
   }
   catch(e){
 
-    alert(
-      e.message
-    );
+    alert(e.message);
 
   }
   finally{
 
-    analyzeBtn.disabled =
-      false;
+    analyzeBtn.disabled = false;
 
     analyzeBtn.textContent =
       "🔎 تحلیل";
@@ -1252,23 +1096,9 @@ async function analyzeManual(){
 }
 
 
-async function requestAnalysis(symbol){
-
-  return api(
-    "/api/personal/analyze?symbol=" +
-    encodeURIComponent(symbol) +
-    "&strictness=" +
-    encodeURIComponent(
-      strictnessEl.value
-    )
-  );
-
-}
-
-
-/* =========================================================
-   SCAN CONTROL
-   ========================================================= */
+/* =========================
+   اسکن خودکار
+========================= */
 
 document
   .getElementById("startScan")
@@ -1291,90 +1121,71 @@ async function startScan(){
   if(scanRunning)
     return;
 
-  scanRunning =
-    true;
+  scanRunning = true;
 
   scanState.innerHTML =
-    "🟢 اسکن خودکار فعال است · در حال پیدا کردن سیگنال...";
+    "🟢 اسکن فعال است — جستجوی سیگنال...";
 
-  runScanLoop();
+  scanLoop();
 
 }
 
 
 function stopScan(){
 
-  scanRunning =
-    false;
-
-  scanRequestBusy =
-    false;
+  scanRunning = false;
 
   if(scanTimer){
 
-    clearTimeout(
-      scanTimer
-    );
+    clearTimeout(scanTimer);
 
-    scanTimer =
-      null;
+    scanTimer = null;
 
   }
 
   scanState.innerHTML =
-    "⏹ اسکن متوقف شد. برای ادامه «شروع اسکن» را بزن.";
+    "⏹ اسکن متوقف شد.";
 
 }
 
 
-/* =========================================================
-   AUTO SCAN LOOP
-   ========================================================= */
-
-async function runScanLoop(){
+async function scanLoop(){
 
   if(!scanRunning)
     return;
-
-  if(scanRequestBusy){
-
-    scheduleNextScan();
-
-    return;
-
-  }
-
-  scanRequestBusy =
-    true;
 
   try{
 
     const data =
       await api(
         "/api/personal/scan?offset=" +
-        encodeURIComponent(
-          scanOffset
-        ) +
+        encodeURIComponent(scanOffset) +
         "&strictness=" +
-        encodeURIComponent(
-          strictnessEl.value
-        )
+        encodeURIComponent(strictnessEl.value)
       );
 
-    if(
-      !scanRunning
-    )
-      return;
+    const checked =
+      Number(data.checked || 0);
+
+    const total =
+      Number(data.totalMarkets || 0);
 
     scanOffset =
       Number(
         data.nextOffset
       );
 
+    if(!Number.isFinite(scanOffset))
+      scanOffset = 0;
+
+    /*
+      وقتی انتهای بازار رسیدیم،
+      دور بعدی از صفر شروع می‌شود.
+    */
+
     if(
-      !Number.isFinite(
-        scanOffset
-      )
+      total > 0 &&
+      scanOffset >= total
     ){
 
       scanOffset = 0;
@@ -1383,39 +1194,20 @@ async function runScanLoop(){
 
     localStorage.setItem(
       "personal_scan_offset",
-      String(scanOffset)
+      scanOffset
     );
 
-
-    const checked =
-      Number(
-        data.checked || 0
-      );
-
-    const total =
-      Number(
-        data.totalMarkets || 0
-      );
-
-    const returned =
-      Array.isArray(
-        data.results
-      )
-        ? data.results.length
-        : 0;
-
-
     scanState.innerHTML =
-      "🟢 اسکن فعال است · " +
-      "بررسی شده: " +
+      "🟢 اسکن فعال است · بررسی: " +
       checked +
       " · کل بازار: " +
       total +
-      " · سیگنال معتبر: " +
-      returned +
       " · سخت‌گیری: " +
-      strictnessEl.value;
-
+      Number(
+        data.strictness ??
+        strictnessEl.value
+      ) +
+      " · دور بعدی ادامه دارد";
 
     renderSignals(
       Array.isArray(data.results)
@@ -1423,109 +1215,60 @@ async function runScanLoop(){
         : []
     );
 
-
     /*
-      تحلیل‌های باز مستقل از نتایج اسکن
-      به‌صورت زنده بروزرسانی می‌شوند.
+      تحلیل‌های باز مستقل از اسکن هستند.
     */
 
-    refreshOpenedAnalyses();
-
+    if(opened.size)
+      refreshOpenedAnalyses();
 
   }
   catch(e){
 
-    console.log(
-      "Scan error:",
-      e
-    );
-
     scanState.innerHTML =
-      "🟠 خطای موقت در دریافت داده — " +
-      "اسکن متوقف نشده و دوباره تلاش می‌کند." +
-      "<br>" +
-      "<span class='small'>" +
-      escapeHtml(
-        e.message
-      ) +
-      "</span>";
+      "🔴 خطا در اسکن: " +
+      escapeHtml(e.message);
 
   }
-  finally{
 
-    scanRequestBusy =
-      false;
+  /*
+    مهم:
+    تا زمانی که کاربر Stop نزده،
+    اسکن دوباره اجرا می‌شود.
+  */
 
-    if(scanRunning){
+  if(scanRunning){
 
-      scheduleNextScan();
-
-    }
+    scanTimer =
+      setTimeout(
+        scanLoop,
+        SCAN_DELAY
+      );
 
   }
 
 }
 
 
-function scheduleNextScan(){
-
-  if(!scanRunning)
-    return;
-
-  if(scanTimer){
-
-    clearTimeout(
-      scanTimer
-    );
-
-  }
-
-  scanTimer =
-    setTimeout(
-      runScanLoop,
-      SCAN_DELAY
-    );
-
-}
-
-
-/* =========================================================
-   SIGNALS
-   ========================================================= */
+/* =========================
+   کارت سیگنال
+========================= */
 
 function renderSignals(results){
-
-  if(!Array.isArray(results)){
-
-    signalsEl.innerHTML =
-      '<div class="empty">پاسخ اسکن معتبر نیست.</div>';
-
-    return;
-
-  }
-
 
   if(!results.length){
 
     signalsEl.innerHTML =
-      '<div class="empty">' +
-      'در این بخش سیگنال معتبر مطابق درجه سختی ' +
-      strictnessEl.value +
-      ' پیدا نشد؛ اسکن ادامه دارد.' +
-      '</div>';
+      '<div class="empty">در این بخش سیگنال معتبر مطابق سخت‌گیری انتخاب‌شده پیدا نشد؛ اسکن همچنان ادامه دارد.</div>';
 
     return;
 
   }
 
-
   signalsEl.innerHTML =
     '<div class="cards">' +
-    results
-      .map(createSignalCard)
-      .join("") +
+    results.map(createSignalCard).join("") +
     '</div>';
-
 
   for(const item of results){
 
@@ -1536,10 +1279,13 @@ function renderSignals(results){
       ":" +
       String(item.direction || "");
 
+    /*
+      هشدار فقط برای سیگنال جدید.
+    */
 
     if(
       !previousSignals.has(key) &&
-      Number(item.score) >=
+      Number(item.score || 0) >=
       Number(strictnessEl.value)
     ){
 
@@ -1547,18 +1293,12 @@ function renderSignals(results){
 
     }
 
-    previousSignals.add(
-      key
-    );
+    previousSignals.add(key);
 
   }
 
 }
 
-
-/* =========================================================
-   SIGNAL CARD
-   ========================================================= */
 
 function createSignalCard(item){
 
@@ -1566,18 +1306,13 @@ function createSignalCard(item){
     item.direction;
 
   const dClass =
-    clsDirection(
-      direction
-    );
+    clsDirection(direction);
 
   const id =
     cardId(
       item.category,
       item.symbol
     );
-
-  const isOpen =
-    opened.has(id);
 
   return `
 
@@ -1604,7 +1339,6 @@ function createSignalCard(item){
 
       </div>
 
-
       <div
         class="${dClass}"
         style="margin-top:10px;font-weight:bold"
@@ -1612,62 +1346,48 @@ function createSignalCard(item){
         ${directionText(direction)}
       </div>
 
-
       <div
         class="${dClass}"
         style="margin-top:5px"
       >
-
         <span class="score">
           ${num(item.score,0)}
         </span>/100
-
       </div>
-
 
       <div class="maBox">
 
         <div class="maItem">
           قیمت:
-          <b>
-            ${formatPrice(item.price)}
-          </b>
+          <b>${formatPrice(item.price)}</b>
         </div>
 
         <div class="maItem">
           MA20 1m:
           <b>
-            ${formatPrice(
-              item.oneMinute?.ma20
-            )}
+            ${formatPrice(item.oneMinute?.ma20)}
           </b>
         </div>
 
         <div class="maItem">
           فاصله:
           <b>
-            ${pct(
-              item.oneMinute?.distancePct
-            )}
+            ${pct(item.oneMinute?.distancePct)}
           </b>
         </div>
 
         <div class="maItem">
           شیب:
           <b>
-            ${pct(
-              item.oneMinute?.maSlopePct
-            )}
+            ${pct(item.oneMinute?.maSlopePct)}
           </b>
         </div>
 
         <div class="maItem">
           15m:
-          <b
-            class="${clsDirection(
-              item.fifteenMinute?.direction
-            )}"
-          >
+          <b class="${clsDirection(
+            item.fifteenMinute?.direction
+          )}">
             ${directionText(
               item.fifteenMinute?.direction
             )}
@@ -1678,7 +1398,8 @@ function createSignalCard(item){
           حجم:
           <b>
             ${num(
-              item.oneMinute?.volumeRatio
+              item.oneMinute?.volumeRatio,
+              2
             )}x
           </b>
         </div>
@@ -1687,35 +1408,20 @@ function createSignalCard(item){
 
     </div>
 
-
     <button
-      class="deepBtn ${isOpen ? "openBtn" : ""}"
+      class="deepBtn"
       onclick="toggleDeep('${id}')"
     >
-
-      ${
-        isOpen
-          ? "▲ بستن نمایش تحلیل"
-          : "▼ تحلیل عمیق"
-      }
-
+      ▼ تحلیل عمیق
     </button>
 
-
     <div
-      class="deep ${isOpen ? "open" : ""}"
+      class="deep"
       id="deep-${id}"
     >
-
-      ${
-        isOpen
-          ? renderDeepHTML(
-              opened.get(id)?.data ||
-              item
-            )
-          : ""
-      }
-
+      <div class="empty">
+        ⏳ دریافت تحلیل دقیق...
+      </div>
     </div>
 
   </article>
@@ -1725,9 +1431,9 @@ function createSignalCard(item){
 }
 
 
-/* =========================================================
-   DEEP TOGGLE
-   ========================================================= */
+/* =========================
+   باز کردن تحلیل عمیق
+========================= */
 
 async function toggleDeep(id){
 
@@ -1744,95 +1450,61 @@ async function toggleDeep(id){
   if(!deep || !card)
     return;
 
-
   if(
-    opened.has(id)
+    deep.classList.contains("open")
   ){
 
-    opened.delete(id);
-
-    saveOpenSymbols();
-
-    deep.classList.remove(
-      "open"
-    );
-
-    const btn =
-      card.querySelector(
-        ".deepBtn"
-      );
-
-    if(btn){
-
-      btn.classList.remove(
-        "openBtn"
-      );
-
-      btn.textContent =
-        "▼ تحلیل عمیق";
-
-    }
+    deep.classList.remove("open");
 
     return;
 
   }
 
+  deep.classList.add("open");
 
   const symbol =
     card.querySelector(
       ".symbol"
-    )
-    .textContent
-    .trim();
-
+    ).textContent.trim();
 
   const market =
     card.querySelector(
       ".market"
-    )
-    .textContent
-    .trim();
-
+    ).textContent.trim();
 
   const category =
     market === "Futures"
       ? "linear"
       : "spot";
 
+  /*
+    اگر قبلاً تحلیل گرفته شده،
+    دوباره بی‌دلیل درخواست نمی‌زنیم.
+  */
 
-  deep.classList.add(
-    "open"
-  );
+  const existing =
+    opened.get(id);
 
+  if(existing){
 
-  deep.innerHTML =
-    '<div class="empty">⏳ دریافت تحلیل عمیق واقعی از Worker...</div>';
-
-
-  const btn =
-    card.querySelector(
-      ".deepBtn"
+    renderDeep(
+      deep,
+      existing.data
     );
 
-  if(btn){
-
-    btn.classList.add(
-      "openBtn"
-    );
-
-    btn.textContent =
-      "▲ بستن نمایش تحلیل";
+    return;
 
   }
-
 
   try{
 
     const data =
-      await requestAnalysis(
-        symbol
+      await api(
+        "/api/personal/analyze?symbol=" +
+        encodeURIComponent(symbol) +
+        "&strictness=" +
+        encodeURIComponent(strictnessEl.value)
       );
-
 
     opened.set(
       id,
@@ -1845,20 +1517,14 @@ async function toggleDeep(id){
       }
     );
 
+    renderDeep(
+      deep,
+      data
+    );
 
     saveOpenSymbols();
 
-
-    /*
-      فقط محتوای همین تحلیل تغییر می‌کند.
-      کل کارت دوباره ساخته نمی‌شود.
-      بنابراین منوها بسته نمی‌شوند.
-    */
-
-    deep.innerHTML =
-      renderDeepHTML(
-        data
-      );
+    renderOpenedAnalyses();
 
   }
   catch(e){
@@ -1873,11 +1539,11 @@ async function toggleDeep(id){
 }
 
 
-/* =========================================================
-   DEEP HTML
-   ========================================================= */
+/* =========================
+   تحلیل عمیق
+========================= */
 
-function renderDeepHTML(data){
+function renderDeep(container,data){
 
   const one =
     data.oneMinute || {};
@@ -1893,120 +1559,61 @@ function renderDeepHTML(data){
       ? data.reasons
       : [];
 
-
-  return `
+  container.innerHTML = `
 
   ${deepBox(
-    "📈 سبک معاملاتی",
-    tradingStyle(
-      one,
-      fifteen,
-      data
-    ),
-    "style"
+    "📈 سبک‌های معاملاتی",
+    tradingStylesHTML(data)
   )}
-
 
   ${deepBox(
     "🎯 سیگنال و منطق محاسبه",
-    signalSummary(
-      data
-    ),
-    "signal"
+    signalSummary(data)
   )}
-
 
   ${deepBox(
     "⏱ تایم‌فریم 1 دقیقه",
-    oneMinuteHTML(
-      one
-    ),
-    "one"
+    oneMinuteHTML(one)
   )}
-
 
   ${deepBox(
     "⏱ تایم‌فریم 15 دقیقه",
-    fifteenMinuteHTML(
-      fifteen
-    ),
-    "fifteen"
+    fifteenMinuteHTML(fifteen)
   )}
-
 
   ${deepBox(
     "📊 RSI / MACD / واگرایی",
-    technicalHTML(
-      one,
-      fifteen,
-      data
-    ),
-    "technical"
+    technicalHTML(one,fifteen,data)
   )}
-
 
   ${deepBox(
-    "📦 Footprint / جریان خرید و فروش",
-    footprintHTML(
-      one,
-      data
-    ),
-    "footprint"
+    "📦 حجم و Footprint",
+    footprintHTML(one,data)
   )}
-
 
   ${deepBox(
     "🧱 Order Book / دیوارهای خرید و فروش",
-    orderBookHTML(
-      book,
-      data.price
-    ),
-    "book"
+    orderBookHTML(book,data.price)
   )}
-
 
   ${deepBox(
-    "🧲 Hunt / Liquidity / Sweep",
-    liquidityHTML(
-      one,
-      book,
-      data
-    ),
-    "liquidity"
+    "🧲 Hunt / Liquidity",
+    liquidityHTML(one,book,data)
   )}
-
 
   ${deepBox(
     "🛡 حمایت و مقاومت",
-    levelsHTML(
-      one,
-      data
-    ),
-    "levels"
+    levelsHTML(one,data)
   )}
-
-
-  ${deepBox(
-    "💰 Funding Rate / OI",
-    fundingOIHTML(
-      data
-    ),
-    "funding"
-  )}
-
 
   ${deepBox(
     "🧠 دلایل سیگنال",
-    reasonsHTML(
-      reasons
-    ),
-    "reasons"
+    reasonsHTML(reasons)
   )}
 
-
-  <div class="small live">
-    <span class="refreshDot"></span>
-    تحلیل زنده — آخرین بروزرسانی:
+  <div class="updateTime">
+    <span class="liveDot"></span>
+    تحلیل زنده · آخرین بروزرسانی:
     ${new Date().toLocaleTimeString("fa-IR")}
   </div>
 
@@ -2015,37 +1622,18 @@ function renderDeepHTML(data){
 }
 
 
-/* =========================================================
-   DEEP BOX
-   ========================================================= */
-
-function deepBox(
-  title,
-  content,
-  key
-){
+function deepBox(title,content){
 
   return `
 
-  <div
-    class="deepBox"
-    data-deep-key="${key}"
-  >
+  <div class="deepBox">
 
     <div
       class="deepTitle"
-      onclick="toggleDeepBox(this)"
+      onclick="this.parentElement.classList.toggle('open')"
     >
-
       ${title}
-
-      <span
-        style="float:left"
-        class="boxArrow"
-      >
-        ▼
-      </span>
-
+      <span>▼</span>
     </div>
 
     <div class="deepContent">
@@ -2059,108 +1647,136 @@ function deepBox(
 }
 
 
-function toggleDeepBox(title){
+/* =========================
+   سبک‌های معاملاتی
+========================= */
 
-  const box =
-    title.parentElement;
+function tradingStylesHTML(data){
 
-  if(!box)
-    return;
+  const styles =
+    data.tradingStyles ||
+    data.styles ||
+    {};
 
-  box.classList.toggle(
-    "open"
-  );
+  return `
 
-  const arrow =
-    title.querySelector(
-      ".boxArrow"
-    );
+  ${styleBox(
+    "🧠 اسمارت مانی",
+    getStyle(
+      styles,
+      "smc",
+      data
+    )
+  )}
 
-  if(arrow){
+  ${styleBox(
+    "🎯 ICT",
+    getStyle(
+      styles,
+      "ict",
+      data
+    )
+  )}
 
-    arrow.textContent =
-      box.classList.contains("open")
-        ? "▲"
-        : "▼";
+  ${styleBox(
+    "📐 پرایس اکشن",
+    getStyle(
+      styles,
+      "priceAction",
+      data
+    )
+  )}
 
-  }
+  ${styleBox(
+    "📊 حجم و جریان سفارش",
+    getStyle(
+      styles,
+      "orderFlow",
+      data
+    )
+  )}
+
+  ${styleBox(
+    "📈 تحلیل اندیکاتوری",
+    getStyle(
+      styles,
+      "indicator",
+      data
+    )
+  )}
+
+  `;
 
 }
 
 
-/* =========================================================
-   STYLE
-   ========================================================= */
+function styleBox(title,obj){
 
-function tradingStyle(
-  one,
-  fifteen,
-  data
-){
+  obj =
+    obj || {};
 
-  let style =
-    "رنج";
+  const direction =
+    obj.direction ||
+    obj.bias ||
+    obj.result ||
+    null;
 
-  let description =
-    "بر اساس داده‌های دریافتی Worker، روند قدرتمند صعودی یا نزولی تأیید نشده است.";
-
-
-  if(
-    fifteen.direction === "LONG"
-  ){
-
-    style =
-      "صعودی";
-
-    description =
-      "روند 15 دقیقه‌ای LONG گزارش شده است. برای اعتبار بیشتر باید MA، شیب، قیمت و حجم نیز هم‌جهت باشند.";
-
-  }
-  else if(
-    fifteen.direction === "SHORT"
-  ){
-
-    style =
-      "نزولی";
-
-    description =
-      "روند 15 دقیقه‌ای SHORT گزارش شده است. برای اعتبار بیشتر باید MA، شیب، قیمت و حجم نیز هم‌جهت باشند.";
-
-  }
-
+  const reason =
+    obj.reason ||
+    obj.reasons ||
+    obj.analysis ||
+    obj.details;
 
   return `
 
-  <div class="grid">
+  <div class="styleBox">
 
-    <div class="data">
-      سبک:
-      <b>${style}</b>
+    <div
+      class="styleTitle"
+      onclick="this.parentElement.classList.toggle('open')"
+    >
+
+      <span>${title}</span>
+
+      <span
+        class="${clsDirection(direction)} styleResult"
+      >
+        ${styleText(direction)}
+      </span>
+
     </div>
 
-    <div class="data">
-      جهت 1m:
-      <b class="${clsDirection(one.direction)}">
-        ${directionText(one.direction)}
-      </b>
+    <div class="styleContent">
+
+      ${styleDataHTML(obj)}
+
+      ${
+        Array.isArray(reason)
+          ? reason
+              .map(
+                x =>
+                  `<div class="reason neutral">
+                    ${escapeHtml(
+                      typeof x === "string"
+                        ? x
+                        : x.text || x.reason || ""
+                    )}
+                  </div>`
+              )
+              .join("")
+          :
+        reason
+          ? `<div class="signalLogic">
+              ${escapeHtml(reason)}
+            </div>`
+          :
+          `<div class="noData">
+             Worker برای این سبک داده محاسبه‌شده‌ای برنگردانده است.
+           </div>`
+      }
+
     </div>
 
-    <div class="data">
-      جهت 15m:
-      <b class="${clsDirection(fifteen.direction)}">
-        ${directionText(fifteen.direction)}
-      </b>
-    </div>
-
-    <div class="data">
-      قیمت:
-      <b>${formatPrice(data.price)}</b>
-    </div>
-
-  </div>
-
-  <div style="margin-top:10px">
-    ${description}
   </div>
 
   `;
@@ -2168,9 +1784,76 @@ function tradingStyle(
 }
 
 
-/* =========================================================
-   SIGNAL SUMMARY
-   ========================================================= */
+function getStyle(styles,key,data){
+
+  if(styles && styles[key])
+    return styles[key];
+
+  /*
+    اگر Worker ساختار سبک‌ها را جدا نفرستاده باشد،
+    از داده واقعی موجود استفاده می‌کنیم؛
+    ولی ادعای نتیجه‌ای که محاسبه نشده نمی‌کنیم.
+  */
+
+  return {
+    direction:null,
+    reason:"داده اختصاصی این سبک در پاسخ Worker موجود نیست."
+  };
+
+}
+
+
+function styleDataHTML(obj){
+
+  const entries = [
+    ["ساختار بازار",obj.structure],
+    ["شکست ساختار",obj.bos],
+    ["تغییر ساختار",obj.choch],
+    ["نقدینگی",obj.liquidity],
+    ["شکار نقدینگی",obj.sweep],
+    ["FVG",obj.fvg],
+    ["Order Block",obj.orderBlock],
+    ["Premium / Discount",obj.premiumDiscount],
+    ["فشار خرید",obj.buyPressure],
+    ["فشار فروش",obj.sellPressure],
+    ["تأیید حجم",obj.volumeConfirmation]
+  ];
+
+  const valid =
+    entries.filter(
+      x =>
+        x[1] !== undefined &&
+        x[1] !== null &&
+        x[1] !== ""
+    );
+
+  if(!valid.length){
+
+    return "";
+
+  }
+
+  return `
+    <div class="grid">
+      ${
+        valid.map(
+          x => `
+            <div class="data">
+              ${x[0]}:
+              <b>${safe(x[1])}</b>
+            </div>
+          `
+        ).join("")
+      }
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   سیگنال
+========================= */
 
 function signalSummary(data){
 
@@ -2191,12 +1874,12 @@ function signalSummary(data){
     </div>
 
     <div class="data">
-      Long:
+      امتیاز صعودی:
       <b>${num(data.longScore,2)}</b>
     </div>
 
     <div class="data">
-      Short:
+      امتیاز نزولی:
       <b>${num(data.shortScore,2)}</b>
     </div>
 
@@ -2212,14 +1895,29 @@ function signalSummary(data){
 
   </div>
 
+  ${
+    Array.isArray(data.signalReasons)
+      ? data.signalReasons
+          .map(
+            r =>
+              `<div class="reason neutral">
+                ${escapeHtml(
+                  r.text || r.reason || r
+                )}
+              </div>`
+          )
+          .join("")
+      : ""
+  }
+
   `;
 
 }
 
 
-/* =========================================================
-   1 MINUTE
-   ========================================================= */
+/* =========================
+   1m
+========================= */
 
 function oneMinuteHTML(x){
 
@@ -2254,32 +1952,32 @@ function oneMinuteHTML(x){
 
     <div class="data">
       برخورد:
-      ${yesNo(x.touched)}
+      ${x.touched ? "بله" : "خیر"}
     </div>
 
     <div class="data">
       نزدیک MA20:
-      ${yesNo(x.near)}
+      ${x.near ? "بله" : "خیر"}
     </div>
 
     <div class="data">
-      Cross Up:
-      ${yesNo(x.crossedUp)}
+      عبور رو به بالا:
+      ${x.crossedUp ? "بله" : "خیر"}
     </div>
 
     <div class="data">
-      Cross Down:
-      ${yesNo(x.crossedDown)}
+      عبور رو به پایین:
+      ${x.crossedDown ? "بله" : "خیر"}
     </div>
 
     <div class="data">
-      Rejection Up:
-      ${yesNo(x.rejectionUp)}
+      رد شدن از بالا:
+      ${x.rejectionUp ? "بله" : "خیر"}
     </div>
 
     <div class="data">
-      Rejection Down:
-      ${yesNo(x.rejectionDown)}
+      رد شدن از پایین:
+      ${x.rejectionDown ? "بله" : "خیر"}
     </div>
 
     <div class="data">
@@ -2293,7 +1991,7 @@ function oneMinuteHTML(x){
     </div>
 
     <div class="data">
-      ATR %:
+      ATR:
       ${pct(x.atrPct)}
     </div>
 
@@ -2303,7 +2001,7 @@ function oneMinuteHTML(x){
     </div>
 
     <div class="data">
-      Bollinger Width:
+      پهنای باند:
       ${pct(x.bollingerWidth)}
     </div>
 
@@ -2314,9 +2012,9 @@ function oneMinuteHTML(x){
 }
 
 
-/* =========================================================
-   15 MINUTE
-   ========================================================= */
+/* =========================
+   15m
+========================= */
 
 function fifteenMinuteHTML(x){
 
@@ -2368,31 +2066,29 @@ function fifteenMinuteHTML(x){
 }
 
 
-/* =========================================================
-   TECHNICAL
-   فقط داده واقعی Worker
-   ========================================================= */
+/* =========================
+   RSI MACD واگرایی
+========================= */
 
-function technicalHTML(
-  one,
-  fifteen,
-  data
-){
+function technicalHTML(one,fifteen,data){
 
   const macd =
-    data.macd ||
     one.macd ||
-    fifteen.macd ||
-    null;
+    data.macd ||
+    {};
 
   const divergence =
-    data.divergence ||
     one.divergence ||
-    fifteen.divergence ||
-    null;
+    data.divergence ||
+    {};
 
+  const hasMACD =
+    Object.keys(macd).length > 0;
 
-  let html = `
+  const hasDivergence =
+    Object.keys(divergence).length > 0;
+
+  return `
 
   <div class="grid">
 
@@ -2406,190 +2102,161 @@ function technicalHTML(
       <b>${num(fifteen.rsi,2)}</b>
     </div>
 
-  </div>
-
-  `;
-
-
-  if(macd){
-
-    html += `
-
-    <div class="grid" style="margin-top:8px">
-
-      <div class="data">
-        MACD:
-        <b>${num(macd.value,6)}</b>
-      </div>
-
-      <div class="data">
-        Signal:
-        <b>${num(macd.signal,6)}</b>
-      </div>
-
-      <div class="data">
-        Histogram:
-        <b>${num(macd.histogram,6)}</b>
-      </div>
-
-      <div class="data">
-        جهت:
-        <b>${escapeHtml(
-          macd.direction ||
-          "-"
-        )}</b>
-      </div>
-
+    <div class="data">
+      MACD:
+      <b>
+        ${
+          hasMACD
+            ? safe(macd.value ?? macd.macd)
+            : "محاسبه نشده"
+        }
+      </b>
     </div>
 
-    `;
-
-  }
-  else{
-
-    html += `
-
-    <div class="warning">
-      MACD واقعی از Worker دریافت نشده است؛
-      عدد ساختگی نمایش داده نمی‌شود.
+    <div class="data">
+      خط سیگنال:
+      <b>
+        ${
+          hasMACD
+            ? safe(macd.signal)
+            : "محاسبه نشده"
+        }
+      </b>
     </div>
 
-    `;
+    <div class="data">
+      هیستوگرام:
+      <b>
+        ${
+          hasMACD
+            ? safe(macd.histogram)
+            : "محاسبه نشده"
+        }
+      </b>
+    </div>
 
-  }
-
-
-  if(divergence){
-
-    html += `
-
-    <div
-      class="data"
-      style="margin-top:8px"
-    >
-
+    <div class="data">
       واگرایی:
       <b>
-        ${escapeHtml(
-          typeof divergence === "string"
-            ? divergence
-            : (
+        ${
+          hasDivergence
+            ? safe(
                 divergence.type ||
                 divergence.direction ||
-                "-"
+                divergence.result
               )
-        )}
+            : "محاسبه نشده"
+        }
       </b>
-
     </div>
 
-    `;
+  </div>
 
-  }
-  else{
-
-    html += `
-
-    <div class="warning">
-      واگرایی واقعی از Worker دریافت نشده است؛
-      سیگنال ساختگی نمایش داده نمی‌شود.
-    </div>
-
-    `;
-
+  ${
+    hasMACD
+      ? `<div class="signalLogic">
+          MACD از داده واقعی کندل Worker محاسبه شده است.
+        </div>`
+      : `<div class="noData">
+          MACD در پاسخ Worker وجود ندارد؛ عدد ساختگی نمایش داده نمی‌شود.
+        </div>`
   }
 
+  ${
+    hasDivergence
+      ? `<div class="signalLogic">
+          واگرایی بر اساس داده‌ای که Worker برگردانده نمایش داده شده است.
+        </div>`
+      : `<div class="noData">
+          برای واگرایی داده محاسبه‌شده در Worker موجود نیست.
+        </div>`
+  }
 
-  return html;
+  `;
 
 }
 
 
-/* =========================================================
-   FOOTPRINT
-   ========================================================= */
+/* =========================
+   Footprint
+========================= */
 
-function footprintHTML(
-  one,
-  data
-){
+function footprintHTML(one,data){
 
   const fp =
-    data.footprint ||
     one.footprint ||
+    data.footprint ||
     null;
-
 
   if(!fp){
 
     return `
 
-    <div class="grid">
+      <div class="grid">
 
-      <div class="data">
-        حجم کندل:
-        ${num(one.volume,2)}
+        <div class="data">
+          حجم:
+          ${safe(one.volume)}
+        </div>
+
+        <div class="data">
+          میانگین حجم:
+          ${safe(one.averageVolume)}
+        </div>
+
+        <div class="data">
+          نسبت حجم:
+          ${num(one.volumeRatio,2)}x
+        </div>
+
+        <div class="data">
+          افزایش حجم:
+          ${one.volumeSpike ? "بله" : "خیر"}
+        </div>
+
       </div>
 
-      <div class="data">
-        میانگین حجم:
-        ${num(one.averageVolume,2)}
+      <div class="noData" style="margin-top:10px">
+        Footprint تفکیکی خرید و فروش در پاسخ Worker موجود نیست؛
+        بنابراین Buy/Sell ساختگی نمایش داده نمی‌شود.
       </div>
-
-      <div class="data">
-        نسبت حجم:
-        ${num(one.volumeRatio,2)}x
-      </div>
-
-      <div class="data">
-        Spike:
-        ${yesNo(one.volumeSpike)}
-      </div>
-
-    </div>
-
-    <div class="warning">
-      Footprint واقعی Bid/Ask از Worker دریافت نشده است.
-      بنابراین Buy/Sell و Delta جعلی نمایش داده نمی‌شود.
-    </div>
 
     `;
 
   }
-
 
   return `
 
   <div class="grid">
 
     <div class="data">
-      Buy Volume:
-      <b>${num(fp.buyVolume,2)}</b>
+      خرید:
+      <b>${safe(fp.buyVolume)}</b>
     </div>
 
     <div class="data">
-      Sell Volume:
-      <b>${num(fp.sellVolume,2)}</b>
+      فروش:
+      <b>${safe(fp.sellVolume)}</b>
     </div>
 
     <div class="data">
-      Delta:
-      <b>${num(fp.delta,2)}</b>
+      دلتا:
+      <b>${safe(fp.delta)}</b>
     </div>
 
     <div class="data">
-      Delta %:
-      <b>${pct(fp.deltaPct)}</b>
+      نسبت خرید:
+      <b>${safe(fp.buyRatio)}</b>
     </div>
 
     <div class="data">
-      Imbalance:
-      <b>${num(fp.imbalance,2)}</b>
+      نسبت فروش:
+      <b>${safe(fp.sellRatio)}</b>
     </div>
 
     <div class="data">
-      Trades:
-      <b>${num(fp.trades,0)}</b>
+      عدم تعادل:
+      <b>${safe(fp.imbalance)}</b>
     </div>
 
   </div>
@@ -2599,25 +2266,11 @@ function footprintHTML(
 }
 
 
-/* =========================================================
-   ORDER BOOK
-   ========================================================= */
+/* =========================
+   Order Book
+========================= */
 
-function orderBookHTML(
-  book,
-  price
-){
-
-  if(!book){
-
-    return `
-      <div class="warning">
-        Order Book از Worker دریافت نشد.
-      </div>
-    `;
-
-  }
-
+function orderBookHTML(book,price){
 
   if(book.error){
 
@@ -2629,7 +2282,6 @@ function orderBookHTML(
 
   }
 
-
   const buys =
     Array.isArray(book.buyLevels)
       ? book.buyLevels
@@ -2640,25 +2292,9 @@ function orderBookHTML(
       ? book.sellLevels
       : [];
 
-
   return `
 
   <div class="grid">
-
-    <div class="data">
-      قیمت فعلی:
-      ${formatPrice(price)}
-    </div>
-
-    <div class="data">
-      Best Bid:
-      ${formatPrice(book.bestBid?.price)}
-    </div>
-
-    <div class="data">
-      Best Ask:
-      ${formatPrice(book.bestAsk?.price)}
-    </div>
 
     <div class="data">
       نقدینگی خرید:
@@ -2672,21 +2308,29 @@ function orderBookHTML(
 
     <div class="data">
       سهم خرید:
-      ${pct(book.buyShare)}
+      ${num(book.buyShare,2)}%
     </div>
 
     <div class="data">
       سهم فروش:
-      ${pct(book.sellShare)}
+      ${num(book.sellShare,2)}%
+    </div>
+
+    <div class="data">
+      بهترین خرید:
+      ${formatPrice(book.bestBid?.price)}
+    </div>
+
+    <div class="data">
+      بهترین فروش:
+      ${formatPrice(book.bestAsk?.price)}
     </div>
 
   </div>
 
-
   <h4>🟢 دیوارهای خرید</h4>
 
   ${levelsTable(buys)}
-
 
   <h4>🔴 دیوارهای فروش</h4>
 
@@ -2699,87 +2343,77 @@ function orderBookHTML(
 
 function levelsTable(levels){
 
-  if(!Array.isArray(levels) || !levels.length){
+  if(!levels.length){
 
     return `
-      <div class="small">
-        داده‌ای برای دیوارها دریافت نشده است.
+      <div class="noData">
+        داده‌ای برای این بخش وجود ندارد.
       </div>
     `;
 
   }
 
-
   return `
 
   <div class="tableWrap">
 
-    <table>
+  <table>
 
-      <thead>
+    <thead>
 
-        <tr>
-          <th>قیمت</th>
-          <th>حجم</th>
-          <th>ارزش</th>
-        </tr>
+      <tr>
+        <th>قیمت</th>
+        <th>حجم</th>
+        <th>ارزش</th>
+      </tr>
 
-      </thead>
+    </thead>
 
-      <tbody>
+    <tbody>
 
-        ${
-          levels.map(
-            x => {
+      ${
+        levels.map(
+          x => {
 
-              const p =
-                Number(x.price);
+            const price =
+              Number(x.price || 0);
 
-              const s =
-                Number(x.size);
+            const size =
+              Number(x.size || 0);
 
-              const value =
-                Number.isFinite(p) &&
-                Number.isFinite(s)
-                  ? p * s
-                  : NaN;
-
-              return `
+            return `
 
               <tr>
 
                 <td>
-                  ${formatPrice(p)}
+                  ${formatPrice(price)}
                 </td>
 
                 <td>
-                  ${Number.isFinite(s)
-                    ? s.toLocaleString()
-                    : "-"}
+                  ${size.toLocaleString()}
                 </td>
 
                 <td>
-                  ${Number.isFinite(value)
-                    ? value.toLocaleString(
-                        undefined,
-                        {
-                          maximumFractionDigits:2
-                        }
-                      )
-                    : "-"}
+                  ${(price * size)
+                    .toLocaleString(
+                      undefined,
+                      {
+                        maximumFractionDigits:2
+                      }
+                    )}
                 </td>
 
               </tr>
 
-              `;
+            `;
 
-            }
-          ).join("")
-        }
+          }
+        ).join("")
+      }
 
-      </tbody>
+    </tbody>
 
-    </table>
+  </table>
 
   </div>
 
@@ -2788,23 +2422,26 @@ function levelsTable(levels){
 }
 
 
-/* =========================================================
-   LIQUIDITY
-   ========================================================= */
+/* =========================
+   Hunt / Liquidity
+========================= */
 
-function liquidityHTML(
-  one,
-  book,
-  data
-){
+function liquidityHTML(one,book,data){
 
-  const liq =
+  const liquidity =
     data.liquidity ||
     one.liquidity ||
-    null;
+    {};
 
+  const hunt =
+    data.hunt ||
+    one.hunt ||
+    {};
 
-  let html = `
+  const hasHunt =
+    Object.keys(hunt).length > 0;
+
+  return `
 
   <div class="grid">
 
@@ -2819,121 +2456,69 @@ function liquidityHTML(
     </div>
 
     <div class="data">
-      حجم:
-      ${num(one.volumeRatio,2)}x
-    </div>
-
-    <div class="data">
       نقدینگی خرید:
-      ${num(book?.buyLiquidity,2)}
+      ${num(book.buyLiquidity,2)}
     </div>
 
     <div class="data">
       نقدینگی فروش:
-      ${num(book?.sellLiquidity,2)}
+      ${num(book.sellLiquidity,2)}
+    </div>
+
+    <div class="data">
+      Hunt:
+      <b>
+        ${
+          hasHunt
+            ? safe(
+                hunt.type ||
+                hunt.direction ||
+                hunt.result
+              )
+            : "محاسبه نشده"
+        }
+      </b>
+    </div>
+
+    <div class="data">
+      Sweep:
+      <b>
+        ${
+          hasHunt
+            ? safe(hunt.sweep)
+            : "محاسبه نشده"
+        }
+      </b>
     </div>
 
   </div>
 
+  ${
+    hasHunt
+      ? `<div class="signalLogic">
+          Hunt و Sweep بر اساس داده محاسبه‌شده Worker نمایش داده شده‌اند.
+        </div>`
+      : `<div class="noData">
+          برای Hunt/Liquidity Sweep داده محاسبه‌شده در Worker موجود نیست.
+          مقدار حدسی نمایش داده نمی‌شود.
+        </div>`
+  }
+
   `;
-
-
-  if(liq){
-
-    html += `
-
-    <div
-      class="grid"
-      style="margin-top:8px"
-    >
-
-      <div class="data">
-        Hunt:
-        <b>
-          ${escapeHtml(
-            String(
-              liq.hunt ??
-              liq.type ??
-              "-"
-            )
-          )}
-        </b>
-      </div>
-
-      <div class="data">
-        Sweep:
-        <b>
-          ${escapeHtml(
-            String(
-              liq.sweep ??
-              "-"
-            )
-          )}
-        </b>
-      </div>
-
-      <div class="data">
-        Liquidity:
-        <b>
-          ${escapeHtml(
-            String(
-              liq.liquidity ??
-              "-"
-            )
-          )}
-        </b>
-      </div>
-
-      <div class="data">
-        Stop Hunt:
-        <b>
-          ${escapeHtml(
-            String(
-              liq.stopHunt ??
-              "-"
-            )
-          )}
-        </b>
-      </div>
-
-    </div>
-
-    `;
-
-  }
-  else{
-
-    html += `
-
-    <div class="warning">
-      Hunt / Sweep واقعی از Worker دریافت نشده است.
-      این قسمت عدد یا سیگنال ساختگی تولید نمی‌کند.
-    </div>
-
-    `;
-
-  }
-
-
-  return html;
 
 }
 
 
-/* =========================================================
-   SUPPORT / RESISTANCE
-   ========================================================= */
+/* =========================
+   حمایت مقاومت
+========================= */
 
-function levelsHTML(
-  one,
-  data
-){
+function levelsHTML(one,data){
 
   const levels =
-    data.levels ||
     data.supportResistance ||
+    data.levels ||
     null;
-
 
   if(levels){
 
@@ -2948,16 +2533,17 @@ function levelsHTML(
 
       <div class="data">
         حمایت:
-        ${formatPrice(
-          levels.support
-        )}
+        ${safe(levels.support)}
       </div>
 
       <div class="data">
         مقاومت:
-        ${formatPrice(
-          levels.resistance
-        )}
+        ${safe(levels.resistance)}
+      </div>
+
+      <div class="data">
+        وضعیت:
+        ${safe(levels.bias || levels.result)}
       </div>
 
     </div>
@@ -2966,6 +2552,10 @@ function levelsHTML(
 
   }
 
+  /*
+    ATR فقط به‌عنوان ATR نمایش داده می‌شود.
+    دیگر آن را حمایت و مقاومت واقعی جا نمی‌زنیم.
+  */
 
   return `
 
@@ -2983,8 +2573,8 @@ function levelsHTML(
 
   </div>
 
-  <div class="warning">
-    حمایت و مقاومت تاریخی واقعی از Worker دریافت نشده است.
+  <div class="noData" style="margin-top:10px">
+    حمایت و مقاومت تاریخی/ساختاری در پاسخ Worker موجود نیست؛
     بنابراین سطح مصنوعی به‌عنوان حمایت یا مقاومت قطعی نمایش داده نمی‌شود.
   </div>
 
@@ -2993,162 +2583,62 @@ function levelsHTML(
 }
 
 
-/* =========================================================
-   FUNDING / OI
-   ========================================================= */
-
-function fundingOIHTML(data){
-
-  const funding =
-    data.funding ||
-    data.fundingRate;
-
-  const oi =
-    data.oi ||
-    data.openInterest;
-
-
-  if(
-    !funding &&
-    !oi
-  ){
-
-    return `
-
-    <div class="warning">
-      Funding و OI واقعی از Worker دریافت نشده است.
-      عدد ساختگی نمایش داده نمی‌شود.
-    </div>
-
-    `;
-
-  }
-
-
-  let html =
-    '<div class="grid">';
-
-
-  if(funding){
-
-    html += `
-
-    <div class="data">
-      Funding:
-      <b>
-        ${
-          hasValue(funding.rate)
-            ? pct(
-                Number(funding.rate) * 100
-              )
-            : escapeHtml(
-                String(funding.rate ?? "-")
-              )
-        }
-      </b>
-    </div>
-
-    `;
-
-  }
-
-
-  if(oi){
-
-    html += `
-
-    <div class="data">
-      OI:
-      <b>
-        ${num(
-          oi.value ??
-          oi.openInterest,
-          2
-        )}
-      </b>
-    </div>
-
-    <div class="data">
-      تغییر OI:
-      <b>
-        ${
-          hasValue(
-            oi.changePct
-          )
-            ? pct(
-                oi.changePct
-              )
-            : "-"
-        }
-      </b>
-    </div>
-
-    `;
-
-  }
-
-
-  html +=
-    "</div>";
-
-
-  return html;
-
-}
-
-
-/* =========================================================
-   REASONS
-   ========================================================= */
+/* =========================
+   دلایل
+========================= */
 
 function reasonsHTML(reasons){
 
-  if(!Array.isArray(reasons) || !reasons.length){
+  if(!reasons.length){
 
     return `
-      <div class="small">
-        Worker دلیل مشخصی برای سیگنال برنگردانده است.
+      <div class="noData">
+        Worker دلیل محاسبه‌شده‌ای برای این سیگنال برنگردانده است.
       </div>
     `;
 
   }
 
-
   return reasons.map(
-    r => `
+    r => {
 
-    <div
-      class="reason ${clsDirection(r.side)}"
-    >
-      ${escapeHtml(
-        r.text ||
-        r.reason ||
-        "-"
-      )}
-    </div>
+      const side =
+        r.side ||
+        r.direction ||
+        "neutral";
 
-    `
+      return `
+
+      <div
+        class="reason ${clsDirection(side)}"
+      >
+        ${escapeHtml(
+          r.text ||
+          r.reason ||
+          r.message ||
+          r
+        )}
+      </div>
+
+      `;
+
+    }
   ).join("");
 
 }
 
 
-/* =========================================================
-   OPENED ANALYSES
-   ========================================================= */
+/* =========================
+   تحلیل‌های باز
+========================= */
 
 function openAnalysis(data){
-
-  if(!data || !data.symbol)
-    return;
-
 
   const id =
     cardId(
       data.category,
       data.symbol
     );
-
 
   opened.set(
     id,
@@ -3161,11 +2651,9 @@ function openAnalysis(data){
     }
   );
 
-
   saveOpenSymbols();
 
   renderOpenedAnalyses();
-
 
   setTimeout(
     () => {
@@ -3202,17 +2690,35 @@ function renderOpenedAnalyses(){
 
   }
 
-
   /*
-    مهم:
-    این تابع فقط لیست تحلیل‌های مستقل را می‌سازد.
-    هنگام بروزرسانی زنده، وضعیت منوهای داخلی
-    از DOM فعلی خوانده و دوباره اعمال می‌شود.
+    وضعیت باز/بسته منوهای داخلی
+    قبل از رندر ذخیره می‌شود.
   */
 
+  const states = {};
 
-  const oldStates =
-    captureDeepBoxStates();
+  document
+    .querySelectorAll(
+      "#openedAnalyses .deepBox.open, #openedAnalyses .styleBox.open"
+    )
+    .forEach(
+      el => {
+
+        const title =
+          el.querySelector(
+            ".deepTitle,.styleTitle"
+          );
+
+        if(title){
+
+          states[
+            title.textContent.trim()
+          ] = true;
+
+        }
+
+      }
+    );
 
 
   openedEl.innerHTML =
@@ -3221,13 +2727,14 @@ function renderOpenedAnalyses(){
         x => `
 
         <div
-          class="panel analysisPanel"
+          class="panel"
           id="opened-${x.id}"
+          style="margin:10px 0"
         >
 
-          <div class="analysisHeader">
+          <div class="signalTop">
 
-            <div class="analysisMeta">
+            <div>
 
               <b>
                 ${escapeHtml(x.symbol)}
@@ -3241,13 +2748,7 @@ function renderOpenedAnalyses(){
                 }
               </span>
 
-              <span class="small">
-                <span class="refreshDot"></span>
-                زنده
-              </span>
-
             </div>
-
 
             <button
               class="secondary"
@@ -3258,15 +2759,10 @@ function renderOpenedAnalyses(){
 
           </div>
 
-
           <div
-            class="analysisContent"
             id="openedContent-${x.id}"
-          >
-
-            ${renderDeepHTML(x.data)}
-
-          </div>
+            style="margin-top:10px"
+          ></div>
 
         </div>
 
@@ -3275,131 +2771,29 @@ function renderOpenedAnalyses(){
       .join("");
 
 
-  restoreDeepBoxStates(
-    oldStates
-  );
+  for(const x of opened.values()){
 
-}
+    const content =
+      document.getElementById(
+        "openedContent-" + x.id
+      );
 
+    if(!content)
+      continue;
 
-/* =========================================================
-   PRESERVE OPEN MENUS
-   ========================================================= */
-
-function captureDeepBoxStates(){
-
-  const states = {};
-
-  document
-    .querySelectorAll(
-      "#openedAnalyses .analysisPanel"
-    )
-    .forEach(
-      panel => {
-
-        const panelId =
-          panel.id;
-
-        states[panelId] = {};
-
-
-        panel
-          .querySelectorAll(
-            ".deepBox"
-          )
-          .forEach(
-            (box,index) => {
-
-              states[panelId][
-                String(index)
-              ] =
-                box.classList.contains(
-                  "open"
-                );
-
-            }
-          );
-
-      }
+    renderDeep(
+      content,
+      x.data
     );
 
-
-  return states;
-
-}
-
-
-function restoreDeepBoxStates(states){
-
-  if(!states)
-    return;
-
-
-  document
-    .querySelectorAll(
-      "#openedAnalyses .analysisPanel"
-    )
-    .forEach(
-      panel => {
-
-        const panelState =
-          states[panel.id];
-
-        if(!panelState)
-          return;
-
-
-        panel
-          .querySelectorAll(
-            ".deepBox"
-          )
-          .forEach(
-            (box,index) => {
-
-              const isOpen =
-                panelState[
-                  String(index)
-                ];
-
-
-              if(isOpen){
-
-                box.classList.add(
-                  "open"
-                );
-
-                const arrow =
-                  box.querySelector(
-                    ".boxArrow"
-                  );
-
-                if(arrow){
-
-                  arrow.textContent =
-                    "▲";
-
-                }
-
-              }
-
-            }
-          );
-
-      }
-    );
+  }
 
 }
 
-
-/* =========================================================
-   CLOSE ANALYSIS
-   ========================================================= */
 
 function closeAnalysis(id){
 
-  opened.delete(
-    id
-  );
+  opened.delete(id);
 
   saveOpenSymbols();
 
@@ -3408,73 +2802,86 @@ function closeAnalysis(id){
 }
 
 
-/* =========================================================
-   LIVE REFRESH
-   ========================================================= */
+/* =========================
+   بروزرسانی زنده
+========================= */
 
 async function refreshOpenedAnalyses(){
 
-  if(!opened.size)
+  if(
+    !opened.size ||
+    refreshingOpened
+  )
     return;
 
+  refreshingOpened = true;
 
   const list =
     [...opened.values()];
 
+  try{
 
-  for(const x of list){
-
-    if(!opened.has(x.id))
-      continue;
-
-
-    try{
-
-      const data =
-        await requestAnalysis(
-          x.symbol
-        );
-
+    for(const x of list){
 
       if(!opened.has(x.id))
         continue;
 
+      try{
 
-      x.data =
-        data;
+        const data =
+          await api(
+            "/api/personal/analyze?symbol=" +
+            encodeURIComponent(x.symbol) +
+            "&strictness=" +
+            encodeURIComponent(
+              strictnessEl.value
+            )
+          );
 
+        if(opened.has(x.id)){
 
-      /*
-        بروزرسانی فقط داده است.
-        منوها با capture/restore باز می‌مانند.
-      */
+          x.data = data;
+
+        }
+
+      }
+      catch(e){
+
+        console.log(
+          "Live analysis error",
+          e
+        );
+
+      }
 
     }
-    catch(e){
 
-      console.log(
-        "Live analysis error:",
-        x.symbol,
-        e
-      );
-
-    }
-
-  }
-
-
-  if(opened.size){
+    /*
+      فقط محتوا به‌روز می‌شود.
+      تحلیل باز بسته نمی‌شود.
+    */
 
     renderOpenedAnalyses();
+
+  }
+  finally{
+
+    refreshingOpened = false;
 
   }
 
 }
 
 
-/* =========================================================
-   SAVE OPEN ANALYSES
-   ========================================================= */
+setInterval(
+  refreshOpenedAnalyses,
+  REFRESH_OPEN_ANALYSIS
+);
+
+
+/* =========================
+   ذخیره تحلیل‌ها
+========================= */
 
 function saveOpenSymbols(){
 
@@ -3487,7 +2894,6 @@ function saveOpenSymbols(){
         })
       );
 
-
   localStorage.setItem(
     "personal_open_analyses",
     JSON.stringify(list)
@@ -3496,9 +2902,15 @@ function saveOpenSymbols(){
 }
 
 
-/* =========================================================
-   RESTORE
-   ========================================================= */
+window.addEventListener(
+  "beforeunload",
+  saveOpenSymbols
+);
+
+
+/* =========================
+   بازگردانی
+========================= */
 
 async function restoreOpenSymbols(){
 
@@ -3509,67 +2921,39 @@ async function restoreOpenSymbols(){
         "personal_open_analyses"
       );
 
-
     if(!raw)
       return;
-
 
     const list =
       JSON.parse(raw);
 
-
     if(!Array.isArray(list))
       return;
-
 
     for(const x of list){
 
       if(!x.symbol)
         continue;
 
-
       try{
 
         const data =
-          await requestAnalysis(
-            x.symbol
+          await api(
+            "/api/personal/analyze?symbol=" +
+            encodeURIComponent(x.symbol) +
+            "&strictness=" +
+            encodeURIComponent(
+              strictnessEl.value
+            )
           );
 
-
-        opened.set(
-          cardId(
-            data.category ||
-            x.category,
-            data.symbol ||
-            x.symbol
-          ),
-          {
-            id:cardId(
-              data.category ||
-              x.category,
-              data.symbol ||
-              x.symbol
-            ),
-            symbol:
-              data.symbol ||
-              x.symbol,
-            category:
-              data.category ||
-              x.category,
-            open:true,
-            data
-          }
-        );
-
-
-        renderOpenedAnalyses();
+        openAnalysis(data);
 
       }
       catch(e){
 
         console.log(
-          "Restore error:",
-          x.symbol,
+          "Restore error",
           e
         );
 
@@ -3581,7 +2965,7 @@ async function restoreOpenSymbols(){
   catch(e){
 
     console.log(
-      "Restore analyses error:",
+      "Restore analyses error",
       e
     );
 
@@ -3590,14 +2974,11 @@ async function restoreOpenSymbols(){
 }
 
 
-/* =========================================================
+/* =========================
    ID
-   ========================================================= */
+========================= */
 
-function cardId(
-  category,
-  symbol
-){
+function cardId(category,symbol){
 
   return (
     String(category || "") +
@@ -3612,83 +2993,27 @@ function cardId(
 }
 
 
-/* =========================================================
-   ESCAPE
-   ========================================================= */
+/* =========================
+   Escape
+========================= */
 
 function escapeHtml(value){
 
   return String(
     value ?? ""
   )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
 }
 
 
-/* =========================================================
-   PAGE VISIBILITY
-   ========================================================= */
-
-document.addEventListener(
-  "visibilitychange",
-  () => {
-
-    /*
-      با خروج از صفحه اسکن متوقف نمی‌شود.
-      وقتی کاربر برگردد، حلقه ادامه دارد.
-    */
-
-    if(
-      !document.hidden &&
-      scanRunning &&
-      !scanRequestBusy
-    ){
-
-      runScanLoop();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   BEFORE UNLOAD
-   ========================================================= */
-
-window.addEventListener(
-  "beforeunload",
-  () => {
-
-    saveOpenSymbols();
-
-  }
-);
-
-
-/* =========================================================
-   STARTUP
-   ========================================================= */
+/* =========================
+   شروع برنامه
+========================= */
 
 updateSoundText();
 
@@ -3696,27 +3021,19 @@ checkHealth();
 
 restoreOpenSymbols();
 
-
 /*
-  اسکنر شخصی از ابتدا خودکار شروع می‌شود.
-  فقط با STOP متوقف خواهد شد.
+  اسکن به‌صورت خودکار شروع می‌شود.
+  کاربر فقط در صورت نیاز Stop می‌زند.
 */
 
-startScan();
-
-
-/*
-  تحلیل‌های باز مستقل از چرخه اسکن
-  هر 15 ثانیه زنده بروزرسانی می‌شوند.
-*/
-
-setInterval(
+setTimeout(
   () => {
 
-    refreshOpenedAnalyses();
+    if(!scanRunning)
+      startScan();
 
   },
-  OPEN_ANALYSIS_REFRESH
+  1200
 );
 
 </script>
