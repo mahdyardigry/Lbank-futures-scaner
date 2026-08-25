@@ -9,7 +9,9 @@
 <style>
 *{box-sizing:border-box}
 
-html{scroll-behavior:smooth}
+html{
+  scroll-behavior:smooth;
+}
 
 body{
   margin:0;
@@ -18,7 +20,31 @@ body{
   color:#e8f0fa;
 }
 
-button,input,select{font:inherit}
+button,input,select{
+  font:inherit;
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:11px 16px;
+  cursor:pointer;
+  background:#1c75d8;
+  color:#fff;
+}
+
+button.stop{
+  background:#9c2d3c;
+}
+
+button.secondary{
+  background:#26384d;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
 
 .container{
   width:min(1100px,96%);
@@ -39,6 +65,7 @@ header p{
   margin:0;
   color:#91a4ba;
   font-size:13px;
+  line-height:1.8;
 }
 
 .status{
@@ -83,30 +110,15 @@ input[type=text]{
   text-align:left;
 }
 
-button{
-  border:0;
-  border-radius:10px;
-  padding:11px 16px;
-  cursor:pointer;
-  background:#1c75d8;
-  color:#fff;
-}
-
-button.stop{background:#9c2d3c}
-button.secondary{background:#26384d}
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
 .rangeRow{
   display:flex;
   align-items:center;
   gap:12px;
 }
 
-input[type=range]{flex:1}
+input[type=range]{
+  flex:1;
+}
 
 .value{
   min-width:48px;
@@ -118,7 +130,7 @@ input[type=range]{flex:1}
 .small{
   font-size:12px;
   color:#8ea2b8;
-  line-height:1.8;
+  line-height:1.9;
 }
 
 .alertRow{
@@ -145,7 +157,9 @@ input[type=checkbox]{
   gap:8px;
 }
 
-.volume input{width:140px}
+.volume input{
+  width:140px;
+}
 
 .scanState{
   padding:10px;
@@ -168,7 +182,9 @@ input[type=checkbox]{
   overflow:hidden;
 }
 
-.signalHead{padding:14px}
+.signalHead{
+  padding:14px;
+}
 
 .signalTop{
   display:flex;
@@ -190,9 +206,17 @@ input[type=checkbox]{
   color:#a9bed3;
 }
 
-.long{color:#35df89}
-.short{color:#ff6474}
-.wait{color:#ffc857}
+.long{
+  color:#35df89;
+}
+
+.short{
+  color:#ff6474;
+}
+
+.wait{
+  color:#ffc857;
+}
 
 .score{
   font-size:22px;
@@ -211,6 +235,7 @@ input[type=checkbox]{
   background:#07101d;
   border-radius:8px;
   font-size:11px;
+  line-height:1.8;
 }
 
 .deepBtn{
@@ -220,6 +245,10 @@ input[type=checkbox]{
   text-align:center;
 }
 
+.deepBtn.active{
+  background:#1d456c;
+}
+
 .deep{
   display:none;
   padding:12px;
@@ -227,7 +256,9 @@ input[type=checkbox]{
   background:#091321;
 }
 
-.deep.open{display:block}
+.deep.open{
+  display:block;
+}
 
 .deepBox{
   border:1px solid #263c55;
@@ -245,7 +276,7 @@ input[type=checkbox]{
 }
 
 .deepTitle:hover{
-  background:#162a40;
+  background:#172b42;
 }
 
 .deepContent{
@@ -259,45 +290,6 @@ input[type=checkbox]{
   display:block;
 }
 
-.styleBox{
-  border:1px solid #263c55;
-  border-radius:10px;
-  margin:8px 0;
-  overflow:hidden;
-}
-
-.styleTitle{
-  padding:11px;
-  background:#0f2032;
-  cursor:pointer;
-  font-weight:bold;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.styleTitle:hover{
-  background:#162b42;
-}
-
-.styleContent{
-  display:none;
-  padding:11px;
-  background:#091521;
-}
-
-.styleBox.open .styleContent{
-  display:block;
-}
-
-.styleResult{
-  display:inline-block;
-  padding:5px 9px;
-  border-radius:7px;
-  background:#07101d;
-  margin-right:5px;
-}
-
 .grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
@@ -306,14 +298,15 @@ input[type=checkbox]{
 
 .data{
   background:#07101d;
-  padding:8px;
+  padding:9px;
   border-radius:7px;
+  line-height:1.9;
 }
 
 .reason{
-  padding:7px;
+  padding:8px;
   border-radius:7px;
-  margin:5px 0;
+  margin:6px 0;
   background:#101d2c;
 }
 
@@ -325,11 +318,13 @@ input[type=checkbox]{
   border-right:3px solid #ff6474;
 }
 
-.reason.neutral{
-  border-right:3px solid #718096;
+.reason.wait{
+  border-right:3px solid #ffc857;
 }
 
-.tableWrap{overflow:auto}
+.tableWrap{
+  overflow:auto;
+}
 
 table{
   width:100%;
@@ -344,7 +339,9 @@ th,td{
   font-size:11px;
 }
 
-th{color:#8fb1d1}
+th{
+  color:#8fb1d1;
+}
 
 .error{
   padding:12px;
@@ -359,46 +356,88 @@ th{color:#8fb1d1}
   color:#7f93a8;
 }
 
-.live{color:#4de59a}
+.live{
+  color:#4de59a;
+}
 
-.liveDot{
+.styleBadge{
   display:inline-block;
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#35df89;
-  margin-left:5px;
+  padding:5px 9px;
+  border-radius:8px;
+  margin-right:5px;
+  background:#172c42;
+}
+
+.styleBull{
+  color:#35df89;
+}
+
+.styleBear{
+  color:#ff6474;
+}
+
+.styleRange{
+  color:#ffc857;
+}
+
+.warning{
+  padding:8px;
+  border-radius:8px;
+  background:#241e0d;
+  color:#e8c86c;
+  margin-top:8px;
+}
+
+.valid{
+  color:#4de59a;
+}
+
+.invalid{
+  color:#ff7c89;
+}
+
+.openedCard{
+  background:#0c1725;
+  border:1px solid #263c55;
+  border-radius:14px;
+  padding:12px;
+  margin:10px 0;
+}
+
+.liveHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
 }
 
 .updateTime{
-  margin-top:10px;
-  color:#6f859d;
   font-size:11px;
-}
-
-.signalLogic{
-  margin-top:10px;
-  padding:9px;
-  border-radius:8px;
-  background:#0d1e30;
-  font-size:12px;
-  line-height:1.9;
-}
-
-.noData{
-  padding:10px;
-  border-radius:8px;
-  background:#101b28;
-  color:#8296aa;
+  color:#6e859e;
 }
 
 @media(max-width:600px){
 
-  header h1{font-size:20px}
+  header h1{
+    font-size:20px;
+  }
 
-  .grid{grid-template-columns:1fr}
+  .grid{
+    grid-template-columns:1fr;
+  }
 
-  .cards{grid-template-columns:1fr}
+  .cards{
+    grid-template-columns:1fr;
+  }
+
+  .volume{
+    width:100%;
+  }
+
+  .volume input{
+    flex:1;
+  }
 }
 </style>
 </head>
@@ -462,9 +501,7 @@ th{color:#8fb1d1}
 
     <span>سخت‌تر</span>
 
-    <div id="strictValue" class="value">
-      50
-    </div>
+    <div id="strictValue" class="value">50</div>
 
   </div>
 
@@ -481,16 +518,11 @@ th{color:#8fb1d1}
   <div class="alertRow">
 
     <label class="switch">
-      <input
-        id="soundEnabled"
-        type="checkbox"
-        checked
-      >
+      <input id="soundEnabled" type="checkbox" checked>
       🔊 صدا روشن
     </label>
 
     <div class="volume">
-
       <span>حجم صدا:</span>
 
       <input
@@ -501,16 +533,10 @@ th{color:#8fb1d1}
         value="50"
       >
 
-      <span id="volumeValue">
-        50%
-      </span>
-
+      <span id="volumeValue">50%</span>
     </div>
 
-    <button
-      id="testSound"
-      class="secondary"
-    >
+    <button id="testSound" class="secondary">
       🔔 تست صدا
     </button>
 
@@ -525,9 +551,9 @@ th{color:#8fb1d1}
   <h2>🔎 اسکن چرخشی بازار</h2>
 
   <div class="small">
-    تا زمانی که «توقف اسکن» را نزنی، اسکنر به‌صورت خودکار و
-    چرخشی بازار Bybit را بررسی می‌کند و پس از پایان هر دور،
-    دوباره از ابتدای بازار ادامه می‌دهد.
+    اسکنر تا زمانی که خودت دکمه «توقف اسکن» را نزنی فعال می‌ماند.
+    درجه سختی مستقیماً به Worker ارسال می‌شود و فقط سیگنال‌هایی
+    که امتیاز واقعی آنها به آستانه برسد نمایش داده می‌شوند.
   </div>
 
   <div class="row" style="margin-top:12px">
@@ -536,17 +562,14 @@ th{color:#8fb1d1}
       ▶ شروع اسکن
     </button>
 
-    <button
-      id="stopScan"
-      class="stop"
-    >
+    <button id="stopScan" class="stop">
       ⏹ توقف اسکن
     </button>
 
   </div>
 
   <div id="scanState" class="scanState">
-    ⏳ آماده شروع اسکن...
+    ⏳ در حال آماده‌سازی اسکن...
   </div>
 
 </section>
@@ -557,7 +580,7 @@ th{color:#8fb1d1}
 
   <div id="signals">
     <div class="empty">
-      اسکن خودکار آماده است.
+      در حال آماده‌سازی اسکن بازار...
     </div>
   </div>
 
@@ -568,15 +591,12 @@ th{color:#8fb1d1}
   <h2>📖 تحلیل‌های باز</h2>
 
   <div class="small">
-    تحلیل‌های بازشده مستقل از کارت سیگنال هستند.
-    با بروزرسانی زنده بسته نمی‌شوند و تا زمانی که خودت
-    نبندی باقی می‌مانند.
+    این قسمت کاملاً جدا از سیگنال‌هاست.
+    تحلیل بازشده تا زمانی که خودت نبندی باقی می‌ماند.
+    بروزرسانی زنده نباید منوهای باز را ببندد.
   </div>
 
-  <div
-    id="openedAnalyses"
-    style="margin-top:10px"
-  ></div>
+  <div id="openedAnalyses" style="margin-top:10px"></div>
 
 </section>
 
@@ -587,7 +607,7 @@ th{color:#8fb1d1}
 const API_BASE = "";
 
 const SCAN_DELAY = 1800;
-const REFRESH_OPEN_ANALYSIS = 10000;
+const OPEN_REFRESH = 12000;
 
 let scanRunning = false;
 let scanOffset = Number(
@@ -595,17 +615,10 @@ let scanOffset = Number(
 );
 
 let scanTimer = null;
+let openedRefreshTimer = null;
 
 let opened = new Map();
-
 let previousSignals = new Set();
-
-let refreshingOpened = false;
-
-
-/* =========================
-   عناصر
-========================= */
 
 const statusEl =
   document.getElementById("status");
@@ -654,7 +667,10 @@ const savedStrict =
 if(savedStrict !== null){
 
   strictnessEl.value =
-    savedStrict;
+    Math.max(
+      0,
+      Math.min(100, Number(savedStrict))
+    );
 
 }
 
@@ -745,7 +761,7 @@ function updateSoundText(){
 
 
 /* =========================
-   صدا
+   Audio
 ========================= */
 
 let audioContext = null;
@@ -767,8 +783,9 @@ function playAlert(){
 
     }
 
-    if(audioContext.state === "suspended")
-      audioContext.resume();
+    if(audioContext.state === "suspended"){
+      audioContext.resume().catch(()=>{});
+    }
 
     const oscillator =
       audioContext.createOscillator();
@@ -777,17 +794,13 @@ function playAlert(){
       audioContext.createGain();
 
     oscillator.type = "sine";
-
     oscillator.frequency.value = 880;
 
     gain.gain.value =
       Number(volumeEl.value) / 100 * 0.18;
 
     oscillator.connect(gain);
-
-    gain.connect(
-      audioContext.destination
-    );
+    gain.connect(audioContext.destination);
 
     oscillator.start();
 
@@ -803,7 +816,7 @@ function playAlert(){
   }
   catch(e){
 
-    console.log(e);
+    console.log("Audio error",e);
 
   }
 
@@ -812,14 +825,11 @@ function playAlert(){
 
 document
   .getElementById("testSound")
-  .addEventListener(
-    "click",
-    playAlert
-  );
+  .addEventListener("click",playAlert);
 
 
 /* =========================
-   API
+   API امن
 ========================= */
 
 async function api(path){
@@ -862,7 +872,7 @@ async function api(path){
 
     throw new Error(
       data.error ||
-      "خطای API Worker"
+      ("خطای HTTP " + response.status)
     );
 
   }
@@ -890,6 +900,8 @@ async function checkHealth(){
     statusEl.style.color =
       "#64e69a";
 
+    return true;
+
   }
   catch(e){
 
@@ -899,62 +911,85 @@ async function checkHealth(){
     statusEl.style.color =
       "#ff6474";
 
+    return false;
+
   }
 
 }
 
 
 /* =========================
-   فرمت
+   Helpers
 ========================= */
 
-function formatPrice(n){
+function num(v){
 
-  n = Number(n);
+  const n = Number(v);
 
-  if(!Number.isFinite(n))
-    return "-";
+  return Number.isFinite(n)
+    ? n
+    : null;
+
+}
+
+
+function formatPrice(v){
+
+  const n = num(v);
+
+  if(n === null)
+    return "داده موجود نیست";
 
   if(n === 0)
     return "0";
 
-  if(n < 0.000001)
-    return n.toFixed(12);
-
-  if(n < 0.001)
+  if(Math.abs(n) < 0.001)
     return n.toFixed(10);
 
-  if(n < 1)
+  if(Math.abs(n) < 1)
     return n.toFixed(7);
 
-  if(n < 100)
-    return n.toFixed(4);
+  if(Math.abs(n) < 100)
+    return n.toFixed(5);
 
   return n.toFixed(2);
 
 }
 
 
-function pct(n){
+function pct(v){
 
-  n = Number(n);
+  const n = num(v);
 
-  if(!Number.isFinite(n))
-    return "-";
+  if(n === null)
+    return "داده موجود نیست";
 
   return n.toFixed(3) + "%";
 
 }
 
 
-function num(n,d=2){
+function fixed(v,d=2){
 
-  n = Number(n);
+  const n = num(v);
 
-  if(!Number.isFinite(n))
-    return "-";
+  if(n === null)
+    return "داده موجود نیست";
 
   return n.toFixed(d);
+
+}
+
+
+function boolText(v){
+
+  if(v === true)
+    return "بله";
+
+  if(v === false)
+    return "خیر";
+
+  return "محاسبه نشده";
 
 }
 
@@ -980,54 +1015,33 @@ function directionText(direction){
   if(direction === "SHORT")
     return "🔴 نزولی";
 
-  return "🟡 رنج / نامشخص";
+  return "🟡 انتظار";
 
 }
 
 
-function styleText(value){
+function escapeHtml(value){
 
-  if(!value)
-    return "نامشخص";
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
-  const v =
-    String(value).toUpperCase();
-
-  if(
-    v === "BULLISH" ||
-    v === "LONG" ||
-    v === "UP"
-  )
-    return "صعودی";
-
-  if(
-    v === "BEARISH" ||
-    v === "SHORT" ||
-    v === "DOWN"
-  )
-    return "نزولی";
-
-  if(
-    v === "RANGE" ||
-    v === "SIDEWAYS" ||
-    v === "NEUTRAL"
-  )
-    return "رنج";
-
-  return String(value);
 }
 
 
-function safe(v){
+function cardId(category,symbol){
 
-  if(
-    v === null ||
-    v === undefined ||
-    v === ""
-  )
-    return "-";
-
-  return escapeHtml(v);
+  return (
+    category +
+    "_" +
+    symbol
+  ).replace(
+    /[^a-zA-Z0-9_]/g,
+    "_"
+  );
 
 }
 
@@ -1056,15 +1070,15 @@ symbolInput.addEventListener(
 async function analyzeManual(){
 
   const symbol =
-    symbolInput.value.trim();
+    symbolInput.value
+      .trim()
+      .toUpperCase();
 
   if(!symbol)
     return;
 
   analyzeBtn.disabled = true;
-
-  analyzeBtn.textContent =
-    "⏳ در حال تحلیل...";
+  analyzeBtn.textContent = "⏳ در حال تحلیل...";
 
   try{
 
@@ -1087,9 +1101,7 @@ async function analyzeManual(){
   finally{
 
     analyzeBtn.disabled = false;
-
-    analyzeBtn.textContent =
-      "🔎 تحلیل";
+    analyzeBtn.textContent = "🔎 تحلیل";
 
   }
 
@@ -1124,7 +1136,7 @@ async function startScan(){
   scanRunning = true;
 
   scanState.innerHTML =
-    "🟢 اسکن فعال است — جستجوی سیگنال...";
+    "🟢 اسکن خودکار فعال است — تا وقتی «توقف اسکن» نزنی ادامه دارد.";
 
   scanLoop();
 
@@ -1138,7 +1150,6 @@ function stopScan(){
   if(scanTimer){
 
     clearTimeout(scanTimer);
-
     scanTimer = null;
 
   }
@@ -1147,6 +1158,34 @@ function stopScan(){
     "⏹ اسکن متوقف شد.";
 
 }
+
+
+/*
+  اسکنر هنگام بارگذاری صفحه
+  خودش شروع می‌شود.
+*/
+
+window.addEventListener(
+  "load",
+  () => {
+
+    checkHealth();
+
+    setTimeout(
+      () => {
+
+        restoreOpenSymbols();
+
+        if(!scanRunning){
+          startScan();
+        }
+
+      },
+      500
+    );
+
+  }
+);
 
 
 async function scanLoop(){
@@ -1164,63 +1203,30 @@ async function scanLoop(){
         encodeURIComponent(strictnessEl.value)
       );
 
-    const checked =
-      Number(data.checked || 0);
-
-    const total =
-      Number(data.totalMarkets || 0);
-
     scanOffset =
       Number(
-        data.nextOffset
+        data.nextOffset ?? scanOffset
       );
-
-    if(!Number.isFinite(scanOffset))
-      scanOffset = 0;
-
-    /*
-      وقتی انتهای بازار رسیدیم،
-      دور بعدی از صفر شروع می‌شود.
-    */
-
-    if(
-      total > 0 &&
-      scanOffset >= total
-    ){
-
-      scanOffset = 0;
-
-    }
 
     localStorage.setItem(
       "personal_scan_offset",
-      scanOffset
+      String(scanOffset)
     );
 
     scanState.innerHTML =
-      "🟢 اسکن فعال است · بررسی: " +
-      checked +
+      "🟢 اسکن فعال است · " +
+      "بررسی شده: " +
+      Number(data.checked || 0) +
       " · کل بازار: " +
-      total +
+      Number(data.totalMarkets || 0) +
       " · سخت‌گیری: " +
-      Number(
-        data.strictness ??
-        strictnessEl.value
-      ) +
-      " · دور بعدی ادامه دارد";
+      Number(data.strictness ?? strictnessEl.value);
 
     renderSignals(
       Array.isArray(data.results)
         ? data.results
         : []
     );
-
-    /*
-      تحلیل‌های باز مستقل از اسکن هستند.
-    */
-
-    if(opened.size)
-      refreshOpenedAnalyses();
 
   }
   catch(e){
@@ -1230,12 +1236,6 @@ async function scanLoop(){
       escapeHtml(e.message);
 
   }
-
-  /*
-    مهم:
-    تا زمانی که کاربر Stop نزده،
-    اسکن دوباره اجرا می‌شود.
-  */
 
   if(scanRunning){
 
@@ -1251,7 +1251,7 @@ async function scanLoop(){
 
 
 /* =========================
-   کارت سیگنال
+   رندر سیگنال‌ها
 ========================= */
 
 function renderSignals(results){
@@ -1259,7 +1259,7 @@ function renderSignals(results){
   if(!results.length){
 
     signalsEl.innerHTML =
-      '<div class="empty">در این بخش سیگنال معتبر مطابق سخت‌گیری انتخاب‌شده پیدا نشد؛ اسکن همچنان ادامه دارد.</div>';
+      '<div class="empty">در این مرحله سیگنال واقعی مطابق درجه سختی پیدا نشد.</div>';
 
     return;
 
@@ -1273,15 +1273,11 @@ function renderSignals(results){
   for(const item of results){
 
     const key =
-      String(item.category || "") +
+      item.category +
       ":" +
-      String(item.symbol || "") +
+      item.symbol +
       ":" +
-      String(item.direction || "");
-
-    /*
-      هشدار فقط برای سیگنال جدید.
-    */
+      item.direction;
 
     if(
       !previousSignals.has(key) &&
@@ -1304,9 +1300,6 @@ function createSignalCard(item){
 
   const direction =
     item.direction;
-
-  const dClass =
-    clsDirection(direction);
 
   const id =
     cardId(
@@ -1340,18 +1333,18 @@ function createSignalCard(item){
       </div>
 
       <div
-        class="${dClass}"
+        class="${clsDirection(direction)}"
         style="margin-top:10px;font-weight:bold"
       >
         ${directionText(direction)}
       </div>
 
       <div
-        class="${dClass}"
+        class="${clsDirection(direction)}"
         style="margin-top:5px"
       >
         <span class="score">
-          ${num(item.score,0)}
+          ${Number(item.score || 0)}
         </span>/100
       </div>
 
@@ -1364,43 +1357,30 @@ function createSignalCard(item){
 
         <div class="maItem">
           MA20 1m:
-          <b>
-            ${formatPrice(item.oneMinute?.ma20)}
-          </b>
+          <b>${formatPrice(item.oneMinute?.ma20)}</b>
         </div>
 
         <div class="maItem">
           فاصله:
-          <b>
-            ${pct(item.oneMinute?.distancePct)}
-          </b>
+          <b>${pct(item.oneMinute?.distancePct)}</b>
         </div>
 
         <div class="maItem">
           شیب:
-          <b>
-            ${pct(item.oneMinute?.maSlopePct)}
-          </b>
+          <b>${pct(item.oneMinute?.maSlopePct)}</b>
         </div>
 
         <div class="maItem">
           15m:
-          <b class="${clsDirection(
-            item.fifteenMinute?.direction
-          )}">
-            ${directionText(
-              item.fifteenMinute?.direction
-            )}
+          <b class="${clsDirection(item.fifteenMinute?.direction)}">
+            ${directionText(item.fifteenMinute?.direction)}
           </b>
         </div>
 
         <div class="maItem">
           حجم:
           <b>
-            ${num(
-              item.oneMinute?.volumeRatio,
-              2
-            )}x
+            ${fixed(item.oneMinute?.volumeRatio,2)}x
           </b>
         </div>
 
@@ -1410,7 +1390,8 @@ function createSignalCard(item){
 
     <button
       class="deepBtn"
-      onclick="toggleDeep('${id}')"
+      data-action="toggle-deep"
+      data-id="${id}"
     >
       ▼ تحلیل عمیق
     </button>
@@ -1420,7 +1401,7 @@ function createSignalCard(item){
       id="deep-${id}"
     >
       <div class="empty">
-        ⏳ دریافت تحلیل دقیق...
+        برای دریافت تحلیل عمیق کلیک کن.
       </div>
     </div>
 
@@ -1432,8 +1413,29 @@ function createSignalCard(item){
 
 
 /* =========================
-   باز کردن تحلیل عمیق
+   کلیک تحلیل عمیق
 ========================= */
+
+document.addEventListener(
+  "click",
+  async e => {
+
+    const btn =
+      e.target.closest(
+        '[data-action="toggle-deep"]'
+      );
+
+    if(!btn)
+      return;
+
+    const id =
+      btn.dataset.id;
+
+    await toggleDeep(id);
+
+  }
+);
+
 
 async function toggleDeep(id){
 
@@ -1456,45 +1458,41 @@ async function toggleDeep(id){
 
     deep.classList.remove("open");
 
+    const btn =
+      card.querySelector(".deepBtn");
+
+    if(btn)
+      btn.classList.remove("active");
+
     return;
 
   }
 
   deep.classList.add("open");
 
+  const btn =
+    card.querySelector(".deepBtn");
+
+  if(btn)
+    btn.classList.add("active");
+
   const symbol =
-    card.querySelector(
-      ".symbol"
-    ).textContent.trim();
+    card.querySelector(".symbol")
+      .textContent
+      .trim();
 
   const market =
-    card.querySelector(
-      ".market"
-    ).textContent.trim();
+    card.querySelector(".market")
+      .textContent
+      .trim();
 
   const category =
     market === "Futures"
       ? "linear"
       : "spot";
 
-  /*
-    اگر قبلاً تحلیل گرفته شده،
-    دوباره بی‌دلیل درخواست نمی‌زنیم.
-  */
-
-  const existing =
-    opened.get(id);
-
-  if(existing){
-
-    renderDeep(
-      deep,
-      existing.data
-    );
-
-    return;
-
-  }
+  deep.innerHTML =
+    '<div class="empty">⏳ در حال محاسبه تحلیل واقعی...</div>';
 
   try{
 
@@ -1513,16 +1511,18 @@ async function toggleDeep(id){
         symbol,
         category,
         open:true,
-        data
+        data,
+        boxState:readBoxStates(deep)
       }
     );
 
+    saveOpenSymbols();
+
     renderDeep(
       deep,
-      data
+      data,
+      true
     );
-
-    saveOpenSymbols();
 
     renderOpenedAnalyses();
 
@@ -1543,7 +1543,16 @@ async function toggleDeep(id){
    تحلیل عمیق
 ========================= */
 
-function renderDeep(container,data){
+function renderDeep(
+  container,
+  data,
+  preserveState=false
+){
+
+  const oldStates =
+    preserveState
+      ? readBoxStates(container)
+      : {};
 
   const one =
     data.oneMinute || {};
@@ -1559,15 +1568,20 @@ function renderDeep(container,data){
       ? data.reasons
       : [];
 
+  const derivatives =
+    data.derivatives ||
+    data.futures ||
+    {};
+
   container.innerHTML = `
 
   ${deepBox(
-    "📈 سبک‌های معاملاتی",
+    "📚 سبک‌های معاملاتی",
     tradingStylesHTML(data)
   )}
 
   ${deepBox(
-    "🎯 سیگنال و منطق محاسبه",
+    "🎯 سیگنال و منطق واقعی",
     signalSummary(data)
   )}
 
@@ -1587,7 +1601,7 @@ function renderDeep(container,data){
   )}
 
   ${deepBox(
-    "📦 حجم و Footprint",
+    "📦 Footprint / جریان خرید و فروش",
     footprintHTML(one,data)
   )}
 
@@ -1597,7 +1611,7 @@ function renderDeep(container,data){
   )}
 
   ${deepBox(
-    "🧲 Hunt / Liquidity",
+    "🧲 Hunt / Liquidity Sweep / لیکوئیدیتی",
     liquidityHTML(one,book,data)
   )}
 
@@ -1607,17 +1621,26 @@ function renderDeep(container,data){
   )}
 
   ${deepBox(
+    "💰 Funding Rate / OI",
+    derivativesHTML(derivatives,data)
+  )}
+
+  ${deepBox(
     "🧠 دلایل سیگنال",
     reasonsHTML(reasons)
   )}
 
-  <div class="updateTime">
-    <span class="liveDot"></span>
-    تحلیل زنده · آخرین بروزرسانی:
+  <div class="small live">
+    🟢 تحلیل زنده — آخرین بروزرسانی:
     ${new Date().toLocaleTimeString("fa-IR")}
   </div>
 
   `;
+
+  restoreBoxStates(
+    container,
+    oldStates
+  );
 
 }
 
@@ -1630,10 +1653,9 @@ function deepBox(title,content){
 
     <div
       class="deepTitle"
-      onclick="this.parentElement.classList.toggle('open')"
+      data-deep-title="1"
     >
       ${title}
-      <span>▼</span>
     </div>
 
     <div class="deepContent">
@@ -1648,61 +1670,198 @@ function deepBox(title,content){
 
 
 /* =========================
+   منوهای داخلی
+========================= */
+
+document.addEventListener(
+  "click",
+  e => {
+
+    const title =
+      e.target.closest(
+        '[data-deep-title="1"]'
+      );
+
+    if(!title)
+      return;
+
+    const box =
+      title.parentElement;
+
+    if(!box)
+      return;
+
+    box.classList.toggle("open");
+
+    saveCurrentOpenStates();
+
+  }
+);
+
+
+function readBoxStates(container){
+
+  const states = {};
+
+  container
+    .querySelectorAll(".deepBox")
+    .forEach(
+      (box,index) => {
+
+        const title =
+          box.querySelector(".deepTitle");
+
+        if(title){
+
+          states[
+            title.textContent.trim()
+          ] =
+            box.classList.contains("open");
+
+        }
+
+      }
+    );
+
+  return states;
+
+}
+
+
+function restoreBoxStates(
+  container,
+  states
+){
+
+  if(!states)
+    return;
+
+  container
+    .querySelectorAll(".deepBox")
+    .forEach(
+      box => {
+
+        const title =
+          box.querySelector(".deepTitle");
+
+        if(!title)
+          return;
+
+        const key =
+          title.textContent.trim();
+
+        if(states[key] === true){
+
+          box.classList.add("open");
+
+        }
+
+      }
+    );
+
+}
+
+
+function saveCurrentOpenStates(){
+
+  for(const x of opened.values()){
+
+    const content =
+      document.getElementById(
+        "openedContent-" + x.id
+      );
+
+    if(content){
+
+      x.boxState =
+        readBoxStates(content);
+
+    }
+
+  }
+
+}
+
+
+/* =========================
    سبک‌های معاملاتی
 ========================= */
 
 function tradingStylesHTML(data){
 
-  const styles =
-    data.tradingStyles ||
-    data.styles ||
-    {};
+  const one =
+    data.oneMinute || {};
+
+  const fifteen =
+    data.fifteenMinute || {};
+
+  const price =
+    num(data.price);
+
+  const ma7 =
+    num(fifteen.ma7);
+
+  const ma20 =
+    num(fifteen.ma20);
+
+  const slope =
+    num(fifteen.slopePct);
+
+  const rsi =
+    num(fifteen.rsi);
+
+  const volumeRatio =
+    num(one.volumeRatio);
+
+  const result =
+    classifyMarket(
+      price,
+      ma7,
+      ma20,
+      slope,
+      rsi
+    );
 
   return `
 
-  ${styleBox(
-    "🧠 اسمارت مانی",
-    getStyle(
-      styles,
-      "smc",
-      data
-    )
+  <div class="data">
+
+    <b>وضعیت کلی بازار:</b>
+
+    <span class="styleBadge ${result.className}">
+      ${result.label}
+    </span>
+
+  </div>
+
+  <div class="small" style="margin-top:8px">
+    وضعیت بر اساس داده‌های واقعی تایم‌فریم 15 دقیقه،
+    موقعیت قیمت نسبت به MA7 و MA20، شیب MA20 و RSI تعیین شده است.
+  </div>
+
+  ${styleMenu(
+    "🧠 Smart Money / پول هوشمند",
+    smartMoneyStyle(data,result)
   )}
 
-  ${styleBox(
-    "🎯 ICT",
-    getStyle(
-      styles,
-      "ict",
-      data
-    )
+  ${styleMenu(
+    "🏦 ICT",
+    ictStyle(data,result)
   )}
 
-  ${styleBox(
-    "📐 پرایس اکشن",
-    getStyle(
-      styles,
-      "priceAction",
-      data
-    )
+  ${styleMenu(
+    "📐 Price Action",
+    priceActionStyle(data,result)
   )}
 
-  ${styleBox(
-    "📊 حجم و جریان سفارش",
-    getStyle(
-      styles,
-      "orderFlow",
-      data
-    )
+  ${styleMenu(
+    "📊 Volume / Volume Spread",
+    volumeStyle(data,result)
   )}
 
-  ${styleBox(
-    "📈 تحلیل اندیکاتوری",
-    getStyle(
-      styles,
-      "indicator",
-      data
-    )
+  ${styleMenu(
+    "💧 Liquidity / Hunt",
+    liquidityStyle(data,result)
   )}
 
   `;
@@ -1710,71 +1869,18 @@ function tradingStylesHTML(data){
 }
 
 
-function styleBox(title,obj){
-
-  obj =
-    obj || {};
-
-  const direction =
-    obj.direction ||
-    obj.bias ||
-    obj.result ||
-    null;
-
-  const reason =
-    obj.reason ||
-    obj.reasons ||
-    obj.analysis ||
-    obj.details;
+function styleMenu(title,content){
 
   return `
 
-  <div class="styleBox">
+  <div class="deepBox">
 
-    <div
-      class="styleTitle"
-      onclick="this.parentElement.classList.toggle('open')"
-    >
-
-      <span>${title}</span>
-
-      <span
-        class="${clsDirection(direction)} styleResult"
-      >
-        ${styleText(direction)}
-      </span>
-
+    <div class="deepTitle">
+      ${title}
     </div>
 
-    <div class="styleContent">
-
-      ${styleDataHTML(obj)}
-
-      ${
-        Array.isArray(reason)
-          ? reason
-              .map(
-                x =>
-                  `<div class="reason neutral">
-                    ${escapeHtml(
-                      typeof x === "string"
-                        ? x
-                        : x.text || x.reason || ""
-                    )}
-                  </div>`
-              )
-              .join("")
-          :
-        reason
-          ? `<div class="signalLogic">
-              ${escapeHtml(reason)}
-            </div>`
-          :
-          `<div class="noData">
-             Worker برای این سبک داده محاسبه‌شده‌ای برنگردانده است.
-           </div>`
-      }
-
+    <div class="deepContent">
+      ${content}
     </div>
 
   </div>
@@ -1784,75 +1890,405 @@ function styleBox(title,obj){
 }
 
 
-function getStyle(styles,key,data){
+/* =========================
+   طبقه‌بندی بازار
+========================= */
 
-  if(styles && styles[key])
-    return styles[key];
+function classifyMarket(
+  price,
+  ma7,
+  ma20,
+  slope,
+  rsi
+){
 
-  /*
-    اگر Worker ساختار سبک‌ها را جدا نفرستاده باشد،
-    از داده واقعی موجود استفاده می‌کنیم؛
-    ولی ادعای نتیجه‌ای که محاسبه نشده نمی‌کنیم.
-  */
+  if(
+    price === null ||
+    ma7 === null ||
+    ma20 === null
+  ){
+
+    return {
+      label:"داده کافی نیست",
+      className:"styleRange"
+    };
+
+  }
+
+  const maSpread =
+    Math.abs(
+      (ma7 - ma20) /
+      ma20 *
+      100
+    );
+
+  const absSlope =
+    Math.abs(slope ?? 0);
+
+  if(
+    ma7 > ma20 &&
+    price > ma20 &&
+    absSlope >= 0.03 &&
+    (rsi === null || rsi >= 50)
+  ){
+
+    return {
+      label:"صعودی",
+      className:"styleBull"
+    };
+
+  }
+
+  if(
+    ma7 < ma20 &&
+    price < ma20 &&
+    absSlope >= 0.03 &&
+    (rsi === null || rsi <= 50)
+  ){
+
+    return {
+      label:"نزولی",
+      className:"styleBear"
+    };
+
+  }
+
+  if(
+    maSpread < 0.20 &&
+    absSlope < 0.03
+  ){
+
+    return {
+      label:"رنج",
+      className:"styleRange"
+    };
+
+  }
+
+  if(
+    ma7 > ma20 &&
+    price >= ma20
+  ){
+
+    return {
+      label:"تمایل صعودی",
+      className:"styleBull"
+    };
+
+  }
+
+  if(
+    ma7 < ma20 &&
+    price <= ma20
+  ){
+
+    return {
+      label:"تمایل نزولی",
+      className:"styleBear"
+    };
+
+  }
 
   return {
-    direction:null,
-    reason:"داده اختصاصی این سبک در پاسخ Worker موجود نیست."
+    label:"رنج / بدون روند قطعی",
+    className:"styleRange"
   };
 
 }
 
 
-function styleDataHTML(obj){
+/* =========================
+   Smart Money
+========================= */
 
-  const entries = [
-    ["ساختار بازار",obj.structure],
-    ["شکست ساختار",obj.bos],
-    ["تغییر ساختار",obj.choch],
-    ["نقدینگی",obj.liquidity],
-    ["شکار نقدینگی",obj.sweep],
-    ["FVG",obj.fvg],
-    ["Order Block",obj.orderBlock],
-    ["Premium / Discount",obj.premiumDiscount],
-    ["فشار خرید",obj.buyPressure],
-    ["فشار فروش",obj.sellPressure],
-    ["تأیید حجم",obj.volumeConfirmation]
-  ];
+function smartMoneyStyle(data,result){
 
-  const valid =
-    entries.filter(
-      x =>
-        x[1] !== undefined &&
-        x[1] !== null &&
-        x[1] !== ""
+  const one =
+    data.oneMinute || {};
+
+  const reasons = [];
+
+  if(one.crossedUp === true)
+    reasons.push("قیمت MA20 را به سمت بالا قطع کرده است.");
+
+  if(one.crossedDown === true)
+    reasons.push("قیمت MA20 را به سمت پایین قطع کرده است.");
+
+  if(one.rejectionUp === true)
+    reasons.push("رد قیمت از پایین MA20 به سمت بالا ثبت شده است.");
+
+  if(one.rejectionDown === true)
+    reasons.push("رد قیمت از بالای MA20 به سمت پایین ثبت شده است.");
+
+  if(one.volumeSpike === true)
+    reasons.push("افزایش غیرعادی حجم نسبت به میانگین ثبت شده است.");
+
+  if(
+    one.volumeRatio !== undefined &&
+    num(one.volumeRatio) !== null
+  ){
+
+    reasons.push(
+      "نسبت حجم واقعی: " +
+      fixed(one.volumeRatio,2) +
+      " برابر میانگین."
     );
-
-  if(!valid.length){
-
-    return "";
 
   }
 
+  return styleResult(
+    result.label,
+    reasons,
+    "برای تأیید کامل ساختار پول هوشمند، Worker باید Swing High/Low، BOS، CHoCH، Order Block و FVG واقعی را برگرداند."
+  );
+
+}
+
+
+/* =========================
+   ICT
+========================= */
+
+function ictStyle(data,result){
+
+  const ict =
+    data.ict ||
+    data.ICT ||
+    {};
+
+  const reasons = [];
+
+  if(
+    ict.bos ||
+    ict.BOS
+  ){
+
+    reasons.push(
+      "BOS واقعی توسط Worker گزارش شده است: " +
+      escapeHtml(
+        String(
+          ict.bos || ict.BOS
+        )
+      )
+    );
+
+  }
+
+  if(
+    ict.choch ||
+    ict.CHoCH
+  ){
+
+    reasons.push(
+      "CHoCH واقعی گزارش شده است."
+    );
+
+  }
+
+  if(
+    ict.fvg ||
+    ict.FVG
+  ){
+
+    reasons.push(
+      "FVG واقعی توسط Worker گزارش شده است."
+    );
+
+  }
+
+  if(
+    ict.orderBlock ||
+    ict.orderblock
+  ){
+
+    reasons.push(
+      "Order Block واقعی گزارش شده است."
+    );
+
+  }
+
+  return styleResult(
+    result.label,
+    reasons,
+    "در صورت نبود داده BOS/CHoCH/FVG/Order Block از Worker، نتیجه ICT عمداً قطعی اعلام نمی‌شود."
+  );
+
+}
+
+
+/* =========================
+   Price Action
+========================= */
+
+function priceActionStyle(data,result){
+
+  const one =
+    data.oneMinute || {};
+
+  const reasons = [];
+
+  if(one.crossedUp === true)
+    reasons.push("شکست رو به بالای MA20 ثبت شده است.");
+
+  if(one.crossedDown === true)
+    reasons.push("شکست رو به پایین MA20 ثبت شده است.");
+
+  if(one.rejectionUp === true)
+    reasons.push("رد صعودی قیمت ثبت شده است.");
+
+  if(one.rejectionDown === true)
+    reasons.push("رد نزولی قیمت ثبت شده است.");
+
+  if(one.touched === true)
+    reasons.push("تماس قیمت با MA20 ثبت شده است.");
+
+  if(!reasons.length){
+
+    reasons.push(
+      "بر اساس داده فعلی، الگوی قطعی Price Action ثبت نشده است."
+    );
+
+  }
+
+  return styleResult(
+    result.label,
+    reasons
+  );
+
+}
+
+
+/* =========================
+   Volume
+========================= */
+
+function volumeStyle(data,result){
+
+  const one =
+    data.oneMinute || {};
+
+  const reasons = [];
+
+  const vr =
+    num(one.volumeRatio);
+
+  if(vr !== null){
+
+    reasons.push(
+      "نسبت حجم: " +
+      vr.toFixed(2) +
+      " برابر میانگین."
+    );
+
+  }
+
+  if(one.volumeSpike === true){
+
+    reasons.push(
+      "Volume Spike واقعی ثبت شده است."
+    );
+
+  }
+
+  return styleResult(
+    result.label,
+    reasons,
+    "این بخش فقط از حجم واقعی Worker استفاده می‌کند."
+  );
+
+}
+
+
+/* =========================
+   Liquidity
+========================= */
+
+function liquidityStyle(data,result){
+
+  const book =
+    data.orderBook || {};
+
+  const reasons = [];
+
+  const buy =
+    num(book.buyLiquidity);
+
+  const sell =
+    num(book.sellLiquidity);
+
+  if(
+    buy !== null &&
+    sell !== null
+  ){
+
+    if(buy > sell){
+
+      reasons.push(
+        "نقدینگی سمت خرید بیشتر از سمت فروش است."
+      );
+
+    }
+    else if(sell > buy){
+
+      reasons.push(
+        "نقدینگی سمت فروش بیشتر از سمت خرید است."
+      );
+
+    }
+    else{
+
+      reasons.push(
+        "نقدینگی خرید و فروش تقریباً برابر است."
+      );
+
+    }
+
+  }
+
+  return styleResult(
+    result.label,
+    reasons,
+    "Order Book به تنهایی اثبات Hunt یا لیکوئیدیشن نیست؛ برای ادعای Hunt باید توالی High/Low و داده‌های واقعی معاملات بررسی شود."
+  );
+
+}
+
+
+function styleResult(
+  marketState,
+  reasons,
+  warning
+){
+
   return `
-    <div class="grid">
-      ${
-        valid.map(
-          x => `
-            <div class="data">
-              ${x[0]}:
-              <b>${safe(x[1])}</b>
-            </div>
-          `
+
+  <div class="data">
+    وضعیت سبک:
+    <b>${escapeHtml(marketState)}</b>
+  </div>
+
+  ${
+    reasons.length
+      ? reasons.map(
+          x =>
+            `<div class="reason">${escapeHtml(x)}</div>`
         ).join("")
-      }
-    </div>
+      : `<div class="warning">اطلاعات کافی برای نتیجه قطعی این سبک وجود ندارد.</div>`
+  }
+
+  ${
+    warning
+      ? `<div class="warning">${escapeHtml(warning)}</div>`
+      : ""
+  }
+
   `;
 
 }
 
 
 /* =========================
-   سیگنال
+   Signal
 ========================= */
 
 function signalSummary(data){
@@ -1870,22 +2306,22 @@ function signalSummary(data){
 
     <div class="data">
       امتیاز:
-      <b>${num(data.score,0)}/100</b>
+      <b>${fixed(data.score,0)}/100</b>
     </div>
 
     <div class="data">
-      امتیاز صعودی:
-      <b>${num(data.longScore,2)}</b>
+      امتیاز صعود:
+      <b>${fixed(data.longScore,0)}</b>
     </div>
 
     <div class="data">
-      امتیاز نزولی:
-      <b>${num(data.shortScore,2)}</b>
+      امتیاز نزول:
+      <b>${fixed(data.shortScore,0)}</b>
     </div>
 
     <div class="data">
       آستانه:
-      <b>${num(data.threshold,0)}</b>
+      <b>${fixed(data.threshold,0)}</b>
     </div>
 
     <div class="data">
@@ -1894,21 +2330,6 @@ function signalSummary(data){
     </div>
 
   </div>
-
-  ${
-    Array.isArray(data.signalReasons)
-      ? data.signalReasons
-          .map(
-            r =>
-              `<div class="reason neutral">
-                ${escapeHtml(
-                  r.text || r.reason || r
-                )}
-              </div>`
-          )
-          .join("")
-      : ""
-  }
 
   `;
 
@@ -1951,38 +2372,38 @@ function oneMinuteHTML(x){
     </div>
 
     <div class="data">
-      برخورد:
-      ${x.touched ? "بله" : "خیر"}
+      تماس:
+      ${boolText(x.touched)}
     </div>
 
     <div class="data">
       نزدیک MA20:
-      ${x.near ? "بله" : "خیر"}
+      ${boolText(x.near)}
     </div>
 
     <div class="data">
-      عبور رو به بالا:
-      ${x.crossedUp ? "بله" : "خیر"}
+      عبور صعودی:
+      ${boolText(x.crossedUp)}
     </div>
 
     <div class="data">
-      عبور رو به پایین:
-      ${x.crossedDown ? "بله" : "خیر"}
+      عبور نزولی:
+      ${boolText(x.crossedDown)}
     </div>
 
     <div class="data">
-      رد شدن از بالا:
-      ${x.rejectionUp ? "بله" : "خیر"}
+      رد صعودی:
+      ${boolText(x.rejectionUp)}
     </div>
 
     <div class="data">
-      رد شدن از پایین:
-      ${x.rejectionDown ? "بله" : "خیر"}
+      رد نزولی:
+      ${boolText(x.rejectionDown)}
     </div>
 
     <div class="data">
       RSI:
-      ${num(x.rsi,2)}
+      ${fixed(x.rsi,2)}
     </div>
 
     <div class="data">
@@ -1991,17 +2412,17 @@ function oneMinuteHTML(x){
     </div>
 
     <div class="data">
-      ATR:
+      ATR %:
       ${pct(x.atrPct)}
     </div>
 
     <div class="data">
       نسبت حجم:
-      ${num(x.volumeRatio,2)}x
+      ${fixed(x.volumeRatio,2)}x
     </div>
 
     <div class="data">
-      پهنای باند:
+      Bollinger Width:
       ${pct(x.bollingerWidth)}
     </div>
 
@@ -2051,7 +2472,7 @@ function fifteenMinuteHTML(x){
 
     <div class="data">
       RSI:
-      ${num(x.rsi,2)}
+      ${fixed(x.rsi,2)}
     </div>
 
     <div class="data">
@@ -2067,112 +2488,114 @@ function fifteenMinuteHTML(x){
 
 
 /* =========================
-   RSI MACD واگرایی
+   RSI / MACD / Divergence
 ========================= */
 
 function technicalHTML(one,fifteen,data){
 
   const macd =
     one.macd ||
-    data.macd ||
-    {};
+    fifteen.macd ||
+    data.macd;
 
   const divergence =
     one.divergence ||
-    data.divergence ||
-    {};
+    fifteen.divergence ||
+    data.divergence;
 
-  const hasMACD =
-    Object.keys(macd).length > 0;
-
-  const hasDivergence =
-    Object.keys(divergence).length > 0;
-
-  return `
+  let html = `
 
   <div class="grid">
 
     <div class="data">
       RSI 1m:
-      <b>${num(one.rsi,2)}</b>
+      <b>${fixed(one.rsi,2)}</b>
     </div>
 
     <div class="data">
       RSI 15m:
-      <b>${num(fifteen.rsi,2)}</b>
-    </div>
-
-    <div class="data">
-      MACD:
-      <b>
-        ${
-          hasMACD
-            ? safe(macd.value ?? macd.macd)
-            : "محاسبه نشده"
-        }
-      </b>
-    </div>
-
-    <div class="data">
-      خط سیگنال:
-      <b>
-        ${
-          hasMACD
-            ? safe(macd.signal)
-            : "محاسبه نشده"
-        }
-      </b>
-    </div>
-
-    <div class="data">
-      هیستوگرام:
-      <b>
-        ${
-          hasMACD
-            ? safe(macd.histogram)
-            : "محاسبه نشده"
-        }
-      </b>
-    </div>
-
-    <div class="data">
-      واگرایی:
-      <b>
-        ${
-          hasDivergence
-            ? safe(
-                divergence.type ||
-                divergence.direction ||
-                divergence.result
-              )
-            : "محاسبه نشده"
-        }
-      </b>
+      <b>${fixed(fifteen.rsi,2)}</b>
     </div>
 
   </div>
 
-  ${
-    hasMACD
-      ? `<div class="signalLogic">
-          MACD از داده واقعی کندل Worker محاسبه شده است.
-        </div>`
-      : `<div class="noData">
-          MACD در پاسخ Worker وجود ندارد؛ عدد ساختگی نمایش داده نمی‌شود.
-        </div>`
-  }
-
-  ${
-    hasDivergence
-      ? `<div class="signalLogic">
-          واگرایی بر اساس داده‌ای که Worker برگردانده نمایش داده شده است.
-        </div>`
-      : `<div class="noData">
-          برای واگرایی داده محاسبه‌شده در Worker موجود نیست.
-        </div>`
-  }
-
   `;
+
+  if(macd){
+
+    html += `
+
+    <h4>📉 MACD محاسبه‌شده</h4>
+
+    <div class="grid">
+
+      <div class="data">
+        MACD:
+        ${fixed(macd.value ?? macd.macd,6)}
+      </div>
+
+      <div class="data">
+        Signal:
+        ${fixed(macd.signal,6)}
+      </div>
+
+      <div class="data">
+        Histogram:
+        ${fixed(macd.histogram,6)}
+      </div>
+
+      <div class="data">
+        وضعیت:
+        ${
+          macd.direction
+            ? escapeHtml(macd.direction)
+            : "محاسبه‌شده"
+        }
+      </div>
+
+    </div>
+
+    `;
+
+  }
+  else{
+
+    html += `
+      <div class="warning">
+        MACD واقعی در پاسخ Worker موجود نیست؛ عدد ساختگی نمایش داده نمی‌شود.
+      </div>
+    `;
+
+  }
+
+  if(divergence){
+
+    html += `
+
+    <h4>🔎 واگرایی محاسبه‌شده</h4>
+
+    <div class="data">
+      ${escapeHtml(
+        typeof divergence === "string"
+          ? divergence
+          : JSON.stringify(divergence)
+      )}
+    </div>
+
+    `;
+
+  }
+  else{
+
+    html += `
+      <div class="warning">
+        واگرایی واقعی در پاسخ Worker موجود نیست؛ نتیجه فیک نمایش داده نمی‌شود.
+      </div>
+    `;
+
+  }
+
+  return html;
 
 }
 
@@ -2184,42 +2607,46 @@ function technicalHTML(one,fifteen,data){
 function footprintHTML(one,data){
 
   const fp =
-    one.footprint ||
     data.footprint ||
-    null;
+    one.footprint;
 
-  if(!fp){
+  if(fp){
 
     return `
 
-      <div class="grid">
+    <div class="grid">
 
-        <div class="data">
-          حجم:
-          ${safe(one.volume)}
-        </div>
-
-        <div class="data">
-          میانگین حجم:
-          ${safe(one.averageVolume)}
-        </div>
-
-        <div class="data">
-          نسبت حجم:
-          ${num(one.volumeRatio,2)}x
-        </div>
-
-        <div class="data">
-          افزایش حجم:
-          ${one.volumeSpike ? "بله" : "خیر"}
-        </div>
-
+      <div class="data">
+        خرید:
+        ${fixed(fp.buyVolume,2)}
       </div>
 
-      <div class="noData" style="margin-top:10px">
-        Footprint تفکیکی خرید و فروش در پاسخ Worker موجود نیست؛
-        بنابراین Buy/Sell ساختگی نمایش داده نمی‌شود.
+      <div class="data">
+        فروش:
+        ${fixed(fp.sellVolume,2)}
       </div>
+
+      <div class="data">
+        دلتا:
+        ${fixed(fp.delta,2)}
+      </div>
+
+      <div class="data">
+        نسبت خرید:
+        ${pct(fp.buyShare)}
+      </div>
+
+      <div class="data">
+        نسبت فروش:
+        ${pct(fp.sellShare)}
+      </div>
+
+      <div class="data">
+        حجم کل:
+        ${fixed(fp.totalVolume,2)}
+      </div>
+
+    </div>
 
     `;
 
@@ -2230,35 +2657,30 @@ function footprintHTML(one,data){
   <div class="grid">
 
     <div class="data">
-      خرید:
-      <b>${safe(fp.buyVolume)}</b>
+      حجم کندل:
+      ${fixed(one.volume,2)}
     </div>
 
     <div class="data">
-      فروش:
-      <b>${safe(fp.sellVolume)}</b>
+      میانگین حجم:
+      ${fixed(one.averageVolume,2)}
     </div>
 
     <div class="data">
-      دلتا:
-      <b>${safe(fp.delta)}</b>
+      نسبت حجم:
+      ${fixed(one.volumeRatio,2)}x
     </div>
 
     <div class="data">
-      نسبت خرید:
-      <b>${safe(fp.buyRatio)}</b>
+      Spike:
+      ${boolText(one.volumeSpike)}
     </div>
 
-    <div class="data">
-      نسبت فروش:
-      <b>${safe(fp.sellRatio)}</b>
-    </div>
+  </div>
 
-    <div class="data">
-      عدم تعادل:
-      <b>${safe(fp.imbalance)}</b>
-    </div>
-
+  <div class="warning">
+    Footprint Bid/Ask واقعی در پاسخ فعلی Worker موجود نیست.
+    بنابراین Buy/Sell Delta ساختگی نمایش داده نمی‌شود.
   </div>
 
   `;
@@ -2298,31 +2720,31 @@ function orderBookHTML(book,price){
 
     <div class="data">
       نقدینگی خرید:
-      ${num(book.buyLiquidity,2)}
+      ${fixed(book.buyLiquidity,2)}
     </div>
 
     <div class="data">
       نقدینگی فروش:
-      ${num(book.sellLiquidity,2)}
+      ${fixed(book.sellLiquidity,2)}
     </div>
 
     <div class="data">
       سهم خرید:
-      ${num(book.buyShare,2)}%
+      ${pct(book.buyShare)}
     </div>
 
     <div class="data">
       سهم فروش:
-      ${num(book.sellShare,2)}%
+      ${pct(book.sellShare)}
     </div>
 
     <div class="data">
-      بهترین خرید:
+      Best Bid:
       ${formatPrice(book.bestBid?.price)}
     </div>
 
     <div class="data">
-      بهترین فروش:
+      Best Ask:
       ${formatPrice(book.bestAsk?.price)}
     </div>
 
@@ -2346,8 +2768,8 @@ function levelsTable(levels){
   if(!levels.length){
 
     return `
-      <div class="noData">
-        داده‌ای برای این بخش وجود ندارد.
+      <div class="warning">
+        دیوار معتبر در داده فعلی ثبت نشده است.
       </div>
     `;
 
@@ -2371,45 +2793,51 @@ function levelsTable(levels){
 
     <tbody>
 
-      ${
-        levels.map(
-          x => {
+      ${levels.map(
+        x => {
 
-            const price =
-              Number(x.price || 0);
+          const p =
+            num(x.price);
 
-            const size =
-              Number(x.size || 0);
+          const s =
+            num(x.size);
 
-            return `
+          return `
 
-              <tr>
+          <tr>
 
-                <td>
-                  ${formatPrice(price)}
-                </td>
+            <td>
+              ${formatPrice(p)}
+            </td>
 
-                <td>
-                  ${size.toLocaleString()}
-                </td>
+            <td>
+              ${
+                s === null
+                  ? "داده موجود نیست"
+                  : s.toLocaleString()
+              }
+            </td>
 
-                <td>
-                  ${(price * size)
-                    .toLocaleString(
+            <td>
+              ${
+                p !== null &&
+                s !== null
+                  ? (p*s).toLocaleString(
                       undefined,
                       {
                         maximumFractionDigits:2
                       }
-                    )}
-                </td>
+                    )
+                  : "داده موجود نیست"
+              }
+            </td>
 
-              </tr>
+          </tr>
 
-            `;
+          `;
 
-          }
-        ).join("")
-      }
+        }
+      ).join("")}
 
     </tbody>
 
@@ -2423,23 +2851,15 @@ function levelsTable(levels){
 
 
 /* =========================
-   Hunt / Liquidity
+   Liquidity
 ========================= */
 
 function liquidityHTML(one,book,data){
 
-  const liquidity =
+  const liq =
     data.liquidity ||
-    one.liquidity ||
-    {};
-
-  const hunt =
     data.hunt ||
-    one.hunt ||
     {};
-
-  const hasHunt =
-    Object.keys(hunt).length > 0;
 
   return `
 
@@ -2457,51 +2877,33 @@ function liquidityHTML(one,book,data){
 
     <div class="data">
       نقدینگی خرید:
-      ${num(book.buyLiquidity,2)}
+      ${fixed(book.buyLiquidity,2)}
     </div>
 
     <div class="data">
       نقدینگی فروش:
-      ${num(book.sellLiquidity,2)}
-    </div>
-
-    <div class="data">
-      Hunt:
-      <b>
-        ${
-          hasHunt
-            ? safe(
-                hunt.type ||
-                hunt.direction ||
-                hunt.result
-              )
-            : "محاسبه نشده"
-        }
-      </b>
-    </div>
-
-    <div class="data">
-      Sweep:
-      <b>
-        ${
-          hasHunt
-            ? safe(hunt.sweep)
-            : "محاسبه نشده"
-        }
-      </b>
+      ${fixed(book.sellLiquidity,2)}
     </div>
 
   </div>
 
   ${
-    hasHunt
-      ? `<div class="signalLogic">
-          Hunt و Sweep بر اساس داده محاسبه‌شده Worker نمایش داده شده‌اند.
-        </div>`
-      : `<div class="noData">
-          برای Hunt/Liquidity Sweep داده محاسبه‌شده در Worker موجود نیست.
-          مقدار حدسی نمایش داده نمی‌شود.
-        </div>`
+    Object.keys(liq).length
+      ? `
+        <h4>🧲 داده Hunt / Liquidity واقعی</h4>
+        <div class="data">
+          ${escapeHtml(
+            JSON.stringify(liq)
+          )}
+        </div>
+      `
+      : `
+        <div class="warning">
+          Worker در پاسخ فعلی داده کافی برای اثبات Hunt،
+          Liquidity Sweep یا لیکوئیدیشن واقعی ارسال نکرده است.
+          بنابراین نتیجه ساختگی نمایش داده نمی‌شود.
+        </div>
+      `
   }
 
   `;
@@ -2517,45 +2919,67 @@ function levelsHTML(one,data){
 
   const levels =
     data.supportResistance ||
-    data.levels ||
-    null;
+    data.levels;
 
-  if(levels){
+  if(
+    Array.isArray(levels) &&
+    levels.length
+  ){
 
     return `
 
-    <div class="grid">
+    <div class="tableWrap">
 
-      <div class="data">
-        قیمت:
-        ${formatPrice(data.price)}
-      </div>
+      <table>
 
-      <div class="data">
-        حمایت:
-        ${safe(levels.support)}
-      </div>
+        <thead>
+          <tr>
+            <th>نوع</th>
+            <th>قیمت</th>
+            <th>قدرت</th>
+          </tr>
+        </thead>
 
-      <div class="data">
-        مقاومت:
-        ${safe(levels.resistance)}
-      </div>
+        <tbody>
 
-      <div class="data">
-        وضعیت:
-        ${safe(levels.bias || levels.result)}
-      </div>
+        ${levels.map(
+          x => `
+
+          <tr>
+
+            <td>
+              ${escapeHtml(
+                x.type || "سطح"
+              )}
+            </td>
+
+            <td>
+              ${formatPrice(x.price)}
+            </td>
+
+            <td>
+              ${escapeHtml(
+                String(
+                  x.strength ??
+                  "محاسبه نشده"
+                )
+              )}
+            </td>
+
+          </tr>
+
+          `
+        ).join("")}
+
+        </tbody>
+
+      </table>
 
     </div>
 
     `;
 
   }
-
-  /*
-    ATR فقط به‌عنوان ATR نمایش داده می‌شود.
-    دیگر آن را حمایت و مقاومت واقعی جا نمی‌زنیم.
-  */
 
   return `
 
@@ -2573,9 +2997,10 @@ function levelsHTML(one,data){
 
   </div>
 
-  <div class="noData" style="margin-top:10px">
-    حمایت و مقاومت تاریخی/ساختاری در پاسخ Worker موجود نیست؛
-    بنابراین سطح مصنوعی به‌عنوان حمایت یا مقاومت قطعی نمایش داده نمی‌شود.
+  <div class="warning">
+    Worker سطح تاریخی حمایت/مقاومت را ارسال نکرده است.
+    ATR به‌تنهایی حمایت یا مقاومت تاریخی محسوب نمی‌شود و
+    در این نسخه به‌عنوان حمایت/مقاومت واقعی نمایش داده نمی‌شود.
   </div>
 
   `;
@@ -2584,7 +3009,68 @@ function levelsHTML(one,data){
 
 
 /* =========================
-   دلایل
+   Funding / OI
+========================= */
+
+function derivativesHTML(d,data){
+
+  if(!d || !Object.keys(d).length){
+
+    return `
+      <div class="warning">
+        اطلاعات Funding و OI در پاسخ تحلیل فعلی Worker وجود ندارد.
+      </div>
+    `;
+
+  }
+
+  return `
+
+  <div class="grid">
+
+    <div class="data">
+      Funding:
+      ${fixed(
+        d.fundingRate ??
+        d.funding,
+        6
+      )}
+    </div>
+
+    <div class="data">
+      OI:
+      ${fixed(
+        d.openInterest ??
+        d.oi,
+        2
+      )}
+    </div>
+
+    <div class="data">
+      تغییر OI:
+      ${pct(
+        d.oiChangePct ??
+        d.oiChange
+      )}
+    </div>
+
+    <div class="data">
+      تغییر Funding:
+      ${pct(
+        d.fundingChangePct ??
+        d.fundingChange
+      )}
+    </div>
+
+  </div>
+
+  `;
+
+}
+
+
+/* =========================
+   Reasons
 ========================= */
 
 function reasonsHTML(reasons){
@@ -2592,37 +3078,27 @@ function reasonsHTML(reasons){
   if(!reasons.length){
 
     return `
-      <div class="noData">
-        Worker دلیل محاسبه‌شده‌ای برای این سیگنال برنگردانده است.
+      <div class="warning">
+        Worker دلیل محاسبه‌شده‌ای ارسال نکرده است.
       </div>
     `;
 
   }
 
   return reasons.map(
-    r => {
+    r => `
 
-      const side =
-        r.side ||
-        r.direction ||
-        "neutral";
+    <div class="reason ${clsDirection(r.side)}">
 
-      return `
+      ${escapeHtml(
+        r.text ||
+        r.reason ||
+        JSON.stringify(r)
+      )}
 
-      <div
-        class="reason ${clsDirection(side)}"
-      >
-        ${escapeHtml(
-          r.text ||
-          r.reason ||
-          r.message ||
-          r
-        )}
-      </div>
+    </div>
 
-      `;
-
-    }
+    `
   ).join("");
 
 }
@@ -2632,13 +3108,22 @@ function reasonsHTML(reasons){
    تحلیل‌های باز
 ========================= */
 
-function openAnalysis(data){
+function openAnalysis(
+  data,
+  manual=false
+){
+
+  if(!data || !data.symbol)
+    return;
 
   const id =
     cardId(
       data.category,
       data.symbol
     );
+
+  const old =
+    opened.get(id);
 
   opened.set(
     id,
@@ -2647,7 +3132,9 @@ function openAnalysis(data){
       symbol:data.symbol,
       category:data.category,
       open:true,
-      data
+      data,
+      boxState:
+        old?.boxState || {}
     }
   );
 
@@ -2679,6 +3166,18 @@ function openAnalysis(data){
 }
 
 
+/*
+  نکته مهم:
+
+  این تابع دیگر کل تحلیل باز را
+  هر چند ثانیه از صفر نمی‌سازد.
+
+  فقط داده داخل همان تحلیل
+  بروزرسانی می‌شود.
+
+  بنابراین منوهای باز بسته نمی‌شوند.
+*/
+
 function renderOpenedAnalyses(){
 
   if(!opened.size){
@@ -2691,115 +3190,182 @@ function renderOpenedAnalyses(){
   }
 
   /*
-    وضعیت باز/بسته منوهای داخلی
-    قبل از رندر ذخیره می‌شود.
+    فقط کارت‌هایی که واقعاً وجود ندارند
+    ساخته می‌شوند.
   */
 
-  const states = {};
+  for(const x of opened.values()){
 
-  document
-    .querySelectorAll(
-      "#openedAnalyses .deepBox.open, #openedAnalyses .styleBox.open"
-    )
+    let card =
+      document.getElementById(
+        "opened-" + x.id
+      );
+
+    if(!card){
+
+      card =
+        document.createElement("div");
+
+      card.className =
+        "openedCard";
+
+      card.id =
+        "opened-" + x.id;
+
+      openedEl.appendChild(card);
+
+    }
+
+    updateOpenedCard(card,x);
+
+  }
+
+  /*
+    کارت‌های حذف‌شده را پاک می‌کنیم.
+  */
+
+  [...openedEl.children]
     .forEach(
-      el => {
+      child => {
 
-        const title =
-          el.querySelector(
-            ".deepTitle,.styleTitle"
-          );
+        if(
+          child.id &&
+          child.id.startsWith("opened-")
+        ){
 
-        if(title){
+          const id =
+            child.id.substring(
+              "opened-".length
+            );
 
-          states[
-            title.textContent.trim()
-          ] = true;
+          if(!opened.has(id)){
+
+            child.remove();
+
+          }
 
         }
 
       }
     );
 
+}
 
-  openedEl.innerHTML =
-    [...opened.values()]
-      .map(
-        x => `
 
-        <div
-          class="panel"
-          id="opened-${x.id}"
-          style="margin:10px 0"
-        >
+function updateOpenedCard(card,x){
 
-          <div class="signalTop">
+  let content =
+    card.querySelector(
+      ".openedLiveContent"
+    );
 
-            <div>
+  if(!content){
 
-              <b>
-                ${escapeHtml(x.symbol)}
-              </b>
+    card.innerHTML = `
 
-              <span class="market">
-                ${
-                  x.category === "linear"
-                    ? "Futures"
-                    : "Spot"
-                }
-              </span>
+      <div class="liveHeader">
 
-            </div>
+        <div>
 
-            <button
-              class="secondary"
-              onclick="closeAnalysis('${x.id}')"
-            >
-              ✕ بستن
-            </button>
+          <b>
+            ${escapeHtml(x.symbol)}
+          </b>
 
-          </div>
-
-          <div
-            id="openedContent-${x.id}"
-            style="margin-top:10px"
-          ></div>
+          <span class="market">
+            ${
+              x.category === "linear"
+                ? "Futures"
+                : "Spot"
+            }
+          </span>
 
         </div>
 
-        `
-      )
-      .join("");
+        <button
+          class="secondary"
+          data-close-analysis="${x.id}"
+        >
+          ✕ بستن
+        </button>
 
+      </div>
 
-  for(const x of opened.values()){
+      <div
+        class="openedLiveContent"
+        style="margin-top:10px"
+      ></div>
 
-    const content =
-      document.getElementById(
-        "openedContent-" + x.id
+    `;
+
+    content =
+      card.querySelector(
+        ".openedLiveContent"
       );
-
-    if(!content)
-      continue;
-
-    renderDeep(
-      content,
-      x.data
-    );
 
   }
 
+  const states =
+    x.boxState ||
+    readBoxStates(content);
+
+  /*
+    برای جلوگیری از بسته شدن منوها،
+    فقط innerHTML محتوا را آپدیت می‌کنیم
+    و وضعیت قبلی منوها را دوباره اعمال می‌کنیم.
+  */
+
+  renderDeep(
+    content,
+    x.data,
+    true
+  );
+
+  x.boxState =
+    states;
+
 }
 
 
-function closeAnalysis(id){
+/* =========================
+   دکمه بستن
+========================= */
 
-  opened.delete(id);
+document.addEventListener(
+  "click",
+  e => {
 
-  saveOpenSymbols();
+    const btn =
+      e.target.closest(
+        "[data-close-analysis]"
+      );
 
-  renderOpenedAnalyses();
+    if(!btn)
+      return;
 
-}
+    const id =
+      btn.dataset.closeAnalysis;
+
+    opened.delete(id);
+
+    saveOpenSymbols();
+
+    const card =
+      document.getElementById(
+        "opened-" + id
+      );
+
+    if(card)
+      card.remove();
+
+    if(!opened.size){
+
+      openedEl.innerHTML =
+        '<div class="empty">تحلیلی باز نشده است.</div>';
+
+    }
+
+  }
+);
 
 
 /* =========================
@@ -2808,79 +3374,82 @@ function closeAnalysis(id){
 
 async function refreshOpenedAnalyses(){
 
-  if(
-    !opened.size ||
-    refreshingOpened
-  )
+  if(!opened.size)
     return;
-
-  refreshingOpened = true;
 
   const list =
     [...opened.values()];
 
-  try{
+  for(const x of list){
 
-    for(const x of list){
+    if(!opened.has(x.id))
+      continue;
+
+    try{
+
+      /*
+        قبل از دریافت داده،
+        وضعیت منوها ذخیره می‌شود.
+      */
+
+      const content =
+        document.querySelector(
+          "#opened-" +
+          x.id +
+          " .openedLiveContent"
+        );
+
+      if(content){
+
+        x.boxState =
+          readBoxStates(content);
+
+      }
+
+      const data =
+        await api(
+          "/api/personal/analyze?symbol=" +
+          encodeURIComponent(x.symbol) +
+          "&strictness=" +
+          encodeURIComponent(strictnessEl.value)
+        );
 
       if(!opened.has(x.id))
         continue;
 
-      try{
+      x.data =
+        data;
 
-        const data =
-          await api(
-            "/api/personal/analyze?symbol=" +
-            encodeURIComponent(x.symbol) +
-            "&strictness=" +
-            encodeURIComponent(
-              strictnessEl.value
-            )
-          );
+    }
+    catch(e){
 
-        if(opened.has(x.id)){
-
-          x.data = data;
-
-        }
-
-      }
-      catch(e){
-
-        console.log(
-          "Live analysis error",
-          e
-        );
-
-      }
+      console.log(
+        "Live analysis error",
+        e
+      );
 
     }
 
-    /*
-      فقط محتوا به‌روز می‌شود.
-      تحلیل باز بسته نمی‌شود.
-    */
-
-    renderOpenedAnalyses();
-
   }
-  finally{
 
-    refreshingOpened = false;
+  /*
+    فقط محتویات کارت موجود آپدیت می‌شود.
+  */
 
-  }
+  renderOpenedAnalyses();
 
 }
 
 
-setInterval(
-  refreshOpenedAnalyses,
-  REFRESH_OPEN_ANALYSIS
-);
+openedRefreshTimer =
+  setInterval(
+    refreshOpenedAnalyses,
+    OPEN_REFRESH
+  );
 
 
 /* =========================
-   ذخیره تحلیل‌ها
+   ذخیره تحلیل‌های باز
 ========================= */
 
 function saveOpenSymbols(){
@@ -2890,7 +3459,8 @@ function saveOpenSymbols(){
       .map(
         x => ({
           symbol:x.symbol,
-          category:x.category
+          category:x.category,
+          boxState:x.boxState || {}
         })
       );
 
@@ -2900,12 +3470,6 @@ function saveOpenSymbols(){
   );
 
 }
-
-
-window.addEventListener(
-  "beforeunload",
-  saveOpenSymbols
-);
 
 
 /* =========================
@@ -2942,12 +3506,28 @@ async function restoreOpenSymbols(){
             "/api/personal/analyze?symbol=" +
             encodeURIComponent(x.symbol) +
             "&strictness=" +
-            encodeURIComponent(
-              strictnessEl.value
-            )
+            encodeURIComponent(strictnessEl.value)
           );
 
-        openAnalysis(data);
+        const id =
+          cardId(
+            data.category,
+            data.symbol
+          );
+
+        opened.set(
+          id,
+          {
+            id,
+            symbol:data.symbol,
+            category:data.category,
+            open:true,
+            data,
+            boxState:x.boxState || {}
+          }
+        );
+
+        renderOpenedAnalyses();
 
       }
       catch(e){
@@ -2975,66 +3555,44 @@ async function restoreOpenSymbols(){
 
 
 /* =========================
-   ID
+   قبل خروج
 ========================= */
 
-function cardId(category,symbol){
-
-  return (
-    String(category || "") +
-    "_" +
-    String(symbol || "")
-  )
-  .replace(
-    /[^a-zA-Z0-9_]/g,
-    "_"
-  );
-
-}
+window.addEventListener(
+  "beforeunload",
+  saveOpenSymbols
+);
 
 
 /* =========================
-   Escape
+   تغییر درجه سختی
 ========================= */
 
-function escapeHtml(value){
+strictnessEl.addEventListener(
+  "change",
+  () => {
 
-  return String(
-    value ?? ""
-  )
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+    /*
+      اسکن بعدی درجه جدید را
+      مستقیم به Worker می‌فرستد.
+    */
 
-}
+    scanOffset = 0;
+
+    localStorage.setItem(
+      "personal_scan_offset",
+      "0"
+    );
+
+  }
+);
 
 
 /* =========================
-   شروع برنامه
+   شروع اولیه
 ========================= */
 
 updateSoundText();
-
-checkHealth();
-
-restoreOpenSymbols();
-
-/*
-  اسکن به‌صورت خودکار شروع می‌شود.
-  کاربر فقط در صورت نیاز Stop می‌زند.
-*/
-
-setTimeout(
-  () => {
-
-    if(!scanRunning)
-      startScan();
-
-  },
-  1200
-);
 
 </script>
 
