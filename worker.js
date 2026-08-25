@@ -37,18 +37,14 @@ async function bybit(path, params = {}) {
   }
 
   const url = `${BYBIT}${path}?${qs.toString()}`;
-
-  const key = url;
-  const old = cache.get(key);
+  const old = cache.get(url);
 
   if (old && Date.now() - old.time < CACHE_TTL) {
     return old.data;
   }
 
   const res = await fetch(url, {
-    headers: {
-      "Accept": "application/json"
-    }
+    headers: { Accept: "application/json" }
   });
 
   if (!res.ok) {
@@ -61,7 +57,7 @@ async function bybit(path, params = {}) {
     throw new Error(data.retMsg || "Bybit API error");
   }
 
-  cache.set(key, {
+  cache.set(url, {
     time: Date.now(),
     data
   });
@@ -87,13 +83,24 @@ function avg(arr) {
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
+function sum(arr) {
+  return arr.reduce((a, b) => a + b, 0);
+}
+
 function pct(a, b) {
   if (!b) return 0;
   return ((a - b) / b) * 100;
 }
 
+function round(v, digits = 6) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 0;
+  const p = 10 ** digits;
+  return Math.round(n * p) / p;
+}
+
 /* =========================================================
-   KLINE
+   KLINES
 ========================================================= */
 
 function normalizeKlines(list) {
@@ -127,17 +134,13 @@ async function getKlines(category, symbol, interval, limit) {
 
 function sma(values, period) {
   if (values.length < period) return null;
-
-  const a = values.slice(-period);
-
-  return avg(a);
+  return avg(values.slice(-period));
 }
 
 function ema(values, period) {
   if (values.length < period) return null;
 
   const k = 2 / (period + 1);
-
   let e = avg(values.slice(0, period));
 
   for (let i = period; i < values.length; i++) {
@@ -155,8 +158,275 @@ function getMA(values, period, type = "EMA") {
 
 function maPrevious(values, period, type = "EMA") {
   if (values.length <= period) return null;
-
   return getMA(values.slice(0, -1), period, type);
+}
+
+function maSlope(values, period, type = "EMA", lookback = 5) {
+  if (values.length < period + lookback) return null;
+
+  const current = getMA(values, period, type);
+  const previous = getMA(
+    values.slice(0, -lookback),
+    period,
+    type
+  );
+
+  if (current === null || previous === null) return null;
+
+  return {
+    current,
+    previous,
+    absolute: current - previous,
+    percent: pct(current, previous),
+    perCandle: pct(current, previous) / lookback
+  };
+}
+
+/* =========================================================
+   MA20 DETAILED ANALYSIS
+========================================================= */
+
+function analyzeMA20(candles) {
+  const closes = candles.map(x => x.close);
+  const last = candles[candles.length - 1];
+  const previous = candles[candles.length - 2];
+
+  const ma20 = getMA(closes, 20, "EMA");
+  const ma20Prev1 = maPrevious(closes, 20, "EMA");
+
+  const slope5 = maSlope(
+    closes,
+    20,
+    "EMA",
+    5
+  );
+
+  const slope10 = maSlope(
+    closes,
+    20,
+    "EMA",
+    10
+  );
+
+  if (!ma20) {
+    return {
+      available: false
+    };
+  }
+
+  const distancePercent =
+    pct(last.close, ma20);
+
+  const distanceAbs =
+    last.close - ma20;
+
+  const touch =
+    last.low <= ma20 &&
+    last.high >= ma20;
+
+  const above =
+    last.close > ma20;
+
+  const below =
+    last.close < ma20;
+
+  const previousAbove =
+    previous.close > ma20Prev1;
+
+  const previousBelow =
+    previous.close < ma20Prev1;
+
+  const crossUp =
+    previousAbove === false &&
+    above === true;
+
+  const crossDown =
+    previousBelow === false &&
+    below === true;
+
+  const body =
+    Math.abs(last.close - last.open);
+
+  const range =
+    last.high - last.low;
+
+  const upperWick =
+    last.high - Math.max(
+      last.open,
+      last.close
+    );
+
+  const lowerWick =
+    Math.min(
+      last.open,
+      last.close
+    ) - last.low;
+
+  const bullishCandle =
+    last.close > last.open;
+
+  const bearishCandle =
+    last.close < last.open;
+
+  let confirmation = "NONE";
+  let confirmationScore = 0;
+
+  if (touch && bullishCandle && last.close > ma20) {
+    confirmation = "BULLISH_REJECTION";
+    confirmationScore = 100;
+  }
+
+  if (touch && bearishCandle && last.close < ma20) {
+    confirmation = "BEARISH_REJECTION";
+    confirmationScore = 100;
+  }
+
+  if (crossUp && bullishCandle && last.close > ma20) {
+    confirmation = "BULLISH_CROSS";
+    confirmationScore = 95;
+  }
+
+  if (crossDown && bearishCandle && last.close < ma20) {
+    confirmation = "BEARISH_CROSS";
+    confirmationScore = 95;
+  }
+
+  if (
+    touch &&
+    bullishCandle &&
+    lowerWick > body &&
+    last.close > ma20
+  ) {
+    confirmation = "BULLISH_WICK_REJECTION";
+    confirmationScore = 90;
+  }
+
+  if (
+    touch &&
+    bearishCandle &&
+    upperWick > body &&
+    last.close < ma20
+  ) {
+    confirmation = "BEARISH_WICK_REJECTION";
+    confirmationScore = 90;
+  }
+
+  let slopeState = "FLAT";
+
+  const slope =
+    slope5?.percent || 0;
+
+  if (slope > 0.03) {
+    slopeState = "STRONG_UP";
+  } else if (slope > 0.005) {
+    slopeState = "UP";
+  } else if (slope < -0.03) {
+    slopeState = "STRONG_DOWN";
+  } else if (slope < -0.005) {
+    slopeState = "DOWN";
+  }
+
+  const candlePosition =
+    range > 0
+      ? ((last.close - last.low) / range) * 100
+      : 50;
+
+  let interaction = "AWAY";
+
+  if (touch) interaction = "TOUCH";
+  else if (Math.abs(distancePercent) <= 0.15) interaction = "VERY_NEAR";
+  else if (Math.abs(distancePercent) <= 0.35) interaction = "NEAR";
+
+  let bias = "RANGE";
+
+  if (
+    above &&
+    slope > 0 &&
+    confirmation !== "BEARISH_REJECTION" &&
+    confirmation !== "BEARISH_WICK_REJECTION"
+  ) {
+    bias = "BULLISH";
+  }
+
+  if (
+    below &&
+    slope < 0 &&
+    confirmation !== "BULLISH_REJECTION" &&
+    confirmation !== "BULLISH_WICK_REJECTION"
+  ) {
+    bias = "BEARISH";
+  }
+
+  return {
+    available: true,
+
+    period: 20,
+    type: "EMA",
+
+    value: round(ma20),
+    previousValue: round(ma20Prev1),
+
+    price: round(last.close),
+
+    distance: round(distanceAbs),
+    distancePercent: round(distancePercent, 4),
+
+    above,
+    below,
+    touch,
+    interaction,
+
+    crossUp,
+    crossDown,
+
+    slope: {
+      fiveCandles: slope5
+        ? {
+            current: round(slope5.current),
+            previous: round(slope5.previous),
+            absolute: round(slope5.absolute),
+            percent: round(slope5.percent, 5),
+            perCandle: round(slope5.perCandle, 5)
+          }
+        : null,
+
+      tenCandles: slope10
+        ? {
+            current: round(slope10.current),
+            previous: round(slope10.previous),
+            absolute: round(slope10.absolute),
+            percent: round(slope10.percent, 5),
+            perCandle: round(slope10.perCandle, 5)
+          }
+        : null,
+
+      state: slopeState
+    },
+
+    candleConfirmation: {
+      state: confirmation,
+      score: confirmationScore,
+
+      open: round(last.open),
+      high: round(last.high),
+      low: round(last.low),
+      close: round(last.close),
+
+      body: round(body),
+      range: round(range),
+
+      upperWick: round(upperWick),
+      lowerWick: round(lowerWick),
+
+      bullish: bullishCandle,
+      bearish: bearishCandle,
+
+      closePositionPercent:
+        round(candlePosition, 2)
+    },
+
+    bias
+  };
 }
 
 /* =========================================================
@@ -185,15 +455,19 @@ function rsi(values, period = 14) {
     const gain = d > 0 ? d : 0;
     const loss = d < 0 ? Math.abs(d) : 0;
 
-    avgGain = ((avgGain * (period - 1)) + gain) / period;
-    avgLoss = ((avgLoss * (period - 1)) + loss) / period;
+    avgGain =
+      ((avgGain * (period - 1)) + gain) /
+      period;
+
+    avgLoss =
+      ((avgLoss * (period - 1)) + loss) /
+      period;
   }
 
   if (avgLoss === 0) return 100;
 
-  const rs = avgGain / avgLoss;
-
-  return 100 - (100 / (1 + rs));
+  return 100 -
+    (100 / (1 + avgGain / avgLoss));
 }
 
 /* =========================================================
@@ -238,20 +512,29 @@ function macd(values) {
   const slow = [];
 
   for (let i = 0; i < values.length; i++) {
-    fast.push(ema(values.slice(0, i + 1), 12));
-    slow.push(ema(values.slice(0, i + 1), 26));
+    fast.push(
+      ema(values.slice(0, i + 1), 12)
+    );
+
+    slow.push(
+      ema(values.slice(0, i + 1), 26)
+    );
   }
 
   const line = [];
 
   for (let i = 0; i < values.length; i++) {
-    if (fast[i] !== null && slow[i] !== null) {
-      line.push(fast[i] - slow[i]);
+    if (
+      fast[i] !== null &&
+      slow[i] !== null
+    ) {
+      line.push(
+        fast[i] - slow[i]
+      );
     }
   }
 
   const signal = ema(line, 9);
-
   const m = line[line.length - 1];
 
   return {
@@ -268,26 +551,39 @@ function macd(values) {
    BOLLINGER
 ========================================================= */
 
-function bollinger(values, period = 20, mult = 2) {
+function bollinger(
+  values,
+  period = 20,
+  mult = 2
+) {
   if (values.length < period) return null;
 
   const a = values.slice(-period);
-
-  const mid = avg(a);
+  const middle = avg(a);
 
   const variance =
-    avg(a.map(x => Math.pow(x - mid, 2)));
+    avg(
+      a.map(
+        x => Math.pow(x - middle, 2)
+      )
+    );
 
   const sd = Math.sqrt(variance);
 
-  const upper = mid + mult * sd;
-  const lower = mid - mult * sd;
+  const upper =
+    middle + mult * sd;
+
+  const lower =
+    middle - mult * sd;
 
   return {
-    middle: mid,
+    middle,
     upper,
     lower,
-    width: mid ? ((upper - lower) / mid) * 100 : 0
+    width:
+      middle
+        ? ((upper - lower) / middle) * 100
+        : 0
   };
 }
 
@@ -295,7 +591,10 @@ function bollinger(values, period = 20, mult = 2) {
    VOLUME
 ========================================================= */
 
-function volumeStats(candles, period = 20) {
+function volumeStats(
+  candles,
+  period = 20
+) {
   if (candles.length < period + 1) {
     return {
       current: 0,
@@ -332,7 +631,10 @@ function volumeStats(candles, period = 20) {
    SWINGS
 ========================================================= */
 
-function findSwings(candles, strength = 2) {
+function findSwings(
+  candles,
+  strength = 2
+) {
   const highs = [];
   const lows = [];
 
@@ -344,17 +646,25 @@ function findSwings(candles, strength = 2) {
     let high = true;
     let low = true;
 
-    for (let j = 1; j <= strength; j++) {
+    for (
+      let j = 1;
+      j <= strength;
+      j++
+    ) {
       if (
-        candles[i].high <= candles[i - j].high ||
-        candles[i].high <= candles[i + j].high
+        candles[i].high <=
+          candles[i - j].high ||
+        candles[i].high <=
+          candles[i + j].high
       ) {
         high = false;
       }
 
       if (
-        candles[i].low >= candles[i - j].low ||
-        candles[i].low >= candles[i + j].low
+        candles[i].low >=
+          candles[i - j].low ||
+        candles[i].low >=
+          candles[i + j].low
       ) {
         low = false;
       }
@@ -384,16 +694,75 @@ function findSwings(candles, strength = 2) {
 }
 
 /* =========================================================
+   SUPPORT / RESISTANCE
+========================================================= */
+
+function supportResistance(candles) {
+  const swings =
+    findSwings(candles, 2);
+
+  const highs = swings.highs
+    .slice(-8)
+    .map(x => x.price);
+
+  const lows = swings.lows
+    .slice(-8)
+    .map(x => x.price);
+
+  const price =
+    candles[candles.length - 1].close;
+
+  const resistance =
+    highs
+      .filter(x => x >= price)
+      .sort((a, b) => a - b)[0] ||
+    highs.sort((a, b) => b - a)[0] ||
+    null;
+
+  const support =
+    lows
+      .filter(x => x <= price)
+      .sort((a, b) => b - a)[0] ||
+    lows.sort((a, b) => a - b)[0] ||
+    null;
+
+  return {
+    resistance,
+    support,
+
+    distanceToResistance:
+      resistance
+        ? pct(price, resistance)
+        : null,
+
+    distanceToSupport:
+      support
+        ? pct(price, support)
+        : null,
+
+    swingHighs:
+      swings.highs.slice(-8),
+
+    swingLows:
+      swings.lows.slice(-8)
+  };
+}
+
+/* =========================================================
    BOS / CHOCH
 ========================================================= */
 
 function structureAnalysis(candles) {
-  const swings = findSwings(candles, 2);
+  const swings =
+    findSwings(candles, 2);
 
   const highs = swings.highs;
   const lows = swings.lows;
 
-  if (highs.length < 2 || lows.length < 2) {
+  if (
+    highs.length < 2 ||
+    lows.length < 2
+  ) {
     return {
       available: false,
       trend: "UNKNOWN",
@@ -404,13 +773,20 @@ function structureAnalysis(candles) {
     };
   }
 
-  const lastHigh = highs[highs.length - 1];
-  const prevHigh = highs[highs.length - 2];
+  const lastHigh =
+    highs[highs.length - 1];
 
-  const lastLow = lows[lows.length - 1];
-  const prevLow = lows[lows.length - 2];
+  const prevHigh =
+    highs[highs.length - 2];
 
-  const close = candles[candles.length - 1].close;
+  const lastLow =
+    lows[lows.length - 1];
+
+  const prevLow =
+    lows[lows.length - 2];
+
+  const close =
+    candles[candles.length - 1].close;
 
   let trend = "RANGE";
 
@@ -464,10 +840,13 @@ function structureAnalysis(candles) {
   return {
     available: true,
     trend,
+
     bos,
     choch,
+
     swingHigh: lastHigh,
     swingLow: lastLow,
+
     previousSwingHigh: prevHigh,
     previousSwingLow: prevLow
   };
@@ -482,7 +861,6 @@ function findFVG(candles) {
 
   for (let i = 2; i < candles.length; i++) {
     const a = candles[i - 2];
-    const b = candles[i - 1];
     const c = candles[i];
 
     if (c.low > a.high) {
@@ -518,12 +896,17 @@ function findFVG(candles) {
 function findOrderBlocks(candles) {
   const blocks = [];
 
-  for (let i = 2; i < candles.length - 2; i++) {
+  for (
+    let i = 2;
+    i < candles.length - 2;
+    i++
+  ) {
     const c = candles[i];
     const n1 = candles[i + 1];
     const n2 = candles[i + 2];
 
-    const body = Math.abs(c.close - c.open);
+    const body =
+      Math.abs(c.close - c.open);
 
     if (body === 0) continue;
 
@@ -537,7 +920,10 @@ function findOrderBlocks(candles) {
       n2.close < n2.open &&
       n2.close < c.low;
 
-    if (c.close < c.open && bullishExpansion) {
+    if (
+      c.close < c.open &&
+      bullishExpansion
+    ) {
       blocks.push({
         type: "BULLISH",
         high: c.high,
@@ -547,7 +933,10 @@ function findOrderBlocks(candles) {
       });
     }
 
-    if (c.close > c.open && bearishExpansion) {
+    if (
+      c.close > c.open &&
+      bearishExpansion
+    ) {
       blocks.push({
         type: "BEARISH",
         high: c.high,
@@ -562,10 +951,13 @@ function findOrderBlocks(candles) {
 }
 
 /* =========================================================
-   LIQUIDITY SWEEP / HUNT
+   LIQUIDITY HUNT
 ========================================================= */
 
-function liquiditySweep(candles, structure) {
+function liquiditySweep(
+  candles,
+  structure
+) {
   if (
     !structure.available ||
     !structure.swingHigh ||
@@ -577,21 +969,41 @@ function liquiditySweep(candles, structure) {
     };
   }
 
-  const c = candles[candles.length - 1];
+  const c =
+    candles[candles.length - 1];
 
-  const high = structure.swingHigh.price;
-  const low = structure.swingLow.price;
+  const high =
+    structure.swingHigh.price;
+
+  const low =
+    structure.swingLow.price;
 
   if (
     c.high > high &&
     c.close < high
   ) {
+    const wick =
+      c.high - high;
+
+    const wickPercent =
+      high
+        ? (wick / high) * 100
+        : 0;
+
+    const estimatedValue =
+      wick * c.volume;
+
     return {
       available: true,
       type: "BEARISH",
       level: high,
-      wick: c.high,
-      close: c.close
+      wickHigh: c.high,
+      close: c.close,
+      wickSize: wick,
+      wickPercent,
+      candleVolume: c.volume,
+      estimatedSweepValue: estimatedValue,
+      candleTurnover: c.turnover
     };
   }
 
@@ -599,12 +1011,28 @@ function liquiditySweep(candles, structure) {
     c.low < low &&
     c.close > low
   ) {
+    const wick =
+      low - c.low;
+
+    const wickPercent =
+      low
+        ? (wick / low) * 100
+        : 0;
+
+    const estimatedValue =
+      wick * c.volume;
+
     return {
       available: true,
       type: "BULLISH",
       level: low,
-      wick: c.low,
-      close: c.close
+      wickLow: c.low,
+      close: c.close,
+      wickSize: wick,
+      wickPercent,
+      candleVolume: c.volume,
+      estimatedSweepValue: estimatedValue,
+      candleTurnover: c.turnover
     };
   }
 
@@ -618,48 +1046,70 @@ function liquiditySweep(candles, structure) {
    ORDER BOOK
 ========================================================= */
 
-async function getOrderBook(category, symbol) {
-  const data = await bybit("/v5/market/orderbook", {
-    category,
-    symbol,
-    limit: ORDERBOOK_LIMIT
-  });
+async function getOrderBook(
+  category,
+  symbol
+) {
+  const data =
+    await bybit(
+      "/v5/market/orderbook",
+      {
+        category,
+        symbol,
+        limit: ORDERBOOK_LIMIT
+      }
+    );
 
-  const r = data.result || {};
+  const r =
+    data.result || {};
 
-  const bids = (r.b || []).map(x => ({
-    price: num(x[0]),
-    volume: num(x[1]),
-    value: num(x[0]) * num(x[1])
-  }));
+  const bids =
+    (r.b || []).map(x => ({
+      price: num(x[0]),
+      volume: num(x[1]),
+      value:
+        num(x[0]) * num(x[1])
+    }));
 
-  const asks = (r.a || []).map(x => ({
-    price: num(x[0]),
-    volume: num(x[1]),
-    value: num(x[0]) * num(x[1])
-  }));
+  const asks =
+    (r.a || []).map(x => ({
+      price: num(x[0]),
+      volume: num(x[1]),
+      value:
+        num(x[0]) * num(x[1])
+    }));
 
-  const bidValue = bids.reduce(
-    (a, b) => a + b.value,
-    0
-  );
+  const bidValue =
+    sum(bids.map(x => x.value));
 
-  const askValue = asks.reduce(
-    (a, b) => a + b.value,
-    0
-  );
+  const askValue =
+    sum(asks.map(x => x.value));
 
-  const total = bidValue + askValue;
+  const total =
+    bidValue + askValue;
 
   return {
     bids,
     asks,
-    bestBid: bids[0]?.price || 0,
-    bestAsk: asks[0]?.price || 0,
+
+    bestBid:
+      bids[0]?.price || 0,
+
+    bestAsk:
+      asks[0]?.price || 0,
+
     bidLiquidity: bidValue,
     askLiquidity: askValue,
-    bidShare: total ? bidValue / total * 100 : 0,
-    askShare: total ? askValue / total * 100 : 0
+
+    bidShare:
+      total
+        ? bidValue / total * 100
+        : 0,
+
+    askShare:
+      total
+        ? askValue / total * 100
+        : 0
   };
 }
 
@@ -667,18 +1117,29 @@ async function getOrderBook(category, symbol) {
    WALLS
 ========================================================= */
 
-function getWalls(levels, side) {
+function getWalls(
+  levels,
+  side
+) {
   if (!levels.length) return [];
 
-  const values = levels.map(x => x.value);
+  const values =
+    levels.map(x => x.value);
 
-  const mean = avg(values);
+  const mean =
+    avg(values);
 
-  const threshold = mean * 3;
+  const threshold =
+    mean * 3;
 
   return levels
-    .filter(x => x.value >= threshold)
-    .sort((a, b) => b.value - a.value)
+    .filter(
+      x => x.value >= threshold
+    )
+    .sort(
+      (a, b) =>
+        b.value - a.value
+    )
     .slice(0, 10)
     .map(x => ({
       ...x,
@@ -687,35 +1148,114 @@ function getWalls(levels, side) {
 }
 
 /* =========================================================
+   WALLS AROUND SUPPORT / RESISTANCE
+========================================================= */
+
+function wallsAroundLevels(
+  orderbook,
+  sr,
+  price
+) {
+  const tolerance =
+    Math.max(
+      price * 0.0025,
+      0.00000001
+    );
+
+  const all = [
+    ...orderbook.bids.map(x => ({
+      ...x,
+      side: "BUY"
+    })),
+
+    ...orderbook.asks.map(x => ({
+      ...x,
+      side: "SELL"
+    }))
+  ];
+
+  const supportWalls =
+    sr.support
+      ? all
+          .filter(
+            x =>
+              x.price <= sr.support &&
+              Math.abs(
+                x.price - sr.support
+              ) <= tolerance
+          )
+          .sort(
+            (a, b) =>
+              b.value - a.value
+          )
+          .slice(0, 10)
+      : [];
+
+  const resistanceWalls =
+    sr.resistance
+      ? all
+          .filter(
+            x =>
+              x.price >= sr.resistance &&
+              Math.abs(
+                x.price - sr.resistance
+              ) <= tolerance
+          )
+          .sort(
+            (a, b) =>
+              b.value - a.value
+          )
+          .slice(0, 10)
+      : [];
+
+  return {
+    supportWalls,
+    resistanceWalls
+  };
+}
+
+/* =========================================================
    PUBLIC TRADES / FOOTPRINT
 ========================================================= */
 
-async function getTrades(category, symbol) {
-  const data = await bybit(
-    "/v5/market/recent-trade",
-    {
-      category,
-      symbol,
-      limit: TRADES_LIMIT
-    }
-  );
+async function getTrades(
+  category,
+  symbol
+) {
+  const data =
+    await bybit(
+      "/v5/market/recent-trade",
+      {
+        category,
+        symbol,
+        limit: TRADES_LIMIT
+      }
+    );
 
-  const trades = data.result?.list || [];
+  const trades =
+    data.result?.list || [];
 
   let buy = 0;
   let sell = 0;
+
+  let buyVolume = 0;
+  let sellVolume = 0;
 
   const rows = [];
 
   for (const t of trades) {
     const price = num(t.price);
     const size = num(t.size);
-    const value = price * size;
+
+    const value =
+      price * size;
 
     if (t.side === "Buy") {
       buy += value;
+      buyVolume += size;
     } else {
       sell += value;
+      sellVolume += size;
     }
 
     rows.push({
@@ -727,16 +1267,113 @@ async function getTrades(category, symbol) {
     });
   }
 
-  const total = buy + sell;
+  const total =
+    buy + sell;
+
+  const delta =
+    buy - sell;
+
+  const deltaPercent =
+    total
+      ? delta / total * 100
+      : 0;
 
   return {
     trades: rows,
+
     buy,
     sell,
-    delta: buy - sell,
+
+    buyVolume,
+    sellVolume,
+
+    delta,
+    deltaPercent,
+
     total,
-    buyShare: total ? buy / total * 100 : 0,
-    sellShare: total ? sell / total * 100 : 0
+
+    buyShare:
+      total
+        ? buy / total * 100
+        : 0,
+
+    sellShare:
+      total
+        ? sell / total * 100
+        : 0
+  };
+}
+
+/* =========================================================
+   FOOTPRINT AROUND LEVEL
+========================================================= */
+
+function footprintAtLevel(
+  trades,
+  level,
+  tolerancePercent = 0.20
+) {
+  if (!level) {
+    return {
+      level: null,
+      buy: 0,
+      sell: 0,
+      delta: 0,
+      total: 0,
+      deltaPercent: 0,
+      trades: 0
+    };
+  }
+
+  const tolerance =
+    level *
+    tolerancePercent /
+    100;
+
+  const selected =
+    trades.filter(
+      t =>
+        Math.abs(t.price - level) <=
+        tolerance
+    );
+
+  let buy = 0;
+  let sell = 0;
+
+  for (const t of selected) {
+    if (t.side === "Buy") {
+      buy += t.value;
+    } else {
+      sell += t.value;
+    }
+  }
+
+  const total =
+    buy + sell;
+
+  const delta =
+    buy - sell;
+
+  return {
+    level,
+    tolerance,
+    buy,
+    sell,
+    delta,
+    total,
+    deltaPercent:
+      total
+        ? delta / total * 100
+        : 0,
+    buyShare:
+      total
+        ? buy / total * 100
+        : 0,
+    sellShare:
+      total
+        ? sell / total * 100
+        : 0,
+    trades: selected.length
   };
 }
 
@@ -744,30 +1381,45 @@ async function getTrades(category, symbol) {
    TIMEFRAME ANALYSIS
 ========================================================= */
 
-function analyzeTimeframe(candles) {
-  const closes = candles.map(x => x.close);
+function analyzeTimeframe(
+  candles
+) {
+  const closes =
+    candles.map(x => x.close);
 
-  const price = closes[closes.length - 1];
+  const price =
+    closes[closes.length - 1];
 
-  const ma7 = getMA(closes, 7);
-  const ma20 = getMA(closes, 20);
+  const ma7 =
+    getMA(closes, 7);
+
+  const ma20 =
+    getMA(closes, 20);
 
   const previousMA20 =
     maPrevious(closes, 20);
 
-  const r = rsi(closes, 14);
+  const r =
+    rsi(closes, 14);
 
-  const a = atr(candles, 14);
+  const a =
+    atr(candles, 14);
 
-  const volume = volumeStats(candles, 20);
+  const volume =
+    volumeStats(candles, 20);
 
-  const bb = bollinger(closes, 20);
+  const bb =
+    bollinger(closes, 20);
 
-  const m = macd(closes);
+  const m =
+    macd(closes);
 
   const slope =
     previousMA20 && ma20
-      ? pct(ma20, previousMA20)
+      ? pct(
+          ma20,
+          previousMA20
+        )
       : null;
 
   let trend = "RANGE";
@@ -798,20 +1450,26 @@ function analyzeTimeframe(candles) {
   let crossDown = false;
 
   if (ma20) {
-    const last = candles[candles.length - 1];
+    const last =
+      candles[candles.length - 1];
 
     touch =
       last.low <= ma20 &&
       last.high >= ma20;
 
     const distance =
-      Math.abs(price - ma20) / ma20 * 100;
+      Math.abs(
+        price - ma20
+      ) / ma20 * 100;
 
-    near = distance <= 0.35;
+    near =
+      distance <= 0.35;
 
     if (previousMA20 !== null) {
       const prevClose =
-        candles[candles.length - 2].close;
+        candles[
+          candles.length - 2
+        ].close;
 
       crossUp =
         prevClose <= previousMA20 &&
@@ -826,7 +1484,8 @@ function analyzeTimeframe(candles) {
   let rejection = "NONE";
 
   if (ma20) {
-    const last = candles[candles.length - 1];
+    const last =
+      candles[candles.length - 1];
 
     if (
       last.low <= ma20 &&
@@ -851,13 +1510,21 @@ function analyzeTimeframe(candles) {
     ma20,
     previousMA20,
     slope,
+
     trend,
+
     rsi: r,
     atr: a,
-    atrPct: a && price ? a / price * 100 : null,
+
+    atrPct:
+      a && price
+        ? a / price * 100
+        : null,
+
     volume,
     bollinger: bb,
     macd: m,
+
     touch,
     near,
     crossUp,
@@ -867,36 +1534,45 @@ function analyzeTimeframe(candles) {
 }
 
 /* =========================================================
-   SMART MONEY ANALYSIS
+   SMART MONEY
 ========================================================= */
 
 function smartMoney(candles) {
-  const structure = structureAnalysis(candles);
+  const structure =
+    structureAnalysis(candles);
 
-  const fvg = findFVG(candles);
+  const fvg =
+    findFVG(candles);
 
   const orderBlocks =
     findOrderBlocks(candles);
 
   const sweep =
-    liquiditySweep(candles, structure);
+    liquiditySweep(
+      candles,
+      structure
+    );
 
   const price =
-    candles[candles.length - 1].close;
+    candles[
+      candles.length - 1
+    ].close;
 
   const activeFVG =
     fvg
-      .filter(x =>
-        price >= x.bottom &&
-        price <= x.top
+      .filter(
+        x =>
+          price >= x.bottom &&
+          price <= x.top
       )
       .slice(-3);
 
   const activeOB =
     orderBlocks
-      .filter(x =>
-        price >= x.low &&
-        price <= x.high
+      .filter(
+        x =>
+          price >= x.low &&
+          price <= x.high
       )
       .slice(-3);
 
@@ -911,23 +1587,207 @@ function smartMoney(candles) {
 }
 
 /* =========================================================
+   TRADING STYLE
+========================================================= */
+
+function classifyTradingStyle({
+  candles,
+  ma20,
+  smart,
+  footprint,
+  orderbook
+}) {
+  const structure =
+    smart.structure;
+
+  let bullish = 0;
+  let bearish = 0;
+  let range = 0;
+
+  const reasons = [];
+
+  /* STRUCTURE */
+
+  if (structure.trend === "BULLISH") {
+    bullish += 30;
+    reasons.push(
+      "ساختار HH/HL صعودی"
+    );
+  }
+
+  if (structure.trend === "BEARISH") {
+    bearish += 30;
+    reasons.push(
+      "ساختار LH/LL نزولی"
+    );
+  }
+
+  if (structure.trend === "RANGE") {
+    range += 30;
+    reasons.push(
+      "ساختار رنج"
+    );
+  }
+
+  /* MA20 */
+
+  if (ma20?.bias === "BULLISH") {
+    bullish += 20;
+    reasons.push(
+      "قیمت و شیب EMA20 صعودی"
+    );
+  }
+
+  if (ma20?.bias === "BEARISH") {
+    bearish += 20;
+    reasons.push(
+      "قیمت و شیب EMA20 نزولی"
+    );
+  }
+
+  if (
+    ma20?.slope?.state === "FLAT"
+  ) {
+    range += 15;
+  }
+
+  /* FOOTPRINT */
+
+  if (
+    footprint.deltaPercent > 10
+  ) {
+    bullish += 15;
+    reasons.push(
+      "دلتا معاملات مثبت"
+    );
+  }
+
+  if (
+    footprint.deltaPercent < -10
+  ) {
+    bearish += 15;
+    reasons.push(
+      "دلتا معاملات منفی"
+    );
+  }
+
+  /* ORDER BOOK */
+
+  if (
+    orderbook.bidShare >
+    orderbook.askShare + 8
+  ) {
+    bullish += 10;
+    reasons.push(
+      "نقدینگی Bid بیشتر"
+    );
+  }
+
+  if (
+    orderbook.askShare >
+    orderbook.bidShare + 8
+  ) {
+    bearish += 10;
+    reasons.push(
+      "نقدینگی Ask بیشتر"
+    );
+  }
+
+  /* SWEEP */
+
+  if (
+    smart.sweep.type === "BULLISH"
+  ) {
+    bullish += 15;
+    reasons.push(
+      "هانت نقدینگی سمت فروش"
+    );
+  }
+
+  if (
+    smart.sweep.type === "BEARISH"
+  ) {
+    bearish += 15;
+    reasons.push(
+      "هانت نقدینگی سمت خرید"
+    );
+  }
+
+  const max =
+    Math.max(
+      bullish,
+      bearish,
+      range
+    );
+
+  let style = "RANGE";
+
+  if (
+    max === bullish &&
+    bullish >= 45
+  ) {
+    style = "SMART_MONEY_BULLISH";
+  }
+
+  if (
+    max === bearish &&
+    bearish >= 45
+  ) {
+    style = "SMART_MONEY_BEARISH";
+  }
+
+  if (
+    max === range ||
+    Math.abs(bullish - bearish) < 15
+  ) {
+    style = "RANGE";
+  }
+
+  return {
+    style,
+
+    label:
+      style === "SMART_MONEY_BULLISH"
+        ? "اسمارت مانی صعودی"
+        : style === "SMART_MONEY_BEARISH"
+          ? "اسمارت مانی نزولی"
+          : "رنج",
+
+    scores: {
+      bullish,
+      bearish,
+      range
+    },
+
+    reasons
+  };
+}
+
+/* =========================================================
    SIGNAL ENGINE
+   فقط 1M در سیگنال دخالت دارد.
+   15M فقط Context است.
 ========================================================= */
 
 function signalEngine({
   one,
-  fifteen,
   smart,
   footprint,
   orderbook,
+  ma20,
   difficulty = 11
 }) {
   const hard =
-    clamp(num(difficulty), 0, 100);
+    clamp(
+      num(difficulty),
+      0,
+      100
+    );
 
   const threshold =
     clamp(
-      DEFAULT_THRESHOLD + hard * 0.48,
+      DEFAULT_THRESHOLD +
+        hard * 0.48,
       32,
       80
     );
@@ -938,112 +1798,219 @@ function signalEngine({
   const reasonsBull = [];
   const reasonsBear = [];
 
-  /* MA20 1M */
-  if (one.touch) {
-    if (one.rejection === "BULLISH") {
-      bull += 18;
-      reasonsBull.push("MA20 1m bullish rejection");
-    }
+  /* =========================================
+     MA20 PRIMARY
+  ========================================= */
 
-    if (one.rejection === "BEARISH") {
-      bear += 18;
-      reasonsBear.push("MA20 1m bearish rejection");
-    }
-  }
-
-  if (one.crossUp) {
-    bull += 22;
-    reasonsBull.push("MA20 1m bullish cross");
-  }
-
-  if (one.crossDown) {
-    bear += 22;
-    reasonsBear.push("MA20 1m bearish cross");
-  }
-
-  /* 15M TREND */
-  if (fifteen.trend === "BULLISH") {
-    bull += 20;
-    reasonsBull.push("15m bullish trend");
-  }
-
-  if (fifteen.trend === "BEARISH") {
-    bear += 20;
-    reasonsBear.push("15m bearish trend");
-  }
-
-  /* RSI */
-  if (fifteen.rsi !== null) {
-    if (fifteen.rsi >= 50) {
-      bull += 7;
-      reasonsBull.push("15m RSI bullish");
-    }
-
-    if (fifteen.rsi < 50) {
-      bear += 7;
-      reasonsBear.push("15m RSI bearish");
-    }
-  }
-
-  /* MACD */
   if (
-    fifteen.macd.macd !== null &&
-    fifteen.macd.signal !== null
+    ma20.touch &&
+    ma20.confirmationState ===
+      "BULLISH"
+  ) {
+    bull += 20;
+    reasonsBull.push(
+      "برخورد و واکنش صعودی قیمت به EMA20 یک دقیقه"
+    );
+  }
+
+  if (
+    ma20.touch &&
+    ma20.confirmationState ===
+      "BEARISH"
+  ) {
+    bear += 20;
+    reasonsBear.push(
+      "برخورد و واکنش نزولی قیمت به EMA20 یک دقیقه"
+    );
+  }
+
+  if (ma20.crossUp) {
+    bull += 18;
+    reasonsBull.push(
+      "عبور صعودی قیمت از EMA20"
+    );
+  }
+
+  if (ma20.crossDown) {
+    bear += 18;
+    reasonsBear.push(
+      "عبور نزولی قیمت از EMA20"
+    );
+  }
+
+  /* MA SLOPE */
+
+  const slope =
+    ma20.slope?.fiveCandles?.percent || 0;
+
+  if (slope > 0.03) {
+    bull += 15;
+    reasonsBull.push(
+      "شیب EMA20 یک دقیقه صعودی قوی"
+    );
+  } else if (slope > 0.005) {
+    bull += 9;
+    reasonsBull.push(
+      "شیب EMA20 یک دقیقه صعودی"
+    );
+  }
+
+  if (slope < -0.03) {
+    bear += 15;
+    reasonsBear.push(
+      "شیب EMA20 یک دقیقه نزولی قوی"
+    );
+  } else if (slope < -0.005) {
+    bear += 9;
+    reasonsBear.push(
+      "شیب EMA20 یک دقیقه نزولی"
+    );
+  }
+
+  /* CANDLE CONFIRMATION */
+
+  if (
+    ma20.candleConfirmation.state ===
+      "BULLISH_REJECTION" ||
+    ma20.candleConfirmation.state ===
+      "BULLISH_WICK_REJECTION" ||
+    ma20.candleConfirmation.state ===
+      "BULLISH_CROSS"
+  ) {
+    bull += 12;
+    reasonsBull.push(
+      "کندل تأییدیه صعودی روی EMA20"
+    );
+  }
+
+  if (
+    ma20.candleConfirmation.state ===
+      "BEARISH_REJECTION" ||
+    ma20.candleConfirmation.state ===
+      "BEARISH_WICK_REJECTION" ||
+    ma20.candleConfirmation.state ===
+      "BEARISH_CROSS"
+  ) {
+    bear += 12;
+    reasonsBear.push(
+      "کندل تأییدیه نزولی روی EMA20"
+    );
+  }
+
+  /* =========================================
+     RSI 1M
+  ========================================= */
+
+  if (
+    one.rsi !== null &&
+    one.rsi >= 50
+  ) {
+    bull += 5;
+    reasonsBull.push(
+      "RSI یک دقیقه بالای 50"
+    );
+  }
+
+  if (
+    one.rsi !== null &&
+    one.rsi < 50
+  ) {
+    bear += 5;
+    reasonsBear.push(
+      "RSI یک دقیقه زیر 50"
+    );
+  }
+
+  /* =========================================
+     MACD 1M
+  ========================================= */
+
+  if (
+    one.macd.macd !== null &&
+    one.macd.signal !== null
   ) {
     if (
-      fifteen.macd.macd >
-      fifteen.macd.signal
+      one.macd.macd >
+      one.macd.signal
     ) {
-      bull += 10;
-      reasonsBull.push("15m MACD bullish");
+      bull += 7;
+      reasonsBull.push(
+        "MACD یک دقیقه صعودی"
+      );
     }
 
     if (
-      fifteen.macd.macd <
-      fifteen.macd.signal
+      one.macd.macd <
+      one.macd.signal
     ) {
-      bear += 10;
-      reasonsBear.push("15m MACD bearish");
-    }
-  }
-
-  /* VOLUME */
-  if (one.volume.spike) {
-    if (one.price > one.ma20) {
-      bull += 7;
-      reasonsBull.push("1m volume spike");
-    }
-
-    if (one.price < one.ma20) {
       bear += 7;
-      reasonsBear.push("1m volume spike");
+      reasonsBear.push(
+        "MACD یک دقیقه نزولی"
+      );
     }
   }
 
-  /* FOOTPRINT */
+  /* =========================================
+     VOLUME 1M
+  ========================================= */
+
+  if (one.volume.spike) {
+    if (
+      one.price >
+      one.ma20
+    ) {
+      bull += 6;
+      reasonsBull.push(
+        "افزایش حجم روی قیمت بالای EMA20"
+      );
+    }
+
+    if (
+      one.price <
+      one.ma20
+    ) {
+      bear += 6;
+      reasonsBear.push(
+        "افزایش حجم روی قیمت زیر EMA20"
+      );
+    }
+  }
+
+  /* =========================================
+     FOOTPRINT
+  ========================================= */
+
   if (footprint.total > 0) {
     const deltaPct =
-      footprint.delta /
-      footprint.total;
+      footprint.deltaPercent;
 
-    if (deltaPct > 0.15) {
+    if (deltaPct > 15) {
       bull += 10;
-      reasonsBull.push("positive footprint delta");
+      reasonsBull.push(
+        "دلتا فوت‌پرینت مثبت"
+      );
     }
 
-    if (deltaPct < -0.15) {
+    if (deltaPct < -15) {
       bear += 10;
-      reasonsBear.push("negative footprint delta");
+      reasonsBear.push(
+        "دلتا فوت‌پرینت منفی"
+      );
     }
   }
 
-  /* ORDERBOOK */
+  /* =========================================
+     ORDERBOOK
+  ========================================= */
+
   if (
     orderbook.bidShare >
     orderbook.askShare + 8
   ) {
     bull += 5;
-    reasonsBull.push("bid liquidity stronger");
+    reasonsBull.push(
+      "غلبه نقدینگی دیوارهای خرید"
+    );
   }
 
   if (
@@ -1051,99 +2018,141 @@ function signalEngine({
     orderbook.bidShare + 8
   ) {
     bear += 5;
-    reasonsBear.push("ask liquidity stronger");
+    reasonsBear.push(
+      "غلبه نقدینگی دیوارهای فروش"
+    );
   }
 
-  /* BOS */
-  if (smart.structure.bos) {
-    if (
-      smart.structure.bos.side ===
-      "BULLISH"
-    ) {
-      bull += 12;
-      reasonsBull.push("BOS bullish");
-    }
+  /* =========================================
+     STRUCTURE 1M
+  ========================================= */
 
-    if (
-      smart.structure.bos.side ===
-      "BEARISH"
-    ) {
-      bear += 12;
-      reasonsBear.push("BOS bearish");
-    }
+  if (
+    smart.structure.bos?.side ===
+    "BULLISH"
+  ) {
+    bull += 10;
+    reasonsBull.push(
+      "BOS صعودی در یک دقیقه"
+    );
   }
 
-  /* CHOCH */
-  if (smart.structure.choch) {
-    if (
-      smart.structure.choch.side ===
-      "BULLISH"
-    ) {
-      bull += 12;
-      reasonsBull.push("CHoCH bullish");
-    }
-
-    if (
-      smart.structure.choch.side ===
-      "BEARISH"
-    ) {
-      bear += 12;
-      reasonsBear.push("CHoCH bearish");
-    }
+  if (
+    smart.structure.bos?.side ===
+    "BEARISH"
+  ) {
+    bear += 10;
+    reasonsBear.push(
+      "BOS نزولی در یک دقیقه"
+    );
   }
 
-  /* FVG */
-  if (smart.activeFVG.length) {
+  if (
+    smart.structure.choch?.side ===
+    "BULLISH"
+  ) {
+    bull += 10;
+    reasonsBull.push(
+      "CHoCH صعودی در یک دقیقه"
+    );
+  }
+
+  if (
+    smart.structure.choch?.side ===
+    "BEARISH"
+  ) {
+    bear += 10;
+    reasonsBear.push(
+      "CHoCH نزولی در یک دقیقه"
+    );
+  }
+
+  /* =========================================
+     FVG
+  ========================================= */
+
+  if (
+    smart.activeFVG.length
+  ) {
     const f =
       smart.activeFVG[
         smart.activeFVG.length - 1
       ];
 
     if (f.type === "BULLISH") {
-      bull += 8;
-      reasonsBull.push("price inside bullish FVG");
+      bull += 7;
+      reasonsBull.push(
+        "قیمت داخل FVG صعودی"
+      );
     }
 
     if (f.type === "BEARISH") {
-      bear += 8;
-      reasonsBear.push("price inside bearish FVG");
+      bear += 7;
+      reasonsBear.push(
+        "قیمت داخل FVG نزولی"
+      );
     }
   }
 
-  /* ORDER BLOCK */
-  if (smart.activeOB.length) {
+  /* =========================================
+     ORDER BLOCK
+  ========================================= */
+
+  if (
+    smart.activeOB.length
+  ) {
     const ob =
       smart.activeOB[
         smart.activeOB.length - 1
       ];
 
     if (ob.type === "BULLISH") {
-      bull += 8;
-      reasonsBull.push("price inside bullish OB");
+      bull += 7;
+      reasonsBull.push(
+        "قیمت داخل Order Block صعودی"
+      );
     }
 
     if (ob.type === "BEARISH") {
-      bear += 8;
-      reasonsBear.push("price inside bearish OB");
+      bear += 7;
+      reasonsBear.push(
+        "قیمت داخل Order Block نزولی"
+      );
     }
   }
 
-  /* LIQUIDITY SWEEP */
-  if (smart.sweep.type === "BULLISH") {
+  /* =========================================
+     LIQUIDITY HUNT
+  ========================================= */
+
+  if (
+    smart.sweep.type === "BULLISH"
+  ) {
     bull += 15;
-    reasonsBull.push("bullish liquidity sweep");
+    reasonsBull.push(
+      "هانت نقدینگی صعودی"
+    );
   }
 
-  if (smart.sweep.type === "BEARISH") {
+  if (
+    smart.sweep.type === "BEARISH"
+  ) {
     bear += 15;
-    reasonsBear.push("bearish liquidity sweep");
+    reasonsBear.push(
+      "هانت نقدینگی نزولی"
+    );
   }
 
-  bull = clamp(bull, 0, 100);
-  bear = clamp(bear, 0, 100);
+  bull =
+    clamp(bull, 0, 100);
+
+  bear =
+    clamp(bear, 0, 100);
 
   let direction = "WAIT";
-  let score = Math.max(bull, bear);
+
+  const score =
+    Math.max(bull, bear);
 
   if (
     bull >= threshold &&
@@ -1162,10 +2171,17 @@ function signalEngine({
   return {
     direction,
     score,
+
     bull,
     bear,
+
     threshold,
     difficulty: hard,
+
+    primaryTimeframe: "1m",
+
+    higherTimeframeUsedInSignal: false,
+
     reasons: {
       bull: reasonsBull,
       bear: reasonsBear
@@ -1174,11 +2190,99 @@ function signalEngine({
 }
 
 /* =========================================================
+   HIGHER TIMEFRAME CONTEXT
+   این قسمت در سیگنال دخالت نمی‌کند.
+========================================================= */
+
+function higherTimeframeContext(
+  candles,
+  smart
+) {
+  const analysis =
+    analyzeTimeframe(candles);
+
+  const structure =
+    structureAnalysis(candles);
+
+  const ma =
+    analyzeMA20(candles);
+
+  let expectation = "RANGE";
+
+  if (
+    structure.trend === "BULLISH" &&
+    ma.bias === "BULLISH"
+  ) {
+    expectation = "BULLISH";
+  }
+
+  if (
+    structure.trend === "BEARISH" &&
+    ma.bias === "BEARISH"
+  ) {
+    expectation = "BEARISH";
+  }
+
+  if (
+    Math.abs(
+      (ma.slope?.fiveCandles?.percent || 0)
+    ) < 0.005
+  ) {
+    expectation = "RANGE";
+  }
+
+  return {
+    timeframe: "15m",
+
+    usedInSignal: false,
+
+    expectation,
+
+    trend: analysis.trend,
+
+    price: analysis.price,
+
+    ma20: ma,
+
+    rsi: analysis.rsi,
+
+    macd: analysis.macd,
+
+    volume: analysis.volume,
+
+    bollinger: analysis.bollinger,
+
+    structure,
+
+    BOS: structure.bos,
+
+    CHoCH: structure.choch,
+
+    FVG: smart.fvg,
+
+    activeFVG: smart.activeFVG,
+
+    OrderBlocks: smart.orderBlocks,
+
+    activeOrderBlocks:
+      smart.activeOB,
+
+    liquiditySweep:
+      smart.sweep
+  };
+}
+
+/* =========================================================
    COMPLETE SYMBOL ANALYSIS
 ========================================================= */
 
-async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
-  const s = symbol.toUpperCase();
+async function analyzeSymbol(
+  symbol,
+  category = "linear",
+  difficulty = 11
+) {
+  const s =
+    symbol.toUpperCase();
 
   const [
     oneCandles,
@@ -1221,31 +2325,37 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
   }
 
   const one =
-    analyzeTimeframe(oneCandles);
+    analyzeTimeframe(
+      oneCandles
+    );
 
   const fifteen =
-    analyzeTimeframe(fifteenCandles);
+    analyzeTimeframe(
+      fifteenCandles
+    );
+
+  /* MA20 DETAILED 1M */
+
+  const ma20 =
+    analyzeMA20(
+      oneCandles
+    );
+
+  /* SMART MONEY 1M */
 
   const smart =
-    smartMoney(oneCandles);
+    smartMoney(
+      oneCandles
+    );
 
-  const signal =
-    signalEngine({
-      one,
-      fifteen,
-      smart,
-      footprint,
-      orderbook,
-      difficulty
-    });
+  /* SUPPORT / RESISTANCE 1M */
 
-  const price =
-    one.price;
+  const sr =
+    supportResistance(
+      oneCandles
+    );
 
-  const distance =
-    one.ma20
-      ? pct(price, one.ma20)
-      : null;
+  /* WALLS */
 
   const buyWalls =
     getWalls(
@@ -1259,6 +2369,71 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
       "SELL"
     );
 
+  const levelWalls =
+    wallsAroundLevels(
+      orderbook,
+      sr,
+      one.price
+    );
+
+  /* FOOTPRINT AT LEVELS */
+
+  const supportFootprint =
+    footprintAtLevel(
+      footprint.trades,
+      sr.support
+    );
+
+  const resistanceFootprint =
+    footprintAtLevel(
+      footprint.trades,
+      sr.resistance
+    );
+
+  /* TRADING STYLE */
+
+  const style =
+    classifyTradingStyle({
+      candles: oneCandles,
+      ma20,
+      smart,
+      footprint,
+      orderbook
+    });
+
+  /* 15M CONTEXT */
+
+  const context15m =
+    higherTimeframeContext(
+      fifteenCandles,
+      smartMoney(
+        fifteenCandles
+      )
+    );
+
+  /* SIGNAL */
+
+  const signal =
+    signalEngine({
+      one,
+      smart,
+      footprint,
+      orderbook,
+      ma20,
+      difficulty
+    });
+
+  const price =
+    one.price;
+
+  const distance =
+    one.ma20
+      ? pct(
+          price,
+          one.ma20
+        )
+      : null;
+
   return {
     ok: true,
 
@@ -1267,25 +2442,142 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
 
     price,
 
+    /* =====================================
+       SIGNAL
+    ===================================== */
+
     signal,
 
+    /* =====================================
+       MARKET
+    ===================================== */
+
     market: {
+      primarySignalTimeframe: "1m",
+      higherTimeframe: "15m",
+
       trend1m: one.trend,
-      trend15m: fifteen.trend
+      trend15m: fifteen.trend,
+
+      fifteenMinuteExpectation:
+        context15m.expectation
     },
+
+    /* =====================================
+       MA20 PRIMARY
+    ===================================== */
+
+    MA20: {
+      timeframe: "1m",
+
+      period: 20,
+      type: "EMA",
+
+      value: ma20.value,
+
+      previousValue:
+        ma20.previousValue,
+
+      price: ma20.price,
+
+      distance:
+        ma20.distance,
+
+      distancePercent:
+        ma20.distancePercent,
+
+      interaction:
+        ma20.interaction,
+
+      touch:
+        ma20.touch,
+
+      crossUp:
+        ma20.crossUp,
+
+      crossDown:
+        ma20.crossDown,
+
+      above:
+        ma20.above,
+
+      below:
+        ma20.below,
+
+      slope:
+        ma20.slope,
+
+      candleConfirmation:
+        ma20.candleConfirmation,
+
+      bias:
+        ma20.bias
+    },
+
+    /* =====================================
+       1M ANALYSIS
+    ===================================== */
 
     oneMinute: {
       ...one,
-      distanceToMA20: distance,
-      contact: one.touch,
-      nearMA20: one.near
+
+      distanceToMA20:
+        distance,
+
+      contact:
+        one.touch,
+
+      nearMA20:
+        one.near,
+
+      ma20Detailed:
+        ma20
     },
+
+    /* =====================================
+       15M — CONTEXT ONLY
+    ===================================== */
 
     fifteenMinute: {
-      ...fifteen
+      ...fifteen,
+
+      higherTimeframeContext:
+        context15m,
+
+      signalWeight: 0,
+
+      signalParticipation: false
     },
 
+    /* =====================================
+       TRADING STYLE
+    ===================================== */
+
+    tradingStyle: style,
+
+    styles: {
+      smartMoney: {
+        label:
+          style.label,
+
+        style:
+          style.style,
+
+        scores:
+          style.scores,
+
+        reasons:
+          style.reasons
+      }
+    },
+
+    /* =====================================
+       SMART MONEY 1M
+    ===================================== */
+
     smartMoney: {
+      timeframe: "1m",
+
       available:
         smart.structure.available,
 
@@ -1314,18 +2606,83 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
         smart.sweep
     },
 
-    footprint: {
-      buy: footprint.buy,
-      sell: footprint.sell,
-      delta: footprint.delta,
-      total: footprint.total,
-      buyShare: footprint.buyShare,
-      sellShare: footprint.sellShare
+    /* =====================================
+       SUPPORT / RESISTANCE
+    ===================================== */
+
+    supportResistance: {
+      timeframe: "1m",
+
+      support:
+        sr.support,
+
+      resistance:
+        sr.resistance,
+
+      distanceToSupport:
+        sr.distanceToSupport,
+
+      distanceToResistance:
+        sr.distanceToResistance,
+
+      swingHighs:
+        sr.swingHighs,
+
+      swingLows:
+        sr.swingLows
     },
 
+    /* =====================================
+       FOOTPRINT
+    ===================================== */
+
+    footprint: {
+      timeframe: "recent Bybit trades",
+
+      buy:
+        footprint.buy,
+
+      sell:
+        footprint.sell,
+
+      buyVolume:
+        footprint.buyVolume,
+
+      sellVolume:
+        footprint.sellVolume,
+
+      delta:
+        footprint.delta,
+
+      deltaPercent:
+        footprint.deltaPercent,
+
+      total:
+        footprint.total,
+
+      buyShare:
+        footprint.buyShare,
+
+      sellShare:
+        footprint.sellShare,
+
+      supportLevel:
+        supportFootprint,
+
+      resistanceLevel:
+        resistanceFootprint
+    },
+
+    /* =====================================
+       ORDER BOOK / WALLS
+    ===================================== */
+
     orderBook: {
-      bestBid: orderbook.bestBid,
-      bestAsk: orderbook.bestAsk,
+      bestBid:
+        orderbook.bestBid,
+
+      bestAsk:
+        orderbook.bestAsk,
 
       bidLiquidity:
         orderbook.bidLiquidity,
@@ -1340,7 +2697,14 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
         orderbook.askShare,
 
       buyWalls,
+
       sellWalls,
+
+      supportWalls:
+        levelWalls.supportWalls,
+
+      resistanceWalls:
+        levelWalls.resistanceWalls,
 
       bids:
         orderbook.bids,
@@ -1349,14 +2713,58 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
         orderbook.asks
     },
 
+    /* =====================================
+       LIQUIDITY / HUNT
+    ===================================== */
+
+    liquidity: {
+      hunt:
+        smart.sweep,
+
+      type:
+        smart.sweep.type,
+
+      level:
+        smart.sweep.level || null,
+
+      wickSize:
+        smart.sweep.wickSize || 0,
+
+      wickPercent:
+        smart.sweep.wickPercent || 0,
+
+      candleVolume:
+        smart.sweep.candleVolume || 0,
+
+      estimatedSweepValue:
+        smart.sweep.estimatedSweepValue || 0,
+
+      candleTurnover:
+        smart.sweep.candleTurnover || 0
+    },
+
+    /* =====================================
+       INDICATORS
+    ===================================== */
+
     indicators: {
-      RSI1m: one.rsi,
-      RSI15m: fifteen.rsi,
+      RSI1m:
+        one.rsi,
 
-      MACD: fifteen.macd,
+      RSI15m:
+        fifteen.rsi,
 
-      ATR1m: one.atr,
-      ATR15m: fifteen.atr,
+      MACD1m:
+        one.macd,
+
+      MACD15m:
+        fifteen.macd,
+
+      ATR1m:
+        one.atr,
+
+      ATR15m:
+        fifteen.atr,
 
       Bollinger1m:
         one.bollinger,
@@ -1364,6 +2772,10 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
       Bollinger15m:
         fifteen.bollinger
     },
+
+    /* =====================================
+       VOLUME
+    ===================================== */
 
     volume: {
       oneMinute:
@@ -1373,7 +2785,8 @@ async function analyzeSymbol(symbol, category = "linear", difficulty = 11) {
         fifteen.volume
     },
 
-    timestamp: Date.now()
+    timestamp:
+      Date.now()
   };
 }
 
@@ -1386,16 +2799,21 @@ async function findSymbol(query) {
     query
       .trim()
       .toUpperCase()
-      .replace(/[^A-Z0-9]/g, "");
+      .replace(
+        /[^A-Z0-9]/g,
+        ""
+      );
 
   if (!q) return [];
 
   const results = [];
 
-  for (const category of [
-    "spot",
-    "linear"
-  ]) {
+  for (
+    const category of [
+      "spot",
+      "linear"
+    ]
+  ) {
     try {
       const data =
         await bybit(
@@ -1411,8 +2829,9 @@ async function findSymbol(query) {
 
       for (const x of list) {
         const symbol =
-          String(x.symbol || "")
-            .toUpperCase();
+          String(
+            x.symbol || ""
+          ).toUpperCase();
 
         if (
           symbol === q ||
@@ -1438,10 +2857,12 @@ async function findSymbol(query) {
 async function getMarketSymbols() {
   const all = [];
 
-  for (const category of [
-    "linear",
-    "spot"
-  ]) {
+  for (
+    const category of [
+      "linear",
+      "spot"
+    ]
+  ) {
     try {
       const data =
         await bybit(
@@ -1458,7 +2879,9 @@ async function getMarketSymbols() {
       for (const x of list) {
         if (
           x.status === "Trading" &&
-          String(x.symbol).endsWith("USDT")
+          String(
+            x.symbol
+          ).endsWith("USDT")
         ) {
           all.push({
             symbol: x.symbol,
@@ -1479,7 +2902,9 @@ async function getMarketSymbols() {
     );
   }
 
-  return [...unique.values()];
+  return [
+    ...unique.values()
+  ];
 }
 
 /* =========================================================
@@ -1488,8 +2913,7 @@ async function getMarketSymbols() {
 
 async function quickScan(
   symbol,
-  category,
-  difficulty
+  category
 ) {
   try {
     const candles =
@@ -1500,12 +2924,16 @@ async function quickScan(
         60
       );
 
-    if (candles.length < 30) {
+    if (
+      candles.length < 30
+    ) {
       return null;
     }
 
     const a =
-      analyzeTimeframe(candles);
+      analyzeTimeframe(
+        candles
+      );
 
     if (!a.ma20) {
       return null;
@@ -1513,19 +2941,32 @@ async function quickScan(
 
     const distance =
       Math.abs(
-        pct(a.price, a.ma20)
+        pct(
+          a.price,
+          a.ma20
+        )
       );
 
     return {
       symbol,
       category,
-      price: a.price,
-      ma20: a.ma20,
+
+      price:
+        a.price,
+
+      ma20:
+        a.ma20,
+
       distance,
-      trend: a.trend,
+
+      trend:
+        a.trend,
+
       volumeRatio:
         a.volume.ratio,
-      rsi: a.rsi
+
+      rsi:
+        a.rsi
     };
   } catch {
     return null;
@@ -1536,7 +2977,9 @@ async function quickScan(
    SCAN MARKET
 ========================================================= */
 
-async function scanMarket(difficulty = 11) {
+async function scanMarket(
+  difficulty = 11
+) {
   const symbols =
     await getMarketSymbols();
 
@@ -1558,8 +3001,7 @@ async function scanMarket(difficulty = 11) {
         batch.map(x =>
           quickScan(
             x.symbol,
-            x.category,
-            difficulty
+            x.category
           )
         )
       );
@@ -1567,18 +3009,17 @@ async function scanMarket(difficulty = 11) {
     for (const r of out) {
       if (!r) continue;
 
-      /*
-       * ابتدا فقط ارزهایی که واقعاً
-       * نزدیک MA20 یک دقیقه هستند
-       * وارد تحلیل عمیق می‌شوند.
-       */
-
-      if (r.distance <= 0.60) {
+      if (
+        r.distance <= 0.60
+      ) {
         results.push(r);
       }
     }
 
-    if (results.length >= RADAR_LIMIT) {
+    if (
+      results.length >=
+      RADAR_LIMIT
+    ) {
       break;
     }
 
@@ -1587,11 +3028,15 @@ async function scanMarket(difficulty = 11) {
 
   results.sort(
     (a, b) =>
-      a.distance - b.distance
+      a.distance -
+      b.distance
   );
 
   const deep =
-    results.slice(0, DEEP_LIMIT);
+    results.slice(
+      0,
+      DEEP_LIMIT
+    );
 
   const signals = [];
 
@@ -1608,18 +3053,34 @@ async function scanMarket(difficulty = 11) {
         analysis.signal.direction !==
         "WAIT"
       ) {
-        signals.push(analysis);
+        signals.push(
+          analysis
+        );
       }
     } catch {}
   }
 
   return {
     ok: true,
-    checked: symbols.length,
-    candidates: results.length,
+
+    checked:
+      symbols.length,
+
+    candidates:
+      results.length,
+
     signals,
+
     difficulty,
-    timestamp: Date.now()
+
+    signalTimeframe:
+      "1m",
+
+    higherTimeframe:
+      "15m",
+
+    timestamp:
+      Date.now()
   };
 }
 
@@ -1636,19 +3097,26 @@ export default {
       url.pathname;
 
     try {
+
       if (
         request.method ===
         "OPTIONS"
       ) {
-        return new Response(null, {
-          headers: {
-            "access-control-allow-origin": "*",
-            "access-control-allow-methods":
-              "GET,POST,OPTIONS",
-            "access-control-allow-headers":
-              "Content-Type"
+        return new Response(
+          null,
+          {
+            headers: {
+              "access-control-allow-origin":
+                "*",
+
+              "access-control-allow-methods":
+                "GET,POST,OPTIONS",
+
+              "access-control-allow-headers":
+                "Content-Type"
+            }
           }
-        });
+        );
       }
 
       /* HEALTH */
@@ -1659,16 +3127,23 @@ export default {
       ) {
         return json({
           ok: true,
-          service: "Bybit Personal Scanner",
-          connected: true,
-          time: Date.now()
+
+          service:
+            "Bybit Personal Scanner",
+
+          connected:
+            true,
+
+          time:
+            Date.now()
         });
       }
 
       /* SEARCH */
 
       if (
-        path === "/api/search"
+        path ===
+        "/api/search"
       ) {
         const q =
           url.searchParams.get(
@@ -1688,7 +3163,8 @@ export default {
       /* ANALYZE */
 
       if (
-        path === "/api/analyze"
+        path ===
+        "/api/analyze"
       ) {
         const symbol =
           url.searchParams.get(
@@ -1708,11 +3184,14 @@ export default {
           );
 
         if (!symbol) {
-          return json({
-            ok: false,
-            error:
-              "symbol required"
-          }, 400);
+          return json(
+            {
+              ok: false,
+              error:
+                "symbol required"
+            },
+            400
+          );
         }
 
         const result =
@@ -1722,13 +3201,16 @@ export default {
             difficulty
           );
 
-        return json(result);
+        return json(
+          result
+        );
       }
 
       /* SCAN */
 
       if (
-        path === "/api/scan"
+        path ===
+        "/api/scan"
       ) {
         const difficulty =
           num(
@@ -1742,7 +3224,9 @@ export default {
             difficulty
           );
 
-        return json(result);
+        return json(
+          result
+        );
       }
 
       /* SYMBOL LIST */
@@ -1756,24 +3240,37 @@ export default {
 
         return json({
           ok: true,
-          total: symbols.length,
+
+          total:
+            symbols.length,
+
           symbols
         });
       }
 
-      return json({
-        ok: false,
-        error: "Not found"
-      }, 404);
+      return json(
+        {
+          ok: false,
+          error:
+            "Not found"
+        },
+        404
+      );
 
     } catch (err) {
-      return json({
-        ok: false,
-        error:
-          err?.message ||
-          String(err),
-        timestamp: Date.now()
-      }, 500);
+      return json(
+        {
+          ok: false,
+
+          error:
+            err?.message ||
+            String(err),
+
+          timestamp:
+            Date.now()
+        },
+        500
+      );
     }
   }
 };
