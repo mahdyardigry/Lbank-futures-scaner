@@ -39,17 +39,11 @@ header p{margin:0;color:#91a4ba;font-size:13px}
   padding:16px;
   margin:14px 0;
 }
-.status{
-  text-align:center;
-  color:#64e69a;
-}
+.status{text-align:center;color:#64e69a}
 .panel h2{font-size:17px;margin:0 0 14px}
 
-.row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
 input[type=text]{
   flex:1;
   min-width:200px;
@@ -60,6 +54,15 @@ input[type=text]{
   padding:12px;
   direction:ltr;
   text-align:left;
+}
+
+select{
+  width:100%;
+  background:#07101d;
+  color:#fff;
+  border:1px solid #30465f;
+  border-radius:10px;
+  padding:12px;
 }
 
 .rangeRow{
@@ -74,23 +77,28 @@ input[type=range]{flex:1}
   font-weight:bold;
   color:#6fc7ff;
 }
+
 .small{
   font-size:12px;
   color:#8ea2b8;
   line-height:1.8;
 }
+
 .alertRow{
   display:flex;
   gap:15px;
   flex-wrap:wrap;
   align-items:center;
 }
+
 .switch{
   display:flex;
   gap:8px;
   align-items:center;
 }
+
 input[type=checkbox]{width:18px;height:18px}
+
 .volume{
   display:flex;
   align-items:center;
@@ -104,6 +112,19 @@ input[type=checkbox]{width:18px;height:18px}
   border-radius:10px;
   margin-top:12px;
   color:#9fb1c6;
+}
+
+.scanBasis{
+  margin-top:12px;
+  padding:12px;
+  background:#07101d;
+  border:1px solid #263c55;
+  border-radius:10px;
+}
+
+.scanBasisTitle{
+  font-weight:bold;
+  margin-bottom:8px;
 }
 
 .cards{
@@ -120,13 +141,16 @@ input[type=checkbox]{width:18px;height:18px}
 }
 
 .signalHead{padding:14px}
+
 .signalTop{
   display:flex;
   justify-content:space-between;
   gap:10px;
   align-items:center;
 }
+
 .symbol{font-size:18px;font-weight:bold}
+
 .market{
   font-size:11px;
   padding:4px 7px;
@@ -134,6 +158,7 @@ input[type=checkbox]{width:18px;height:18px}
   background:#24364a;
   color:#a9bed3;
 }
+
 .long{color:#35df89}
 .short{color:#ff6474}
 .wait{color:#ffc857}
@@ -145,6 +170,7 @@ input[type=checkbox]{width:18px;height:18px}
   grid-template-columns:1fr 1fr;
   gap:7px;
 }
+
 .maItem{
   padding:8px;
   background:#07101d;
@@ -158,12 +184,14 @@ input[type=checkbox]{width:18px;height:18px}
   background:#14263a;
   text-align:center;
 }
+
 .deep{
   display:none;
   padding:12px;
   border-top:1px solid #263c55;
   background:#091321;
 }
+
 .deep.open{display:block}
 
 .deepBox{
@@ -172,6 +200,7 @@ input[type=checkbox]{width:18px;height:18px}
   margin:8px 0;
   overflow:hidden;
 }
+
 .deepTitle{
   padding:12px;
   background:#101f31;
@@ -179,6 +208,7 @@ input[type=checkbox]{width:18px;height:18px}
   font-weight:bold;
   user-select:none;
 }
+
 .deepTitle:hover{background:#152941}
 
 .deepContent{
@@ -187,6 +217,7 @@ input[type=checkbox]{width:18px;height:18px}
   font-size:12px;
   line-height:1.9;
 }
+
 .deepBox.open .deepContent{display:block}
 
 .grid{
@@ -194,6 +225,7 @@ input[type=checkbox]{width:18px;height:18px}
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:8px;
 }
+
 .data{
   background:#07101d;
   padding:8px;
@@ -206,21 +238,25 @@ input[type=checkbox]{width:18px;height:18px}
   margin:5px 0;
   background:#101d2c;
 }
+
 .reason.long{border-right:3px solid #35df89}
 .reason.short{border-right:3px solid #ff6474}
 
 .tableWrap{overflow:auto}
+
 table{
   width:100%;
   border-collapse:collapse;
   min-width:520px;
 }
+
 th,td{
   padding:7px;
   border-bottom:1px solid #20334b;
   text-align:center;
   font-size:11px;
 }
+
 th{color:#8fb1d1}
 
 .error{
@@ -229,11 +265,13 @@ th{color:#8fb1d1}
   background:#35151c;
   color:#ff8895;
 }
+
 .empty{
   padding:20px;
   text-align:center;
   color:#7f93a8;
 }
+
 .live{color:#4de59a}
 
 .liveDot{
@@ -254,15 +292,9 @@ th{color:#8fb1d1}
   font-size:11px;
 }
 
-.good{
-  color:#35df89;
-}
-.bad{
-  color:#ff6474;
-}
-.neutral{
-  color:#ffc857;
-}
+.good{color:#35df89}
+.bad{color:#ff6474}
+.neutral{color:#ffc857}
 
 .analysisHeader{
   background:#091522;
@@ -272,8 +304,50 @@ th{color:#8fb1d1}
   margin-bottom:10px;
 }
 
-.closeAnalysis{
-  float:left;
+.closeAnalysis{float:left}
+
+.styleBox{
+  border:1px solid #263c55;
+  border-radius:10px;
+  margin:7px 0;
+  overflow:hidden;
+}
+
+.styleTitle{
+  padding:11px;
+  background:#101f31;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.styleContent{
+  display:none;
+  padding:10px;
+  background:#091522;
+}
+
+.styleBox.open .styleContent{display:block}
+
+.styleDirection{
+  font-size:16px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+
+.basisTag{
+  display:inline-block;
+  background:#182b40;
+  border-radius:7px;
+  padding:4px 8px;
+  margin:2px;
+  font-size:11px;
+}
+
+.signalBasis{
+  margin-top:9px;
+  padding:8px;
+  background:#101d2c;
+  border-radius:8px;
 }
 
 @media(max-width:600px){
@@ -291,8 +365,8 @@ th{color:#8fb1d1}
 <header>
   <h1>📊 اسکنر شخصی Bybit</h1>
   <p>
-    سیگنال‌گیری بر پایه برخورد قیمت با MA20 در 1 دقیقه
-    و تأیید روند در 15 دقیقه
+    تحلیل واقعی بازار بر پایه داده‌های Bybit و محاسبات 1 دقیقه
+    با تأیید تایم‌فریم 15 دقیقه
   </p>
 </header>
 
@@ -323,11 +397,13 @@ th{color:#8fb1d1}
 
 </section>
 
+
 <section class="panel">
 
-  <h2>🎯 تنظیم سیگنال</h2>
+  <h2>🎯 تنظیم سخت‌گیری سیگنال</h2>
 
   <div class="rangeRow">
+
     <span>آسان‌تر</span>
 
     <input
@@ -340,14 +416,16 @@ th{color:#8fb1d1}
 
     <span>سخت‌تر</span>
 
-    <div id="strictValue" class="value">50</div>
+    <div id="strictValue" class="value">
+      50
+    </div>
+
   </div>
 
-  <div class="small">
-    0 = سیگنال بیشتر · 100 = سیگنال سخت‌تر
-  </div>
+  <div id="strictDescription" class="small"></div>
 
 </section>
+
 
 <section class="panel">
 
@@ -361,17 +439,19 @@ th{color:#8fb1d1}
     </label>
 
     <div class="volume">
-      <span>حجم صدا:</span>
+
+      <span>بلندی صدا:</span>
 
       <input
         id="volume"
         type="range"
         min="0"
         max="100"
-        value="50"
+        value="90"
       >
 
-      <span id="volumeValue">50%</span>
+      <span id="volumeValue">90%</span>
+
     </div>
 
     <button id="testSound" class="secondary">
@@ -386,13 +466,71 @@ th{color:#8fb1d1}
 
 </section>
 
+
 <section class="panel">
 
   <h2>🔎 اسکن چرخشی بازار</h2>
 
   <div class="small">
-    بازار Bybit به‌صورت چرخشی بررسی می‌شود.
-    هسته سیگنال MA20 تایم‌فریم 1 دقیقه و تأیید 15 دقیقه است.
+    تمام محاسبات اصلی اسکن روی تایم‌فریم 1 دقیقه انجام می‌شود.
+    تایم‌فریم 15 دقیقه فقط برای تأیید و تشخیص جهت بالاتر استفاده می‌شود.
+  </div>
+
+  <div class="scanBasis">
+
+    <div class="scanBasisTitle">
+      🎯 مبنای سیگنال‌گیری
+    </div>
+
+    <select id="scanBasis">
+
+      <option value="all">
+        ⭐ همه مبناها — ترکیبی
+      </option>
+
+      <option value="trend">
+        📈 Trend Following — روندی
+      </option>
+
+      <option value="breakout">
+        🚀 Breakout — شکست
+      </option>
+
+      <option value="reversal">
+        🔄 Reversal — برگشتی
+      </option>
+
+      <option value="smartmoney">
+        🧲 Liquidity / Smart Money
+      </option>
+
+      <option value="orderflow">
+        📦 Order Flow
+      </option>
+
+      <option value="momentum">
+        ⚡ Momentum / Pump-Dump
+      </option>
+
+      <option value="rsi">
+        RSI
+      </option>
+
+      <option value="macd">
+        MACD
+      </option>
+
+      <option value="divergence">
+        واگرایی
+      </option>
+
+    </select>
+
+    <div class="small" style="margin-top:7px">
+      مبنای انتخاب‌شده به Worker ارسال می‌شود و Worker باید
+      فقط بر اساس داده واقعی محاسبه‌شده همان مبنا سیگنال بدهد.
+    </div>
+
   </div>
 
   <div class="row" style="margin-top:12px">
@@ -413,6 +551,7 @@ th{color:#8fb1d1}
 
 </section>
 
+
 <section class="panel">
 
   <h2>📡 سیگنال‌ها</h2>
@@ -425,13 +564,13 @@ th{color:#8fb1d1}
 
 </section>
 
+
 <section class="panel">
 
   <h2>📖 تحلیل‌های باز</h2>
 
   <div class="small">
-    این قسمت جدا از سیگنال‌هاست.
-    تحلیل‌هایی که باز می‌کنی تا زمانی که خودت ببندی باقی می‌مانند.
+    تحلیل‌های باز تا زمانی که خودت نبندی باقی می‌مانند.
     بروزرسانی زنده باعث بسته‌شدن منوها نمی‌شود.
   </div>
 
@@ -440,6 +579,7 @@ th{color:#8fb1d1}
 </section>
 
 </div>
+
 
 <script>
 
@@ -453,10 +593,11 @@ let scanOffset = 0;
 let scanTimer = null;
 
 let opened = new Map();
-
 let previousSignals = new Set();
 
 let audioContext = null;
+let masterGain = null;
+let compressor = null;
 
 
 /* =========================
@@ -471,6 +612,9 @@ const strictnessEl =
 
 const strictValueEl =
   document.getElementById("strictValue");
+
+const strictDescriptionEl =
+  document.getElementById("strictDescription");
 
 const symbolInput =
   document.getElementById("symbolInput");
@@ -487,6 +631,9 @@ const openedEl =
 const scanState =
   document.getElementById("scanState");
 
+const scanBasisEl =
+  document.getElementById("scanBasis");
+
 const soundEnabled =
   document.getElementById("soundEnabled");
 
@@ -501,7 +648,7 @@ const soundStatus =
 
 
 /* =========================
-   تنظیمات ذخیره‌شده
+   تنظیمات
 ========================= */
 
 const savedStrict =
@@ -510,15 +657,81 @@ const savedStrict =
 if(savedStrict !== null)
   strictnessEl.value = savedStrict;
 
-strictValueEl.textContent =
-  strictnessEl.value;
+const savedBasis =
+  localStorage.getItem("personal_scan_basis");
+
+if(savedBasis)
+  scanBasisEl.value = savedBasis;
+
+const savedSound =
+  localStorage.getItem("personal_sound");
+
+if(savedSound !== null)
+  soundEnabled.checked =
+    savedSound === "1";
+
+const savedVolume =
+  localStorage.getItem("personal_volume");
+
+if(savedVolume !== null)
+  volumeEl.value = savedVolume;
+
+
+function updateStrictnessUI(){
+
+  const value =
+    Number(strictnessEl.value);
+
+  strictValueEl.textContent =
+    value;
+
+  let text;
+
+  if(value < 20){
+
+    text =
+      "🟢 بسیار آسان — سیگنال‌های بیشتری نمایش داده می‌شود.";
+
+  }
+  else if(value < 40){
+
+    text =
+      "🟢 آسان — فیلتر سبک.";
+
+  }
+  else if(value < 60){
+
+    text =
+      "🟡 متعادل — فیلتر متوسط.";
+
+  }
+  else if(value < 80){
+
+    text =
+      "🟠 سخت — فقط سیگنال‌های قوی‌تر.";
+
+  }
+  else{
+
+    text =
+      "🔴 بسیار سخت — فقط سیگنال‌های بسیار قوی.";
+
+  }
+
+  strictDescriptionEl.textContent =
+    text;
+
+}
+
+
+updateStrictnessUI();
+
 
 strictnessEl.addEventListener(
   "input",
   () => {
 
-    strictValueEl.textContent =
-      strictnessEl.value;
+    updateStrictnessUI();
 
     localStorage.setItem(
       "personal_strictness",
@@ -529,22 +742,31 @@ strictnessEl.addEventListener(
 );
 
 
-const savedSound =
-  localStorage.getItem("personal_sound");
+scanBasisEl.addEventListener(
+  "change",
+  () => {
 
-if(savedSound !== null)
-  soundEnabled.checked =
-    savedSound === "1";
+    localStorage.setItem(
+      "personal_scan_basis",
+      scanBasisEl.value
+    );
 
+  }
+);
 
-const savedVolume =
-  localStorage.getItem("personal_volume");
-
-if(savedVolume !== null)
-  volumeEl.value = savedVolume;
 
 volumeValue.textContent =
   volumeEl.value + "%";
+
+
+function updateSoundText(){
+
+  soundStatus.textContent =
+    soundEnabled.checked
+      ? "🔊 هشدار صوتی فعال است."
+      : "🔇 هشدار صوتی خاموش است.";
+
+}
 
 
 soundEnabled.addEventListener(
@@ -578,16 +800,6 @@ volumeEl.addEventListener(
 );
 
 
-function updateSoundText(){
-
-  soundStatus.textContent =
-    soundEnabled.checked
-      ? "هشدارهای سیگنال فعال هستند؛ صدای هشدار روشن است."
-      : "هشدارهای سیگنال فعال هستند؛ صدای هشدار خاموش است.";
-
-}
-
-
 /* =========================
    API
 ========================= */
@@ -605,12 +817,17 @@ async function api(path){
   let data;
 
   try{
-    data = await response.json();
+
+    data =
+      await response.json();
+
   }
   catch{
+
     throw new Error(
       "Worker پاسخ JSON معتبر برنگرداند."
     );
+
   }
 
   if(
@@ -663,8 +880,48 @@ async function checkHealth(){
 
 
 /* =========================
-   صدا
+   صدای واقعی
 ========================= */
+
+function ensureAudio(){
+
+  if(!audioContext){
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+    masterGain =
+      audioContext.createGain();
+
+    compressor =
+      audioContext.createDynamicsCompressor();
+
+    compressor.threshold.value = -18;
+    compressor.knee.value = 12;
+    compressor.ratio.value = 8;
+    compressor.attack.value = 0.003;
+    compressor.release.value = 0.15;
+
+    masterGain.connect(compressor);
+    compressor.connect(
+      audioContext.destination
+    );
+
+  }
+
+  if(
+    audioContext.state === "suspended"
+  ){
+
+    audioContext.resume();
+
+  }
+
+}
+
 
 function playAlert(){
 
@@ -673,51 +930,86 @@ function playAlert(){
 
   try{
 
-    if(!audioContext){
+    ensureAudio();
 
-      audioContext =
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
+    const now =
+      audioContext.currentTime;
 
-    }
+    const userVolume =
+      Number(volumeEl.value) / 100;
 
-    const oscillator =
-      audioContext.createOscillator();
+    /*
+      اینجا دیگر با طولانی کردن صدا،
+      مشکل بلندی حل نمی‌شود.
+      Gain مستقیماً با Volume کنترل می‌شود.
+    */
 
-    const gain =
-      audioContext.createGain();
+    masterGain.gain.cancelScheduledValues(now);
 
-    oscillator.type = "sine";
-
-    oscillator.frequency.value = 880;
-
-    gain.gain.value =
-      Number(volumeEl.value) /
-      100 *
-      0.18;
-
-    oscillator.connect(gain);
-    gain.connect(
-      audioContext.destination
+    masterGain.gain.setValueAtTime(
+      Math.max(
+        0.01,
+        userVolume
+      ),
+      now
     );
 
-    oscillator.start();
+    const frequencies =
+      [880,1100,1320];
 
-    oscillator.frequency.exponentialRampToValueAtTime(
-      1320,
-      audioContext.currentTime + 0.18
-    );
+    frequencies.forEach(
+      (frequency,index) => {
 
-    oscillator.stop(
-      audioContext.currentTime + 0.35
+        const osc =
+          audioContext.createOscillator();
+
+        const gain =
+          audioContext.createGain();
+
+        osc.type = "square";
+
+        osc.frequency.setValueAtTime(
+          frequency,
+          now + index * 0.13
+        );
+
+        const start =
+          now + index * 0.13;
+
+        const end =
+          start + 0.16;
+
+        gain.gain.setValueAtTime(
+          0.001,
+          start
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.9,
+          start + 0.015
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.001,
+          end
+        );
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(start);
+        osc.stop(end);
+
+      }
     );
 
   }
   catch(e){
 
-    console.log(e);
+    console.log(
+      "Audio error",
+      e
+    );
 
   }
 
@@ -784,25 +1076,74 @@ function num(n,d=2){
 }
 
 
+function formatNumber(value){
+
+  const n =
+    Number(value);
+
+  if(!Number.isFinite(n))
+    return "-";
+
+  return n.toLocaleString(
+    undefined,
+    {
+      maximumFractionDigits:4
+    }
+  );
+
+}
+
+
 function directionText(direction){
 
-  if(direction === "LONG")
-    return "🟢 LONG";
+  const d =
+    String(direction || "")
+      .toUpperCase();
 
-  if(direction === "SHORT")
-    return "🔴 SHORT";
+  if(
+    d === "LONG" ||
+    d === "BULLISH" ||
+    d === "UP"
+  )
+    return "🟢 صعودی";
 
-  return "🟡 WAIT";
+  if(
+    d === "SHORT" ||
+    d === "BEARISH" ||
+    d === "DOWN"
+  )
+    return "🔴 نزولی";
+
+  if(
+    d === "RANGE" ||
+    d === "RANGING" ||
+    d === "SIDEWAYS"
+  )
+    return "🟡 رنج";
+
+  return "🟡 نامشخص";
 
 }
 
 
 function clsDirection(direction){
 
-  if(direction === "LONG")
+  const d =
+    String(direction || "")
+      .toUpperCase();
+
+  if(
+    d === "LONG" ||
+    d === "BULLISH" ||
+    d === "UP"
+  )
     return "long";
 
-  if(direction === "SHORT")
+  if(
+    d === "SHORT" ||
+    d === "BEARISH" ||
+    d === "DOWN"
+  )
     return "short";
 
   return "wait";
@@ -818,6 +1159,7 @@ analyzeBtn.addEventListener(
   "click",
   analyzeManual
 );
+
 
 symbolInput.addEventListener(
   "keydown",
@@ -839,6 +1181,7 @@ async function analyzeManual(){
     return;
 
   analyzeBtn.disabled = true;
+
   analyzeBtn.textContent =
     "⏳ در حال تحلیل...";
 
@@ -884,6 +1227,7 @@ document
     "click",
     startScan
   );
+
 
 document
   .getElementById("stopScan")
@@ -939,15 +1283,30 @@ async function scanLoop(){
 
   try{
 
+    /*
+      basis مستقیماً به Worker ارسال می‌شود.
+      تمام مبناها در Worker باید از داده واقعی 1m
+      محاسبه شوند.
+    */
+
+    const query =
+      "/api/personal/scan" +
+      "?offset=" +
+      encodeURIComponent(
+        scanOffset
+      ) +
+      "&strictness=" +
+      encodeURIComponent(
+        strictnessEl.value
+      ) +
+      "&basis=" +
+      encodeURIComponent(
+        scanBasisEl.value
+      ) +
+      "&timeframe=1";
+
     const data =
-      await api(
-        "/api/personal/scan?offset=" +
-        encodeURIComponent(scanOffset) +
-        "&strictness=" +
-        encodeURIComponent(
-          strictnessEl.value
-        )
-      );
+      await api(query);
 
     scanOffset =
       Number(
@@ -961,11 +1320,18 @@ async function scanLoop(){
 
     scanState.innerHTML =
       "🟢 اسکن فعال است · بررسی شده: " +
-      data.checked +
+      (data.checked ?? "-") +
       " · کل بازار: " +
-      data.totalMarkets +
+      (data.totalMarkets ?? "-") +
       " · سخت‌گیری: " +
-      data.strictness;
+      (data.strictness ?? strictnessEl.value) +
+      " · مبنا: " +
+      escapeHtml(
+        basisText(
+          data.basis ||
+          scanBasisEl.value
+        )
+      );
 
     renderSignals(
       data.results || []
@@ -994,7 +1360,52 @@ async function scanLoop(){
 
 
 /* =========================
-   کارت سیگنال
+   نام مبنا
+========================= */
+
+function basisText(basis){
+
+  const map = {
+
+    all:
+      "همه مبناها",
+
+    trend:
+      "Trend Following",
+
+    breakout:
+      "Breakout",
+
+    reversal:
+      "Reversal",
+
+    smartmoney:
+      "Liquidity / Smart Money",
+
+    orderflow:
+      "Order Flow",
+
+    momentum:
+      "Momentum / Pump-Dump",
+
+    rsi:
+      "RSI",
+
+    macd:
+      "MACD",
+
+    divergence:
+      "واگرایی"
+
+  };
+
+  return map[basis] || basis || "نامشخص";
+
+}
+
+
+/* =========================
+   سیگنال‌ها
 ========================= */
 
 function renderSignals(results){
@@ -1002,7 +1413,9 @@ function renderSignals(results){
   if(!results.length){
 
     signalsEl.innerHTML =
-      '<div class="empty">در این مرحله سیگنال مطابق درجه سخت‌گیری پیدا نشد.</div>';
+      '<div class="empty">' +
+      'در این مرحله سیگنال مطابق مبنای انتخاب‌شده و درجه سخت‌گیری پیدا نشد.' +
+      '</div>';
 
     return;
 
@@ -1013,19 +1426,32 @@ function renderSignals(results){
     results.map(createSignalCard).join("") +
     '</div>';
 
+
   for(const item of results){
+
+    const direction =
+      item.direction ||
+      item.signal ||
+      "WAIT";
+
+    const basis =
+      item.signalBasis ||
+      item.basis ||
+      item.method ||
+      scanBasisEl.value;
 
     const key =
       item.category +
       ":" +
       item.symbol +
       ":" +
-      item.direction;
+      direction +
+      ":" +
+      basis;
+
 
     if(
-      !previousSignals.has(key) &&
-      Number(item.score) >=
-      Number(strictnessEl.value)
+      !previousSignals.has(key)
     ){
 
       playAlert();
@@ -1047,6 +1473,17 @@ function createSignalCard(item){
       item.symbol
     );
 
+  const basis =
+    item.signalBasis ||
+    item.basis ||
+    item.method ||
+    "نامشخص";
+
+  const direction =
+    item.direction ||
+    item.signal ||
+    "WAIT";
+
   return `
 
   <article
@@ -1059,26 +1496,32 @@ function createSignalCard(item){
       <div class="signalTop">
 
         <div class="symbol">
-          ${escapeHtml(item.symbol)}
+          ${escapeHtml(
+            item.symbol
+          )}
         </div>
 
         <div class="market">
-          ${item.category === "linear"
-            ? "Futures"
-            : "Spot"}
+          ${
+            item.category === "linear"
+              ? "Futures"
+              : "Spot"
+          }
         </div>
 
       </div>
 
-      <div
-        class="${clsDirection(item.direction)}"
-        style="margin-top:10px;font-weight:bold"
-      >
-        ${directionText(item.direction)}
-      </div>
 
       <div
-        class="${clsDirection(item.direction)}"
+        class="${clsDirection(direction)}"
+        style="margin-top:10px;font-weight:bold"
+      >
+        ${directionText(direction)}
+      </div>
+
+
+      <div
+        class="${clsDirection(direction)}"
         style="margin-top:5px"
       >
         <span class="score">
@@ -1086,33 +1529,72 @@ function createSignalCard(item){
         </span>/100
       </div>
 
+
+      <div class="signalBasis">
+
+        <span class="basisTag">
+          مبنا:
+          ${escapeHtml(
+            basisText(basis)
+          )}
+        </span>
+
+        ${
+          item.signalReason
+            ? `
+              <div class="small">
+                ${escapeHtml(
+                  item.signalReason
+                )}
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+
       <div class="maBox">
 
         <div class="maItem">
           قیمت:
-          <b>${formatPrice(item.price)}</b>
+          <b>
+            ${formatPrice(
+              item.price
+            )}
+          </b>
         </div>
+
 
         <div class="maItem">
           MA20 1m:
           <b>
-            ${formatPrice(item.oneMinute?.ma20)}
+            ${formatPrice(
+              item.oneMinute?.ma20
+            )}
           </b>
         </div>
+
 
         <div class="maItem">
           فاصله:
           <b>
-            ${pct(item.oneMinute?.distancePct)}
+            ${pct(
+              item.oneMinute?.distancePct
+            )}
           </b>
         </div>
+
 
         <div class="maItem">
           شیب:
           <b>
-            ${pct(item.oneMinute?.maSlopePct)}
+            ${pct(
+              item.oneMinute?.maSlopePct
+            )}
           </b>
         </div>
+
 
         <div class="maItem">
           15m:
@@ -1124,6 +1606,7 @@ function createSignalCard(item){
             )}
           </b>
         </div>
+
 
         <div class="maItem">
           حجم:
@@ -1139,6 +1622,7 @@ function createSignalCard(item){
 
     </div>
 
+
     <button
       class="deepBtn"
       onclick="toggleDeep('${id}')"
@@ -1146,13 +1630,16 @@ function createSignalCard(item){
       ▼ تحلیل عمیق
     </button>
 
+
     <div
       class="deep"
       id="deep-${id}"
     >
+
       <div class="empty">
         برای دریافت تحلیل عمیق باز کنید.
       </div>
+
     </div>
 
   </article>
@@ -1181,6 +1668,7 @@ async function toggleDeep(id){
   if(!deep || !card)
     return;
 
+
   if(deep.classList.contains("open")){
 
     deep.classList.remove("open");
@@ -1189,27 +1677,35 @@ async function toggleDeep(id){
 
   }
 
+
   deep.classList.add("open");
+
 
   const symbol =
     card.querySelector(
       ".symbol"
     ).textContent.trim();
 
+
   const market =
     card.querySelector(
       ".market"
     ).textContent.trim();
+
 
   const category =
     market === "Futures"
       ? "linear"
       : "spot";
 
+
   try{
 
     deep.innerHTML =
-      '<div class="empty">⏳ دریافت تحلیل عمیق واقعی...</div>';
+      '<div class="empty">' +
+      '⏳ دریافت تحلیل عمیق واقعی...' +
+      '</div>';
+
 
     const data =
       await api(
@@ -1221,8 +1717,10 @@ async function toggleDeep(id){
         )
       );
 
+
     const existing =
       opened.get(id);
+
 
     opened.set(
       id,
@@ -1237,11 +1735,13 @@ async function toggleDeep(id){
       }
     );
 
+
     renderDeep(
       deep,
       data,
       opened.get(id).menuState
     );
+
 
     saveOpenSymbols();
 
@@ -1261,25 +1761,8 @@ async function toggleDeep(id){
 
 
 /* =========================
-   منوی عمیق
+   منوهای تحلیل
 ========================= */
-
-const MENU_KEY = [
-  "style",
-  "signal",
-  "one",
-  "fifteen",
-  "technical",
-  "footprint",
-  "book",
-  "liquidity",
-  "levels",
-  "oi",
-  "funding",
-  "structure",
-  "reasons"
-];
-
 
 function renderDeep(
   container,
@@ -1296,12 +1779,13 @@ function renderDeep(
   const book =
     data.orderBook || {};
 
+
   container.innerHTML = `
 
     ${deepBox(
-      "style",
-      "📈 سبک معاملاتی",
-      tradingStyle(
+      "styles",
+      "📚 سبک‌های معاملاتی",
+      tradingStylesHTML(
         data,
         one,
         fifteen
@@ -1309,26 +1793,30 @@ function renderDeep(
       state
     )}
 
+
     ${deepBox(
       "signal",
-      "🎯 سیگنال و منطق محاسبات",
+      "🎯 سیگنال و منطق انتخاب",
       signalSummary(data),
       state
     )}
 
+
     ${deepBox(
       "one",
-      "⏱ تایم‌فریم 1 دقیقه",
+      "⏱ وضعیت دقیق 1 دقیقه",
       oneMinuteHTML(one),
       state
     )}
 
+
     ${deepBox(
       "fifteen",
-      "⏱ تایم‌فریم 15 دقیقه",
+      "⏱ وضعیت تایم‌فریم بالاتر 15 دقیقه",
       fifteenMinuteHTML(fifteen),
       state
     )}
+
 
     ${deepBox(
       "technical",
@@ -1341,15 +1829,17 @@ function renderDeep(
       state
     )}
 
+
     ${deepBox(
       "footprint",
-      "📦 Footprint / Delta / Imbalance",
+      "📦 Footprint / Delta / Bid / Ask / Imbalance",
       footprintHTML(
         data,
         one
       ),
       state
     )}
+
 
     ${deepBox(
       "book",
@@ -1360,6 +1850,7 @@ function renderDeep(
       ),
       state
     )}
+
 
     ${deepBox(
       "liquidity",
@@ -1372,15 +1863,17 @@ function renderDeep(
       state
     )}
 
+
     ${deepBox(
       "levels",
-      "🛡 حمایت و مقاومت واقعی",
+      "🛡 حمایت و مقاومت + قدرت خریدار/فروشنده",
       levelsHTML(
         data,
         one
       ),
       state
     )}
+
 
     ${deepBox(
       "oi",
@@ -1389,6 +1882,7 @@ function renderDeep(
       state
     )}
 
+
     ${deepBox(
       "funding",
       "💰 Funding Rate / تغییرات",
@@ -1396,12 +1890,14 @@ function renderDeep(
       state
     )}
 
+
     ${deepBox(
       "structure",
-      "🏗 BOS / CHoCH / FVG / Order Block",
+      "🏗 BOS / CHoCH / FVG / Order Block / CISD",
       structureHTML(data),
       state
     )}
+
 
     ${deepBox(
       "reasons",
@@ -1412,6 +1908,7 @@ function renderDeep(
       state
     )}
 
+
     <div class="small live">
       <span class="liveDot"></span>
       تحلیل زنده — آخرین بروزرسانی:
@@ -1419,6 +1916,7 @@ function renderDeep(
     </div>
 
   `;
+
 
   restoreMenuState(
     container,
@@ -1451,10 +1949,13 @@ function deepBox(
       class="deepTitle"
       onclick="toggleMenu(this)"
     >
+
       ${title}
+
       <span style="float:left">
         ${open ? "▲" : "▼"}
       </span>
+
     </div>
 
     <div class="deepContent">
@@ -1490,6 +1991,7 @@ function toggleMenu(title){
   if(arrow)
     arrow.textContent =
       isOpen ? "▲" : "▼";
+
 
   if(id){
 
@@ -1549,7 +2051,8 @@ function findOpenedIdFromElement(el){
 
     }
 
-    parent = parent.parentElement;
+    parent =
+      parent.parentElement;
 
   }
 
@@ -1596,75 +2099,753 @@ function restoreMenuState(
 
 
 /* =========================
-   سبک معاملاتی
+   ۶ سبک معاملاتی
 ========================= */
 
-function tradingStyle(
+const STYLE_DEFS = [
+
+  {
+    key:"trend",
+    title:"📈 Trend Following",
+    desc:
+      "تشخیص جهت روند با MA، ساختار بازار و مومنتوم."
+  },
+
+  {
+    key:"breakout",
+    title:"🚀 Breakout",
+    desc:
+      "شکست حمایت/مقاومت، BOS/CHoCH و افزایش حجم."
+  },
+
+  {
+    key:"reversal",
+    title:"🔄 Reversal",
+    desc:
+      "شکار برگشت قیمت با واگرایی، RSI/MACD، Hunt و نقدینگی."
+  },
+
+  {
+    key:"smartmoney",
+    title:"🧲 Liquidity / Smart Money",
+    desc:
+      "Liquidity Sweep/Hunt، FVG، Order Block، CISD و ساختار."
+  },
+
+  {
+    key:"orderflow",
+    title:"📦 Order Flow",
+    desc:
+      "Footprint، Delta، Buy/Sell Volume، Order Book و دیوارهای سفارش."
+  },
+
+  {
+    key:"momentum",
+    title:"⚡ Momentum / Pump-Dump",
+    desc:
+      "حجم غیرعادی، تغییر سریع قیمت، OI، Funding و فشار Long/Short."
+  }
+
+];
+
+
+function tradingStylesHTML(
   data,
   one,
   fifteen
 ){
 
-  const style =
-    data.tradingStyle ||
-    data.marketStyle ||
-    data.style ||
-    null;
+  return STYLE_DEFS.map(
+    style =>
+      styleBoxHTML(
+        style,
+        data,
+        one,
+        fifteen
+      )
+  ).join("");
 
-  const reason =
-    data.tradingStyleReason ||
-    data.styleReason ||
-    null;
+}
 
-  let styleText =
-    style || "داده سبک بازار موجود نیست";
 
-  let reasonText =
-    reason ||
-    "Worker برای تعیین سبک بازار داده محاسباتی ارائه نکرده است.";
+function styleBoxHTML(
+  style,
+  data,
+  one,
+  fifteen
+){
+
+  const result =
+    getStyleResult(
+      style.key,
+      data,
+      one,
+      fifteen
+    );
+
 
   return `
 
-    <div class="grid">
-
-      <div class="data">
-        سبک بازار:
-        <b>${escapeHtml(styleText)}</b>
-      </div>
-
-      <div class="data">
-        جهت 1m:
-        <b class="${clsDirection(one.direction)}">
-          ${directionText(one.direction)}
-        </b>
-      </div>
-
-      <div class="data">
-        جهت 15m:
-        <b class="${clsDirection(fifteen.direction)}">
-          ${directionText(fifteen.direction)}
-        </b>
-      </div>
-
-      <div class="data">
-        شیب MA20:
-        ${pct(
-          one.maSlopePct ??
-          fifteen.slopePct
-        )}
-      </div>
-
-    </div>
+  <div class="styleBox">
 
     <div
-      class="data"
-      style="margin-top:8px"
+      class="styleTitle"
+      onclick="this.parentElement.classList.toggle('open')"
     >
-      <b>دلیل:</b>
-      ${escapeHtml(reasonText)}
+
+      ${style.title}
+
+      <span style="float:left">
+        ▼
+      </span>
+
     </div>
 
+
+    <div class="styleContent">
+
+      <div class="styleDirection ${clsDirection(
+        result.direction
+      )}">
+
+        ${directionText(
+          result.direction
+        )}
+
+      </div>
+
+
+      <div class="grid">
+
+        <div class="data">
+          نتیجه 1m:
+          <b class="${clsDirection(
+            result.direction
+          )}">
+            ${directionText(
+              result.direction
+            )}
+          </b>
+        </div>
+
+
+        <div class="data">
+          نتیجه 15m:
+          <b class="${clsDirection(
+            result.higherDirection
+          )}">
+            ${directionText(
+              result.higherDirection
+            )}
+          </b>
+        </div>
+
+
+        <div class="data">
+          قدرت:
+          <b>
+            ${num(
+              result.score,
+              0
+            )}/100
+          </b>
+        </div>
+
+
+        <div class="data">
+          وضعیت:
+          ${escapeHtml(
+            result.state || "-"
+          )}
+        </div>
+
+      </div>
+
+
+      <div
+        class="data"
+        style="margin-top:8px"
+      >
+
+        <b>منطق سبک:</b>
+
+        <div class="small">
+          ${escapeHtml(
+            style.desc
+          )}
+        </div>
+
+      </div>
+
+
+      <div
+        class="data"
+        style="margin-top:8px"
+      >
+
+        <b>دلایل محاسباتی:</b>
+
+        <div class="small">
+          ${escapeHtml(
+            result.reason
+          )}
+        </div>
+
+      </div>
+
+
+      <div
+        class="data"
+        style="margin-top:8px"
+      >
+
+        <b>وضعیت 15 دقیقه به‌عنوان تایم بالاتر:</b>
+
+        <div class="${clsDirection(
+          result.higherDirection
+        )}">
+          ${directionText(
+            result.higherDirection
+          )}
+        </div>
+
+        <div class="small">
+          ${escapeHtml(
+            result.higherReason
+          )}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
   `;
+
+}
+
+
+function getStyleResult(
+  key,
+  data,
+  one,
+  fifteen
+){
+
+  /*
+    اگر Worker نتیجه واقعی هر سبک را ارسال کرده باشد،
+    همان نتیجه اولویت دارد.
+  */
+
+  const styles =
+    data.tradingStyles ||
+    data.styles ||
+    data.styleResults ||
+    {};
+
+
+  const remote =
+    styles[key];
+
+
+  if(remote){
+
+    return {
+
+      direction:
+        remote.direction ||
+        remote.signal ||
+        "RANGE",
+
+      higherDirection:
+        remote.higherDirection ||
+        remote.fifteenDirection ||
+        fifteen.direction ||
+        "RANGE",
+
+      score:
+        remote.score ??
+        remote.strength ??
+        0,
+
+      state:
+        remote.state ||
+        remote.status ||
+        "محاسبه‌شده",
+
+      reason:
+        remote.reason ||
+        remote.details ||
+        "دلیل از Worker ارسال نشده است.",
+
+      higherReason:
+        remote.higherReason ||
+        remote.fifteenReason ||
+        "دلیل 15m از Worker ارسال نشده است."
+
+    };
+
+  }
+
+
+  /*
+    اگر Worker نسخه‌ای داشته باشد که نام فیلدهای
+    سبک‌ها متفاوت است، تلاش می‌کنیم آنها را پیدا کنیم.
+  */
+
+  const aliases = {
+
+    trend:
+      [
+        data.trendStyle,
+        data.trend,
+        one.trend
+      ],
+
+    breakout:
+      [
+        data.breakoutStyle,
+        data.breakout,
+        data.structure
+      ],
+
+    reversal:
+      [
+        data.reversalStyle,
+        data.reversal,
+        data.divergence
+      ],
+
+    smartmoney:
+      [
+        data.smartMoney,
+        data.smartMoneyStyle,
+        data.liquidity
+      ],
+
+    orderflow:
+      [
+        data.orderFlow,
+        data.orderFlowStyle,
+        data.footprint
+      ],
+
+    momentum:
+      [
+        data.momentumStyle,
+        data.momentum,
+        data.pumpDump
+      ]
+
+  };
+
+
+  const source =
+    (aliases[key] || [])
+      .find(Boolean);
+
+
+  if(source){
+
+    return {
+
+      direction:
+        source.direction ||
+        source.signal ||
+        source.state ||
+        "RANGE",
+
+      higherDirection:
+        source.higherDirection ||
+        fifteen.direction ||
+        "RANGE",
+
+      score:
+        source.score ??
+        source.strength ??
+        0,
+
+      state:
+        source.state ||
+        "محاسبه‌شده",
+
+      reason:
+        source.reason ||
+        source.details ||
+        "داده محاسبه‌شده موجود است.",
+
+      higherReason:
+        source.higherReason ||
+        "وضعیت 15m از داده Worker."
+
+    };
+
+  }
+
+
+  return localStyleResult(
+    key,
+    data,
+    one,
+    fifteen
+  );
+
+}
+
+
+/*
+  این قسمت فقط زمانی استفاده می‌شود که Worker
+  نتیجه اختصاصی سبک را با نام آن ارسال نکرده باشد.
+  هیچ MACD/RSI یا برخوردی را بدون داده واقعی
+  TRUE فرض نمی‌کند.
+*/
+
+function localStyleResult(
+  key,
+  data,
+  one,
+  fifteen
+){
+
+  const direction =
+    one.direction ||
+    "RANGE";
+
+  const higher =
+    fifteen.direction ||
+    "RANGE";
+
+
+  const macd =
+    data.macd ||
+    one.macd ||
+    null;
+
+
+  const divergence =
+    data.divergence ||
+    one.divergence ||
+    null;
+
+
+  const structure =
+    data.structure ||
+    {};
+
+
+  const liquidity =
+    data.liquidity ||
+    {};
+
+
+  const fp =
+    data.footprint ||
+    one.footprint ||
+    {};
+
+
+  let score = 0;
+  let reason = [];
+
+
+  if(key === "trend"){
+
+    if(
+      one.maSlopePct !== undefined &&
+      Number.isFinite(
+        Number(one.maSlopePct)
+      )
+    ){
+
+      score +=
+        Math.min(
+          40,
+          Math.abs(
+            Number(one.maSlopePct)
+          ) * 10
+        );
+
+      reason.push(
+        "شیب واقعی MA20 در 1m بررسی شده است."
+      );
+
+    }
+
+    if(one.direction)
+      reason.push(
+        "جهت 1m از داده Worker."
+      );
+
+    if(fifteen.direction)
+      reason.push(
+        "تأیید جهت 15m."
+      );
+
+  }
+
+
+  if(key === "breakout"){
+
+    if(
+      structure.bos ||
+      structure.choch
+    ){
+
+      score += 40;
+
+      reason.push(
+        "BOS/CHoCH واقعی گزارش شده است."
+      );
+
+    }
+
+    if(
+      one.volumeRatio !== undefined &&
+      Number(one.volumeRatio) > 1
+    ){
+
+      score += 20;
+
+      reason.push(
+        "افزایش حجم نسبت به مبنا."
+      );
+
+    }
+
+  }
+
+
+  if(key === "reversal"){
+
+    if(divergence){
+
+      score += 40;
+
+      reason.push(
+        "واگرایی واقعی از Worker دریافت شده است."
+      );
+
+    }
+
+    if(
+      one.rsi !== undefined
+    ){
+
+      const r =
+        Number(one.rsi);
+
+      if(
+        r <= 30 ||
+        r >= 70
+      ){
+
+        score += 20;
+
+        reason.push(
+          "RSI در ناحیه افراطی قرار دارد."
+        );
+
+      }
+
+    }
+
+    if(
+      liquidity.hunt ||
+      liquidity.sweep
+    ){
+
+      score += 20;
+
+      reason.push(
+        "Hunt/Sweep گزارش شده است."
+      );
+
+    }
+
+  }
+
+
+  if(key === "smartmoney"){
+
+    if(
+      liquidity.hunt ||
+      liquidity.sweep
+    ){
+
+      score += 30;
+
+      reason.push(
+        "Liquidity Hunt/Sweep."
+      );
+
+    }
+
+    if(
+      structure.fvg
+    ){
+
+      score += 20;
+
+      reason.push(
+        "FVG گزارش شده است."
+      );
+
+    }
+
+    if(
+      structure.orderBlock
+    ){
+
+      score += 20;
+
+      reason.push(
+        "Order Block گزارش شده است."
+      );
+
+    }
+
+    if(
+      structure.cisd
+    ){
+
+      score += 20;
+
+      reason.push(
+        "CISD گزارش شده است."
+      );
+
+    }
+
+  }
+
+
+  if(key === "orderflow"){
+
+    if(
+      fp.delta !== undefined &&
+      fp.delta !== null
+    ){
+
+      score += 30;
+
+      reason.push(
+        "Delta واقعی Footprint."
+      );
+
+    }
+
+    if(
+      fp.buyVolume !== undefined ||
+      fp.sellVolume !== undefined
+    ){
+
+      score += 20;
+
+      reason.push(
+        "Buy/Sell Volume."
+      );
+
+    }
+
+    if(
+      fp.imbalance !== undefined
+    ){
+
+      score += 20;
+
+      reason.push(
+        "Imbalance."
+      );
+
+    }
+
+  }
+
+
+  if(key === "momentum"){
+
+    if(
+      one.volumeRatio !== undefined &&
+      Number(one.volumeRatio) >= 1.5
+    ){
+
+      score += 30;
+
+      reason.push(
+        "حجم غیرعادی."
+      );
+
+    }
+
+    if(
+      data.openInterest ||
+      data.oi
+    ){
+
+      score += 20;
+
+      reason.push(
+        "OI موجود است."
+      );
+
+    }
+
+    if(
+      data.funding ||
+      data.fundingRate
+    ){
+
+      score += 15;
+
+      reason.push(
+        "Funding موجود است."
+      );
+
+    }
+
+  }
+
+
+  if(!reason.length){
+
+    reason.push(
+      "برای این سبک نتیجه اختصاصی از Worker ارسال نشده است."
+    );
+
+  }
+
+
+  return {
+
+    direction:
+      score > 0
+        ? direction
+        : "RANGE",
+
+    higherDirection:
+      higher,
+
+    score:
+      Math.min(
+        100,
+        score
+      ),
+
+    state:
+      score > 0
+        ? "دارای شواهد"
+        : "رنج/نامشخص",
+
+    reason:
+      reason.join(" "),
+
+    higherReason:
+      fifteen.direction
+        ? "جهت 15m از داده واقعی Worker دریافت شده است."
+        : "داده جهت 15m موجود نیست."
+
+  };
 
 }
 
@@ -1675,43 +2856,110 @@ function tradingStyle(
 
 function signalSummary(data){
 
+  const basis =
+    data.signalBasis ||
+    data.basis ||
+    data.method ||
+    "نامشخص";
+
+
   return `
 
   <div class="grid">
 
     <div class="data">
       جهت:
-      <b class="${clsDirection(data.direction)}">
-        ${directionText(data.direction)}
+      <b class="${clsDirection(
+        data.direction
+      )}">
+        ${directionText(
+          data.direction
+        )}
       </b>
     </div>
 
+
     <div class="data">
       امتیاز:
-      <b>${num(data.score,0)}/100</b>
+      <b>
+        ${num(
+          data.score,
+          0
+        )}/100
+      </b>
     </div>
+
 
     <div class="data">
       Long Score:
-      <b>${num(data.longScore,2)}</b>
+      <b>
+        ${num(
+          data.longScore,
+          2
+        )}
+      </b>
     </div>
+
 
     <div class="data">
       Short Score:
-      <b>${num(data.shortScore,2)}</b>
+      <b>
+        ${num(
+          data.shortScore,
+          2
+        )}
+      </b>
     </div>
+
 
     <div class="data">
       Threshold:
-      <b>${num(data.threshold,2)}</b>
+      <b>
+        ${num(
+          data.threshold,
+          2
+        )}
+      </b>
     </div>
+
+
+    <div class="data">
+      مبنا:
+      <b>
+        ${escapeHtml(
+          basisText(basis)
+        )}
+      </b>
+    </div>
+
 
     <div class="data">
       قیمت:
-      <b>${formatPrice(data.price)}</b>
+      <b>
+        ${formatPrice(
+          data.price
+        )}
+      </b>
     </div>
 
   </div>
+
+
+  ${
+    data.signalReason
+      ? `
+        <div
+          class="data"
+          style="margin-top:8px"
+        >
+          <b>دلیل انتخاب:</b>
+          ${escapeHtml(
+            data.signalReason
+          )}
+        </div>
+      `
+      : ""
+  }
 
   `;
 
@@ -1755,32 +3003,68 @@ function oneMinuteHTML(x){
 
     <div class="data">
       Touch:
-      ${x.touched ? "بله" : "خیر"}
+      ${
+        x.touched === undefined
+          ? "-"
+          : x.touched
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
       Near:
-      ${x.near ? "بله" : "خیر"}
+      ${
+        x.near === undefined
+          ? "-"
+          : x.near
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
       Cross Up:
-      ${x.crossedUp ? "بله" : "خیر"}
+      ${
+        x.crossedUp === undefined
+          ? "-"
+          : x.crossedUp
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
       Cross Down:
-      ${x.crossedDown ? "بله" : "خیر"}
+      ${
+        x.crossedDown === undefined
+          ? "-"
+          : x.crossedDown
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
       Rejection Up:
-      ${x.rejectionUp ? "بله" : "خیر"}
+      ${
+        x.rejectionUp === undefined
+          ? "-"
+          : x.rejectionUp
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
       Rejection Down:
-      ${x.rejectionDown ? "بله" : "خیر"}
+      ${
+        x.rejectionDown === undefined
+          ? "-"
+          : x.rejectionDown
+            ? "بله"
+            : "خیر"
+      }
     </div>
 
     <div class="data">
@@ -1800,7 +3084,10 @@ function oneMinuteHTML(x){
 
     <div class="data">
       Volume Ratio:
-      ${num(x.volumeRatio,2)}x
+      ${num(
+        x.volumeRatio,
+        2
+      )}x
     </div>
 
   </div>
@@ -1842,8 +3129,12 @@ function fifteenMinuteHTML(x){
 
     <div class="data">
       روند:
-      <b class="${clsDirection(x.direction)}">
-        ${directionText(x.direction)}
+      <b class="${clsDirection(
+        x.direction
+      )}">
+        ${directionText(
+          x.direction
+        )}
       </b>
     </div>
 
@@ -1865,7 +3156,7 @@ function fifteenMinuteHTML(x){
 
 
 /* =========================
-   MACD / RSI / Divergence
+   RSI / MACD / Divergence
 ========================= */
 
 function technicalHTML(
@@ -1886,40 +3177,65 @@ function technicalHTML(
     fifteen.divergence ||
     null;
 
+
   return `
 
   <div class="grid">
 
     <div class="data">
       RSI 1m:
-      <b>${num(one.rsi,2)}</b>
+      <b>
+        ${num(
+          one.rsi,
+          2
+        )}
+      </b>
     </div>
+
 
     <div class="data">
       RSI 15m:
-      <b>${num(fifteen.rsi,2)}</b>
+      <b>
+        ${num(
+          fifteen.rsi,
+          2
+        )}
+      </b>
     </div>
+
 
     <div class="data">
       MACD:
       <b>
-        ${macdValue(macd,"value")}
+        ${macdValue(
+          macd,
+          "value"
+        )}
       </b>
     </div>
+
 
     <div class="data">
       Signal:
       <b>
-        ${macdValue(macd,"signal")}
+        ${macdValue(
+          macd,
+          "signal"
+        )}
       </b>
     </div>
+
 
     <div class="data">
       Histogram:
       <b>
-        ${macdValue(macd,"histogram")}
+        ${macdValue(
+          macd,
+          "histogram"
+        )}
       </b>
     </div>
+
 
     <div class="data">
       وضعیت MACD:
@@ -1934,28 +3250,26 @@ function technicalHTML(
 
   </div>
 
+
   <div
     class="data"
     style="margin-top:8px"
   >
 
-    <b>واگرایی:</b>
+    <b>واگرایی واقعی:</b>
 
     ${
       divergence
         ? escapeHtml(
             divergence.type ||
             divergence.signal ||
-            JSON.stringify(divergence)
+            JSON.stringify(
+              divergence
+            )
           )
         : "داده واگرایی واقعی از Worker موجود نیست."
     }
 
-  </div>
-
-  <div class="small" style="margin-top:8px">
-    اعداد MACD و واگرایی فقط در صورتی نمایش داده می‌شوند
-    که Worker آنها را از کندل‌های واقعی محاسبه کرده باشد.
   </div>
 
   `;
@@ -1997,6 +3311,7 @@ function footprintHTML(
     one.footprint ||
     null;
 
+
   if(!fp){
 
     return `
@@ -2008,10 +3323,12 @@ function footprintHTML(
 
   }
 
+
   const rows =
     fp.levels ||
     fp.rows ||
     [];
+
 
   return `
 
@@ -2019,28 +3336,43 @@ function footprintHTML(
 
     <div class="data">
       Buy Volume:
-      ${formatNumber(fp.buyVolume)}
+      ${formatNumber(
+        fp.buyVolume
+      )}
     </div>
+
 
     <div class="data">
       Sell Volume:
-      ${formatNumber(fp.sellVolume)}
+      ${formatNumber(
+        fp.sellVolume
+      )}
     </div>
+
 
     <div class="data">
       Delta:
-      ${formatNumber(fp.delta)}
+      ${formatNumber(
+        fp.delta
+      )}
     </div>
+
 
     <div class="data">
       Delta %:
-      ${pct(fp.deltaPct)}
+      ${pct(
+        fp.deltaPct
+      )}
     </div>
+
 
     <div class="data">
       Imbalance:
-      ${formatNumber(fp.imbalance)}
+      ${formatNumber(
+        fp.imbalance
+      )}
     </div>
+
 
     <div class="data">
       وضعیت:
@@ -2053,10 +3385,20 @@ function footprintHTML(
 
   </div>
 
+
   ${
     rows.length
-      ? levelsFootprintTable(rows)
-      : '<div class="small" style="margin-top:8px">سطوح Footprint از Worker ارسال نشده است.</div>'
+      ? levelsFootprintTable(
+          rows
+        )
+      : `
+        <div
+          class="small"
+          style="margin-top:8px"
+        >
+          سطوح Footprint از Worker ارسال نشده است.
+        </div>
+      `
   }
 
   `;
@@ -2064,27 +3406,36 @@ function footprintHTML(
 }
 
 
-function levelsFootprintTable(rows){
+function levelsFootprintTable(
+  rows
+){
 
   return `
 
-  <div class="tableWrap" style="margin-top:10px">
+  <div
+    class="tableWrap"
+    style="margin-top:10px"
+  >
 
     <table>
 
       <thead>
+
         <tr>
           <th>قیمت</th>
-          <th>خرید</th>
-          <th>فروش</th>
+          <th>Bid/Sell</th>
+          <th>Ask/Buy</th>
           <th>Delta</th>
           <th>Imbalance</th>
         </tr>
+
       </thead>
+
 
       <tbody>
 
-        ${rows.map(x => `
+        ${rows.map(
+          x => `
 
           <tr>
 
@@ -2096,15 +3447,17 @@ function levelsFootprintTable(rows){
 
             <td>
               ${formatNumber(
-                x.buy ??
-                x.buyVolume
+                x.sell ??
+                x.sellVolume ??
+                x.bid
               )}
             </td>
 
             <td>
               ${formatNumber(
-                x.sell ??
-                x.sellVolume
+                x.buy ??
+                x.buyVolume ??
+                x.ask
               )}
             </td>
 
@@ -2122,7 +3475,8 @@ function levelsFootprintTable(rows){
 
           </tr>
 
-        `).join("")}
+        `
+        ).join("")}
 
       </tbody>
 
@@ -2162,15 +3516,18 @@ function orderBookHTML(
 
   }
 
+
   const buys =
     book.buyLevels ||
     book.bids ||
     [];
 
+
   const sells =
     book.sellLevels ||
     book.asks ||
     [];
+
 
   return `
 
@@ -2183,12 +3540,14 @@ function orderBookHTML(
       )}
     </div>
 
+
     <div class="data">
       نقدینگی فروش:
       ${formatNumber(
         book.sellLiquidity
       )}
     </div>
+
 
     <div class="data">
       سهم خرید:
@@ -2197,6 +3556,7 @@ function orderBookHTML(
       )}
     </div>
 
+
     <div class="data">
       سهم فروش:
       ${pct(
@@ -2204,12 +3564,14 @@ function orderBookHTML(
       )}
     </div>
 
+
     <div class="data">
       Best Bid:
       ${formatPrice(
         book.bestBid?.price
       )}
     </div>
+
 
     <div class="data">
       Best Ask:
@@ -2220,20 +3582,28 @@ function orderBookHTML(
 
   </div>
 
+
   <h4>🟢 دیوارهای خرید</h4>
 
-  ${levelsTable(buys)}
+  ${levelsTable(
+    buys
+  )}
+
 
   <h4>🔴 دیوارهای فروش</h4>
 
-  ${levelsTable(sells)}
+  ${levelsTable(
+    sells
+  )}
 
   `;
 
 }
 
 
-function levelsTable(levels){
+function levelsTable(
+  levels
+){
 
   if(!levels.length){
 
@@ -2244,6 +3614,7 @@ function levelsTable(levels){
     `;
 
   }
+
 
   return `
 
@@ -2258,42 +3629,62 @@ function levelsTable(levels){
           <th>حجم</th>
           <th>ارزش</th>
           <th>فاصله</th>
+          <th>قدرت</th>
         </tr>
 
       </thead>
 
+
       <tbody>
 
-        ${levels.map(x => `
+        ${levels.map(
+          x => `
 
           <tr>
 
             <td>
-              ${formatPrice(x.price)}
-            </td>
-
-            <td>
-              ${formatNumber(x.size)}
+              ${formatPrice(
+                x.price
+              )}
             </td>
 
             <td>
               ${formatNumber(
-                Number(x.price || 0) *
-                Number(x.size || 0)
+                x.size
+              )}
+            </td>
+
+            <td>
+              ${formatNumber(
+                Number(
+                  x.price || 0
+                ) *
+                Number(
+                  x.size || 0
+                )
               )}
             </td>
 
             <td>
               ${
                 x.distancePct !== undefined
-                  ? pct(x.distancePct)
+                  ? pct(
+                      x.distancePct
+                    )
                   : "-"
               }
             </td>
 
+            <td>
+              ${formatNumber(
+                x.strength
+              )}
+            </td>
+
           </tr>
 
-        `).join("")}
+        `
+        ).join("")}
 
       </tbody>
 
@@ -2321,6 +3712,7 @@ function liquidityHTML(
     one.liquidity ||
     null;
 
+
   if(!liq){
 
     return `
@@ -2332,6 +3724,7 @@ function liquidityHTML(
     `;
 
   }
+
 
   return `
 
@@ -2348,6 +3741,7 @@ function liquidityHTML(
       </b>
     </div>
 
+
     <div class="data">
       Sweep:
       <b>
@@ -2359,15 +3753,30 @@ function liquidityHTML(
       </b>
     </div>
 
+
     <div class="data">
       High Sweep:
-      ${liq.highSweep ? "بله" : "خیر"}
+      ${
+        liq.highSweep === undefined
+          ? "-"
+          : liq.highSweep
+            ? "بله"
+            : "خیر"
+      }
     </div>
+
 
     <div class="data">
       Low Sweep:
-      ${liq.lowSweep ? "بله" : "خیر"}
+      ${
+        liq.lowSweep === undefined
+          ? "-"
+          : liq.lowSweep
+            ? "بله"
+            : "خیر"
+      }
     </div>
+
 
     <div class="data">
       نقدینگی خرید:
@@ -2375,6 +3784,7 @@ function liquidityHTML(
         book?.buyLiquidity
       )}
     </div>
+
 
     <div class="data">
       نقدینگی فروش:
@@ -2385,11 +3795,17 @@ function liquidityHTML(
 
   </div>
 
-  <div class="data" style="margin-top:8px">
+
+  <div
+    class="data"
+    style="margin-top:8px"
+  >
+
     ${escapeHtml(
       liq.reason ||
       "دلیل Hunt/Sweep توسط Worker ارسال نشده است."
     )}
+
   </div>
 
   `;
@@ -2412,26 +3828,29 @@ function levelsHTML(
     one.supportResistance ||
     null;
 
+
   if(!levels){
 
     return `
       <div class="empty">
-        حمایت و مقاومت تاریخی واقعی از Worker دریافت نشد.
-        ATR به‌تنهایی به‌عنوان حمایت/مقاومت جعلی استفاده نمی‌شود.
+        حمایت و مقاومت واقعی از Worker دریافت نشد.
       </div>
     `;
 
   }
+
 
   const supports =
     levels.supports ||
     levels.support ||
     [];
 
+
   const resistances =
     levels.resistances ||
     levels.resistance ||
     [];
+
 
   return `
 
@@ -2439,37 +3858,65 @@ function levelsHTML(
 
     <div class="data">
       قیمت:
-      ${formatPrice(data.price)}
+      ${formatPrice(
+        data.price
+      )}
     </div>
+
 
     <div class="data">
       حمایت‌های معتبر:
       ${supports.length}
     </div>
 
+
     <div class="data">
       مقاومت‌های معتبر:
       ${resistances.length}
     </div>
 
+
+    <div class="data">
+      برتری کلی:
+      ${escapeHtml(
+        levels.bias ||
+        levels.direction ||
+        "-"
+      )}
+    </div>
+
   </div>
+
 
   <h4>🟢 حمایت‌ها</h4>
 
-  ${priceLevelsTable(supports)}
+  ${priceLevelsTable(
+    supports,
+    "support"
+  )}
+
 
   <h4>🔴 مقاومت‌ها</h4>
 
-  ${priceLevelsTable(resistances)}
+  ${priceLevelsTable(
+    resistances,
+    "resistance"
+  )}
 
   `;
 
 }
 
 
-function priceLevelsTable(levels){
+function priceLevelsTable(
+  levels,
+  type
+){
 
-  if(!Array.isArray(levels) || !levels.length){
+  if(
+    !Array.isArray(levels) ||
+    !levels.length
+  ){
 
     return `
       <div class="small">
@@ -2479,6 +3926,7 @@ function priceLevelsTable(levels){
 
   }
 
+
   return `
 
   <div class="tableWrap">
@@ -2486,17 +3934,23 @@ function priceLevelsTable(levels){
     <table>
 
       <thead>
+
         <tr>
           <th>قیمت</th>
           <th>قدرت</th>
           <th>منبع</th>
           <th>فاصله</th>
+          <th>خریدار/فروشنده</th>
+          <th>دیوار</th>
         </tr>
+
       </thead>
+
 
       <tbody>
 
-        ${levels.map(x => `
+        ${levels.map(
+          x => `
 
           <tr>
 
@@ -2507,11 +3961,13 @@ function priceLevelsTable(levels){
               )}
             </td>
 
+
             <td>
               ${formatNumber(
                 x.strength
               )}
             </td>
+
 
             <td>
               ${escapeHtml(
@@ -2521,17 +3977,40 @@ function priceLevelsTable(levels){
               )}
             </td>
 
+
             <td>
               ${
                 x.distancePct !== undefined
-                  ? pct(x.distancePct)
+                  ? pct(
+                      x.distancePct
+                    )
                   : "-"
               }
             </td>
 
+
+            <td>
+              ${escapeHtml(
+                x.orderFlowBias ||
+                x.deltaBias ||
+                x.traderBias ||
+                "-"
+              )}
+            </td>
+
+
+            <td>
+              ${escapeHtml(
+                x.wall ||
+                x.wallType ||
+                "-"
+              )}
+            </td>
+
           </tr>
 
-        `).join("")}
+        `
+        ).join("")}
 
       </tbody>
 
@@ -2555,16 +4034,17 @@ function oiHTML(data){
     data.oi ||
     null;
 
+
   if(!oi){
 
     return `
       <div class="empty">
-        OI واقعی از Worker دریافت نشد.
-        عدد حدسی نمایش داده نمی‌شود.
+        OI برای این بازار موجود نیست.
       </div>
     `;
 
   }
+
 
   return `
 
@@ -2578,12 +4058,14 @@ function oiHTML(data){
       )}
     </div>
 
+
     <div class="data">
       تغییر 1m:
       ${pct(
         oi.change1mPct
       )}
     </div>
+
 
     <div class="data">
       تغییر 5m:
@@ -2592,6 +4074,7 @@ function oiHTML(data){
       )}
     </div>
 
+
     <div class="data">
       تغییر 15m:
       ${pct(
@@ -2599,12 +4082,14 @@ function oiHTML(data){
       )}
     </div>
 
+
     <div class="data">
       تغییر 1h:
       ${pct(
         oi.change1hPct
       )}
     </div>
+
 
     <div class="data">
       جهت OI:
@@ -2632,20 +4117,23 @@ function fundingHTML(data){
     data.fundingRate ||
     null;
 
+
   if(!funding){
 
     return `
       <div class="empty">
-        Funding واقعی از Worker دریافت نشد.
+        Funding برای این بازار موجود نیست.
       </div>
     `;
 
   }
 
+
   const current =
     funding.current ??
     funding.rate ??
     funding.value;
+
 
   return `
 
@@ -2654,11 +4142,18 @@ function fundingHTML(data){
     <div class="data">
       Funding:
       <b>
-        ${pct(
-          Number(current || 0) * 100
-        )}
+        ${
+          Number.isFinite(
+            Number(current)
+          )
+          ? pct(
+              Number(current) * 100
+            )
+          : "-"
+        }
       </b>
     </div>
+
 
     <div class="data">
       تغییر:
@@ -2666,6 +4161,7 @@ function fundingHTML(data){
         funding.changePct
       )}
     </div>
+
 
     <div class="data">
       وضعیت:
@@ -2675,6 +4171,7 @@ function fundingHTML(data){
         "-"
       )}
     </div>
+
 
     <div class="data">
       زمان بعدی:
@@ -2692,7 +4189,7 @@ function fundingHTML(data){
 
 
 /* =========================
-   ساختار بازار
+   Structure
 ========================= */
 
 function structureHTML(data){
@@ -2701,16 +4198,18 @@ function structureHTML(data){
     data.structure ||
     null;
 
+
   if(!structure){
 
     return `
       <div class="empty">
-        BOS / CHoCH / FVG / Order Block
+        BOS / CHoCH / FVG / Order Block / CISD
         واقعی از Worker دریافت نشد.
       </div>
     `;
 
   }
+
 
   return `
 
@@ -2724,6 +4223,7 @@ function structureHTML(data){
       )}
     </div>
 
+
     <div class="data">
       CHoCH:
       ${escapeHtml(
@@ -2731,6 +4231,7 @@ function structureHTML(data){
         "ندارد"
       )}
     </div>
+
 
     <div class="data">
       FVG:
@@ -2740,6 +4241,7 @@ function structureHTML(data){
       )}
     </div>
 
+
     <div class="data">
       Order Block:
       ${escapeHtml(
@@ -2748,12 +4250,25 @@ function structureHTML(data){
       )}
     </div>
 
+
+    <div class="data">
+      CISD:
+      ${escapeHtml(
+        structure.cisd ||
+        "ندارد"
+      )}
+    </div>
+
   </div>
+
 
   ${
     structure.details
       ? `
-        <div class="data" style="margin-top:8px">
+        <div
+          class="data"
+          style="margin-top:8px"
+        >
           ${escapeHtml(
             structure.details
           )}
@@ -2771,9 +4286,14 @@ function structureHTML(data){
    دلایل
 ========================= */
 
-function reasonsHTML(reasons){
+function reasonsHTML(
+  reasons
+){
 
-  if(!Array.isArray(reasons) || !reasons.length){
+  if(
+    !Array.isArray(reasons) ||
+    !reasons.length
+  ){
 
     return `
       <div class="empty">
@@ -2783,21 +4303,26 @@ function reasonsHTML(reasons){
 
   }
 
-  return reasons.map(r => `
+
+  return reasons.map(
+    r => `
 
     <div
       class="reason ${clsDirection(
         r.side
       )}"
     >
+
       ${escapeHtml(
         r.text ||
         r.reason ||
         JSON.stringify(r)
       )}
+
     </div>
 
-  `).join("");
+  `
+  ).join("");
 
 }
 
@@ -2814,8 +4339,10 @@ function openAnalysis(data){
       data.symbol
     );
 
+
   const old =
     opened.get(id);
+
 
   opened.set(
     id,
@@ -2830,9 +4357,11 @@ function openAnalysis(data){
     }
   );
 
+
   saveOpenSymbols();
 
   renderOpenedAnalyses();
+
 
   setTimeout(
     () => {
@@ -2863,23 +4392,22 @@ function renderOpenedAnalyses(){
   if(!opened.size){
 
     openedEl.innerHTML =
-      '<div class="empty">تحلیلی باز نشده است.</div>';
+      '<div class="empty">' +
+      'تحلیلی باز نشده است.' +
+      '</div>';
 
     return;
 
   }
 
-  /*
-    نکته مهم:
-    قبل از بازسازی، وضعیت منوهای فعلی
-    از DOM خوانده می‌شود.
-  */
 
   captureAllMenuStates();
 
+
   openedEl.innerHTML =
     [...opened.values()]
-      .map(x => `
+      .map(
+        x => `
 
         <div
           class="panel"
@@ -2896,17 +4424,27 @@ function renderOpenedAnalyses(){
               ✕ بستن
             </button>
 
+
             <div>
+
               <b>
-                ${escapeHtml(x.symbol)}
+                ${escapeHtml(
+                  x.symbol
+                )}
               </b>
 
               <span class="market">
-                ${x.category === "linear"
-                  ? "Futures"
-                  : "Spot"}
+
+                ${
+                  x.category === "linear"
+                    ? "Futures"
+                    : "Spot"
+                }
+
               </span>
+
             </div>
+
 
             <div
               class="${clsDirection(
@@ -2914,6 +4452,7 @@ function renderOpenedAnalyses(){
               )}"
               style="margin-top:8px"
             >
+
               ${directionText(
                 x.data?.direction
               )}
@@ -2924,9 +4463,11 @@ function renderOpenedAnalyses(){
                 x.data?.score,
                 0
               )}/100
+
             </div>
 
           </div>
+
 
           <div
             id="openedContent-${x.id}"
@@ -2934,16 +4475,21 @@ function renderOpenedAnalyses(){
 
         </div>
 
-      `)
+      `
+      )
       .join("");
 
-  for(const x of opened.values()){
+
+  for(
+    const x of opened.values()
+  ){
 
     const content =
       document.getElementById(
         "openedContent-" +
         x.id
       );
+
 
     if(content){
 
@@ -2961,12 +4507,14 @@ function renderOpenedAnalyses(){
 
 
 /* =========================
-   حفظ وضعیت منوها
+   ذخیره وضعیت منو
 ========================= */
 
 function captureAllMenuStates(){
 
-  for(const x of opened.values()){
+  for(
+    const x of opened.values()
+  ){
 
     const content =
       document.getElementById(
@@ -2974,11 +4522,14 @@ function captureAllMenuStates(){
         x.id
       );
 
+
     if(!content)
       continue;
 
+
     x.menuState =
       x.menuState || {};
+
 
     for(
       const box of
@@ -2989,6 +4540,7 @@ function captureAllMenuStates(){
 
       const key =
         box.dataset.menuKey;
+
 
       x.menuState[key] =
         box.classList.contains(
@@ -3003,7 +4555,7 @@ function captureAllMenuStates(){
 
 
 /* =========================
-   بستن تحلیل
+   بستن
 ========================= */
 
 function closeAnalysis(id){
@@ -3018,7 +4570,7 @@ function closeAnalysis(id){
 
 
 /* =========================
-   بروزرسانی زنده
+   Live
 ========================= */
 
 async function refreshOpenedAnalyses(){
@@ -3026,30 +4578,40 @@ async function refreshOpenedAnalyses(){
   if(!opened.size)
     return;
 
+
   captureAllMenuStates();
+
 
   const list =
     [...opened.values()];
 
-  for(const x of list){
+
+  for(
+    const x of list
+  ){
 
     if(!opened.has(x.id))
       continue;
+
 
     try{
 
       const data =
         await api(
           "/api/personal/analyze?symbol=" +
-          encodeURIComponent(x.symbol) +
+          encodeURIComponent(
+            x.symbol
+          ) +
           "&strictness=" +
           encodeURIComponent(
             strictnessEl.value
           )
         );
 
+
       if(!opened.has(x.id))
         continue;
+
 
       x.data = data;
 
@@ -3066,10 +4628,6 @@ async function refreshOpenedAnalyses(){
 
   }
 
-  /*
-    هیچ setTimeout برای بستن منو وجود ندارد.
-    وضعیت باز/بسته قبل از رندر حفظ می‌شود.
-  */
 
   renderOpenedAnalyses();
 
@@ -3084,13 +4642,18 @@ function saveOpenSymbols(){
 
   captureAllMenuStates();
 
+
   const list =
     [...opened.values()]
-      .map(x => ({
-        symbol:x.symbol,
-        category:x.category,
-        menuState:x.menuState || {}
-      }));
+      .map(
+        x => ({
+          symbol:x.symbol,
+          category:x.category,
+          menuState:
+            x.menuState || {}
+        })
+      );
+
 
   localStorage.setItem(
     "personal_open_analyses",
@@ -3119,19 +4682,26 @@ async function restoreOpenSymbols(){
         "personal_open_analyses"
       );
 
+
     if(!raw)
       return;
+
 
     const list =
       JSON.parse(raw);
 
+
     if(!Array.isArray(list))
       return;
 
-    for(const item of list){
+
+    for(
+      const item of list
+    ){
 
       if(!item.symbol)
         continue;
+
 
       try{
 
@@ -3147,11 +4717,13 @@ async function restoreOpenSymbols(){
             )
           );
 
+
         const id =
           cardId(
             data.category,
             data.symbol
           );
+
 
         opened.set(
           id,
@@ -3165,6 +4737,7 @@ async function restoreOpenSymbols(){
               item.menuState || {}
           }
         );
+
 
         renderOpenedAnalyses();
 
@@ -3198,24 +4771,6 @@ async function restoreOpenSymbols(){
    ابزار
 ========================= */
 
-function formatNumber(value){
-
-  const n =
-    Number(value);
-
-  if(!Number.isFinite(n))
-    return "-";
-
-  return n.toLocaleString(
-    undefined,
-    {
-      maximumFractionDigits:4
-    }
-  );
-
-}
-
-
 function cardId(
   category,
   symbol
@@ -3234,16 +4789,33 @@ function cardId(
 }
 
 
-function escapeHtml(value){
+function escapeHtml(
+  value
+){
 
   return String(
     value ?? ""
   )
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 
 }
 
@@ -3258,12 +4830,6 @@ checkHealth();
 
 restoreOpenSymbols();
 
-
-/*
-  بروزرسانی مستقل تحلیل‌های باز.
-  تحلیل‌ها باز می‌مانند و فقط محتوایشان
-  با داده جدید جایگزین می‌شود.
-*/
 
 setInterval(
   refreshOpenedAnalyses,
