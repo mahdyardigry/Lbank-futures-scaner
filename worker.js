@@ -1,22 +1,35 @@
 const BYBIT = "https://api.bybit.com";
 
-const PERSONAL_VERSION = "PERSONAL-MA20-LIVE-V2";
-
 const SCAN_BATCH = 20;
-
-const KLINE_LIMIT_1M = 150;
-const KLINE_LIMIT_15M = 150;
-
-const TRADE_LIMIT = 1000;
-const ORDERBOOK_LIMIT = 50;
-
+const DEEP_LIMIT = 5;
+const DEEP_1M_LIMIT = 300;
 const DEFAULT_STRICTNESS = 50;
 
-const sleep = ms =>
-  new Promise(resolve => setTimeout(resolve, ms));
+const STYLE_NAMES = {
+  TREND: "روندی",
+  BREAKOUT: "شکست",
+  REVERSAL: "برگشتی",
+  LIQUIDITY: "نقدینگی / اسمارت‌مانی",
+  ORDERFLOW: "جریان سفارش",
+  MOMENTUM: "مومنتوم / پامپ و دامپ"
+};
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
+const METHOD_NAMES = {
+  ALL: "همه مبناها",
+  MA: "میانگین متحرک",
+  RSI: "RSI",
+  MACD: "MACD",
+  DIVERGENCE: "واگرایی",
+  TREND: "روندی",
+  BREAKOUT: "شکست",
+  REVERSAL: "برگشتی",
+  LIQUIDITY: "نقدینگی / اسمارت‌مانی",
+  ORDERFLOW: "جریان سفارش",
+  MOMENTUM: "مومنتوم / پامپ و دامپ"
+};
+
+const json = (data, status = 200) =>
+  new Response(JSON.stringify(data), {
     status,
     headers: {
       "content-type": "application/json; charset=UTF-8",
@@ -24,1494 +37,748 @@ function json(data, status = 200) {
       "access-control-allow-origin": "*"
     }
   });
-}
 
-function num(v) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : 0;
-}
+const n = (v, d = 0) =>
+  Number.isFinite(Number(v)) ? Number(v) : d;
 
-function clamp(v, min = 0, max = 100) {
-  return Math.max(min, Math.min(max, num(v)));
-}
+const clamp = (v, a, b) =>
+  Math.max(a, Math.min(b, Number(v) || 0));
 
-function pct(a, b) {
-  return b ? ((a - b) / b) * 100 : 0;
-}
+const avg = a =>
+  a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
 
-function average(values) {
-  const a = values.filter(Number.isFinite);
-  if (!a.length) return 0;
-  return a.reduce((x, y) => x + y, 0) / a.length;
-}
+const pct = (a, b) =>
+  !b ? 0 : ((a - b) / b) * 100;
 
-function sma(values, period) {
-  if (!values || values.length < period) return 0;
-  return average(values.slice(-period));
-}
+const absPct = (a, b) =>
+  !b ? 999 : Math.abs((a - b) / b) * 100;
 
-function ema(values, period) {
-  if (!values || values.length < period) return 0;
 
-  let e = average(values.slice(0, period));
-  const k = 2 / (period + 1);
+/* =========================================================
+   BYBIT
+========================================================= */
 
-  for (let i = period; i < values.length; i++) {
-    e = values[i] * k + e * (1 - k);
+async function bybit(path, params = {}) {
+
+  const u = new URL(BYBIT + path);
+
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null && v !== "")
+      u.searchParams.set(k, String(v));
   }
 
-  return e;
-}
-
-function stddev(values) {
-  if (!values.length) return 0;
-
-  const m = average(values);
-
-  return Math.sqrt(
-    average(
-      values.map(x =>
-        Math.pow(num(x) - m, 2)
-      )
-    )
-  );
-}
-
-/* =========================
-   RSI — Wilder
-========================= */
-
-function rsi(values, period = 14) {
-  if (!values || values.length < period + 1)
-    return null;
-
-  let gain = 0;
-  let loss = 0;
-
-  for (let i = 1; i <= period; i++) {
-    const d = values[i] - values[i - 1];
-
-    if (d >= 0) gain += d;
-    else loss -= d;
-  }
-
-  let avgGain = gain / period;
-  let avgLoss = loss / period;
-
-  for (let i = period + 1; i < values.length; i++) {
-    const d = values[i] - values[i - 1];
-
-    const g = d > 0 ? d : 0;
-    const l = d < 0 ? -d : 0;
-
-    avgGain =
-      (avgGain * (period - 1) + g) / period;
-
-    avgLoss =
-      (avgLoss * (period - 1) + l) / period;
-  }
-
-  if (avgLoss === 0)
-    return 100;
-
-  const rs = avgGain / avgLoss;
-
-  return 100 - 100 / (1 + rs);
-}
-
-/* =========================
-   MACD
-========================= */
-
-function macd(values, fast = 12, slow = 26, signalPeriod = 9) {
-  if (!values || values.length < slow + signalPeriod)
-    return {
-      available: false,
-      reason: "کندل کافی برای MACD وجود ندارد."
-    };
-
-  const fastSeries = [];
-  const slowSeries = [];
-
-  for (let i = slow - 1; i < values.length; i++) {
-    fastSeries.push(
-      ema(values.slice(0, i + 1), fast)
-    );
-
-    slowSeries.push(
-      ema(values.slice(0, i + 1), slow)
-    );
-  }
-
-  const macdSeries =
-    fastSeries.map(
-      (x, i) =>
-        x - slowSeries[i]
-    );
-
-  const signal =
-    ema(
-      macdSeries,
-      signalPeriod
-    );
-
-  const previousMacd =
-    macdSeries[macdSeries.length - 2];
-
-  const currentMacd =
-    macdSeries[macdSeries.length - 1];
-
-  const histogram =
-    currentMacd - signal;
-
-  const previousHistogram =
-    previousMacd -
-    ema(
-      macdSeries.slice(0, -1),
-      signalPeriod
-    );
-
-  return {
-    available: true,
-    macd: currentMacd,
-    signal,
-    histogram,
-    previousMacd,
-    previousHistogram,
-    direction:
-      histogram > 0
-        ? "LONG"
-        : histogram < 0
-          ? "SHORT"
-          : "NONE",
-    crossover:
-      previousMacd <=
-        (signal - histogram + previousHistogram) &&
-      currentMacd > signal
-        ? "BULLISH_CROSS"
-        : previousMacd >=
-            (signal - histogram + previousHistogram) &&
-          currentMacd < signal
-          ? "BEARISH_CROSS"
-          : "NONE"
-  };
-}
-
-/* =========================
-   ATR
-========================= */
-
-function atr(candles, period = 14) {
-  if (!candles || candles.length < period + 1)
-    return null;
-
-  const trs = [];
-
-  for (let i = 1; i < candles.length; i++) {
-    const c = candles[i];
-    const p = candles[i - 1];
-
-    trs.push(
-      Math.max(
-        c.high - c.low,
-        Math.abs(c.high - p.close),
-        Math.abs(c.low - p.close)
-      )
-    );
-  }
-
-  return average(
-    trs.slice(-period)
-  );
-}
-
-/* =========================
-   KLINE
-========================= */
-
-function parseKlines(list) {
-  return (list || [])
-    .map(x => ({
-      time: num(x[0]),
-      open: num(x[1]),
-      high: num(x[2]),
-      low: num(x[3]),
-      close: num(x[4]),
-      volume: num(x[5]),
-      turnover: num(x[6])
-    }))
-    .filter(x => x.close > 0)
-    .sort(
-      (a, b) =>
-        a.time - b.time
-    );
-}
-
-/* =========================
-   BYBIT REQUEST
-========================= */
-
-async function bybit(path) {
-  const r = await fetch(
-    BYBIT + path,
-    {
-      headers: {
-        accept: "application/json"
-      }
+  const r = await fetch(u, {
+    headers: {
+      accept: "application/json"
     }
-  );
+  });
 
   if (!r.ok)
-    throw new Error(
-      `Bybit HTTP ${r.status}`
-    );
+    throw new Error(`خطای ارتباط با Bybit: HTTP ${r.status}`);
 
   const d = await r.json();
 
   if (d.retCode !== 0)
-    throw new Error(
-      d.retMsg ||
-      "Bybit API error"
-    );
+    throw new Error(d.retMsg || `خطای Bybit: ${d.retCode}`);
 
-  return d.result || {};
+  return d;
 }
 
-/* =========================
-   INSTRUMENTS
-========================= */
 
-async function getInstruments(category) {
+/* =========================================================
+   KLINE
+========================================================= */
 
-  const all = [];
-  let cursor = "";
+async function klines(category, symbol, interval, limit = 100) {
 
-  for (let page = 0; page < 5; page++) {
-
-    let url =
-      `/v5/market/instruments-info?category=${category}&limit=1000`;
-
-    if (cursor)
-      url +=
-        `&cursor=${encodeURIComponent(cursor)}`;
-
-    const d =
-      await bybit(url);
-
-    all.push(
-      ...(d.list || [])
-    );
-
-    cursor =
-      d.nextPageCursor || "";
-
-    if (!cursor)
-      break;
-  }
-
-  return all;
-}
-
-function validSymbol(x) {
-
-  if (!x) return false;
-
-  if (x.status !== "Trading")
-    return false;
-
-  if (x.quoteCoin !== "USDT")
-    return false;
-
-  if (
-    x.symbol.includes("USDC") ||
-    x.symbol.includes("USDE")
-  )
-    return false;
-
-  return true;
-}
-
-async function getSymbols() {
-
-  const [
-    spot,
-    futures
-  ] = await Promise.all([
-    getInstruments("spot"),
-    getInstruments("linear")
-  ]);
-
-  const map = new Map();
-
-  for (const x of futures) {
-
-    if (!validSymbol(x))
-      continue;
-
-    map.set(
-      x.symbol,
-      {
-        symbol: x.symbol,
-        category: "linear",
-        baseCoin: x.baseCoin,
-        quoteCoin: x.quoteCoin
-      }
-    );
-  }
-
-  for (const x of spot) {
-
-    if (!validSymbol(x))
-      continue;
-
-    if (!map.has(x.symbol)) {
-
-      map.set(
-        x.symbol,
-        {
-          symbol: x.symbol,
-          category: "spot",
-          baseCoin: x.baseCoin,
-          quoteCoin: x.quoteCoin
-        }
-      );
+  const d = await bybit(
+    "/v5/market/kline",
+    {
+      category,
+      symbol,
+      interval,
+      limit
     }
+  );
+
+  return (d?.result?.list || [])
+    .reverse()
+    .map(k => ({
+      time: n(k[0]),
+      open: n(k[1]),
+      high: n(k[2]),
+      low: n(k[3]),
+      close: n(k[4]),
+      volume: n(k[5]),
+      turnover: n(k[6])
+    }));
+}
+
+
+/* =========================================================
+   INDICATORS
+========================================================= */
+
+function sma(a, p) {
+
+  if (!a.length)
+    return 0;
+
+  return a.length < p
+    ? avg(a)
+    : avg(a.slice(-p));
+}
+
+
+function ema(a, p) {
+
+  if (!a.length)
+    return 0;
+
+  const k = 2 / (p + 1);
+
+  let x = a[0];
+
+  for (let i = 1; i < a.length; i++)
+    x = a[i] * k + x * (1 - k);
+
+  return x;
+}
+
+
+function atr(c, p = 14) {
+
+  if (c.length < 2)
+    return 0;
+
+  const tr = [];
+
+  for (let i = 1; i < c.length; i++) {
+
+    const x = c[i];
+    const prev = c[i - 1].close;
+
+    tr.push(
+      Math.max(
+        x.high - x.low,
+        Math.abs(x.high - prev),
+        Math.abs(x.low - prev)
+      )
+    );
   }
 
-  return [...map.values()];
+  return sma(tr, p);
 }
 
-/* =========================
-   TICKER
-========================= */
 
-async function getTicker(category, symbol) {
+function rsi(c, p = 14) {
 
-  const d =
-    await bybit(
-      `/v5/market/tickers?category=${category}&symbol=${encodeURIComponent(symbol)}`
-    );
+  if (c.length < p + 2)
+    return 50;
 
-  return d.list?.[0] || null;
+  let gain = 0;
+  let loss = 0;
+
+  for (let i = c.length - p; i < c.length; i++) {
+
+    const d = c[i].close - c[i - 1].close;
+
+    if (d > 0)
+      gain += d;
+    else
+      loss -= d;
+  }
+
+  if (!loss)
+    return 100;
+
+  const rs = (gain / p) / (loss / p);
+
+  return 100 - 100 / (1 + rs);
 }
 
-/* =========================
-   KLINES
-========================= */
 
-async function getKlines(
-  category,
-  symbol,
-  interval,
-  limit
-) {
+function macd(c, fast = 12, slow = 26, signalPeriod = 9) {
 
-  const d =
-    await bybit(
-      `/v5/market/kline?category=${category}&symbol=${encodeURIComponent(symbol)}&interval=${interval}&limit=${limit}`
-    );
+  const a = c.map(x => x.close);
 
-  return parseKlines(
-    d.list
-  );
-}
-
-/* =========================
-   RECENT TRADES
-   REAL FOOTPRINT SOURCE
-========================= */
-
-async function getRecentTrades(
-  category,
-  symbol
-) {
-
-  const d =
-    await bybit(
-      `/v5/market/recent-trade?category=${category}&symbol=${encodeURIComponent(symbol)}&limit=${TRADE_LIMIT}`
-    );
-
-  return (d.list || []).map(t => ({
-    execId: t.execId || "",
-    price: num(t.price),
-    size: num(t.size),
-    side: String(t.side || "").toUpperCase(),
-    time: num(t.time),
-    isBlockTrade:
-      Boolean(t.isBlockTrade)
-  }));
-}
-
-/* =========================
-   ORDER BOOK
-========================= */
-
-async function getOrderbook(
-  category,
-  symbol
-) {
-
-  return bybit(
-    `/v5/market/orderbook?category=${category}&symbol=${encodeURIComponent(symbol)}&limit=${ORDERBOOK_LIMIT}`
-  );
-}
-
-/* =========================
-   OI
-========================= */
-
-async function getOIHistory(
-  symbol
-) {
-
-  return bybit(
-    `/v5/market/open-interest?category=linear&symbol=${encodeURIComponent(symbol)}&intervalTime=5min&limit=50`
-  );
-}
-
-/* =========================
-   FUNDING HISTORY
-========================= */
-
-async function getFundingHistory(
-  symbol
-) {
-
-  return bybit(
-    `/v5/market/funding/history?category=linear&symbol=${encodeURIComponent(symbol)}&limit=50`
-  );
-}
-
-/* =========================
-   LONG SHORT RATIO
-========================= */
-
-async function getLongShort(
-  symbol
-) {
-
-  return bybit(
-    `/v5/market/account-ratio?category=linear&symbol=${encodeURIComponent(symbol)}&period=5min&limit=50`
-  );
-}
-
-/* =========================
-   FOOTPRINT
-========================= */
-
-function analyzeFootprint(trades) {
-
-  if (!trades || !trades.length) {
-
+  if (a.length < slow + signalPeriod)
     return {
-      available: false,
-      reason:
-        "معاملات اخیر Bybit دریافت نشد."
+      value: null,
+      signal: null,
+      histogram: null,
+      direction: "رنج",
+      crossUp: false,
+      crossDown: false,
+      valid: false
     };
-  }
 
-  let buyVolume = 0;
-  let sellVolume = 0;
+  const line = [];
 
-  let buyNotional = 0;
-  let sellNotional = 0;
+  for (let i = slow - 1; i < a.length; i++) {
 
-  let buyTrades = 0;
-  let sellTrades = 0;
+    const part = a.slice(0, i + 1);
 
-  let largeBuyVolume = 0;
-  let largeSellVolume = 0;
-
-  const notionals =
-    trades.map(
-      t =>
-        t.price *
-        t.size
+    line.push(
+      ema(part, fast) -
+      ema(part, slow)
     );
-
-  const largeThreshold =
-    notionals.length
-      ? Math.max(
-          average(notionals) * 5,
-          notionals.sort((a,b) => a-b)[
-            Math.floor(
-              notionals.length * 0.95
-            )
-          ] || 0
-        )
-      : 0;
-
-  for (const t of trades) {
-
-    const n =
-      t.price *
-      t.size;
-
-    if (t.side === "BUY") {
-
-      buyVolume += t.size;
-      buyNotional += n;
-      buyTrades++;
-
-      if (n >= largeThreshold)
-        largeBuyVolume += t.size;
-
-    }
-    else if (
-      t.side === "SELL"
-    ) {
-
-      sellVolume += t.size;
-      sellNotional += n;
-      sellTrades++;
-
-      if (n >= largeThreshold)
-        largeSellVolume += t.size;
-    }
   }
 
-  const total =
-    buyVolume +
-    sellVolume;
+  const value = line.at(-1);
+  const signal = ema(line, signalPeriod);
+  const histogram = value - signal;
 
-  const delta =
-    buyVolume -
-    sellVolume;
+  const prevValue = line.at(-2) ?? value;
+  const prevSignal = line.length > 1
+    ? ema(line.slice(0, -1), signalPeriod)
+    : signal;
 
-  const deltaPct =
-    total
-      ? (delta / total) * 100
-      : 0;
+  const crossUp =
+    prevValue <= prevSignal &&
+    value > signal;
 
-  let pressure = "NEUTRAL";
+  const crossDown =
+    prevValue >= prevSignal &&
+    value < signal;
 
-  if (deltaPct >= 10)
-    pressure = "BUY_PRESSURE";
+  let direction = "رنج";
 
-  else if (deltaPct <= -10)
-    pressure = "SELL_PRESSURE";
+  if (value > signal && histogram > 0)
+    direction = "صعودی";
+
+  if (value < signal && histogram < 0)
+    direction = "نزولی";
 
   return {
-
-    available: true,
-
-    trades:
-      trades.length,
-
-    buyVolume,
-
-    sellVolume,
-
-    totalVolume:
-      total,
-
-    delta,
-
-    deltaPercent:
-      deltaPct,
-
-    buyNotional,
-
-    sellNotional,
-
-    buyNotionalShare:
-      (
-        buyNotional /
-        Math.max(
-          1,
-          buyNotional +
-          sellNotional
-        )
-      ) * 100,
-
-    sellNotionalShare:
-      (
-        sellNotional /
-        Math.max(
-          1,
-          buyNotional +
-          sellNotional
-        )
-      ) * 100,
-
-    buyTrades,
-
-    sellTrades,
-
-    largeTradeThreshold:
-      largeThreshold,
-
-    largeBuyVolume,
-
-    largeSellVolume,
-
-    pressure
+    value,
+    signal,
+    histogram,
+    direction,
+    crossUp,
+    crossDown,
+    valid: true
   };
 }
 
-/* =========================
-   ORDER BOOK / WALLS
-========================= */
 
-function analyzeOrderbook(
-  book,
-  currentPrice
-) {
+function adx(c, p = 14) {
 
-  if (
-    !book ||
-    (!book.b?.length &&
-      !book.a?.length)
-  ) {
+  if (c.length < p * 2 + 1)
+    return 0;
 
-    return {
-      available: false,
-      reason:
-        "Order Book دریافت نشد."
-    };
-  }
+  const tr = [];
+  const plus = [];
+  const minus = [];
 
-  const bids =
-    (book.b || [])
-      .map(x => ({
-        price: num(x[0]),
-        size: num(x[1]),
-        notional:
-          num(x[0]) *
-          num(x[1]),
-        distancePct:
-          currentPrice
-            ? Math.abs(
-                (
-                  num(x[0]) -
-                  currentPrice
-                ) /
-                currentPrice
-              ) * 100
-            : 0
-      }));
+  for (let i = 1; i < c.length; i++) {
 
-  const asks =
-    (book.a || [])
-      .map(x => ({
-        price: num(x[0]),
-        size: num(x[1]),
-        notional:
-          num(x[0]) *
-          num(x[1]),
-        distancePct:
-          currentPrice
-            ? Math.abs(
-                (
-                  num(x[0]) -
-                  currentPrice
-                ) /
-                currentPrice
-              ) * 100
-            : 0
-      }));
+    const x = c[i];
+    const q = c[i - 1];
 
-  const buyLiquidity =
-    bids.reduce(
-      (s, x) =>
-        s + x.notional,
-      0
+    tr.push(
+      Math.max(
+        x.high - x.low,
+        Math.abs(x.high - q.close),
+        Math.abs(x.low - q.close)
+      )
     );
 
-  const sellLiquidity =
-    asks.reduce(
-      (s, x) =>
-        s + x.notional,
-      0
+    const up = x.high - q.high;
+    const down = q.low - x.low;
+
+    plus.push(
+      up > down && up > 0 ? up : 0
     );
 
-  const allNotional = [
-    ...bids,
-    ...asks
-  ]
-    .map(x => x.notional)
-    .sort((a,b) => a-b);
+    minus.push(
+      down > up && down > 0 ? down : 0
+    );
+  }
 
-  const median =
-    allNotional.length
-      ? allNotional[
-          Math.floor(
-            allNotional.length / 2
-          )
-        ]
-      : 0;
+  const values = [];
 
-  const wallThreshold =
-    median * 5;
+  for (let i = p; i < tr.length; i++) {
 
-  const buyWalls =
-    bids
-      .filter(
-        x =>
-          wallThreshold > 0 &&
-          x.notional >=
-            wallThreshold
-      )
-      .sort(
-        (a,b) =>
-          b.notional -
-          a.notional
-      );
+    const trAvg =
+      avg(tr.slice(i - p, i)) || 1;
 
-  const sellWalls =
-    asks
-      .filter(
-        x =>
-          wallThreshold > 0 &&
-          x.notional >=
-            wallThreshold
-      )
-      .sort(
-        (a,b) =>
-          b.notional -
-          a.notional
-      );
+    const pdi =
+      100 * avg(plus.slice(i - p, i)) / trAvg;
 
-  return {
+    const mdi =
+      100 * avg(minus.slice(i - p, i)) / trAvg;
 
-    available: true,
+    values.push(
+      pdi + mdi
+        ? 100 * Math.abs(pdi - mdi) / (pdi + mdi)
+        : 0
+    );
+  }
 
-    buyLiquidity,
-
-    sellLiquidity,
-
-    totalLiquidity:
-      buyLiquidity +
-      sellLiquidity,
-
-    buyShare:
-      (
-        buyLiquidity /
-        Math.max(
-          1,
-          buyLiquidity +
-          sellLiquidity
-        )
-      ) * 100,
-
-    sellShare:
-      (
-        sellLiquidity /
-        Math.max(
-          1,
-          buyLiquidity +
-          sellLiquidity
-        )
-      ) * 100,
-
-    bestBid:
-      bids[0] || null,
-
-    bestAsk:
-      asks[0] || null,
-
-    wallThreshold,
-
-    buyWalls:
-      buyWalls.slice(0, 15),
-
-    sellWalls:
-      sellWalls.slice(0, 15),
-
-    buyLevels:
-      bids.slice(0, 25),
-
-    sellLevels:
-      asks.slice(0, 25)
-  };
+  return avg(values.slice(-p));
 }
 
-/* =========================
-   PIVOTS
-========================= */
 
-function pivotHigh(candles, i, left = 2, right = 2) {
+/* =========================================================
+   SWING / STRUCTURE
+========================================================= */
 
-  const h =
-    candles[i].high;
-
-  for (
-    let j = 1;
-    j <= left;
-    j++
-  ) {
-    if (
-      i - j < 0 ||
-      candles[i-j].high >= h
-    )
-      return false;
-  }
-
-  for (
-    let j = 1;
-    j <= right;
-    j++
-  ) {
-    if (
-      i + j >= candles.length ||
-      candles[i+j].high > h
-    )
-      return false;
-  }
-
-  return true;
-}
-
-function pivotLow(candles, i, left = 2, right = 2) {
-
-  const l =
-    candles[i].low;
-
-  for (
-    let j = 1;
-    j <= left;
-    j++
-  ) {
-    if (
-      i - j < 0 ||
-      candles[i-j].low <= l
-    )
-      return false;
-  }
-
-  for (
-    let j = 1;
-    j <= right;
-    j++
-  ) {
-    if (
-      i + j >= candles.length ||
-      candles[i+j].low < l
-    )
-      return false;
-  }
-
-  return true;
-}
-
-/* =========================
-   SUPPORT / RESISTANCE
-========================= */
-
-function supportResistance(candles, price) {
-
-  if (!candles || candles.length < 10)
-    return {
-      available: false
-    };
+function swingLevels(c, lookback = 3) {
 
   const highs = [];
   const lows = [];
 
   for (
-    let i = 2;
-    i < candles.length - 2;
+    let i = lookback;
+    i < c.length - lookback;
     i++
   ) {
 
-    if (
-      pivotHigh(
-        candles,
-        i
-      )
-    ) {
+    let high = true;
+    let low = true;
 
+    for (let j = 1; j <= lookback; j++) {
+
+      if (
+        c[i].high <= c[i - j].high ||
+        c[i].high < c[i + j].high
+      )
+        high = false;
+
+      if (
+        c[i].low >= c[i - j].low ||
+        c[i].low > c[i + j].low
+      )
+        low = false;
+    }
+
+    if (high)
       highs.push({
-        price:
-          candles[i].high,
-        time:
-          candles[i].time
+        price: c[i].high,
+        time: c[i].time,
+        index: i
       });
-    }
 
-    if (
-      pivotLow(
-        candles,
-        i
-      )
-    ) {
-
+    if (low)
       lows.push({
-        price:
-          candles[i].low,
-        time:
-          candles[i].time
+        price: c[i].low,
+        time: c[i].time,
+        index: i
       });
-    }
   }
 
-  const resistance =
-    highs
-      .filter(
-        x =>
-          x.price >
-          price
-      )
-      .sort(
-        (a,b) =>
-          a.price -
-          b.price
-      )
-      .slice(0, 10);
-
-  const support =
+  return {
+    highs,
     lows
-      .filter(
-        x =>
-          x.price <
-          price
-      )
-      .sort(
-        (a,b) =>
-          b.price -
-          a.price
-      )
-      .slice(0, 10);
-
-  return {
-
-    available: true,
-
-    support,
-
-    resistance
   };
 }
 
-/* =========================
-   LIQUIDITY HUNT / SWEEP
-========================= */
 
-function detectLiquiditySweep(
-  candles
-) {
+function structure(c) {
 
-  if (!candles || candles.length < 8)
-    return {
-      available: false
-    };
+  const s = swingLevels(c, 2);
 
-  const current =
-    candles[candles.length - 1];
+  const highs = s.highs;
+  const lows = s.lows;
 
-  const previous =
-    candles.slice(
-      -7,
-      -1
-    );
+  const lastHigh =
+    highs.length ? highs.at(-1).price : null;
 
-  const priorHigh =
-    Math.max(
-      ...previous.map(
-        x => x.high
-      )
-    );
+  const prevHigh =
+    highs.length > 1 ? highs.at(-2).price : null;
 
-  const priorLow =
-    Math.min(
-      ...previous.map(
-        x => x.low
-      )
-    );
+  const lastLow =
+    lows.length ? lows.at(-1).price : null;
 
-  const sweptHigh =
-    current.high >
-      priorHigh &&
-    current.close <
-      priorHigh;
+  const prevLow =
+    lows.length > 1 ? lows.at(-2).price : null;
 
-  const sweptLow =
-    current.low <
-      priorLow &&
-    current.close >
-      priorLow;
+  const price = c.at(-1)?.close || 0;
 
-  if (sweptHigh) {
+  let bos = "رنج";
+  let choch = "رنج";
 
-    return {
+  if (lastHigh && price > lastHigh)
+    bos = "صعودی";
 
-      available: true,
-
-      confirmed: true,
-
-      side: "SHORT",
-
-      type: "HIGH_SWEEP",
-
-      sweepPrice:
-        current.high,
-
-      reference:
-        priorHigh,
-
-      strength:
-        pct(
-          current.high,
-          priorHigh
-        )
-    };
-  }
-
-  if (sweptLow) {
-
-    return {
-
-      available: true,
-
-      confirmed: true,
-
-      side: "LONG",
-
-      type: "LOW_SWEEP",
-
-      sweepPrice:
-        current.low,
-
-      reference:
-        priorLow,
-
-      strength:
-        Math.abs(
-          pct(
-            current.low,
-            priorLow
-          )
-        )
-    };
-  }
-
-  return {
-
-    available: true,
-
-    confirmed: false,
-
-    side: "NONE",
-
-    type: "NONE",
-
-    sweepPrice: 0,
-
-    reference: 0,
-
-    strength: 0
-  };
-}
-
-/* =========================
-   DIVERGENCE
-========================= */
-
-function findPivotIndexes(
-  candles,
-  type
-) {
-
-  const indexes = [];
-
-  for (
-    let i = 3;
-    i < candles.length - 3;
-    i++
-  ) {
-
-    if (
-      type === "HIGH" &&
-      pivotHigh(
-        candles,
-        i,
-        3,
-        3
-      )
-    )
-      indexes.push(i);
-
-    if (
-      type === "LOW" &&
-      pivotLow(
-        candles,
-        i,
-        3,
-        3
-      )
-    )
-      indexes.push(i);
-  }
-
-  return indexes;
-}
-
-function divergence(
-  candles
-) {
-
-  if (!candles || candles.length < 40)
-    return {
-      available: false,
-      type: "NONE",
-      side: "NONE"
-    };
-
-  const closes =
-    candles.map(
-      x => x.close
-    );
-
-  const rsiValues = [];
-
-  for (
-    let i = 15;
-    i < closes.length;
-    i++
-  ) {
-
-    const value =
-      rsi(
-        closes.slice(
-          0,
-          i + 1
-        ),
-        14
-      );
-
-    rsiValues.push({
-      index: i,
-      value
-    });
-  }
-
-  const highs =
-    findPivotIndexes(
-      candles,
-      "HIGH"
-    );
-
-  const lows =
-    findPivotIndexes(
-      candles,
-      "LOW"
-    );
-
-  const validRsi =
-    new Map(
-      rsiValues.map(
-        x => [
-          x.index,
-          x.value
-        ]
-      )
-    );
-
-  if (highs.length >= 2) {
-
-    const i1 =
-      highs[highs.length - 2];
-
-    const i2 =
-      highs[highs.length - 1];
-
-    const r1 =
-      validRsi.get(i1);
-
-    const r2 =
-      validRsi.get(i2);
-
-    if (
-      r1 != null &&
-      r2 != null &&
-      candles[i2].high >
-        candles[i1].high &&
-      r2 < r1
-    ) {
-
-      return {
-
-        available: true,
-
-        type:
-          "BEARISH_DIVERGENCE",
-
-        side: "SHORT",
-
-        priceFirst:
-          candles[i1].high,
-
-        priceSecond:
-          candles[i2].high,
-
-        rsiFirst:
-          r1,
-
-        rsiSecond:
-          r2
-      };
-    }
-  }
-
-  if (lows.length >= 2) {
-
-    const i1 =
-      lows[lows.length - 2];
-
-    const i2 =
-      lows[lows.length - 1];
-
-    const r1 =
-      validRsi.get(i1);
-
-    const r2 =
-      validRsi.get(i2);
-
-    if (
-      r1 != null &&
-      r2 != null &&
-      candles[i2].low <
-        candles[i1].low &&
-      r2 > r1
-    ) {
-
-      return {
-
-        available: true,
-
-        type:
-          "BULLISH_DIVERGENCE",
-
-        side: "LONG",
-
-        priceFirst:
-          candles[i1].low,
-
-        priceSecond:
-          candles[i2].low,
-
-        rsiFirst:
-          r1,
-
-        rsiSecond:
-          r2
-      };
-    }
-  }
-
-  return {
-
-    available: true,
-
-    type: "NONE",
-
-    side: "NONE"
-  };
-}
-
-/* =========================
-   ICHIMOKU
-========================= */
-
-function ichimoku(candles) {
-
-  if (candles.length < 52)
-    return {
-      available: false
-    };
-
-  const highest = arr =>
-    Math.max(
-      ...arr.map(
-        x => x.high
-      )
-    );
-
-  const lowest = arr =>
-    Math.min(
-      ...arr.map(
-        x => x.low
-      )
-    );
-
-  const last =
-    candles.length - 1;
-
-  const tenkan =
-    (
-      highest(
-        candles.slice(
-          last - 8,
-          last + 1
-        )
-      ) +
-      lowest(
-        candles.slice(
-          last - 8,
-          last + 1
-        )
-      )
-    ) / 2;
-
-  const kijun =
-    (
-      highest(
-        candles.slice(
-          last - 25,
-          last + 1
-        )
-      ) +
-      lowest(
-        candles.slice(
-          last - 25,
-          last + 1
-        )
-      )
-    ) / 2;
-
-  const spanA =
-    (tenkan + kijun) / 2;
-
-  const spanB =
-    (
-      highest(
-        candles.slice(
-          last - 51,
-          last + 1
-        )
-      ) +
-      lowest(
-        candles.slice(
-          last - 51,
-          last + 1
-        )
-      )
-    ) / 2;
-
-  const price =
-    candles[last].close;
-
-  let direction = "NONE";
+  if (lastLow && price < lastLow)
+    bos = "نزولی";
 
   if (
-    price > spanA &&
-    price > spanB &&
-    tenkan > kijun
-  )
-    direction = "LONG";
+    prevHigh &&
+    prevLow &&
+    lastHigh &&
+    lastLow
+  ) {
 
-  else if (
-    price < spanA &&
-    price < spanB &&
-    tenkan < kijun
-  )
-    direction = "SHORT";
+    if (
+      lastHigh > prevHigh &&
+      lastLow > prevLow &&
+      price < lastLow
+    )
+      choch = "نزولی";
+
+    if (
+      lastHigh < prevHigh &&
+      lastLow < prevLow &&
+      price > lastHigh
+    )
+      choch = "صعودی";
+  }
 
   return {
-
-    available: true,
-
-    tenkan,
-
-    kijun,
-
-    spanA,
-
-    spanB,
-
-    price,
-
-    direction
+    bos,
+    choch,
+    swingHigh: lastHigh,
+    swingLow: lastLow,
+    previousSwingHigh: prevHigh,
+    previousSwingLow: prevLow
   };
 }
 
-/* =========================
-   BOLLINGER
-========================= */
 
-function bollinger(
-  closes,
-  period = 20,
-  mult = 2
-) {
+/* =========================================================
+   HUNT / LIQUIDITY SWEEP
+========================================================= */
 
-  if (closes.length < period)
+function liquidityHunt(c) {
+
+  if (c.length < 25)
     return {
-      available: false
+      type: "داده ناکافی",
+      side: "رنج",
+      confirmed: false
     };
 
-  const values =
-    closes.slice(-period);
+  const x = c.at(-1);
 
-  const middle =
-    average(values);
+  const prev = c.slice(-21, -1);
 
-  const sd =
-    stddev(values);
+  const high =
+    Math.max(...prev.map(z => z.high));
 
-  const upper =
-    middle +
-    mult * sd;
+  const low =
+    Math.min(...prev.map(z => z.low));
+
+  const range =
+    x.high - x.low || 1;
 
   const lower =
-    middle -
-    mult * sd;
+    Math.min(x.open, x.close) - x.low;
 
-  const width =
-    middle
-      ? ((upper - lower) / middle) * 100
-      : 0;
+  const upper =
+    x.high - Math.max(x.open, x.close);
 
-  const price =
-    closes[closes.length - 1];
+  const avgVolume =
+    sma(prev.map(z => z.volume), 20);
 
-  let position = "MIDDLE";
+  const volumeConfirmed =
+    avgVolume > 0 &&
+    x.volume >= avgVolume * 1.15;
 
-  if (price >= upper)
-    position = "UPPER";
+  const lowSweep =
+    x.low < low &&
+    x.close > low &&
+    lower / range >= .25;
 
-  else if (price <= lower)
-    position = "LOWER";
+  const highSweep =
+    x.high > high &&
+    x.close < high &&
+    upper / range >= .25;
+
+  if (lowSweep) {
+
+    return {
+      type: "شکار نقدینگی پایین",
+      side: "صعودی",
+      level: low,
+      wickPct: lower / range * 100,
+      volumeConfirmed,
+      confirmed:
+        volumeConfirmed ||
+        lower / range >= .40
+    };
+  }
+
+  if (highSweep) {
+
+    return {
+      type: "شکار نقدینگی بالا",
+      side: "نزولی",
+      level: high,
+      wickPct: upper / range * 100,
+      volumeConfirmed,
+      confirmed:
+        volumeConfirmed ||
+        upper / range >= .40
+    };
+  }
 
   return {
-
-    available: true,
-
-    middle,
-
-    upper,
-
-    lower,
-
-    width,
-
-    position
+    type: "بدون شکار تأییدشده",
+    side: "رنج",
+    confirmed: false
   };
 }
 
-/* =========================
-   1 MINUTE ANALYSIS
-========================= */
 
-function analyze1m(candles) {
+/* =========================================================
+   FVG
+========================================================= */
 
-  if (!candles || candles.length < 60)
+function fvg(c) {
+
+  if (c.length < 3)
     return {
-      available: false,
-      reason:
-        "کندل کافی برای تحلیل 1m وجود ندارد."
+      type: "رنج",
+      low: null,
+      high: null,
+      valid: false
+    };
+
+  const a = c.at(-3);
+  const b = c.at(-2);
+  const x = c.at(-1);
+
+  if (x.low > a.high) {
+
+    return {
+      type: "صعودی",
+      low: a.high,
+      high: x.low,
+      size: x.low - a.high,
+      time: b.time,
+      valid: true
+    };
+  }
+
+  if (x.high < a.low) {
+
+    return {
+      type: "نزولی",
+      low: x.high,
+      high: a.low,
+      size: a.low - x.high,
+      time: b.time,
+      valid: true
+    };
+  }
+
+  return {
+    type: "رنج",
+    low: null,
+    high: null,
+    valid: false
+  };
+}
+
+
+/* =========================================================
+   ORDER BLOCK
+========================================================= */
+
+function orderBlock(c) {
+
+  if (c.length < 8)
+    return {
+      type: "رنج",
+      valid: false
+    };
+
+  const x = c.at(-1);
+
+  for (
+    let i = c.length - 4;
+    i >= Math.max(0, c.length - 15);
+    i--
+  ) {
+
+    const z = c[i];
+
+    if (
+      z.close < z.open &&
+      x.close > z.high
+    ) {
+
+      return {
+        type: "صعودی",
+        low: z.low,
+        high: z.high,
+        time: z.time,
+        valid: true
+      };
+    }
+
+    if (
+      z.close > z.open &&
+      x.close < z.low
+    ) {
+
+      return {
+        type: "نزولی",
+        low: z.low,
+        high: z.high,
+        time: z.time,
+        valid: true
+      };
+    }
+  }
+
+  return {
+    type: "رنج",
+    valid: false
+  };
+}
+
+
+/* =========================================================
+   CANDLE ANALYSIS
+========================================================= */
+
+function candle(c) {
+
+  if (c.length < 2)
+    return {
+      type: "داده ناکافی"
+    };
+
+  const x = c.at(-1);
+  const p = c.at(-2);
+
+  const body =
+    Math.abs(x.close - x.open);
+
+  const range =
+    x.high - x.low || 1;
+
+  const upper =
+    x.high - Math.max(x.open, x.close);
+
+  const lower =
+    Math.min(x.open, x.close) - x.low;
+
+  let type = "عادی";
+
+  if (
+    lower > body * 2 &&
+    lower / range > .45
+  )
+    type = "چکش";
+
+  if (
+    upper > body * 2 &&
+    upper / range > .45
+  )
+    type = "شهاب";
+
+  if (
+    x.close > p.open &&
+    x.open < p.close &&
+    x.close >= p.close &&
+    x.open <= p.open
+  )
+    type = "پوشای صعودی";
+
+  if (
+    x.close < p.open &&
+    x.open > p.close &&
+    x.close <= p.close &&
+    x.open >= p.open
+  )
+    type = "پوشای نزولی";
+
+  if (body / range < .15)
+    type = "دوجی";
+
+  return {
+    type,
+    bullish: x.close > x.open,
+    bearish: x.close < x.open,
+    body,
+    range,
+    upperWick: upper,
+    lowerWick: lower
+  };
+}
+
+
+/* =========================================================
+   DIVERGENCE
+========================================================= */
+
+function divergence(c) {
+
+  if (c.length < 45)
+    return {
+      type: "داده ناکافی",
+      side: "رنج",
+      valid: false
+    };
+
+  const price = c.at(-1).close;
+
+  const currentRSI = rsi(c);
+
+  const old = c.slice(-25, -8);
+
+  const oldPrice =
+    old.at(-1)?.close || price;
+
+  const oldRSI =
+    rsi(c.slice(0, -15));
+
+  if (
+    price < oldPrice &&
+    currentRSI > oldRSI + 3
+  ) {
+
+    return {
+      type: "واگرایی مثبت",
+      side: "صعودی",
+      valid: true
+    };
+  }
+
+  if (
+    price > oldPrice &&
+    currentRSI < oldRSI - 3
+  ) {
+
+    return {
+      type: "واگرایی منفی",
+      side: "نزولی",
+      valid: true
+    };
+  }
+
+  return {
+    type: "بدون واگرایی",
+    side: "رنج",
+    valid: false
+  };
+}
+
+
+/* =========================================================
+   1 MINUTE ANALYSIS
+========================================================= */
+
+function analyze1m(c) {
+
+  if (c.length < 40)
+    return {
+      error: "کندل کافی نیست"
     };
 
   const closes =
-    candles.map(
-      x => x.close
-    );
+    c.map(x => x.close);
 
-  const current =
-    candles[candles.length - 1];
+  const volumes =
+    c.map(x => x.volume);
 
-  const previous =
-    candles[candles.length - 2];
+  const price =
+    closes.at(-1);
 
   const ma7 =
     sma(closes, 7);
@@ -1519,1314 +786,2176 @@ function analyze1m(candles) {
   const ma20 =
     sma(closes, 20);
 
-  const prevMa20 =
-    sma(
-      closes.slice(0, -1),
-      20
-    );
+  const previousMA20 =
+    sma(closes.slice(0, -1), 20);
 
   const slope =
-    ma20 - prevMa20;
-
-  const slopePct =
-    pct(
-      ma20,
-      prevMa20
-    );
-
-  const distancePct =
-    pct(
-      current.close,
-      ma20
-    );
-
-  const previousDistance =
-    pct(
-      previous.close,
-      prevMa20
-    );
-
-  const touched =
-    current.low <= ma20 &&
-    current.high >= ma20;
-
-  const near =
-    Math.abs(
-      distancePct
-    ) <= 0.30;
-
-  const crossUp =
-    previous.close <
-      prevMa20 &&
-    current.close >=
-      ma20;
-
-  const crossDown =
-    previous.close >
-      prevMa20 &&
-    current.close <=
-      ma20;
-
-  const rejectionUp =
-    current.low <= ma20 &&
-    current.close > ma20;
-
-  const rejectionDown =
-    current.high >= ma20 &&
-    current.close < ma20;
-
-  let direction = "NONE";
-
-  if (
-    rejectionUp ||
-    crossUp
-  )
-    direction = "LONG";
-
-  else if (
-    rejectionDown ||
-    crossDown
-  )
-    direction = "SHORT";
-
-  const volumeAverage =
-    average(
-      candles
-        .slice(-21, -1)
-        .map(
-          x => x.volume
-        )
-    );
-
-  const volumeRatio =
-    volumeAverage
-      ? current.volume /
-        volumeAverage
+    previousMA20
+      ? (ma20 - previousMA20) / previousMA20
       : 0;
 
-  const rsiValue =
-    rsi(
-      closes,
-      14
+  const previousPrice =
+    closes.at(-2);
+
+  const last =
+    c.at(-1);
+
+  const touched =
+    Math.abs(price - ma20) / ma20 <= .0015 ||
+    (
+      last.low <= ma20 &&
+      last.high >= ma20
+    ) ||
+    (
+      (previousPrice - ma20) *
+      (price - ma20) <= 0
     );
 
-  const macdValue =
-    macd(closes);
+  const crossedUp =
+    previousPrice <= previousMA20 &&
+    price > ma20;
 
-  const atrValue =
-    atr(
-      candles,
-      14
-    );
+  const crossedDown =
+    previousPrice >= previousMA20 &&
+    price < ma20;
 
-  const bb =
-    bollinger(
-      closes
-    );
+  const rejectionUp =
+    last.low <= ma20 &&
+    last.close > ma20 &&
+    last.close > last.open;
+
+  const rejectionDown =
+    last.high >= ma20 &&
+    last.close < ma20 &&
+    last.close < last.open;
+
+  const volumeMA =
+    sma(volumes, 20);
+
+  const volumeRatio =
+    volumeMA
+      ? last.volume / volumeMA
+      : 0;
+
+  const volumeSpike =
+    volumeRatio >= 1.5;
+
+  const RSI =
+    rsi(c);
+
+  const MACD =
+    macd(c);
+
+  const ATR =
+    atr(c);
+
+  const structureData =
+    structure(c);
+
+  const hunt =
+    liquidityHunt(c);
+
+  const gap =
+    fvg(c);
+
+  const ob =
+    orderBlock(c);
 
   const div =
-    divergence(
-      candles
-    );
+    divergence(c);
 
-  const ichi =
-    ichimoku(
-      candles
-    );
+  const adxValue =
+    adx(c);
 
-  const sweep =
-    detectLiquiditySweep(
-      candles
-    );
-
-  const supportResistanceData =
-    supportResistance(
-      candles,
-      current.close
-    );
-
-  let marketStyle =
-    "RANGE";
+  let trend = "رنج";
 
   if (
-    ma20 > prevMa20 &&
+    price > ma20 &&
     ma7 > ma20 &&
-    current.close > ma20
+    slope > .00005
   )
-    marketStyle = "BULLISH";
+    trend = "صعودی";
 
-  else if (
-    ma20 < prevMa20 &&
+  if (
+    price < ma20 &&
     ma7 < ma20 &&
-    current.close < ma20
+    slope < -.00005
   )
-    marketStyle = "BEARISH";
+    trend = "نزولی";
+
+  if (
+    adxValue < 17 &&
+    Math.abs(slope) < .00008
+  )
+    trend = "رنج";
 
   return {
 
-    available: true,
-
-    price:
-      current.close,
+    price,
 
     ma7,
-
     ma20,
+    previousMA20,
 
-    previousMA20:
-      prevMa20,
+    maSlopePct:
+      slope * 100,
 
-    slope,
+    slope:
+      slope > .00005
+        ? "صعودی"
+        : slope < -.00005
+          ? "نزولی"
+          : "رنج",
 
-    slopePct,
-
-    distancePct,
-
-    previousDistancePct:
-      previousDistance,
+    distancePct:
+      (price - ma20) / ma20 * 100,
 
     touched,
 
-    near,
+    near:
+      Math.abs(price - ma20) / ma20 <= .003,
 
-    crossUp,
-
-    crossDown,
+    crossedUp,
+    crossedDown,
 
     rejectionUp,
-
     rejectionDown,
 
-    direction,
+    rsi: RSI,
 
-    volume:
-      current.volume,
+    macd: MACD,
 
-    averageVolume:
-      volumeAverage,
+    atr: ATR,
+
+    atrPct:
+      price
+        ? ATR / price * 100
+        : 0,
 
     volumeRatio,
 
-    volumeSpike:
-      volumeRatio >= 1.5,
+    volumeSpike,
 
-    rsi:
-      rsiValue,
+    trend,
 
-    macd:
-      macdValue,
+    adx: adxValue,
 
-    atr:
-      atrValue,
+    hunt,
 
-    atrPct:
-      current.close &&
-      atrValue
-        ? (
-            atrValue /
-            current.close
-          ) * 100
-        : 0,
+    fvg: gap,
 
-    bollinger:
-      bb,
+    orderBlock: ob,
 
-    ichimoku:
-      ichi,
+    divergence: div,
 
-    divergence:
-      div,
+    candle:
+      candle(c),
 
-    liquiditySweep:
-      sweep,
-
-    supportResistance:
-      supportResistanceData,
-
-    marketStyle
+    ...structureData
   };
 }
 
-/* =========================
-   15 MINUTE ANALYSIS
-========================= */
 
-function analyze15m(candles) {
+/* =========================================================
+   15 MINUTE
+========================================================= */
 
-  if (!candles || candles.length < 60)
-    return {
-      available: false,
-      reason:
-        "کندل کافی برای تحلیل 15m وجود ندارد."
-    };
+function analyze15m(c) {
 
-  const closes =
-    candles.map(
-      x => x.close
-    );
+  const x = analyze1m(c);
 
-  const current =
-    closes[closes.length - 1];
-
-  const ma7 =
-    sma(
-      closes,
-      7
-    );
-
-  const ma20 =
-    sma(
-      closes,
-      20
-    );
-
-  const prevMa20 =
-    sma(
-      closes.slice(0, -1),
-      20
-    );
-
-  const slope =
-    ma20 - prevMa20;
-
-  const slopePct =
-    pct(
-      ma20,
-      prevMa20
-    );
-
-  let direction =
-    "RANGE";
-
-  if (
-    current > ma20 &&
-    ma7 > ma20 &&
-    slope > 0
-  )
-    direction =
-      "LONG";
-
-  else if (
-    current < ma20 &&
-    ma7 < ma20 &&
-    slope < 0
-  )
-    direction =
-      "SHORT";
+  if (x.error)
+    return x;
 
   return {
-
-    available: true,
-
-    price:
-      current,
-
-    ma7,
-
-    ma20,
-
-    previousMA20:
-      prevMa20,
-
-    slope,
-
-    slopePct,
-
-    direction,
-
-    rsi:
-      rsi(
-        closes,
-        14
-      ),
-
-    macd:
-      macd(
-        closes
-      ),
-
-    atr:
-      atr(
-        candles,
-        14
-      ),
-
-    bollinger:
-      bollinger(
-        closes
-      ),
-
-    ichimoku:
-      ichimoku(
-        candles
-      ),
-
-    divergence:
-      divergence(
-        candles
-      ),
-
-    marketStyle:
-      direction === "LONG"
-        ? "BULLISH"
-        : direction === "SHORT"
-          ? "BEARISH"
-          : "RANGE"
+    price: x.price,
+    ma7: x.ma7,
+    ma20: x.ma20,
+    slopePct: x.maSlopePct,
+    direction: x.trend,
+    rsi: x.rsi,
+    macd: x.macd,
+    atr: x.atr,
+    adx: x.adx,
+    bos: x.bos,
+    choch: x.choch,
+    fvg: x.fvg,
+    orderBlock: x.orderBlock
   };
 }
 
-/* =========================
-   OI ANALYSIS
-========================= */
 
-function analyzeOI(
-  history,
-  currentTicker
-) {
+/* =========================================================
+   PUBLIC TRADES / FOOTPRINT
+========================================================= */
 
-  const list =
-    history?.list || [];
+async function footprint(category, symbol) {
 
-  if (!list.length) {
+  try {
 
-    return {
-      available: false,
-      reason:
-        "OI فقط برای Futures قابل دریافت است."
-    };
-  }
-
-  const sorted =
-    list
-      .map(x => ({
-        timestamp:
-          num(x.timestamp),
-        openInterest:
-          num(
-            x.openInterest
-          )
-      }))
-      .sort(
-        (a,b) =>
-          a.timestamp -
-          b.timestamp
+    const d =
+      await bybit(
+        "/v5/market/recent-trade",
+        {
+          category,
+          symbol,
+          limit: category === "spot" ? 60 : 1000
+        }
       );
 
-  const latest =
-    sorted[
-      sorted.length - 1
-    ];
+    const trades =
+      d?.result?.list || [];
 
-  const previous =
-    sorted[
-      Math.max(
-        0,
-        sorted.length - 2
-      )
-    ];
+    let buyVolume = 0;
+    let sellVolume = 0;
 
-  const change =
-    latest.openInterest -
-    previous.openInterest;
+    let buyNotional = 0;
+    let sellNotional = 0;
 
-  const changePct =
-    pct(
-      latest.openInterest,
-      previous.openInterest
-    );
+    let largestTrade = 0;
 
-  return {
+    const priceRows = new Map();
 
-    available: true,
+    for (const t of trades) {
 
-    current:
-      latest.openInterest,
+      const price = n(t.price);
+      const size = n(t.size);
 
-    previous:
-      previous.openInterest,
+      const value =
+        price * size;
 
-    change,
+      largestTrade =
+        Math.max(
+          largestTrade,
+          value
+        );
 
-    changePct,
+      const side =
+        String(t.side).toLowerCase();
 
-    history:
-      sorted.slice(-20)
-  };
+      const key =
+        price.toFixed(12);
+
+      if (!priceRows.has(key)) {
+
+        priceRows.set(
+          key,
+          {
+            price,
+            buy: 0,
+            sell: 0
+          }
+        );
+      }
+
+      const row =
+        priceRows.get(key);
+
+      if (side === "buy") {
+
+        buyVolume += size;
+        buyNotional += value;
+        row.buy += size;
+
+      } else {
+
+        sellVolume += size;
+        sellNotional += value;
+        row.sell += size;
+      }
+    }
+
+    const totalVolume =
+      buyVolume + sellVolume;
+
+    const totalNotional =
+      buyNotional + sellNotional;
+
+    const delta =
+      buyVolume - sellVolume;
+
+    const deltaNotional =
+      buyNotional - sellNotional;
+
+    const deltaPercent =
+      totalVolume
+        ? delta / totalVolume * 100
+        : 0;
+
+    const rows =
+      [...priceRows.values()]
+        .map(x => ({
+          ...x,
+          delta:
+            x.buy - x.sell,
+          imbalance:
+            x.sell
+              ? x.buy / x.sell
+              : x.buy
+                ? Infinity
+                : 0
+        }))
+        .sort(
+          (a, b) =>
+            b.price - a.price
+        );
+
+    return {
+
+      valid: true,
+
+      buyVolume,
+      sellVolume,
+
+      buyNotional,
+      sellNotional,
+
+      delta,
+      deltaNotional,
+
+      deltaPercent,
+
+      buyShare:
+        totalNotional
+          ? buyNotional / totalNotional * 100
+          : 0,
+
+      sellShare:
+        totalNotional
+          ? sellNotional / totalNotional * 100
+          : 0,
+
+      trades:
+        trades.length,
+
+      largestTrade,
+
+      pressure:
+        deltaPercent >= 8
+          ? "خریدار"
+          : deltaPercent <= -8
+            ? "فروشنده"
+            : "متعادل",
+
+      levels:
+        rows.slice(0, 40)
+    };
+
+  } catch (e) {
+
+    return {
+      valid: false,
+      error: e.message
+    };
+  }
 }
 
-/* =========================
-   FUNDING ANALYSIS
-========================= */
 
-function analyzeFunding(
-  history,
-  ticker
+/* =========================================================
+   ORDER BOOK
+========================================================= */
+
+async function orderBook(
+  category,
+  symbol,
+  price
 ) {
 
-  const list =
-    history?.list || [];
+  try {
 
-  const current =
-    num(
-      ticker?.fundingRate
+    const d =
+      await bybit(
+        "/v5/market/orderbook",
+        {
+          category,
+          symbol,
+          limit: 200
+        }
+      );
+
+    const bids =
+      d?.result?.b || [];
+
+    const asks =
+      d?.result?.a || [];
+
+    const buyLevels = [];
+
+    const sellLevels = [];
+
+    for (const row of bids) {
+
+      const p = n(row[0]);
+      const size = n(row[1]);
+
+      if (!p || !size)
+        continue;
+
+      const value =
+        p * size;
+
+      const distance =
+        absPct(p, price);
+
+      if (distance <= 3) {
+
+        buyLevels.push({
+          price: p,
+          size,
+          notional: value,
+          distancePct: distance
+        });
+      }
+    }
+
+    for (const row of asks) {
+
+      const p = n(row[0]);
+      const size = n(row[1]);
+
+      if (!p || !size)
+        continue;
+
+      const value =
+        p * size;
+
+      const distance =
+        absPct(p, price);
+
+      if (distance <= 3) {
+
+        sellLevels.push({
+          price: p,
+          size,
+          notional: value,
+          distancePct: distance
+        });
+      }
+    }
+
+    buyLevels.sort(
+      (a, b) =>
+        b.notional - a.notional
     );
 
-  if (
-    !list.length &&
-    !Number.isFinite(
-      current
-    )
+    sellLevels.sort(
+      (a, b) =>
+        b.notional - a.notional
+    );
+
+    const buyLiquidity =
+      buyLevels.reduce(
+        (s, x) =>
+          s + x.notional,
+        0
+      );
+
+    const sellLiquidity =
+      sellLevels.reduce(
+        (s, x) =>
+          s + x.notional,
+        0
+      );
+
+    const total =
+      buyLiquidity +
+      sellLiquidity;
+
+    const buyWall =
+      buyLevels[0] || null;
+
+    const sellWall =
+      sellLevels[0] || null;
+
+    const avgBuy =
+      avg(
+        buyLevels
+          .slice(0, 20)
+          .map(x => x.notional)
+      );
+
+    const avgSell =
+      avg(
+        sellLevels
+          .slice(0, 20)
+          .map(x => x.notional)
+      );
+
+    const buyStrength =
+      avgBuy
+        ? clamp(
+            buyWall.notional /
+            avgBuy *
+            20,
+            0,
+            100
+          )
+        : 0;
+
+    const sellStrength =
+      avgSell
+        ? clamp(
+            sellWall.notional /
+            avgSell *
+            20,
+            0,
+            100
+          )
+        : 0;
+
+    return {
+
+      valid: true,
+
+      bestBid:
+        bids.length
+          ? {
+              price: n(bids[0][0]),
+              size: n(bids[0][1])
+            }
+          : null,
+
+      bestAsk:
+        asks.length
+          ? {
+              price: n(asks[0][0]),
+              size: n(asks[0][1])
+            }
+          : null,
+
+      buyLiquidity,
+      sellLiquidity,
+
+      buyShare:
+        total
+          ? buyLiquidity / total * 100
+          : 0,
+
+      sellShare:
+        total
+          ? sellLiquidity / total * 100
+          : 0,
+
+      buyWall,
+      sellWall,
+
+      buyStrength,
+      sellStrength,
+
+      buyNear:
+        !!buyWall &&
+        buyWall.distancePct <= 1,
+
+      sellNear:
+        !!sellWall &&
+        sellWall.distancePct <= 1,
+
+      buyLevels:
+        buyLevels.slice(0, 30),
+
+      sellLevels:
+        sellLevels.slice(0, 30)
+    };
+
+  } catch (e) {
+
+    return {
+      valid: false,
+      error: e.message
+    };
+  }
+}
+
+
+/* =========================================================
+   SUPPORT / RESISTANCE
+========================================================= */
+
+function supportResistance(
+  c,
+  book,
+  footprintData,
+  price
+) {
+
+  const s =
+    swingLevels(c, 3);
+
+  const supports = [];
+  const resistances = [];
+
+  for (const x of s.lows) {
+
+    if (x.price < price) {
+
+      supports.push({
+        price: x.price,
+        source: "کف ساختاری",
+        type: "حمایت",
+        distancePct:
+          absPct(x.price, price)
+      });
+    }
+  }
+
+  for (const x of s.highs) {
+
+    if (x.price > price) {
+
+      resistances.push({
+        price: x.price,
+        source: "سقف ساختاری",
+        type: "مقاومت",
+        distancePct:
+          absPct(x.price, price)
+      });
+    }
+  }
+
+  for (
+    const x of
+    book?.buyLevels || []
   ) {
 
-    return {
-      available: false,
-      reason:
-        "Funding برای این بازار در دسترس نیست."
-    };
+    if (x.price < price) {
+
+      supports.push({
+        price: x.price,
+        source: "دیوار خرید",
+        type: "حمایت",
+        wallValue: x.notional,
+        distancePct: x.distancePct
+      });
+    }
   }
 
-  const rates =
-    list
-      .map(x => ({
-        timestamp:
-          num(x.fundingRateTimestamp),
-        rate:
-          num(x.fundingRate)
-      }))
-      .sort(
-        (a,b) =>
-          a.timestamp -
-          b.timestamp
-      );
+  for (
+    const x of
+    book?.sellLevels || []
+  ) {
 
-  const previous =
-    rates.length >= 2
-      ? rates[
-          rates.length - 2
-        ].rate
-      : null;
+    if (x.price > price) {
+
+      resistances.push({
+        price: x.price,
+        source: "دیوار فروش",
+        type: "مقاومت",
+        wallValue: x.notional,
+        distancePct: x.distancePct
+      });
+    }
+  }
+
+  supports.sort(
+    (a, b) =>
+      a.distancePct -
+      b.distancePct
+  );
+
+  resistances.sort(
+    (a, b) =>
+      a.distancePct -
+      b.distancePct
+  );
+
+  const pressure =
+    footprintData?.pressure ||
+    "متعادل";
+
+  for (const x of supports) {
+
+    x.pressure =
+      pressure === "خریدار"
+        ? "خریدار قوی‌تر"
+        : pressure === "فروشنده"
+          ? "فروشنده قوی‌تر"
+          : "متعادل";
+  }
+
+  for (const x of resistances) {
+
+    x.pressure =
+      pressure === "فروشنده"
+        ? "فروشنده قوی‌تر"
+        : pressure === "خریدار"
+          ? "خریدار قوی‌تر"
+          : "متعادل";
+  }
 
   return {
 
-    available: true,
+    supports:
+      supports.slice(0, 12),
 
-    current,
+    resistances:
+      resistances.slice(0, 12),
 
-    previous,
+    nearestSupport:
+      supports[0] || null,
 
-    change:
-      previous == null
-        ? null
-        : current - previous,
-
-    changePct:
-      previous == null ||
-      previous === 0
-        ? null
-        : (
-            (
-              current -
-              previous
-            ) /
-            Math.abs(previous)
-          ) * 100,
-
-    history:
-      rates.slice(-20),
-
-    pressure:
-      current > 0
-        ? "LONG_PAYS_SHORT"
-        : current < 0
-          ? "SHORT_PAYS_LONG"
-          : "NEUTRAL"
+    nearestResistance:
+      resistances[0] || null
   };
 }
 
-/* =========================
-   LONG / SHORT RATIO
-========================= */
 
-function analyzeLongShort(data) {
+/* =========================================================
+   OI / FUNDING
+========================================================= */
 
-  const list =
-    data?.list || [];
+async function derivativesData(symbol) {
 
-  if (!list.length)
+  try {
+
+    const tickerData =
+      await bybit(
+        "/v5/market/tickers",
+        {
+          category: "linear",
+          symbol
+        }
+      );
+
+    const ticker =
+      tickerData?.result?.list?.[0] || {};
+
+    let oiHistory = [];
+
+    let fundingHistory = [];
+
+    try {
+
+      const oi =
+        await bybit(
+          "/v5/market/open-interest",
+          {
+            category: "linear",
+            symbol,
+            intervalTime: "5min",
+            limit: 20
+          }
+        );
+
+      oiHistory =
+        oi?.result?.list || [];
+
+    } catch (_) {}
+
+    try {
+
+      const fr =
+        await bybit(
+          "/v5/market/funding/history",
+          {
+            category: "linear",
+            symbol,
+            limit: 20
+          }
+        );
+
+      fundingHistory =
+        fr?.result?.list || [];
+
+    } catch (_) {}
+
+    const currentOI =
+      n(ticker.openInterest);
+
+    const previousOI =
+      oiHistory.length > 1
+        ? n(
+            oiHistory
+              .at(-2)
+              .openInterest
+          )
+        : null;
+
+    const oldestOI =
+      oiHistory.length
+        ? n(
+            oiHistory[0]
+              .openInterest
+          )
+        : null;
+
+    const currentFunding =
+      n(ticker.fundingRate);
+
+    const previousFunding =
+      fundingHistory.length > 1
+        ? n(
+            fundingHistory
+              .at(-2)
+              .fundingRate
+          )
+        : null;
+
+    const oi5m =
+      previousOI !== null
+        ? pct(
+            currentOI,
+            previousOI
+          )
+        : null;
+
+    const oiHistoryChange =
+      oldestOI
+        ? pct(
+            currentOI,
+            oldestOI
+          )
+        : null;
+
+    const fundingChange =
+      previousFunding !== null
+        ? currentFunding -
+          previousFunding
+        : null;
+
+    let oiDirection = "رنج";
+
+    if (
+      oi5m !== null &&
+      oi5m > .5
+    )
+      oiDirection = "افزایش";
+
+    if (
+      oi5m !== null &&
+      oi5m < -.5
+    )
+      oiDirection = "کاهش";
+
     return {
-      available: false
+
+      available: true,
+
+      current:
+        currentOI,
+
+      previous:
+        previousOI,
+
+      change5mPct:
+        oi5m,
+
+      changeHistoryPct:
+        oiHistoryChange,
+
+      direction:
+        oiDirection,
+
+      funding: {
+
+        current:
+          currentFunding,
+
+        previous:
+          previousFunding,
+
+        change:
+          fundingChange,
+
+        currentPercent:
+          currentFunding * 100,
+
+        state:
+          currentFunding > .0005
+            ? "مثبت"
+            : currentFunding < -.0005
+              ? "منفی"
+              : "نزدیک به خنثی"
+      },
+
+      markPrice:
+        n(ticker.markPrice),
+
+      indexPrice:
+        n(ticker.indexPrice),
+
+      turnover24h:
+        n(ticker.turnover24h),
+
+      priceChange24h:
+        n(ticker.price24hPcnt) * 100
     };
 
-  const sorted =
-    list
-      .map(x => ({
-        timestamp:
-          num(x.timestamp),
-        buyRatio:
-          num(x.buyRatio),
-        sellRatio:
-          num(x.sellRatio)
-      }))
-      .sort(
-        (a,b) =>
-          a.timestamp -
-          b.timestamp
-      );
+  } catch (e) {
 
-  const latest =
-    sorted[
-      sorted.length - 1
-    ];
+    return {
+      available: false,
+      error: e.message
+    };
+  }
+}
+
+
+/* =========================================================
+   STYLE CALCULATIONS
+========================================================= */
+
+function result(
+  direction,
+  score,
+  reasons,
+  data = {}
+) {
 
   return {
-
-    available: true,
-
-    buyRatio:
-      latest.buyRatio,
-
-    sellRatio:
-      latest.sellRatio,
-
-    ratio:
-      latest.sellRatio
-        ? latest.buyRatio /
-          latest.sellRatio
-        : null,
-
-    history:
-      sorted.slice(-20)
+    direction,
+    score: Math.round(
+      clamp(score, 0, 100)
+    ),
+    reasons,
+    ...data
   };
 }
 
-/* =========================
-   SIGNAL SCORE
-========================= */
 
-function scoreSignal(
-  one,
-  fifteen,
-  footprint,
-  orderbook,
-  oi,
-  funding,
-  strictness
-) {
+/* ---------------- روندی ---------------- */
+
+function styleTrend(one, fifteen) {
+
+  let bull = 0;
+  let bear = 0;
 
   const reasons = [];
 
-  let long = 0;
-  let short = 0;
+  if (one.trend === "صعودی") {
 
-  if (!one?.available)
-    return {
-      score: 0,
-      longScore: 0,
-      shortScore: 0,
-      direction: "WAIT",
-      qualifies: false,
-      threshold: 100,
-      reasons
-    };
-
-  /*
-    MA20 برخورد:
-    هسته اصلی
-  */
-
-  if (!one.touched)
-    return {
-      score: 0,
-      longScore: 0,
-      shortScore: 0,
-      direction: "WAIT",
-      qualifies: false,
-      threshold:
-        25 +
-        clamp(strictness) *
-        0.65,
-      reasons: [
-        {
-          side: "NONE",
-          text:
-            "قیمت در این لحظه با MA20 تایم 1m برخورد نکرده است."
-        }
-      ]
-    };
-
-  if (
-    one.direction === "LONG"
-  ) {
-
-    long += 35;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        "برخورد واقعی قیمت با MA20 در 1m"
-    });
+    bull += 30;
+    reasons.push(
+      "قیمت، MA7 و MA20 در 1 دقیقه ساختار صعودی دارند."
+    );
   }
 
-  else if (
-    one.direction === "SHORT"
-  ) {
+  if (one.trend === "نزولی") {
 
-    short += 35;
-
-    reasons.push({
-      side: "SHORT",
-      text:
-        "برخورد واقعی قیمت با MA20 در 1m"
-    });
+    bear += 30;
+    reasons.push(
+      "قیمت، MA7 و MA20 در 1 دقیقه ساختار نزولی دارند."
+    );
   }
 
-  /*
-    شیب MA20
-  */
+  if (one.maSlopePct > .02) {
 
-  if (
-    one.slopePct > 0
-  ) {
+    bull += 20;
 
-    long += 15;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        "شیب واقعی MA20 در 1m صعودی است."
-    });
-
-  }
-  else if (
-    one.slopePct < 0
-  ) {
-
-    short += 15;
-
-    reasons.push({
-      side: "SHORT",
-      text:
-        "شیب واقعی MA20 در 1m نزولی است."
-    });
+    reasons.push(
+      "شیب MA20 یک‌دقیقه‌ای مثبت است."
+    );
   }
 
-  /*
-    نوع برخورد
-  */
+  if (one.maSlopePct < -.02) {
 
-  if (one.rejectionUp) {
+    bear += 20;
 
-    long += 10;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        "قیمت MA20 را لمس کرده و بالای آن بسته شده است."
-    });
+    reasons.push(
+      "شیب MA20 یک‌دقیقه‌ای منفی است."
+    );
   }
 
-  if (one.rejectionDown) {
+  if (one.adx >= 20) {
 
-    short += 10;
+    bull +=
+      one.trend === "صعودی"
+        ? 20
+        : 0;
 
-    reasons.push({
-      side: "SHORT",
-      text:
-        "قیمت MA20 را لمس کرده و زیر آن بسته شده است."
-    });
+    bear +=
+      one.trend === "نزولی"
+        ? 20
+        : 0;
+
+    reasons.push(
+      "ADX نشان‌دهنده قدرت بیشتر حرکت است."
+    );
   }
 
-  /*
-    حجم
-  */
+  if (fifteen.direction === "صعودی")
+    bull += 20;
 
-  if (
-    one.volumeRatio >= 1.5
-  ) {
+  if (fifteen.direction === "نزولی")
+    bear += 20;
 
-    if (
-      one.direction === "LONG"
-    ) {
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
 
-      long += 8;
 
-      reasons.push({
-        side: "LONG",
-        text:
-          `حجم 1m حدود ${one.volumeRatio.toFixed(2)} برابر میانگین است.`
-      });
-    }
+/* ---------------- شکست ---------------- */
 
-    else if (
-      one.direction === "SHORT"
-    ) {
+function styleBreakout(one) {
 
-      short += 8;
+  let bull = 0;
+  let bear = 0;
 
-      reasons.push({
-        side: "SHORT",
-        text:
-          `حجم 1m حدود ${one.volumeRatio.toFixed(2)} برابر میانگین است.`
-      });
-    }
+  const reasons = [];
+
+  if (one.bos === "صعودی") {
+
+    bull += 35;
+
+    reasons.push(
+      "شکست ساختاری صعودی واقعی نسبت به سقف سوئینگ ثبت شده است."
+    );
   }
 
-  /*
-    MACD
-  */
+  if (one.bos === "نزولی") {
 
-  if (
-    one.macd?.available &&
-    one.macd.direction ===
-      "LONG"
-  ) {
+    bear += 35;
 
-    long += 7;
+    reasons.push(
+      "شکست ساختاری نزولی واقعی نسبت به کف سوئینگ ثبت شده است."
+    );
+  }
 
-    reasons.push({
-      side: "LONG",
-      text:
-        "MACD واقعی 1m بالای صفر است."
-    });
+  if (one.choch === "صعودی") {
+
+    bull += 25;
+
+    reasons.push(
+      "CHoCH صعودی شناسایی شده است."
+    );
+  }
+
+  if (one.choch === "نزولی") {
+
+    bear += 25;
+
+    reasons.push(
+      "CHoCH نزولی شناسایی شده است."
+    );
+  }
+
+  if (one.volumeSpike) {
+
+    if (one.trend === "صعودی")
+      bull += 20;
+
+    if (one.trend === "نزولی")
+      bear += 20;
+
+    reasons.push(
+      "حجم کندل جاری نسبت به میانگین افزایش غیرعادی دارد."
+    );
   }
 
   if (
-    one.macd?.available &&
-    one.macd.direction ===
-      "SHORT"
+    one.crossedUp &&
+    one.touched
   ) {
 
-    short += 7;
+    bull += 15;
 
-    reasons.push({
-      side: "SHORT",
-      text:
-        "MACD واقعی 1m زیر صفر است."
-    });
-  }
-
-  /*
-    RSI
-  */
-
-  if (
-    one.rsi != null &&
-    one.rsi > 52
-  ) {
-
-    long += 5;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        `RSI واقعی 1m = ${one.rsi.toFixed(2)}`
-    });
-  }
-
-  else if (
-    one.rsi != null &&
-    one.rsi < 48
-  ) {
-
-    short += 5;
-
-    reasons.push({
-      side: "SHORT",
-      text:
-        `RSI واقعی 1m = ${one.rsi.toFixed(2)}`
-    });
-  }
-
-  /*
-    Footprint
-  */
-
-  if (
-    footprint?.available
-  ) {
-
-    if (
-      footprint.deltaPercent >
-      10
-    ) {
-
-      long += 8;
-
-      reasons.push({
-        side: "LONG",
-        text:
-          "Footprint واقعی: فشار خرید بالاتر است."
-      });
-    }
-
-    else if (
-      footprint.deltaPercent <
-      -10
-    ) {
-
-      short += 8;
-
-      reasons.push({
-        side: "SHORT",
-        text:
-          "Footprint واقعی: فشار فروش بالاتر است."
-      });
-    }
-  }
-
-  /*
-    15m
-  */
-
-  if (
-    fifteen?.direction ===
-    "LONG"
-  ) {
-
-    long += 12;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        "روند 15m صعودی است."
-    });
-
-  }
-  else if (
-    fifteen?.direction ===
-    "SHORT"
-  ) {
-
-    short += 12;
-
-    reasons.push({
-      side: "SHORT",
-      text:
-        "روند 15m نزولی است."
-    });
-  }
-
-  /*
-    تضاد 1m و 15m
-  */
-
-  if (
-    one.direction === "LONG" &&
-    fifteen?.direction === "SHORT"
-  ) {
-
-    long -= 20;
-
-    reasons.push({
-      side: "LONG",
-      text:
-        "15m خلاف جهت سیگنال 1m است."
-    });
+    reasons.push(
+      "عبور واقعی قیمت از MA20 در 1 دقیقه ثبت شده است."
+    );
   }
 
   if (
-    one.direction === "SHORT" &&
-    fifteen?.direction === "LONG"
+    one.crossedDown &&
+    one.touched
   ) {
 
-    short -= 20;
+    bear += 15;
 
-    reasons.push({
-      side: "SHORT",
-      text:
-        "15m خلاف جهت سیگنال 1m است."
-    });
+    reasons.push(
+      "عبور واقعی قیمت از MA20 در 1 دقیقه ثبت شده است."
+    );
   }
 
-  /*
-    Divergence
-  */
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
+
+
+/* ---------------- برگشتی ---------------- */
+
+function styleReversal(
+  one,
+  fp
+) {
+
+  let bull = 0;
+  let bear = 0;
+
+  const reasons = [];
 
   if (
     one.divergence?.side ===
-    "LONG"
+    "صعودی"
   ) {
 
-    long += 8;
+    bull += 35;
 
-    reasons.push({
-      side: "LONG",
-      text:
-        "واگرایی صعودی واقعی در RSI تشخیص داده شد."
-    });
+    reasons.push(
+      "واگرایی مثبت RSI نسبت به قیمت شناسایی شده است."
+    );
   }
 
   if (
     one.divergence?.side ===
-    "SHORT"
+    "نزولی"
   ) {
 
-    short += 8;
+    bear += 35;
 
-    reasons.push({
-      side: "SHORT",
-      text:
-        "واگرایی نزولی واقعی در RSI تشخیص داده شد."
-    });
-  }
-
-  /*
-    Liquidity Sweep
-  */
-
-  if (
-    one.liquiditySweep?.confirmed
-  ) {
-
-    if (
-      one.liquiditySweep.side ===
-      "LONG"
-    ) {
-
-      long += 8;
-
-      reasons.push({
-        side: "LONG",
-        text:
-          "Liquidity Sweep پایین با برگشت قیمت تأیید شده است."
-      });
-    }
-
-    else if (
-      one.liquiditySweep.side ===
-      "SHORT"
-    ) {
-
-      short += 8;
-
-      reasons.push({
-        side: "SHORT",
-        text:
-          "Liquidity Sweep بالا با برگشت قیمت تأیید شده است."
-      });
-    }
-  }
-
-  /*
-    Order Book
-  */
-
-  if (
-    orderbook?.available
-  ) {
-
-    if (
-      orderbook.buyShare >
-      orderbook.sellShare + 10
-    ) {
-
-      long += 5;
-
-      reasons.push({
-        side: "LONG",
-        text:
-          "نقدینگی خرید در Order Book بیشتر است."
-      });
-    }
-
-    else if (
-      orderbook.sellShare >
-      orderbook.buyShare + 10
-    ) {
-
-      short += 5;
-
-      reasons.push({
-        side: "SHORT",
-        text:
-          "نقدینگی فروش در Order Book بیشتر است."
-      });
-    }
-  }
-
-  /*
-    Funding
-  */
-
-  if (
-    funding?.available
-  ) {
-
-    if (
-      funding.current < 0
-    ) {
-
-      long += 3;
-
-      reasons.push({
-        side: "LONG",
-        text:
-          "Funding فعلی منفی است."
-      });
-
-    }
-    else if (
-      funding.current > 0
-    ) {
-
-      short += 3;
-
-      reasons.push({
-        side: "SHORT",
-        text:
-          "Funding فعلی مثبت است."
-      });
-    }
-  }
-
-  long =
-    clamp(long);
-
-  short =
-    clamp(short);
-
-  const raw =
-    Math.max(
-      long,
-      short
+    reasons.push(
+      "واگرایی منفی RSI نسبت به قیمت شناسایی شده است."
     );
+  }
 
-  const threshold =
-    25 +
-    (
-      clamp(strictness) *
-      0.65
+  if (
+    one.rsi < 30
+  ) {
+
+    bull += 20;
+
+    reasons.push(
+      "RSI در محدوده اشباع فروش قرار دارد."
     );
-
-  let direction =
-    long > short
-      ? "LONG"
-      : short > long
-        ? "SHORT"
-        : "WAIT";
-
-  /*
-    اگر MA20 جهت مشخصی دارد،
-    اجازه نمی‌دهیم امتیاز مخالف
-    صرفاً با عوامل فرعی برنده شود.
-  */
-
-  if (
-    one.direction === "LONG" &&
-    direction === "SHORT"
-  ) {
-
-    direction = "WAIT";
-
-    reasons.push({
-      side: "NONE",
-      text:
-        "عوامل فرعی با جهت برخورد MA20 در تضاد هستند؛ سیگنال تأیید نشد."
-    });
   }
 
   if (
-    one.direction === "SHORT" &&
-    direction === "LONG"
+    one.rsi > 70
   ) {
 
-    direction = "WAIT";
+    bear += 20;
 
-    reasons.push({
-      side: "NONE",
-      text:
-        "عوامل فرعی با جهت برخورد MA20 در تضاد هستند؛ سیگنال تأیید نشد."
-    });
+    reasons.push(
+      "RSI در محدوده اشباع خرید قرار دارد."
+    );
   }
 
-  const qualifies =
-    raw >= threshold &&
-    direction !== "WAIT";
+  if (
+    one.macd?.crossUp
+  ) {
+
+    bull += 20;
+
+    reasons.push(
+      "تقاطع واقعی MACD صعودی ثبت شده است."
+    );
+  }
+
+  if (
+    one.macd?.crossDown
+  ) {
+
+    bear += 20;
+
+    reasons.push(
+      "تقاطع واقعی MACD نزولی ثبت شده است."
+    );
+  }
+
+  if (
+    one.hunt?.side === "صعودی" &&
+    one.hunt.confirmed
+  ) {
+
+    bull += 25;
+
+    reasons.push(
+      "شکار نقدینگی پایین با تأیید کندلی/حجم ثبت شده است."
+    );
+  }
+
+  if (
+    one.hunt?.side === "نزولی" &&
+    one.hunt.confirmed
+  ) {
+
+    bear += 25;
+
+    reasons.push(
+      "شکار نقدینگی بالا با تأیید کندلی/حجم ثبت شده است."
+    );
+  }
+
+  if (fp?.valid) {
+
+    if (fp.deltaPercent > 8)
+      bull += 10;
+
+    if (fp.deltaPercent < -8)
+      bear += 10;
+  }
+
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
+
+
+/* ---------------- نقدینگی / اسمارت‌مانی ---------------- */
+
+function styleLiquidity(
+  one,
+  book
+) {
+
+  let bull = 0;
+  let bear = 0;
+
+  const reasons = [];
+
+  if (
+    one.hunt?.confirmed &&
+    one.hunt.side === "صعودی"
+  ) {
+
+    bull += 35;
+
+    reasons.push(
+      "Liquidity Sweep پایین با تأیید واقعی شناسایی شده است."
+    );
+  }
+
+  if (
+    one.hunt?.confirmed &&
+    one.hunt.side === "نزولی"
+  ) {
+
+    bear += 35;
+
+    reasons.push(
+      "Liquidity Sweep بالا با تأیید واقعی شناسایی شده است."
+    );
+  }
+
+  if (one.fvg?.type === "صعودی") {
+
+    bull += 15;
+
+    reasons.push(
+      "FVG صعودی واقعی بین کندل‌ها تشکیل شده است."
+    );
+  }
+
+  if (one.fvg?.type === "نزولی") {
+
+    bear += 15;
+
+    reasons.push(
+      "FVG نزولی واقعی بین کندل‌ها تشکیل شده است."
+    );
+  }
+
+  if (one.orderBlock?.type === "صعودی") {
+
+    bull += 20;
+
+    reasons.push(
+      "Order Block صعودی واقعی شناسایی شده است."
+    );
+  }
+
+  if (one.orderBlock?.type === "نزولی") {
+
+    bear += 20;
+
+    reasons.push(
+      "Order Block نزولی واقعی شناسایی شده است."
+    );
+  }
+
+  if (one.bos === "صعودی")
+    bull += 15;
+
+  if (one.bos === "نزولی")
+    bear += 15;
+
+  if (
+    book?.buyNear &&
+    book.buyStrength >= 60
+  ) {
+
+    bull += 15;
+
+    reasons.push(
+      "دیوار خرید نزدیک قیمت قدرت قابل‌توجهی دارد."
+    );
+  }
+
+  if (
+    book?.sellNear &&
+    book.sellStrength >= 60
+  ) {
+
+    bear += 15;
+
+    reasons.push(
+      "دیوار فروش نزدیک قیمت قدرت قابل‌توجهی دارد."
+    );
+  }
+
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
+
+
+/* ---------------- جریان سفارش ---------------- */
+
+function styleOrderFlow(
+  fp,
+  book
+) {
+
+  let bull = 0;
+  let bear = 0;
+
+  const reasons = [];
+
+  if (fp?.valid) {
+
+    if (fp.deltaPercent >= 8) {
+
+      bull += 40;
+
+      reasons.push(
+        "Delta مثبت و فشار خرید واقعی در معاملات اخیر دیده می‌شود."
+      );
+    }
+
+    if (fp.deltaPercent <= -8) {
+
+      bear += 40;
+
+      reasons.push(
+        "Delta منفی و فشار فروش واقعی در معاملات اخیر دیده می‌شود."
+      );
+    }
+
+    if (
+      fp.buyNotionalShare >
+      fp.sellNotionalShare
+    )
+      bull += 20;
+
+    if (
+      fp.sellNotionalShare >
+      fp.buyNotionalShare
+    )
+      bear += 20;
+  }
+
+  if (
+    book?.buyShare >
+    book.sellShare
+  ) {
+
+    bull += 20;
+
+    reasons.push(
+      "نقدینگی دفتر سفارش به سمت خرید سنگین‌تر است."
+    );
+  }
+
+  if (
+    book?.sellShare >
+    book.buyShare
+  ) {
+
+    bear += 20;
+
+    reasons.push(
+      "نقدینگی دفتر سفارش به سمت فروش سنگین‌تر است."
+    );
+  }
+
+  if (
+    book?.buyNear &&
+    book.buyStrength >= 60
+  )
+    bull += 15;
+
+  if (
+    book?.sellNear &&
+    book.sellStrength >= 60
+  )
+    bear += 15;
+
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
+
+
+/* ---------------- مومنتوم / پامپ دامپ ---------------- */
+
+function styleMomentum(
+  one,
+  market,
+  fp
+) {
+
+  let bull = 0;
+  let bear = 0;
+
+  const reasons = [];
+
+  if (
+    one.volumeRatio >= 2
+  ) {
+
+    if (one.trend === "صعودی")
+      bull += 25;
+
+    if (one.trend === "نزولی")
+      bear += 25;
+
+    reasons.push(
+      "حجم جاری حداقل دو برابر میانگین 20 کندل است."
+    );
+  }
+
+  if (
+    one.price &&
+    one.ma20
+  ) {
+
+    const move =
+      Math.abs(
+        pct(
+          one.price,
+          one.ma20
+        )
+      );
+
+    if (
+      move >= 1 &&
+      one.price > one.ma20
+    )
+      bull += 20;
+
+    if (
+      move >= 1 &&
+      one.price < one.ma20
+    )
+      bear += 20;
+  }
+
+  if (
+    fp?.valid &&
+    fp.deltaPercent > 8
+  )
+    bull += 20;
+
+  if (
+    fp?.valid &&
+    fp.deltaPercent < -8
+  )
+    bear += 20;
+
+  if (
+    market?.available &&
+    market.change24h > 5
+  ) {
+
+    bull += 20;
+
+    reasons.push(
+      "حرکت 24 ساعته قیمت مثبت و غیرعادی است."
+    );
+  }
+
+  if (
+    market?.available &&
+    market.change24h < -5
+  ) {
+
+    bear += 20;
+
+    reasons.push(
+      "حرکت 24 ساعته قیمت منفی و غیرعادی است."
+    );
+  }
+
+  if (
+    market?.available &&
+    market.change24h > 0 &&
+    market.oi?.change5mPct > 1
+  )
+    bull += 15;
+
+  if (
+    market?.available &&
+    market.change24h < 0 &&
+    market.oi?.change5mPct > 1
+  )
+    bear += 15;
+
+  return result(
+    bull > bear && bull >= 35
+      ? "صعودی"
+      : bear > bull && bear >= 35
+        ? "نزولی"
+        : "رنج",
+    Math.max(bull, bear),
+    reasons
+  );
+}
+
+
+/* =========================================================
+   ALL SIX STYLES
+========================================================= */
+
+function calculateStyles(
+  one,
+  fifteen,
+  fp,
+  book,
+  market
+) {
+
+  const styles = {
+
+    TREND:
+      styleTrend(
+        one,
+        fifteen
+      ),
+
+    BREAKOUT:
+      styleBreakout(
+        one
+      ),
+
+    REVERSAL:
+      styleReversal(
+        one,
+        fp
+      ),
+
+    LIQUIDITY:
+      styleLiquidity(
+        one,
+        book
+      ),
+
+    ORDERFLOW:
+      styleOrderFlow(
+        fp,
+        book
+      ),
+
+    MOMENTUM:
+      styleMomentum(
+        one,
+        market,
+        fp
+      )
+  };
+
+  const values =
+    Object.values(styles);
+
+  let bull =
+    values.filter(
+      x => x.direction === "صعودی"
+    ).length;
+
+  let bear =
+    values.filter(
+      x => x.direction === "نزولی"
+    ).length;
+
+  let overall =
+    "رنج";
+
+  if (bull >= 3)
+    overall = "صعودی";
+
+  if (bear >= 3)
+    overall = "نزولی";
 
   return {
+    styles,
+    overall: {
+      direction: overall,
+      score:
+        Math.round(
+          values.reduce(
+            (s, x) => s + x.score,
+            0
+          ) / values.length
+        )
+    }
+  };
+}
 
-    score:
-      Math.round(raw),
 
-    longScore:
-      Math.round(long),
+/* =========================================================
+   SELECTABLE SIGNAL METHODS
+========================================================= */
 
-    shortScore:
-      Math.round(short),
+function signalMethodScore(
+  method,
+  one,
+  styles
+) {
 
-    threshold:
-      Math.round(threshold),
+  let bull = 0;
+  let bear = 0;
+  const reasons = [];
 
-    direction:
-      qualifies
-        ? direction
-        : "WAIT",
+  if (
+    method === "MA"
+  ) {
 
-    qualifies,
+    if (
+      one.touched &&
+      one.trend === "صعودی"
+    ) {
 
+      bull += 100;
+
+      reasons.push(
+        "قیمت واقعاً به MA20 یک‌دقیقه‌ای برخورد کرده و ساختار صعودی است."
+      );
+    }
+
+    if (
+      one.touched &&
+      one.trend === "نزولی"
+    ) {
+
+      bear += 100;
+
+      reasons.push(
+        "قیمت واقعاً به MA20 یک‌دقیقه‌ای برخورد کرده و ساختار نزولی است."
+      );
+    }
+  }
+
+
+  if (
+    method === "RSI"
+  ) {
+
+    if (one.rsi <= 30) {
+
+      bull += 100;
+
+      reasons.push(
+        "RSI در اشباع فروش است."
+      );
+    }
+
+    if (one.rsi >= 70) {
+
+      bear += 100;
+
+      reasons.push(
+        "RSI در اشباع خرید است."
+      );
+    }
+
+    if (
+      one.rsi > 50 &&
+      one.rsi < 70
+    ) {
+
+      bull += 45;
+
+      reasons.push(
+        "RSI بالاتر از 50 است."
+      );
+    }
+
+    if (
+      one.rsi < 50 &&
+      one.rsi > 30
+    ) {
+
+      bear += 45;
+
+      reasons.push(
+        "RSI پایین‌تر از 50 است."
+      );
+    }
+  }
+
+
+  if (
+    method === "MACD"
+  ) {
+
+    if (
+      one.macd?.direction ===
+      "صعودی"
+    ) {
+
+      bull += 100;
+
+      reasons.push(
+        "MACD بر اساس خط و سیگنال واقعی صعودی است."
+      );
+    }
+
+    if (
+      one.macd?.direction ===
+      "نزولی"
+    ) {
+
+      bear += 100;
+
+      reasons.push(
+        "MACD بر اساس خط و سیگنال واقعی نزولی است."
+      );
+    }
+  }
+
+
+  if (
+    method === "DIVERGENCE"
+  ) {
+
+    if (
+      one.divergence?.side ===
+      "صعودی"
+    ) {
+
+      bull += 100;
+
+      reasons.push(
+        "واگرایی مثبت واقعی قیمت و RSI شناسایی شده است."
+      );
+    }
+
+    if (
+      one.divergence?.side ===
+      "نزولی"
+    ) {
+
+      bear += 100;
+
+      reasons.push(
+        "واگرایی منفی واقعی قیمت و RSI شناسایی شده است."
+      );
+    }
+  }
+
+
+  const styleMap = {
+
+    TREND: styles.styles.TREND,
+
+    BREAKOUT: styles.styles.BREAKOUT,
+
+    REVERSAL: styles.styles.REVERSAL,
+
+    LIQUIDITY: styles.styles.LIQUIDITY,
+
+    ORDERFLOW: styles.styles.ORDERFLOW,
+
+    MOMENTUM: styles.styles.MOMENTUM
+  };
+
+  if (styleMap[method]) {
+
+    const x =
+      styleMap[method];
+
+    if (x.direction === "صعودی")
+      bull = x.score;
+
+    if (x.direction === "نزولی")
+      bear = x.score;
+
+    reasons.push(
+      ...x.reasons
+    );
+  }
+
+  return {
+    bull,
+    bear,
     reasons
   };
 }
 
-/* =========================
-   FULL ANALYSIS
-========================= */
 
-async function analyzeSymbol(
-  symbol,
-  category,
+/* =========================================================
+   FINAL SIGNAL
+========================================================= */
+
+function calculateSignal(
+  one,
+  fifteen,
+  fp,
+  book,
+  market,
+  styles,
   strictness,
-  deep = true
+  methods
 ) {
 
-  const k1Promise =
-    getKlines(
+  const s =
+    clamp(
+      strictness,
+      0,
+      100
+    );
+
+  let selected =
+    Array.isArray(methods)
+      ? methods
+      : ["ALL"];
+
+  if (
+    !selected.length ||
+    selected.includes("ALL")
+  ) {
+
+    selected = [
+      "MA",
+      "RSI",
+      "MACD",
+      "DIVERGENCE",
+      "TREND",
+      "BREAKOUT",
+      "REVERSAL",
+      "LIQUIDITY",
+      "ORDERFLOW",
+      "MOMENTUM"
+    ];
+  }
+
+  let bull = 0;
+  let bear = 0;
+
+  const evidence = [];
+
+  for (const method of selected) {
+
+    const x =
+      signalMethodScore(
+        method,
+        one,
+        styles
+      );
+
+    bull += x.bull;
+    bear += x.bear;
+
+    if (x.bull > 0) {
+
+      evidence.push({
+        method,
+        direction: "صعودی",
+        score: x.bull,
+        reasons: x.reasons
+      });
+    }
+
+    if (x.bear > 0) {
+
+      evidence.push({
+        method,
+        direction: "نزولی",
+        score: x.bear,
+        reasons: x.reasons
+      });
+    }
+  }
+
+  const count =
+    selected.length || 1;
+
+  bull /= count;
+  bear /= count;
+
+  let direction =
+    "رنج";
+
+  const threshold =
+    35 +
+    s * .55;
+
+  if (
+    bull >= threshold &&
+    bull > bear
+  )
+    direction = "صعودی";
+
+  if (
+    bear >= threshold &&
+    bear > bull
+  )
+    direction = "نزولی";
+
+  const rawScore =
+    Math.max(
+      bull,
+      bear
+    );
+
+  let score =
+    clamp(
+      rawScore,
+      0,
+      100
+    );
+
+  /*
+    تأیید 15 دقیقه فقط تأییدکننده است،
+    نه جایگزین سیگنال 1 دقیقه.
+  */
+
+  if (
+    direction === "صعودی" &&
+    fifteen.direction === "صعودی"
+  )
+    score = clamp(
+      score + 8,
+      0,
+      100
+    );
+
+  if (
+    direction === "نزولی" &&
+    fifteen.direction === "نزولی"
+  )
+    score = clamp(
+      score + 8,
+      0,
+      100
+    );
+
+  if (
+    direction === "صعودی" &&
+    fifteen.direction === "نزولی"
+  )
+    score = clamp(
+      score - 12,
+      0,
+      100
+    );
+
+  if (
+    direction === "نزولی" &&
+    fifteen.direction === "صعودی"
+  )
+    score = clamp(
+      score - 12,
+      0,
+      100
+    );
+
+  return {
+
+    direction,
+
+    score:
+      Math.round(score),
+
+    longScore:
+      Math.round(
+        clamp(bull, 0, 100)
+      ),
+
+    shortScore:
+      Math.round(
+        clamp(bear, 0, 100)
+      ),
+
+    threshold:
+
+      Math.round(
+        threshold
+      ),
+
+    selectedMethods:
+
+      selected,
+
+    evidence,
+
+    higherTimeframe:
+
+      fifteen.direction,
+
+    strictness: s
+  };
+}
+
+
+/* =========================================================
+   FULL ANALYSIS
+========================================================= */
+
+async function analyzeSymbol(
+  category,
+  symbol,
+  settings
+) {
+
+  const oneCandles =
+    await klines(
       category,
       symbol,
       "1",
-      KLINE_LIMIT_1M
+      DEEP_1M_LIMIT
     );
 
-  const k15Promise =
-    getKlines(
+  const fifteenCandles =
+    await klines(
       category,
       symbol,
       "15",
-      KLINE_LIMIT_15M
+      150
     );
-
-  const tickerPromise =
-    getTicker(
-      category,
-      symbol
-    );
-
-  const tradesPromise =
-    getRecentTrades(
-      category,
-      symbol
-    );
-
-  const bookPromise =
-    getOrderbook(
-      category,
-      symbol
-    );
-
-  const [
-    k1,
-    k15,
-    ticker,
-    trades,
-    book
-  ] = await Promise.all([
-    k1Promise,
-    k15Promise,
-    tickerPromise,
-    tradesPromise,
-    bookPromise
-  ]);
 
   const one =
-    analyze1m(k1);
+    analyze1m(
+      oneCandles.slice(-250)
+    );
 
   const fifteen =
-    analyze15m(k15);
-
-  const footprint =
-    analyzeFootprint(
-      trades
+    analyze15m(
+      fifteenCandles
     );
 
-  const orderbook =
-    analyzeOrderbook(
-      book,
-      num(ticker?.lastPrice) ||
-      one.price
+  const price =
+    one.price;
+
+  const fp =
+    await footprint(
+      category,
+      symbol
     );
 
-  let oi = {
-    available: false,
-    reason:
-      "OI فقط برای Futures است."
-  };
+  const book =
+    await orderBook(
+      category,
+      symbol,
+      price
+    );
 
-  let funding = {
-    available: false,
-    reason:
-      "Funding فقط برای Futures است."
-  };
+  let market = {
 
-  let longShort = {
-    available: false
+    available: false,
+
+    current: null,
+
+    previous: null,
+
+    change5mPct: null,
+
+    changeHistoryPct: null,
+
+    direction: null,
+
+    funding: null,
+
+    markPrice: null,
+
+    indexPrice: null,
+
+    turnover24h: null,
+
+    priceChange24h: null
   };
 
   if (
     category === "linear"
   ) {
 
-    const [
-      oiHistory,
-      fundingHistory,
-      longShortData
-    ] = await Promise.all([
-      getOIHistory(symbol).catch(
-        () => null
-      ),
-      getFundingHistory(symbol).catch(
-        () => null
-      ),
-      getLongShort(symbol).catch(
-        () => null
-      )
-    ]);
-
-    oi =
-      analyzeOI(
-        oiHistory,
-        ticker
-      );
-
-    funding =
-      analyzeFunding(
-        fundingHistory,
-        ticker
-      );
-
-    longShort =
-      analyzeLongShort(
-        longShortData
+    market =
+      await derivativesData(
+        symbol
       );
   }
 
-  const signal =
-    scoreSignal(
-      one,
-      fifteen,
-      footprint,
-      orderbook,
-      oi,
-      funding,
-      strictness
+  const sr =
+    supportResistance(
+      oneCandles,
+      book,
+      fp,
+      price
     );
 
-  const result = {
+  const styles =
+    calculateStyles(
+      one,
+      fifteen,
+      fp,
+      book,
+      market
+    );
+
+  const signal =
+    calculateSignal(
+      one,
+      fifteen,
+      fp,
+      book,
+      market,
+      styles,
+      settings.strictness,
+      settings.methods
+    );
+
+  const pumpScore =
+    calculatePumpScore(
+      one,
+      market,
+      fp
+    );
+
+  const dumpScore =
+    calculateDumpScore(
+      one,
+      market,
+      fp
+    );
+
+  return {
 
     ok: true,
-
-    mode:
-      "personal",
-
-    version:
-      PERSONAL_VERSION,
 
     symbol,
 
     category,
 
-    price:
-      num(ticker?.lastPrice) ||
-      one.price,
+    price,
 
     direction:
       signal.direction,
@@ -2843,607 +2972,879 @@ async function analyzeSymbol(
     threshold:
       signal.threshold,
 
-    qualifies:
-      signal.qualifies,
+    signalLevel:
+      signal.score >= 80
+        ? "قوی"
+        : signal.score >= 60
+          ? "متوسط"
+          : "ضعیف",
+
+    signalEvidence:
+      signal.evidence,
+
+    signalSettings: {
+
+      strictness:
+        signal.strictness,
+
+      selectedMethods:
+        signal.selectedMethods,
+
+      threshold:
+        signal.threshold
+    },
+
+    oneMinute: {
+
+      ...one,
+
+      label:
+        "1 دقیقه"
+    },
+
+    fifteenMinute: {
+
+      ...fifteen,
+
+      label:
+        "15 دقیقه"
+    },
+
+    styles,
+
+    footprint: fp,
+
+    orderBook: book,
+
+    supportResistance: sr,
+
+    openInterest:
+      market.available
+        ? {
+            current:
+              market.current,
+
+            previous:
+              market.previous,
+
+            change5mPct:
+              market.change5mPct,
+
+            changeHistoryPct:
+              market.changeHistoryPct,
+
+            direction:
+              market.direction
+          }
+        : null,
+
+    funding:
+      market.available
+        ? market.funding
+        : null,
+
+    derivatives:
+      market.available
+        ? market
+        : null,
+
+    pumpScore,
+
+    dumpScore,
+
+    pumpDumpStatus:
+      pumpScore >= 70
+        ? "پامپ"
+        : dumpScore >= 70
+          ? "دامپ"
+          : "عادی",
+
+    structure: {
+
+      bos:
+        one.bos,
+
+      choch:
+        one.choch,
+
+      fvg:
+        one.fvg,
+
+      orderBlock:
+        one.orderBlock
+    },
+
+    liquidation: {
+
+      available: false,
+
+      message:
+        "داده مستقیم لیکوئیدیشن عمومی از REST این تحلیل در دسترس نیست."
+    },
 
     reasons:
-      signal.reasons,
-
-    marketStyle:
-      one.marketStyle,
-
-    oneMinute: one,
-
-    fifteenMinute:
-      fifteen,
-
-    footprint,
-
-    orderBook:
-      orderbook,
-
-    supportResistance:
-      one.supportResistance,
-
-    liquiditySweep:
-      one.liquiditySweep,
-
-    oi,
-
-    funding,
-
-    longShort,
+      signal.evidence
+        .filter(
+          x =>
+            x.direction ===
+            signal.direction
+        )
+        .flatMap(
+          x => x.reasons
+        ),
 
     generatedAt:
       Date.now()
   };
-
-  return result;
 }
 
-/* =========================
-   SYMBOL RESOLVER
-========================= */
 
-async function resolveSymbol(
-  input
+/* =========================================================
+   PUMP / DUMP
+========================================================= */
+
+function calculatePumpScore(
+  one,
+  market,
+  fp
 ) {
 
-  const clean =
-    String(input || "")
-      .trim()
-      .toUpperCase()
-      .replace(
-        /[^A-Z0-9]/g,
-        ""
-      );
+  let score = 0;
 
-  if (!clean)
-    return null;
+  if (one.trend === "صعودی")
+    score += 20;
 
-  const symbols =
-    await getSymbols();
+  if (one.volumeRatio >= 1.5)
+    score += 20;
 
-  let found =
-    symbols.find(
-      x =>
-        x.symbol ===
-        clean
-    );
+  if (one.volumeRatio >= 2)
+    score += 15;
 
-  if (found)
-    return found;
+  if (one.maSlopePct > .05)
+    score += 10;
+
+  if (fp?.deltaPercent >= 8)
+    score += 20;
 
   if (
-    !clean.endsWith("USDT")
-  ) {
+    market?.available &&
+    market.priceChange24h > 5
+  )
+    score += 15;
 
-    found =
-      symbols.find(
-        x =>
-          x.symbol ===
-          clean + "USDT"
-      );
-
-    if (found)
-      return found;
-  }
-
-  const base =
-    clean.endsWith("USDT")
-      ? clean.slice(0, -4)
-      : clean;
-
-  const matches =
-    symbols.filter(
-      x =>
-        x.baseCoin === base &&
-        x.quoteCoin === "USDT"
-    );
-
-  if (!matches.length)
-    return null;
-
-  /*
-    Futures اولویت دارد
-    اگر همان ارز در هر دو باشد.
-  */
-
-  return (
-    matches.find(
-      x =>
-        x.category ===
-        "linear"
-    ) ||
-    matches[0]
+  return Math.round(
+    clamp(score, 0, 100)
   );
 }
 
-/* =========================
-   ROTATING SCAN
-========================= */
 
-async function scanMarket(
-  offset,
-  strictness
+function calculateDumpScore(
+  one,
+  market,
+  fp
 ) {
 
-  const symbols =
-    await getSymbols();
+  let score = 0;
 
-  if (!symbols.length)
-    throw new Error(
-      "بازارهای Bybit دریافت نشد."
-    );
+  if (one.trend === "نزولی")
+    score += 20;
 
-  const total =
-    symbols.length;
+  if (one.volumeRatio >= 1.5)
+    score += 20;
 
-  const selected = [];
+  if (one.volumeRatio >= 2)
+    score += 15;
+
+  if (one.maSlopePct < -.05)
+    score += 10;
+
+  if (fp?.deltaPercent <= -8)
+    score += 20;
+
+  if (
+    market?.available &&
+    market.priceChange24h < -5
+  )
+    score += 15;
+
+  return Math.round(
+    clamp(score, 0, 100)
+  );
+}
+
+
+/* =========================================================
+   INSTRUMENTS
+========================================================= */
+
+async function instruments(category) {
+
+  const all = [];
+
+  let cursor = "";
 
   for (
-    let i = 0;
-    i < SCAN_BATCH;
-    i++
+    let page = 0;
+    page < 5;
+    page++
   ) {
 
-    selected.push(
-      symbols[
-        (
-          offset + i
-        ) % total
-      ]
+    const params = {
+      category,
+      limit: 1000
+    };
+
+    if (cursor)
+      params.cursor = cursor;
+
+    const d =
+      await bybit(
+        "/v5/market/instruments-info",
+        params
+      );
+
+    all.push(
+      ...(d?.result?.list || [])
     );
+
+    cursor =
+      d?.result?.nextPageCursor ||
+      "";
+
+    if (!cursor)
+      break;
   }
+
+  return all;
+}
+
+
+function validFutures(list) {
+
+  return list.filter(
+    x =>
+      x.status === "Trading" &&
+      x.quoteCoin === "USDT" &&
+      x.contractType ===
+        "LinearPerpetual"
+  );
+}
+
+
+/* =========================================================
+   SYMBOL SEARCH
+========================================================= */
+
+async function findSymbol(input) {
+
+  const raw =
+    String(input || "")
+      .trim()
+      .toUpperCase();
+
+  const bare =
+    raw
+      .replace(/[-_/:\s]/g, "")
+      .replace(/USDT$/, "");
+
+  const [
+    futures,
+    spot
+  ] = await Promise.all([
+    instruments("linear"),
+    instruments("spot")
+  ]);
+
+  const f =
+    futures.find(
+      x =>
+        String(x.symbol)
+          .toUpperCase() === raw ||
+        String(x.symbol)
+          .toUpperCase() ===
+          bare + "USDT"
+    );
+
+  const s =
+    spot.find(
+      x =>
+        String(x.symbol)
+          .toUpperCase() === raw ||
+        String(x.symbol)
+          .toUpperCase() ===
+          bare + "USDT"
+    );
+
+  return {
+
+    input: raw,
+
+    selected:
+      f
+        ? "Futures"
+        : s
+          ? "Spot"
+          : null,
+
+    futures:
+      f
+        ? {
+            symbol: f.symbol,
+            status: f.status,
+            baseCoin: f.baseCoin,
+            quoteCoin: f.quoteCoin
+          }
+        : null,
+
+    spot:
+      s
+        ? {
+            symbol: s.symbol,
+            status: s.status,
+            baseCoin: s.baseCoin,
+            quoteCoin: s.quoteCoin
+          }
+        : null
+  };
+}
+
+
+/* =========================================================
+   SCAN
+========================================================= */
+
+async function scan(
+  offset = 0,
+  settings = {}
+) {
+
+  const [
+    futures,
+    spot
+  ] = await Promise.all([
+    instruments("linear"),
+    instruments("spot")
+  ]);
+
+  const markets = [
+
+    ...validFutures(futures)
+      .map(x => ({
+        symbol: x.symbol,
+        category: "linear"
+      })),
+
+    ...spot
+      .filter(
+        x =>
+          x.status === "Trading" &&
+          x.quoteCoin === "USDT"
+      )
+      .map(x => ({
+        symbol: x.symbol,
+        category: "spot"
+      }))
+  ];
+
+  markets.sort(
+    (a, b) =>
+      String(a.symbol)
+        .localeCompare(
+          String(b.symbol)
+        )
+  );
+
+  if (!markets.length) {
+
+    return {
+      ok: false,
+      error:
+        "بازار قابل بررسی در Bybit پیدا نشد."
+    };
+  }
+
+  const safeOffset =
+    Math.max(
+      0,
+      Math.min(
+        Number(offset) || 0,
+        Math.max(
+          0,
+          markets.length - 1
+        )
+      )
+    );
+
+  const batch =
+    markets.slice(
+      safeOffset,
+      safeOffset + SCAN_BATCH
+    );
+
+  const candidates = [];
+
+  for (const m of batch) {
+
+    try {
+
+      const candles =
+        await klines(
+          m.category,
+          m.symbol,
+          "1",
+          70
+        );
+
+      if (candles.length < 40)
+        continue;
+
+      const one =
+        analyze1m(
+          candles
+        );
+
+      let activity = 0;
+
+      if (one.touched)
+        activity += 20;
+
+      if (one.volumeSpike)
+        activity += 20;
+
+      if (one.hunt.confirmed)
+        activity += 20;
+
+      if (one.bos !== "رنج")
+        activity += 15;
+
+      if (one.choch !== "رنج")
+        activity += 15;
+
+      if (one.trend !== "رنج")
+        activity += 10;
+
+      candidates.push({
+        ...m,
+        activity
+      });
+
+    } catch (_) {}
+  }
+
+  candidates.sort(
+    (a, b) =>
+      b.activity - a.activity
+  );
+
+  const selected =
+    candidates.slice(
+      0,
+      DEEP_LIMIT
+    );
 
   const results = [];
 
-  const concurrency = 3;
-
-  for (
-    let i = 0;
-    i < selected.length;
-    i += concurrency
-  ) {
-
-    const chunk =
-      selected.slice(
-        i,
-        i + concurrency
-      );
-
-    const data =
-      await Promise.all(
-        chunk.map(
-          async x => {
-
-            try {
-
-              return await analyzeSymbol(
-                x.symbol,
-                x.category,
-                strictness,
-                false
-              );
-
-            }
-            catch {
-
-              return null;
-            }
-          }
-        )
-      );
-
-    results.push(
-      ...data.filter(Boolean)
-    );
-
-    await sleep(80);
-  }
-
-  const signals =
-    results
-      .filter(
-        x =>
-          x.qualifies &&
-          (
-            x.direction === "LONG" ||
-            x.direction === "SHORT"
-          )
-      )
-      .sort(
-        (a,b) =>
-          b.score -
-          a.score
-      );
-
-  return {
-
-    ok: true,
-
-    mode:
-      "personal",
-
-    version:
-      PERSONAL_VERSION,
-
-    strictness:
-      clamp(strictness),
-
-    checked:
-      results.length,
-
-    totalMarkets:
-      total,
-
-    offset,
-
-    nextOffset:
-      (
-        offset +
-        SCAN_BATCH
-      ) % total,
-
-    results: signals,
-
-    generatedAt:
-      Date.now()
-  };
-}
-
-/* =========================
-   HEALTH
-========================= */
-
-async function health() {
-
-  return {
-
-    ok: true,
-
-    service:
-      "Bybit Personal Live Smart Money Scanner",
-
-    version:
-      PERSONAL_VERSION,
-
-    mode:
-      "personal",
-
-    signalCore:
-      "REAL 1m PRICE TOUCH MA20",
-
-    confirmation:
-      "REAL 15m",
-
-    strictness:
-      "0-100",
-
-    features: [
-
-      "REAL 1m MA20",
-
-      "REAL MA20 Slope",
-
-      "REAL MA20 Touch",
-
-      "REAL MA20 Cross",
-
-      "REAL Rejection",
-
-      "REAL Volume",
-
-      "REAL RSI",
-
-      "REAL MACD",
-
-      "REAL ATR",
-
-      "REAL Bollinger",
-
-      "REAL Ichimoku",
-
-      "REAL RSI Divergence",
-
-      "REAL Liquidity Sweep",
-
-      "REAL Support Resistance",
-
-      "REAL Recent Trades Footprint",
-
-      "REAL Order Book",
-
-      "REAL Buy Walls",
-
-      "REAL Sell Walls",
-
-      "REAL Open Interest",
-
-      "REAL Funding",
-
-      "REAL Long Short Ratio",
-
-      "15m Confirmation",
-
-      "Rotating Scan",
-
-      "Deep Analysis"
-
-    ],
-
-    timeframes: [
-      "1",
-      "15"
-    ],
-
-    dataPolicy:
-      "No synthetic indicator values",
-
-    time:
-      Date.now()
-  };
-}
-
-/* =========================
-   ROUTER
-========================= */
-
-async function handle(request) {
-
-  const url =
-    new URL(request.url);
-
-  const path =
-    url.pathname;
-
-  if (
-    request.method ===
-    "OPTIONS"
-  ) {
-
-    return new Response(
-      null,
-      {
-        headers: {
-          "access-control-allow-origin":
-            "*",
-          "access-control-allow-methods":
-            "GET,OPTIONS",
-          "access-control-allow-headers":
-            "*"
-        }
-      }
-    );
-  }
-
-  if (
-    path ===
-    "/api/health"
-  ) {
-
-    return json(
-      await health()
-    );
-  }
-
-  if (
-    path ===
-      "/api/personal/health"
-  ) {
-
-    return json(
-      await health()
-    );
-  }
-
-  /*
-    ROTATING PERSONAL SCAN
-  */
-
-  if (
-    path ===
-      "/api/personal/scan" ||
-    path ===
-      "/api/scan"
-  ) {
+  for (const m of selected) {
 
     try {
-
-      const offset =
-        Math.max(
-          0,
-          Math.floor(
-            num(
-              url.searchParams.get(
-                "offset"
-              )
-            )
-          )
-        );
-
-      const strictness =
-        clamp(
-          num(
-            url.searchParams.get(
-              "strictness"
-            ) ??
-            DEFAULT_STRICTNESS
-          )
-        );
-
-      return json(
-        await scanMarket(
-          offset,
-          strictness
-        )
-      );
-
-    }
-    catch (e) {
-
-      return json(
-        {
-          ok: false,
-          error:
-            e.message ||
-            "خطا در اسکن بازار"
-        },
-        500
-      );
-    }
-  }
-
-  /*
-    DEEP MANUAL ANALYSIS
-  */
-
-  if (
-    path ===
-      "/api/personal/analyze" ||
-    path ===
-      "/api/analyze"
-  ) {
-
-    try {
-
-      const input =
-        url.searchParams.get(
-          "symbol"
-        );
-
-      const strictness =
-        clamp(
-          num(
-            url.searchParams.get(
-              "strictness"
-            ) ??
-            DEFAULT_STRICTNESS
-          )
-        );
-
-      if (!input) {
-
-        return json(
-          {
-            ok: false,
-            error:
-              "نام ارز وارد نشده است."
-          },
-          400
-        );
-      }
-
-      const found =
-        await resolveSymbol(
-          input
-        );
-
-      if (!found) {
-
-        return json(
-          {
-            ok: false,
-
-            error:
-              `${String(input).toUpperCase()} در Spot یا Futures Bybit پیدا نشد.`,
-
-            search: {
-              input:
-                String(input)
-                  .toUpperCase(),
-              selected:
-                null
-            }
-          },
-          404
-        );
-      }
 
       const data =
         await analyzeSymbol(
-          found.symbol,
-          found.category,
-          strictness,
-          true
+          m.category,
+          m.symbol,
+          settings
         );
 
-      return json({
+      results.push(data);
 
-        ...data,
+    } catch (_) {}
+  }
 
-        baseCoin:
-          found.baseCoin,
+  results.sort(
+    (a, b) =>
+      b.score - a.score
+  );
 
-        quoteCoin:
-          found.quoteCoin,
+  return {
 
-        strictness,
+    ok: true,
 
-        search: {
+    totalMarkets:
+      markets.length,
 
-          input:
-            String(input)
-              .toUpperCase(),
+    offset:
+      safeOffset,
 
-          selected:
-            found.category ===
-            "linear"
-              ? "FUTURES"
-              : "SPOT"
-        }
+    checked:
+      batch.length,
 
-      });
+    batchSize:
+      batch.length,
 
-    }
-    catch (e) {
+    nextOffset:
+      (
+        safeOffset +
+        SCAN_BATCH
+      ) % markets.length,
 
-      return json(
-        {
-          ok: false,
-          error:
-            e.message ||
-            "تحلیل انجام نشد."
-        },
-        500
-      );
+    results,
+
+    settings,
+
+    note:
+      "اسکن اصلی بر پایه داده‌های واقعی 1 دقیقه انجام می‌شود و 15 دقیقه فقط تأیید تایم‌فریم بالاتر است."
+  };
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function parseSettings(params) {
+
+  const strictness =
+    clamp(
+      n(
+        params.get(
+          "strictness"
+        ),
+        DEFAULT_STRICTNESS
+      ),
+      0,
+      100
+    );
+
+  let methods = ["ALL"];
+
+  const raw =
+    params.get("methods");
+
+  if (raw) {
+
+    try {
+
+      methods =
+        JSON.parse(raw);
+
+    } catch {
+
+      methods =
+        raw
+          .split(",")
+          .map(
+            x =>
+              x.trim()
+                .toUpperCase()
+          );
     }
   }
 
-  return json(
-    {
-      ok: false,
+  if (
+    !Array.isArray(methods) ||
+    !methods.length
+  )
+    methods = ["ALL"];
 
-      error:
-        "Personal API route not found.",
-
-      routes: [
-        "/api/health",
-        "/api/personal/health",
-        "/api/personal/scan",
-        "/api/personal/analyze"
-      ]
-    },
-    404
-  );
+  return {
+    strictness,
+    methods
+  };
 }
 
-/* =========================
-   CLOUDFLARE WORKER
-========================= */
+
+/* =========================================================
+   ROUTER
+========================================================= */
 
 export default {
 
   async fetch(
     request,
-    env,
-    ctx
+    env
   ) {
 
-    return handle(
-      request
-    );
+    const u =
+      new URL(request.url);
 
+    const p =
+      u.pathname;
+
+    try {
+
+      const settings =
+        parseSettings(
+          u.searchParams
+        );
+
+
+      /* ---------- PERSONAL HEALTH ---------- */
+
+      if (
+        p ===
+        "/api/personal/health"
+      ) {
+
+        return json({
+
+          ok: true,
+
+          service:
+            "اسکنر شخصی Bybit",
+
+          version:
+            "Personal-V10",
+
+          تایم‌فریم_اصلی:
+            "1 دقیقه",
+
+          تایم‌فریم_بالاتر:
+            "15 دقیقه",
+
+          styles:
+            STYLE_NAMES,
+
+          methods:
+            METHOD_NAMES,
+
+          defaultStrictness:
+            DEFAULT_STRICTNESS,
+
+          scanBatch:
+            SCAN_BATCH
+        });
+      }
+
+
+      /* ---------- PERSONAL SEARCH ---------- */
+
+      if (
+        p ===
+        "/api/personal/search"
+      ) {
+
+        const symbol =
+          u.searchParams.get(
+            "symbol"
+          );
+
+        if (!symbol)
+          return json(
+            {
+              ok: false,
+              error:
+                "نام ارز وارد نشده است."
+            },
+            400
+          );
+
+        return json({
+          ok: true,
+          ...await findSymbol(
+            symbol
+          )
+        });
+      }
+
+
+      /* ---------- PERSONAL ANALYZE ---------- */
+
+      if (
+        p ===
+        "/api/personal/analyze"
+      ) {
+
+        const symbol =
+          u.searchParams.get(
+            "symbol"
+          );
+
+        if (!symbol)
+          return json(
+            {
+              ok: false,
+              error:
+                "نام ارز وارد نشده است."
+            },
+            400
+          );
+
+        const found =
+          await findSymbol(
+            symbol
+          );
+
+        const chosen =
+          found.futures ||
+          found.spot;
+
+        if (!chosen) {
+
+          return json(
+            {
+              ok: false,
+
+              error:
+                `${symbol} در Spot یا Futures Bybit پیدا نشد.`,
+
+              search:
+                found
+            },
+            404
+          );
+        }
+
+        const category =
+          found.futures
+            ? "linear"
+            : "spot";
+
+        return json(
+          await analyzeSymbol(
+            category,
+            chosen.symbol,
+            settings
+          )
+        );
+      }
+
+
+      /* ---------- PERSONAL SCAN ---------- */
+
+      if (
+        p ===
+        "/api/personal/scan"
+      ) {
+
+        return json(
+          await scan(
+            n(
+              u.searchParams.get(
+                "offset"
+              ),
+              0
+            ),
+            settings
+          )
+        );
+      }
+
+
+      /* ---------- OLD ROUTES ---------- */
+
+      if (p === "/api/search") {
+
+        const symbol =
+          u.searchParams.get(
+            "symbol"
+          );
+
+        if (!symbol)
+          return json(
+            {
+              ok: false,
+              error:
+                "نام ارز وارد نشده است."
+            },
+            400
+          );
+
+        return json({
+          ok: true,
+          ...await findSymbol(
+            symbol
+          )
+        });
+      }
+
+
+      if (p === "/api/analyze") {
+
+        const symbol =
+          u.searchParams.get(
+            "symbol"
+          );
+
+        if (!symbol)
+          return json(
+            {
+              ok: false,
+              error:
+                "نام ارز وارد نشده است."
+            },
+            400
+          );
+
+        const found =
+          await findSymbol(
+            symbol
+          );
+
+        const chosen =
+          found.futures ||
+          found.spot;
+
+        if (!chosen)
+          return json(
+            {
+              ok: false,
+              error:
+                "ارز در Bybit پیدا نشد."
+            },
+            404
+          );
+
+        return json(
+          await analyzeSymbol(
+            found.futures
+              ? "linear"
+              : "spot",
+            chosen.symbol,
+            settings
+          )
+        );
+      }
+
+
+      if (p === "/api/scan") {
+
+        return json(
+          await scan(
+            n(
+              u.searchParams.get(
+                "offset"
+              ),
+              0
+            ),
+            settings
+          )
+        );
+      }
+
+
+      return env.ASSETS.fetch(
+        request
+      );
+
+    } catch (e) {
+
+      return json(
+        {
+          ok: false,
+
+          error:
+            e.message,
+
+          detail:
+            String(
+              e.stack || ""
+            ).slice(
+              0,
+              1800
+            )
+        },
+        500
+      );
+    }
   }
-
 };
