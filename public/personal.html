@@ -3,401 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تحلیل عمیق شخصی Bybit</title>
+<title>اسکنر شخصی Bybit</title>
 
 <style>
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
-
 body{
   margin:0;
   font-family:Tahoma,Arial,sans-serif;
   background:#07111f;
-  color:#e8f0ff;
-  line-height:1.8;
+  color:#e8f0fa;
 }
-
+button,input,select{font:inherit}
 .container{
-  width:min(1100px,96%);
+  width:min(1180px,94%);
   margin:auto;
-  padding:15px 0 50px;
+  padding:18px 0 50px;
 }
-
 header{
-  background:linear-gradient(135deg,#0d1c32,#102947);
-  border:1px solid #1d3c61;
+  background:#0d1a2b;
+  border:1px solid #1d334d;
   border-radius:18px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 10px 30px #0006;
-}
-
-h1{
-  margin:0;
-  font-size:24px;
-  color:#fff;
-}
-
-.subtitle{
-  color:#9db4d0;
-  margin-top:5px;
-  font-size:13px;
-}
-
-.connection{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:10px;
-  background:#24121a;
-  color:#ff6b7d;
-  font-size:13px;
-}
-
-.connection.ok{
-  background:#10251d;
-  color:#5ee39b;
-}
-
-.card{
-  background:#0b192b;
-  border:1px solid #1a3554;
-  border-radius:16px;
-  padding:15px;
+  padding:18px;
   margin-bottom:14px;
-  box-shadow:0 8px 25px #0004;
 }
-
-.card-title{
-  font-size:17px;
+h1{margin:0 0 8px;font-size:22px}
+.sub{color:#91a4ba;font-size:13px}
+.status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:12px;
+  padding:7px 12px;
+  border-radius:20px;
+  background:#10243a;
+  color:#7ee2a8;
+  font-size:12px;
+}
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#37d47a;
+}
+.panel{
+  background:#0d1a2b;
+  border:1px solid #1d334d;
+  border-radius:16px;
+  margin-bottom:14px;
+  overflow:visible;
+}
+.panel-title{
+  padding:15px 16px;
   font-weight:bold;
-  margin-bottom:12px;
-  color:#fff;
+  border-bottom:1px solid #1d334d;
 }
-
-.controls{
-  display:grid;
-  grid-template-columns:1fr 130px 130px 120px;
-  gap:9px;
+.panel-body{padding:15px}
+.search{
+  display:flex;
+  gap:8px;
 }
-
-input,select,button{
-  width:100%;
-  border:1px solid #29496c;
-  background:#071321;
+input{
+  flex:1;
+  min-width:0;
+  background:#081524;
   color:#fff;
+  border:1px solid #29425e;
   border-radius:10px;
-  padding:11px;
-  font-family:inherit;
+  padding:12px;
   outline:none;
 }
-
-input:focus,select:focus{
-  border-color:#4d91d9;
-}
-
+input:focus{border-color:#4b89c8}
 button{
+  border:0;
+  border-radius:10px;
+  padding:11px 16px;
   cursor:pointer;
-  background:#173c62;
-  border-color:#285f91;
-  font-weight:bold;
+  background:#1769aa;
+  color:#fff;
 }
-
-button:hover{
-  background:#20517e;
-}
-
-button:disabled{
-  opacity:.55;
-  cursor:not-allowed;
-}
-
-.search-wrap{
+button:hover{filter:brightness(1.12)}
+button.secondary{background:#18304a}
+button.green{background:#16734c}
+button.red{background:#8d3040}
+.results{
   position:relative;
+  z-index:50;
 }
-
 .search-results{
   position:absolute;
-  z-index:50;
-  top:100%;
+  top:calc(100% + 5px);
   right:0;
   left:0;
-  background:#081625;
-  border:1px solid #29496c;
-  border-radius:10px;
+  background:#0b1828;
+  border:1px solid #29425e;
+  border-radius:12px;
   overflow:hidden;
   display:none;
-  max-height:260px;
+  max-height:300px;
   overflow-y:auto;
+  box-shadow:0 15px 35px rgba(0,0,0,.45);
 }
-
-.search-item{
-  padding:9px 12px;
-  border-bottom:1px solid #17304b;
+.search-results.show{display:block}
+.result{
+  padding:11px 13px;
+  border-bottom:1px solid #1b2d41;
   cursor:pointer;
 }
-
-.search-item:hover{
-  background:#173553;
-}
-
-.selected{
-  margin-top:9px;
-  color:#78c4ff;
-  font-size:13px;
-}
-
-.range-box{
-  margin-top:14px;
-  padding:12px;
-  background:#081625;
-  border:1px solid #193652;
-  border-radius:12px;
-}
-
-.range-head{
+.result:last-child{border-bottom:0}
+.result:hover{background:#142b43}
+.result small{color:#8298ae}
+.controls{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:7px;
-}
-
-.range-value{
-  font-size:22px;
-  font-weight:bold;
-  color:#ffd166;
-}
-
-input[type=range]{
-  padding:0;
-  accent-color:#e4a83d;
-}
-
-.tabs{
-  display:flex;
+  gap:8px;
   flex-wrap:wrap;
-  gap:7px;
+  margin-top:12px;
 }
-
-.tab{
-  width:auto;
-  padding:8px 12px;
-  background:#0a1727;
+.control{
+  background:#081524;
+  border:1px solid #203a54;
+  border-radius:10px;
+  padding:9px 12px;
 }
-
-.tab.active{
-  background:#1c4d77;
-}
-
-.section{
-  display:none;
-}
-
-.section.active{
+.control label{
+  color:#8ea3b8;
+  font-size:11px;
   display:block;
+  margin-bottom:4px;
 }
-
-.signal-main{
+select{
+  background:#081524;
+  color:#fff;
+  border:0;
+  outline:0;
+}
+details{
+  border:1px solid #1d334d;
+  border-radius:12px;
+  margin-top:10px;
+  background:#091626;
+}
+details[open]{background:#0b192a}
+summary{
+  list-style:none;
+  cursor:pointer;
+  padding:13px 14px;
+  font-weight:bold;
+  user-select:none;
+}
+summary::-webkit-details-marker{display:none}
+summary:after{
+  content:"＋";
+  float:left;
+  color:#7190ad;
+}
+details[open] summary:after{content:"−"}
+.detail{
+  padding:0 14px 14px;
+}
+.grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:10px;
 }
-
-.stat{
-  background:#081625;
-  border:1px solid #1b3857;
+.card{
+  background:#091726;
+  border:1px solid #1d334d;
   border-radius:12px;
   padding:12px;
-  min-height:75px;
 }
-
-.stat-title{
-  color:#8fa8c2;
-  font-size:12px;
+.card .label{
+  color:#7f95ab;
+  font-size:11px;
+  margin-bottom:6px;
 }
-
-.stat-value{
-  font-size:20px;
+.card .value{
+  font-size:17px;
   font-weight:bold;
-  margin-top:4px;
 }
-
-.long{color:#4fe39b}
-.short{color:#ff6175}
-.wait{color:#ffd166}
-
-.grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+.green-t{color:#48dc91}
+.red-t{color:#ff6677}
+.yellow-t{color:#ffd36a}
+.blue-t{color:#67b8ff}
+.gray-t{color:#9badbf}
+.signal{
+  border-radius:14px;
+  padding:16px;
+  border:1px solid #29425e;
+  background:#0a1726;
 }
-
-.box{
-  background:#081625;
-  border:1px solid #1a3653;
-  border-radius:12px;
-  padding:12px;
+.signal-long{
+  border-color:#18744d;
+  background:#09251b;
 }
-
-.box h3{
-  font-size:14px;
-  margin:0 0 8px;
+.signal-short{
+  border-color:#96394a;
+  background:#291017;
 }
-
-ul{
-  margin:0;
-  padding-right:20px;
+.signal-wait{
+  border-color:#665525;
+  background:#211b0a;
 }
-
-li{
-  margin:4px 0;
-  font-size:13px;
-}
-
-.row{
+.signal-main{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   gap:10px;
-  padding:7px 0;
-  border-bottom:1px solid #17304a;
-  font-size:13px;
 }
-
-.row:last-child{
-  border-bottom:0;
-}
-
-.label{
-  color:#8ea8c2;
-}
-
-.value{
+.signal-direction{
+  font-size:25px;
   font-weight:bold;
-  text-align:left;
-  direction:ltr;
 }
-
-.table-wrap{
-  overflow-x:auto;
+.score{
+  font-size:28px;
+  font-weight:bold;
 }
-
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:10px;
+}
+.badge{
+  background:#13273d;
+  border:1px solid #29445e;
+  border-radius:20px;
+  padding:6px 9px;
+  font-size:11px;
+}
 table{
   width:100%;
   border-collapse:collapse;
   font-size:12px;
 }
-
 th,td{
-  padding:7px;
-  border-bottom:1px solid #19344f;
+  padding:9px 7px;
+  border-bottom:1px solid #1d334d;
   text-align:center;
-  white-space:nowrap;
 }
-
-th{
-  color:#9db6cf;
-  background:#0a1726;
-}
-
-.badge{
-  display:inline-block;
-  padding:3px 8px;
-  border-radius:20px;
+th{color:#8fa4b9}
+pre{
+  white-space:pre-wrap;
+  word-break:break-word;
+  background:#06101c;
+  padding:12px;
+  border-radius:10px;
   font-size:11px;
-  background:#142a40;
+  direction:ltr;
+  text-align:left;
+  max-height:500px;
+  overflow:auto;
 }
-
-.badge.long{
-  background:#123a2b;
-}
-
-.badge.short{
-  background:#3d1720;
-}
-
-.badge.wait{
-  background:#3b3117;
-}
-
 .loading{
-  padding:20px;
+  padding:18px;
   text-align:center;
-  color:#9db6cf;
+  color:#8ea4ba;
 }
-
 .error{
-  background:#321821;
-  color:#ff8795;
-  border:1px solid #6b2937;
-  border-radius:10px;
+  color:#ff7180;
+  background:#291018;
+  border:1px solid #71303b;
   padding:12px;
-}
-
-.success{
-  background:#102b20;
-  color:#65dfa0;
-  border:1px solid #235c42;
   border-radius:10px;
-  padding:12px;
 }
-
-.small{
-  color:#8ea5bc;
-  font-size:11px;
-}
-
 .empty{
-  color:#829bb5;
-  padding:12px 0;
+  color:#7f94aa;
+  padding:10px 0;
 }
-
-.scan-controls{
-  display:flex;
-  gap:8px;
+@media(max-width:850px){
+  .grid{grid-template-columns:repeat(2,1fr)}
 }
-
-.scan-controls button{
-  flex:1;
-}
-
-#scanStatus{
-  margin-top:10px;
-}
-
-@media(max-width:800px){
-  .controls{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .signal-main{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .grid2{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:500px){
-  .container{
-    width:94%;
-  }
-
-  h1{
-    font-size:20px;
-  }
-
-  .controls{
-    grid-template-columns:1fr;
-  }
-
-  .signal-main{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .scan-controls{
-    flex-direction:column;
-  }
+@media(max-width:520px){
+  .container{width:96%;padding-top:10px}
+  .search{flex-direction:column}
+  .grid{grid-template-columns:1fr 1fr}
+  .signal-main{align-items:flex-start}
+  .signal-direction{font-size:21px}
 }
 </style>
 </head>
@@ -407,704 +288,142 @@ th{
 <div class="container">
 
 <header>
-  <h1>🔎 تحلیل عمیق شخصی Bybit</h1>
-  <div class="subtitle">
-    تحلیل مستقیم Spot / Futures با Worker اختصاصی Bybit
+  <h1>🔎 اسکنر شخصی هوشمند Bybit</h1>
+  <div class="sub">
+    تحلیل واقعی بازار با MA20، ساختار، نقدینگی، Footprint، Order Book و Smart Money
   </div>
-
-  <div id="connection" class="connection">
-    🔴 در حال بررسی اتصال Worker...
+  <div class="status">
+    <span class="dot"></span>
+    <span id="connection">در حال اتصال...</span>
   </div>
 </header>
 
-<!-- =====================================================
-     MANUAL
-===================================================== -->
+<section class="panel">
+  <div class="panel-title">🔎 بررسی دستی ارز</div>
 
-<div class="card">
+  <div class="panel-body results">
 
-  <div class="card-title">🔍 بررسی دستی ارز</div>
-
-  <div class="controls">
-
-    <div class="search-wrap">
+    <div class="search">
       <input
         id="symbolInput"
         type="text"
         placeholder="مثلاً BTCUSDT"
         autocomplete="off"
       >
-
-      <div id="searchResults" class="search-results"></div>
+      <button id="analyzeBtn">بررسی</button>
     </div>
 
-    <select id="category">
-      <option value="linear">Futures</option>
-      <option value="spot">Spot</option>
-    </select>
+    <div id="searchResults" class="search-results"></div>
 
-    <button id="analyzeBtn">
-      🔎 تحلیل
-    </button>
+    <div class="controls">
 
-    <button id="clearBtn">
-      پاک کردن
-    </button>
-
-  </div>
-
-  <div id="selectedSymbol" class="selected">
-    نمادی انتخاب نشده است
-  </div>
-
-  <div class="range-box">
-
-    <div class="range-head">
-      <span>⚙️ سختی سیگنال</span>
-      <span id="difficultyValue" class="range-value">11</span>
-    </div>
-
-    <input
-      id="difficulty"
-      type="range"
-      min="0"
-      max="100"
-      value="11"
-    >
-
-    <div class="small">
-      هرچه مقدار بالاتر باشد، شرایط ورود سخت‌تر و تعداد سیگنال‌ها کمتر می‌شود.
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     TABS
-===================================================== -->
-
-<div class="card">
-
-  <div class="tabs">
-
-    <button class="tab active" data-tab="signal">
-      🚨 سیگنال
-    </button>
-
-    <button class="tab" data-tab="ma">
-      📈 MA20
-    </button>
-
-    <button class="tab" data-tab="smart">
-      🧠 Smart Money
-    </button>
-
-    <button class="tab" data-tab="footprint">
-      👣 Footprint
-    </button>
-
-    <button class="tab" data-tab="orderbook">
-      📚 Order Book
-    </button>
-
-    <button class="tab" data-tab="levels">
-      🎯 حمایت مقاومت
-    </button>
-
-    <button class="tab" data-tab="hunt">
-      🧲 Hunt
-    </button>
-
-    <button class="tab" data-tab="indicators">
-      📊 اندیکاتورها
-    </button>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     SIGNAL
-===================================================== -->
-
-<div id="signal" class="section active">
-
-  <div class="card">
-
-    <div class="card-title">🚨 نتیجه سیگنال</div>
-
-    <div id="signalEmpty" class="empty">
-      هنوز ارزی تحلیل نشده است.
-    </div>
-
-    <div id="signalData" style="display:none">
-
-      <div class="signal-main">
-
-        <div class="stat">
-          <div class="stat-title">امتیاز</div>
-          <div id="score" class="stat-value">-</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-title">جهت</div>
-          <div id="direction" class="stat-value">-</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-title">قدرت خریدار</div>
-          <div id="bull" class="stat-value long">-</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-title">قدرت فروشنده</div>
-          <div id="bear" class="stat-value short">-</div>
-        </div>
-
+      <div class="control">
+        <label>بازار</label>
+        <select id="category">
+          <option value="linear">Futures</option>
+          <option value="spot">Spot</option>
+        </select>
       </div>
 
-      <div class="grid2" style="margin-top:10px">
-
-        <div class="box">
-          <div class="row">
-            <span class="label">Threshold</span>
-            <span id="threshold" class="value">-</span>
-          </div>
-
-          <div class="row">
-            <span class="label">سختی</span>
-            <span id="difficultyOut" class="value">-</span>
-          </div>
-
-          <div class="row">
-            <span class="label">تایم‌فریم</span>
-            <span class="value">1M → Trigger / 15M → Context</span>
-          </div>
-
-          <div class="row">
-            <span class="label">نماد</span>
-            <span id="symbolOut" class="value">-</span>
-          </div>
-
-        </div>
-
-        <div class="box">
-          <div class="row">
-            <span class="label">قیمت</span>
-            <span id="priceOut" class="value">-</span>
-          </div>
-
-          <div class="row">
-            <span class="label">Trend 1M</span>
-            <span id="trend1m" class="value">-</span>
-          </div>
-
-          <div class="row">
-            <span class="label">Trend 15M</span>
-            <span id="trend15m" class="value">-</span>
-          </div>
-
-        </div>
-
+      <div class="control">
+        <label>سختی سیگنال</label>
+        <select id="difficulty">
+          <option value="0">خیلی آسان</option>
+          <option value="10">آسان</option>
+          <option value="25" selected>متوسط</option>
+          <option value="40">سخت</option>
+          <option value="60">خیلی سخت</option>
+          <option value="80">بسیار سخت</option>
+          <option value="100">حداکثری</option>
+        </select>
       </div>
 
-      <div class="grid2" style="margin-top:12px">
-
-        <div class="box">
-          <h3 class="long">### دلایل LONG</h3>
-          <ul id="bullReasons"></ul>
-        </div>
-
-        <div class="box">
-          <h3 class="short">### دلایل SHORT</h3>
-          <ul id="bearReasons"></ul>
-        </div>
-
-      </div>
+      <button id="scanBtn" class="secondary">
+        🔄 اسکن بازار
+      </button>
 
     </div>
-
   </div>
+</section>
 
-  <div class="card">
-
-    <div class="card-title">🕒 وضعیت 15 دقیقه</div>
-
-    <div class="signal-main">
-
-      <div class="stat">
-        <div class="stat-title">جهت</div>
-        <div id="htfDirection" class="stat-value">-</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Trend</div>
-        <div id="htfTrend" class="stat-value">-</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">MA20</div>
-        <div id="htfMA20" class="stat-value">-</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">RSI</div>
-        <div id="htfRSI" class="stat-value">-</div>
-      </div>
-
-    </div>
-
-    <div class="small" style="margin-top:10px">
-      تایم 15 دقیقه فقط Context است و در امتیاز نهایی سیگنال 1 دقیقه دخالت داده نمی‌شود.
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     MA
-===================================================== -->
-
-<div id="ma" class="section">
-
-  <div class="card">
-
-    <div class="card-title">📈 تحلیل دقیق MA20 — تایم 1 دقیقه</div>
-
-    <div id="maContent" class="empty">
-      هنوز داده‌ای وجود ندارد.
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     SMART MONEY
-===================================================== -->
-
-<div id="smart" class="section">
-
-  <div class="card">
-
-    <div class="card-title">🧠 Smart Money</div>
-
-    <div id="smartContent" class="empty">
-      هنوز داده‌ای وجود ندارد.
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     FOOTPRINT
-===================================================== -->
-
-<div id="footprint" class="section">
-
-  <div class="card">
-
-    <div class="card-title">👣 Footprint / Delta</div>
-
-    <div id="footprintStats" class="signal-main"></div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="card-title">📊 Footprint در سطوح قیمت</div>
-
-    <div class="table-wrap">
-
-      <table>
-        <thead>
-          <tr>
-            <th>قیمت</th>
-            <th>Buy</th>
-            <th>Sell</th>
-            <th>Total</th>
-            <th>Delta</th>
-            <th>Delta %</th>
-            <th>Trades</th>
-          </tr>
-        </thead>
-
-        <tbody id="footprintTable"></tbody>
-
-      </table>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     ORDER BOOK
-===================================================== -->
-
-<div id="orderbook" class="section">
-
-  <div class="card">
-
-    <div class="card-title">📚 Order Book</div>
-
-    <div id="orderbookStats" class="signal-main"></div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="grid2">
-
-      <div class="box">
-        <h3 class="long">🟢 Buy Walls</h3>
-        <div id="buyWalls"></div>
-      </div>
-
-      <div class="box">
-        <h3 class="short">🔴 Sell Walls</h3>
-        <div id="sellWalls"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     LEVELS
-===================================================== -->
-
-<div id="levels" class="section">
-
-  <div class="card">
-
-    <div class="grid2">
-
-      <div class="box">
-        <h3 class="long">🟢 حمایت‌ها</h3>
-        <div id="supports"></div>
-      </div>
-
-      <div class="box">
-        <h3 class="short">🔴 مقاومت‌ها</h3>
-        <div id="resistances"></div>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     HUNT
-===================================================== -->
-
-<div id="hunt" class="section">
-
-  <div class="card">
-
-    <div class="card-title">🧲 Liquidity Hunt</div>
-
-    <div id="huntContent" class="empty">
-      هنوز داده‌ای وجود ندارد.
-    </div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     INDICATORS
-===================================================== -->
-
-<div id="indicators" class="section">
-
-  <div class="card">
-
-    <div class="card-title">📊 اندیکاتورها</div>
-
-    <div id="indicatorContent"></div>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     RADAR
-===================================================== -->
-
-<div class="card">
-
-  <div class="card-title">🚨 Radar / Scan</div>
-
-  <div class="scan-controls">
-
-    <button id="scanBtn">
-      شروع اسکن
-    </button>
-
-    <button id="stopScanBtn">
-      توقف اسکن
-    </button>
-
-  </div>
-
-  <div id="scanStatus" class="empty">
-    برای اسکن بازار روی دکمه بالا بزنید.
-  </div>
-
-  <div id="scanResults"></div>
-
-</div>
+<div id="output"></div>
 
 </div>
 
 <script>
-
 /* =========================================================
    CONFIG
 ========================================================= */
 
-/*
-  فقط این آدرس را با آدرس واقعی Worker خودت عوض کن.
-*/
-const WORKER_URL =
-  "https://YOUR-WORKER.workers.dev";
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let selectedSymbol = "";
-let selectedCategory = "linear";
-let currentAnalysis = null;
-let searchTimer = null;
-let scanRunning = false;
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
+const WORKER_URL = "";
 
 const $ = id => document.getElementById(id);
 
+const output = $("output");
 const symbolInput = $("symbolInput");
+const searchResults = $("searchResults");
 const category = $("category");
 const difficulty = $("difficulty");
-const difficultyValue = $("difficultyValue");
-const searchResults = $("searchResults");
-const selectedSymbolBox = $("selectedSymbol");
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function esc(value){
-  return String(value ?? "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function number(value, digits = 4){
-
-  const n = Number(value);
-
-  if(!Number.isFinite(n)) return "-";
-
-  return n.toLocaleString(
-    "en-US",
-    {
-      maximumFractionDigits:digits
-    }
-  );
-}
-
-function pct(value,digits=2){
-
-  const n = Number(value);
-
-  if(!Number.isFinite(n)) return "-";
-
-  return `${n.toFixed(digits)}%`;
-}
-
-function directionClass(direction){
-
-  if(direction === "LONG") return "long";
-  if(direction === "SHORT") return "short";
-
-  return "wait";
-}
-
-function setConnection(ok,message){
-
-  const box = $("connection");
-
-  box.className =
-    ok
-      ? "connection ok"
-      : "connection";
-
-  box.textContent = message;
-}
-
 
 /* =========================================================
    API
 ========================================================= */
 
 async function api(path){
-
   const url =
-    WORKER_URL.replace(/\/$/,"") + path;
+    WORKER_URL +
+    path;
 
-  const controller =
-    new AbortController();
+  const res =
+    await fetch(url,{
+      cache:"no-store"
+    });
 
-  const timer =
-    setTimeout(
-      () => controller.abort(),
-      30000
+  const data =
+    await res.json();
+
+  if(!res.ok || data.ok === false){
+    throw new Error(
+      data.error ||
+      "خطا در دریافت اطلاعات"
     );
-
-  try{
-
-    const res =
-      await fetch(
-        url,
-        {
-          method:"GET",
-          headers:{
-            "Accept":"application/json"
-          },
-          cache:"no-store",
-          signal:controller.signal
-        }
-      );
-
-    const text =
-      await res.text();
-
-    let data;
-
-    try{
-      data = JSON.parse(text);
-    }catch{
-      throw new Error(
-        `پاسخ Worker معتبر نیست (${res.status})`
-      );
-    }
-
-    if(!res.ok || data.ok === false){
-
-      throw new Error(
-        data.error ||
-        `Worker HTTP ${res.status}`
-      );
-
-    }
-
-    return data;
-
-  }catch(err){
-
-    if(err.name === "AbortError"){
-      throw new Error(
-        "زمان پاسخ Worker تمام شد"
-      );
-    }
-
-    throw err;
-
-  }finally{
-
-    clearTimeout(timer);
-
   }
+
+  return data;
 }
 
-
 /* =========================================================
-   CONNECTION
+   HEALTH
 ========================================================= */
 
-async function checkConnection(){
+async function health(){
 
   try{
 
     const data =
       await api("/health");
 
-    if(data.ok){
+    $("connection").textContent =
+      data.connected
+        ? "اتصال به Bybit برقرار است"
+        : "اتصال برقرار نیست";
 
-      setConnection(
-        true,
-        "🟢 اتصال Worker برقرار است"
-      );
+  }catch(e){
 
-      return true;
-    }
+    $("connection").textContent =
+      "خطا در اتصال";
 
-  }catch(err){
-
-    setConnection(
-      false,
-      "🔴 اتصال Worker برقرار نیست — " +
-      err.message
-    );
-
-    return false;
   }
 
-  return false;
 }
 
-
-/* =========================================================
-   DIFFICULTY
-========================================================= */
-
-difficulty.addEventListener(
-  "input",
-  () => {
-
-    difficultyValue.textContent =
-      difficulty.value;
-
-  }
-);
-
-
-/* =========================================================
-   CATEGORY
-========================================================= */
-
-category.addEventListener(
-  "change",
-  () => {
-
-    selectedCategory =
-      category.value;
-
-  }
-);
-
+health();
 
 /* =========================================================
    SEARCH
 ========================================================= */
+
+let searchTimer = null;
 
 symbolInput.addEventListener(
   "input",
@@ -1117,8 +436,8 @@ symbolInput.addEventListener(
 
     if(!q){
 
-      searchResults.style.display =
-        "none";
+      searchResults.classList.remove("show");
+      searchResults.innerHTML = "";
 
       return;
     }
@@ -1126,9 +445,8 @@ symbolInput.addEventListener(
     searchTimer =
       setTimeout(
         () => searchSymbol(q),
-        300
+        250
       );
-
   }
 );
 
@@ -1148,12 +466,11 @@ async function searchSymbol(q){
     if(!results.length){
 
       searchResults.innerHTML =
-        `<div class="search-item">
-          ارزی پیدا نشد
+        `<div class="result">
+          نماد پیدا نشد
         </div>`;
 
-      searchResults.style.display =
-        "block";
+      searchResults.classList.add("show");
 
       return;
     }
@@ -1161,35 +478,33 @@ async function searchSymbol(q){
     searchResults.innerHTML =
       results
         .slice(0,20)
-        .map(x => `
+        .map(
+          x => `
           <div
-            class="search-item"
-            data-symbol="${esc(x.symbol)}"
-            data-category="${esc(x.category)}"
+            class="result"
+            data-symbol="${escapeAttr(x.symbol)}"
+            data-category="${escapeAttr(x.category)}"
           >
-            <b>${esc(x.symbol)}</b>
-            <span class="small">
-              — ${x.category === "linear" ? "Futures" : "Spot"}
-            </span>
+            <b>${escapeHtml(x.symbol)}</b>
+            <br>
+            <small>
+              ${x.category === "linear" ? "Futures" : "Spot"}
+              • ${escapeHtml(x.status || "")}
+            </small>
           </div>
-        `)
+        `
+        )
         .join("");
 
-    searchResults.style.display =
-      "block";
+    searchResults.classList.add("show");
 
-  }catch(err){
+  }catch(e){
 
     searchResults.innerHTML =
-      `<div class="search-item">
-        خطا: ${esc(err.message)}
-      </div>`;
+      `<div class="result">${escapeHtml(e.message)}</div>`;
 
-    searchResults.style.display =
-      "block";
-
+    searchResults.classList.add("show");
   }
-
 }
 
 searchResults.addEventListener(
@@ -1197,58 +512,40 @@ searchResults.addEventListener(
   e => {
 
     const item =
-      e.target.closest(
-        ".search-item"
-      );
+      e.target.closest(".result");
 
     if(!item) return;
 
-    const s =
+    const symbol =
       item.dataset.symbol;
 
-    const c =
+    const cat =
       item.dataset.category;
 
-    if(!s) return;
+    symbolInput.value =
+      symbol;
 
-    selectedSymbol = s;
+    category.value =
+      cat;
 
-    selectedCategory = c;
+    searchResults.classList.remove("show");
 
-    symbolInput.value = s;
-
-    category.value = c;
-
-    selectedSymbolBox.innerHTML =
-      `نماد انتخاب شده:
-       <b>${esc(s)}</b>
-       — ${c === "linear" ? "Futures" : "Spot"}`;
-
-    searchResults.style.display =
-      "none";
-
+    analyze();
   }
 );
-
-
-/* =========================================================
-   CLOSE SEARCH ONLY WHEN CLICKING OUTSIDE
-========================================================= */
 
 document.addEventListener(
   "click",
   e => {
 
     if(
-      !e.target.closest(".search-wrap")
+      !e.target.closest(".results")
     ){
-      searchResults.style.display =
-        "none";
+      searchResults.classList.remove("show");
     }
 
   }
 );
-
 
 /* =========================================================
    ANALYZE
@@ -1256,7 +553,7 @@ document.addEventListener(
 
 $("analyzeBtn").addEventListener(
   "click",
-  analyzeCurrent
+  analyze
 );
 
 symbolInput.addEventListener(
@@ -1265,106 +562,66 @@ symbolInput.addEventListener(
 
     if(e.key === "Enter"){
       e.preventDefault();
-      analyzeCurrent();
+      searchResults.classList.remove("show");
+      analyze();
     }
 
   }
 );
 
-async function analyzeCurrent(){
+async function analyze(){
 
-  let symbol =
-    selectedSymbol ||
+  const symbol =
     symbolInput.value
       .trim()
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g,"");
+      .toUpperCase();
 
   if(!symbol){
 
-    alert("نام ارز را وارد کنید.");
+    output.innerHTML =
+      `<section class="panel">
+        <div class="panel-body error">
+          نام ارز را وارد کن.
+        </div>
+      </section>`;
 
     return;
   }
 
-  selectedSymbol = symbol;
+  searchResults.classList.remove("show");
 
-  selectedCategory =
-    category.value;
-
-  selectedSymbolBox.innerHTML =
-    `در حال تحلیل
-     <b>${esc(symbol)}</b>
-     — ${selectedCategory === "linear" ? "Futures" : "Spot"}...`;
-
-  $("analyzeBtn").disabled =
-    true;
-
-  $("analyzeBtn").textContent =
-    "⏳ در حال تحلیل...";
+  output.innerHTML =
+    `<section class="panel">
+      <div class="loading">
+        ⏳ در حال دریافت داده واقعی Bybit و تحلیل...
+      </div>
+    </section>`;
 
   try{
 
     const data =
       await api(
-        `/api/analyze?symbol=${encodeURIComponent(symbol)}` +
-        `&category=${encodeURIComponent(selectedCategory)}` +
-        `&difficulty=${encodeURIComponent(difficulty.value)}`
+        "/api/analyze?" +
+        new URLSearchParams({
+          symbol,
+          category:category.value,
+          difficulty:difficulty.value
+        }).toString()
       );
-
-    currentAnalysis = data;
 
     renderAnalysis(data);
 
-    selectedSymbolBox.innerHTML =
-      `🟢 تحلیل شد:
-       <b>${esc(data.symbol)}</b>
-       — ${data.category === "linear" ? "Futures" : "Spot"}`;
+  }catch(e){
 
-  }catch(err){
-
-    selectedSymbolBox.innerHTML =
-      `<span style="color:#ff7180">
-        🔴 خطا: ${esc(err.message)}
-      </span>`;
-
-  }finally{
-
-    $("analyzeBtn").disabled =
-      false;
-
-    $("analyzeBtn").textContent =
-      "🔎 تحلیل";
+    output.innerHTML =
+      `<section class="panel">
+        <div class="panel-body error">
+          ${escapeHtml(e.message)}
+        </div>
+      </section>`;
 
   }
-
 }
-
-
-/* =========================================================
-   RENDER COMPLETE ANALYSIS
-========================================================= */
-
-function renderAnalysis(data){
-
-  renderSignal(data);
-
-  renderMA(data);
-
-  renderSmart(data);
-
-  renderFootprint(data);
-
-  renderOrderBook(data);
-
-  renderLevels(data);
-
-  renderHunt(data);
-
-  renderIndicators(data);
-
-}
-
 
 /* =========================================================
    SIGNAL
@@ -1372,439 +629,408 @@ function renderAnalysis(data){
 
 function renderSignal(data){
 
-  const s =
+  const signal =
     data.signal || {};
 
-  $("signalEmpty").style.display =
-    "none";
+  const direction =
+    signal.direction || "WAIT";
 
-  $("signalData").style.display =
-    "block";
+  const score =
+    Number(signal.score || 0);
 
-  $("score").textContent =
-    number(s.score,0);
+  let cls =
+    "signal-wait";
 
-  $("direction").textContent =
-    s.direction || "WAIT";
+  let title =
+    "🟡 انتظار";
 
-  $("direction").className =
-    "stat-value " +
-    directionClass(s.direction);
-
-  $("bull").textContent =
-    number(s.bull,0);
-
-  $("bear").textContent =
-    number(s.bear,0);
-
-  $("threshold").textContent =
-    number(s.threshold,0);
-
-  $("difficultyOut").textContent =
-    number(s.difficulty,0);
-
-  $("symbolOut").textContent =
-    data.symbol;
-
-  $("priceOut").textContent =
-    number(data.price,8);
-
-  $("trend1m").textContent =
-    data.market?.trend1m || "-";
-
-  $("trend15m").textContent =
-    data.market?.trend15m || "-";
-
-  renderReasons(
-    "bullReasons",
-    s.reasons?.bull || []
-  );
-
-  renderReasons(
-    "bearReasons",
-    s.reasons?.bear || []
-  );
-
-
-  const h =
-    data.higherTimeframe || {};
-
-  $("htfDirection").textContent =
-    h.expectation || "-";
-
-  $("htfDirection").className =
-    "stat-value " +
-    directionClass(
-      h.expectation === "BULLISH"
-        ? "LONG"
-        : h.expectation === "BEARISH"
-          ? "SHORT"
-          : "WAIT"
-    );
-
-  $("htfTrend").textContent =
-    h.trend || "-";
-
-  $("htfMA20").textContent =
-    number(h.MA20,8);
-
-  $("htfRSI").textContent =
-    number(h.RSI,2);
-
-}
-
-function renderReasons(id,reasons){
-
-  const el = $(id);
-
-  if(!reasons.length){
-
-    el.innerHTML =
-      `<li class="empty">
-        مورد تأییدکننده‌ای وجود ندارد.
-      </li>`;
-
-    return;
+  if(direction === "LONG"){
+    cls = "signal-long";
+    title = "🟢 LONG";
   }
 
-  el.innerHTML =
-    reasons
-      .map(x => `<li>${esc(x)}</li>`)
-      .join("");
+  if(direction === "SHORT"){
+    cls = "signal-short";
+    title = "🔴 SHORT";
+  }
 
+  const bull =
+    Number(signal.bull || 0);
+
+  const bear =
+    Number(signal.bear || 0);
+
+  return `
+    <section class="panel">
+      <div class="panel-title">🎯 سیگنال نهایی</div>
+
+      <div class="panel-body">
+
+        <div class="signal ${cls}">
+
+          <div class="signal-main">
+
+            <div>
+              <div class="signal-direction">
+                ${title}
+              </div>
+
+              <div class="sub">
+                مبنا: ${escapeHtml(signal.basis || "1M_MA20")}
+              </div>
+            </div>
+
+            <div>
+              <div class="score">
+                ${round(score,0)}/100
+              </div>
+
+              <div class="sub">
+                Bull ${round(bull,0)}
+                •
+                Bear ${round(bear,0)}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="badges">
+            <span class="badge">
+              آستانه: ${round(signal.threshold || 0,0)}
+            </span>
+
+            <span class="badge">
+              سختی: ${round(signal.difficulty || 0,0)}
+            </span>
+
+            <span class="badge">
+              داده: واقعی + محاسبه‌شده
+            </span>
+          </div>
+
+        </div>
+
+        <details>
+          <summary>دلایل سیگنال</summary>
+          <div class="detail">
+
+            <h4 class="green-t">دلایل Long</h4>
+            ${
+              renderList(
+                signal.reasons?.bull || []
+              )
+            }
+
+            <h4 class="red-t">دلایل Short</h4>
+            ${
+              renderList(
+                signal.reasons?.bear || []
+              )
+            }
+
+          </div>
+        </details>
+
+      </div>
+    </section>
+  `;
 }
 
+/* =========================================================
+   TRADING STYLE
+========================================================= */
+
+function renderTradingStyle(data){
+
+  const style =
+    data.tradingStyle ||
+    data.styles ||
+    {};
+
+  let current =
+    style.style ||
+    style.current ||
+    "RANGE / NO CLEAR STYLE";
+
+  const side =
+    style.side ||
+    "NEUTRAL";
+
+  const confidence =
+    Number(
+      style.confidence || 0
+    );
+
+  const smart =
+    data.smartMoney?.style ||
+    style.smartMoney ||
+    "RANGE";
+
+  const bull =
+    style.bullishFactors ||
+    [];
+
+  const bear =
+    style.bearishFactors ||
+    [];
+
+  if(
+    !current ||
+    current === "undefined" ||
+    current === "null"
+  ){
+    current =
+      "RANGE / NO CLEAR STYLE";
+  }
+
+  return `
+    <section class="panel">
+      <div class="panel-title">
+        🧠 سبک معاملاتی
+      </div>
+
+      <div class="panel-body">
+
+        <div class="grid">
+
+          <div class="card">
+            <div class="label">سبک فعلی</div>
+            <div class="value blue-t">
+              ${escapeHtml(
+                tradingStyleFa(current)
+              )}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="label">جهت</div>
+            <div class="value ${
+              side === "LONG"
+                ? "green-t"
+                : side === "SHORT"
+                  ? "red-t"
+                  : "yellow-t"
+            }">
+              ${escapeHtml(side)}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="label">اعتماد</div>
+            <div class="value">
+              ${round(confidence,0)}%
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="label">Smart Money</div>
+            <div class="value">
+              ${escapeHtml(
+                tradingStyleFa(smart)
+              )}
+            </div>
+          </div>
+
+        </div>
+
+        <details>
+          <summary>
+            عوامل محاسبه سبک معاملاتی
+          </summary>
+
+          <div class="detail">
+
+            <h4 class="green-t">
+              عوامل صعودی
+            </h4>
+
+            ${
+              renderList(
+                bull.map(
+                  tradingFactorFa
+                )
+              )
+            }
+
+            <h4 class="red-t">
+              عوامل نزولی
+            </h4>
+
+            ${
+              renderList(
+                bear.map(
+                  tradingFactorFa
+                )
+              )
+            }
+
+            <div class="badges">
+              <span class="badge">
+                محاسبه‌شده از داده واقعی
+              </span>
+
+              <span class="badge">
+                Bybit
+              </span>
+            </div>
+
+          </div>
+        </details>
+
+      </div>
+    </section>
+  `;
+}
 
 /* =========================================================
    MA20
 ========================================================= */
 
-function renderMA(data){
+function renderMA20(data){
 
-  const m =
-    data.MA20 || {};
+  const ma =
+    data.MA20 ||
+    data.oneMinute?.MA20Analysis ||
+    {};
 
-  const c =
-    m.candle || {};
+  return `
+    <section class="panel">
 
-  $("maContent").innerHTML = `
-
-    <div class="signal-main">
-
-      <div class="stat">
-        <div class="stat-title">MA20</div>
-        <div class="stat-value">
-          ${number(m.value,8)}
-        </div>
+      <div class="panel-title">
+        📈 MA20 واقعی — تایم 1 دقیقه
       </div>
 
-      <div class="stat">
-        <div class="stat-title">موقعیت قیمت</div>
-        <div class="stat-value">
-          ${esc(m.position)}
-        </div>
-      </div>
+      <div class="panel-body">
 
-      <div class="stat">
-        <div class="stat-title">Bias</div>
-        <div class="stat-value">
-          ${esc(m.bias)}
-        </div>
-      </div>
+        <div class="grid">
 
-      <div class="stat">
-        <div class="stat-title">شیب</div>
-        <div class="stat-value">
-          ${esc(m.slopeDirection)}
-        </div>
-      </div>
+          ${metric("MA20",fmt(ma.value))}
+          ${metric("موقعیت",faPosition(ma.position))}
+          ${metric("Bias",faBias(ma.bias))}
+          ${metric("شیب 1M",fmt(ma.slope1mPct)+"%")}
+          ${metric("شیب 3M",fmt(ma.slope3mPct)+"%")}
+          ${metric("شیب 5M",fmt(ma.slope5mPct)+"%")}
+          ${metric("شیب 10M",fmt(ma.slope10mPct)+"%")}
+          ${metric("فاصله",fmt(ma.distancePct)+"%")}
+          ${metric("تماس",ma.touched ? "بله" : "خیر")}
+          ${metric("رد شدن",faRejection(ma.rejection))}
+          ${metric("تأیید",faConfirmation(ma.confirmation))}
+          ${metric("Cross Up",ma.crossUp ? "بله" : "خیر")}
+          ${metric("Cross Down",ma.crossDown ? "بله" : "خیر")}
+          ${metric("Long Setup",ma.validLongSetup ? "فعال" : "خیر")}
+          ${metric("Short Setup",ma.validShortSetup ? "فعال" : "خیر")}
 
-    </div>
-
-    <div class="grid2" style="margin-top:12px">
-
-      <div class="box">
-
-        <div class="row">
-          <span class="label">شیب 1 دقیقه</span>
-          <span class="value">${pct(m.slope1mPct,4)}</span>
         </div>
 
-        <div class="row">
-          <span class="label">شیب 3 دقیقه</span>
-          <span class="value">${pct(m.slope3mPct,4)}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">شیب 5 دقیقه</span>
-          <span class="value">${pct(m.slope5mPct,4)}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">شیب 10 دقیقه</span>
-          <span class="value">${pct(m.slope10mPct,4)}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">فاصله از MA20</span>
-          <span class="value">${pct(m.distancePct,3)}</span>
-        </div>
+        <details>
+          <summary>جزئیات کندل برخورد با MA20</summary>
+          <div class="detail">
+            ${renderObjectTable(ma.candle || {})}
+          </div>
+        </details>
 
       </div>
-
-      <div class="box">
-
-        <div class="row">
-          <span class="label">برخورد</span>
-          <span class="value">${m.touched ? "YES" : "NO"}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">Rejection</span>
-          <span class="value">${esc(m.rejection)}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">Confirmation</span>
-          <span class="value">${esc(m.confirmation)}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">Cross Up</span>
-          <span class="value">${m.crossUp ? "YES" : "NO"}</span>
-        </div>
-
-        <div class="row">
-          <span class="label">Cross Down</span>
-          <span class="value">${m.crossDown ? "YES" : "NO"}</span>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="box" style="margin-top:12px">
-
-      <div class="row">
-        <span class="label">Open</span>
-        <span class="value">${number(c.open,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">High</span>
-        <span class="value">${number(c.high,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Low</span>
-        <span class="value">${number(c.low,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Close</span>
-        <span class="value">${number(c.close,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Body Ratio</span>
-        <span class="value">${pct(c.bodyRatio,2)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Valid Long Setup</span>
-        <span class="value">${m.validLongSetup ? "YES" : "NO"}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Valid Short Setup</span>
-        <span class="value">${m.validShortSetup ? "YES" : "NO"}</span>
-      </div>
-
-    </div>
+    </section>
   `;
-
 }
 
+/* =========================================================
+   15M
+========================================================= */
+
+function render15M(data){
+
+  const x =
+    data.fifteenMinute ||
+    data.higherTimeframe ||
+    {};
+
+  return `
+    <section class="panel">
+      <div class="panel-title">
+        🕐 تحلیل تایم بالاتر — 15 دقیقه
+      </div>
+
+      <div class="panel-body">
+
+        <div class="grid">
+          ${metric("انتظار",faExpectation(x.expectation))}
+          ${metric("Trend",faTrend(x.trend))}
+          ${metric("MA7",fmt(x.MA7))}
+          ${metric("MA20",fmt(x.MA20))}
+          ${metric("شیب MA20",fmt(x.MA20Slope))}
+          ${metric("RSI",fmt(x.RSI))}
+          ${metric("ATR",fmt(x.ATR))}
+          ${metric("ATR %",fmt(x.ATRPct)+"%")}
+          ${metric("حجم",faVolume(x.volume))}
+        </div>
+
+        <details>
+          <summary>Smart Money تایم 15 دقیقه</summary>
+          <div class="detail">
+            ${
+              renderSmart(
+                x.smartMoney || {}
+              )
+            }
+          </div>
+        </details>
+
+        <details>
+          <summary>حمایت و مقاومت 15 دقیقه</summary>
+          <div class="detail">
+            ${
+              renderLevels(
+                x.supportResistance || {}
+              )
+            }
+          </div>
+        </details>
+
+      </div>
+    </section>
+  `;
+}
 
 /* =========================================================
    SMART MONEY
 ========================================================= */
 
-function renderSmart(data){
+function renderSmart(s){
 
-  const s =
-    data.smartMoney || {};
-
-  const st =
-    s.structure || {};
-
-  $("smartContent").innerHTML = `
-
-    <div class="signal-main">
-
-      <div class="stat">
-        <div class="stat-title">Style</div>
-        <div class="stat-value">
-          ${esc(s.style || "-")}
-        </div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Bullish Score</div>
-        <div class="stat-value long">
-          ${number(s.bullishScore,0)}
-        </div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Bearish Score</div>
-        <div class="stat-value short">
-          ${number(s.bearishScore,0)}
-        </div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Trend</div>
-        <div class="stat-value">
-          ${esc(st.trend || "-")}
-        </div>
-      </div>
-
+  return `
+    <div class="grid">
+      ${metric("Style",tradingStyleFa(s.style))}
+      ${metric("Bullish",fmt(s.bullishScore))}
+      ${metric("Bearish",fmt(s.bearishScore))}
+      ${metric("Trend",faTrend(s.structure?.trend))}
+      ${metric("BOS",faSide(s.BOS?.side))}
+      ${metric("CHoCH",faSide(s.CHoCH?.side))}
+      ${metric("Hunt",faHunt(s.liquiditySweep?.type))}
     </div>
 
-    <div class="grid2" style="margin-top:12px">
-
-      <div class="box">
-
-        <h3>🏗 Structure</h3>
-
-        <div class="row">
-          <span class="label">BOS</span>
-          <span class="value">
-            ${st.bos ? esc(st.bos.side) : "NONE"}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">CHoCH</span>
-          <span class="value">
-            ${st.choch ? esc(st.choch.side) : "NONE"}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Swing High</span>
-          <span class="value">
-            ${number(st.swingHigh?.price,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Swing Low</span>
-          <span class="value">
-            ${number(st.swingLow?.price,8)}
-          </span>
-        </div>
-
+    <details>
+      <summary>FVG</summary>
+      <div class="detail">
+        ${renderFVG(s.FVG || [])}
       </div>
+    </details>
 
-      <div class="box">
-
-        <h3>🧲 Liquidity</h3>
-
-        <div class="row">
-          <span class="label">Sweep</span>
-          <span class="value">
-            ${esc(s.liquiditySweep?.type || "NONE")}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Level</span>
-          <span class="value">
-            ${number(s.liquiditySweep?.level,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Sweep %</span>
-          <span class="value">
-            ${pct(s.liquiditySweep?.sweepPct,4)}
-          </span>
-        </div>
-
+    <details>
+      <summary>Order Block</summary>
+      <div class="detail">
+        ${renderOB(s.OrderBlocks || [])}
       </div>
+    </details>
 
-    </div>
-
-    <div class="grid2" style="margin-top:12px">
-
-      <div class="box">
-
-        <h3>🟦 Active FVG</h3>
-
-        ${renderFVGList(
-          s.activeFVG || []
-        )}
-
+    <details>
+      <summary>ساختار بازار</summary>
+      <div class="detail">
+        ${renderObjectTable(s.structure || {})}
       </div>
-
-      <div class="box">
-
-        <h3>🟪 Active Order Block</h3>
-
-        ${renderOBList(
-          s.activeOrderBlocks || []
-        )}
-
-      </div>
-
-    </div>
-
+    </details>
   `;
-
 }
-
-function renderFVGList(arr){
-
-  if(!arr.length)
-    return `<div class="empty">FVG فعال وجود ندارد.</div>`;
-
-  return arr
-    .slice(-8)
-    .map(x => `
-      <div class="row">
-        <span class="label">${esc(x.type)}</span>
-        <span class="value">
-          ${number(x.bottom,8)}
-          →
-          ${number(x.top,8)}
-        </span>
-      </div>
-    `)
-    .join("");
-}
-
-function renderOBList(arr){
-
-  if(!arr.length)
-    return `<div class="empty">Order Block فعال وجود ندارد.</div>`;
-
-  return arr
-    .slice(-8)
-    .map(x => `
-      <div class="row">
-        <span class="label">${esc(x.type)}</span>
-        <span class="value">
-          ${number(x.low,8)}
-          →
-          ${number(x.high,8)}
-        </span>
-      </div>
-    `)
-    .join("");
-}
-
 
 /* =========================================================
    FOOTPRINT
@@ -1813,265 +1039,200 @@ function renderOBList(arr){
 function renderFootprint(data){
 
   const f =
-    data.footprint || {};
+    data.footprint ||
+    {};
 
-  $("footprintStats").innerHTML = `
+  const levels =
+    f.levels ||
+    [];
 
-    <div class="stat">
-      <div class="stat-title">Buy</div>
-      <div class="stat-value long">
-        ${number(f.buy,2)}
+  return `
+    <section class="panel">
+
+      <div class="panel-title">
+        👣 Footprint / Order Flow
       </div>
-    </div>
 
-    <div class="stat">
-      <div class="stat-title">Sell</div>
-      <div class="stat-value short">
-        ${number(f.sell,2)}
+      <div class="panel-body">
+
+        <div class="grid">
+          ${metric("Buy",money(f.buy))}
+          ${metric("Sell",money(f.sell))}
+          ${metric("Delta",money(f.delta))}
+          ${metric("Delta %",fmt(f.deltaPct)+"%")}
+          ${metric("Buy Share",fmt(f.buyShare)+"%")}
+          ${metric("Sell Share",fmt(f.sellShare)+"%")}
+          ${metric("Buy Volume",fmt(f.buyVolume))}
+          ${metric("Sell Volume",fmt(f.sellVolume))}
+        </div>
+
+        <details>
+          <summary>
+            سطوح Footprint
+          </summary>
+
+          <div class="detail">
+
+            ${
+              levels.length
+                ? `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>قیمت</th>
+                      <th>Buy</th>
+                      <th>Sell</th>
+                      <th>Delta</th>
+                      <th>Delta%</th>
+                      <th>تعداد</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      levels
+                        .slice(0,30)
+                        .map(
+                          x => `
+                          <tr>
+                            <td>${fmt(x.price)}</td>
+                            <td class="green-t">${money(x.buy)}</td>
+                            <td class="red-t">${money(x.sell)}</td>
+                            <td class="${
+                              x.delta >= 0
+                                ? "green-t"
+                                : "red-t"
+                            }">${money(x.delta)}</td>
+                            <td>${fmt(x.deltaPct)}%</td>
+                            <td>${x.trades || 0}</td>
+                          </tr>
+                        `
+                        )
+                        .join("")
+                    }
+                  </tbody>
+                </table>
+                `
+                : `<div class="empty">سطح Footprint موجود نیست.</div>`
+            }
+
+          </div>
+        </details>
+
       </div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-title">Delta</div>
-      <div class="stat-value">
-        ${number(f.delta,2)}
-      </div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-title">Delta %</div>
-      <div class="stat-value">
-        ${pct(f.deltaPct,2)}
-      </div>
-    </div>
-
+    </section>
   `;
-
-  const rows =
-    f.levels || [];
-
-  if(!rows.length){
-
-    $("footprintTable").innerHTML =
-      `<tr>
-        <td colspan="7">
-          داده Footprint وجود ندارد.
-        </td>
-      </tr>`;
-
-    return;
-  }
-
-  $("footprintTable").innerHTML =
-    rows.map(x => `
-
-      <tr>
-
-        <td>${number(x.price,8)}</td>
-
-        <td class="long">
-          ${number(x.buy,2)}
-        </td>
-
-        <td class="short">
-          ${number(x.sell,2)}
-        </td>
-
-        <td>
-          ${number(x.total,2)}
-        </td>
-
-        <td class="${
-          Number(x.delta) >= 0
-            ? "long"
-            : "short"
-        }">
-          ${number(x.delta,2)}
-        </td>
-
-        <td>
-          ${pct(x.deltaPct,2)}
-        </td>
-
-        <td>
-          ${number(x.trades,0)}
-        </td>
-
-      </tr>
-
-    `).join("");
-
 }
 
-
 /* =========================================================
-   ORDER BOOK
+   ORDERBOOK
 ========================================================= */
 
 function renderOrderBook(data){
 
   const o =
-    data.orderBook || {};
+    data.orderBook ||
+    {};
 
-  $("orderbookStats").innerHTML = `
+  const buyWalls =
+    o.buyWalls ||
+    [];
 
-    <div class="stat">
-      <div class="stat-title">Bid Share</div>
-      <div class="stat-value long">
-        ${pct(o.bidShare,2)}
+  const sellWalls =
+    o.sellWalls ||
+    [];
+
+  return `
+    <section class="panel">
+
+      <div class="panel-title">
+        📚 Order Book / Walls
       </div>
-    </div>
 
-    <div class="stat">
-      <div class="stat-title">Ask Share</div>
-      <div class="stat-value short">
-        ${pct(o.askShare,2)}
+      <div class="panel-body">
+
+        <div class="grid">
+          ${metric("Best Bid",fmt(o.bestBid))}
+          ${metric("Best Ask",fmt(o.bestAsk))}
+          ${metric("Spread",fmt(o.spread))}
+          ${metric("Spread %",fmt(o.spreadPct)+"%")}
+          ${metric("Bid Liquidity",money(o.bidLiquidity))}
+          ${metric("Ask Liquidity",money(o.askLiquidity))}
+          ${metric("Bid Share",fmt(o.bidShare)+"%")}
+          ${metric("Ask Share",fmt(o.askShare)+"%")}
+          ${metric("Imbalance",money(o.imbalance))}
+        </div>
+
+        <details>
+          <summary>🟢 دیوارهای خرید</summary>
+          <div class="detail">
+            ${renderWalls(buyWalls)}
+          </div>
+        </details>
+
+        <details>
+          <summary>🔴 دیوارهای فروش</summary>
+          <div class="detail">
+            ${renderWalls(sellWalls)}
+          </div>
+        </details>
+
       </div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-title">Best Bid</div>
-      <div class="stat-value">
-        ${number(o.bestBid,8)}
-      </div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-title">Best Ask</div>
-      <div class="stat-value">
-        ${number(o.bestAsk,8)}
-      </div>
-    </div>
-
+    </section>
   `;
-
-  renderWalls(
-    "buyWalls",
-    o.buyWalls || []
-  );
-
-  renderWalls(
-    "sellWalls",
-    o.sellWalls || []
-  );
-
 }
-
-function renderWalls(id,walls){
-
-  const el = $(id);
-
-  if(!walls.length){
-
-    el.innerHTML =
-      `<div class="empty">
-        دیوار قابل توجهی پیدا نشد.
-      </div>`;
-
-    return;
-  }
-
-  el.innerHTML =
-    walls.map(w => `
-
-      <div class="row">
-
-        <span class="label">
-          ${number(w.price,8)}
-        </span>
-
-        <span class="value">
-
-          ${number(w.value,2)}
-
-          <span class="small">
-            ×${number(w.strength,2)}
-          </span>
-
-        </span>
-
-      </div>
-
-    `).join("");
-
-}
-
 
 /* =========================================================
    LEVELS
 ========================================================= */
 
-function renderLevels(data){
+function renderLevels(levels){
 
-  const levels =
-    data.levels || {};
+  const supports =
+    levels.supports ||
+    [];
 
-  renderLevelList(
-    "supports",
-    levels.supports || [],
-    true
-  );
+  const resistances =
+    levels.resistances ||
+    [];
 
-  renderLevelList(
-    "resistances",
-    levels.resistances || [],
-    false
-  );
+  return `
+    <div class="grid">
+      <div class="card">
+        <div class="label">حمایت‌ها</div>
+        ${
+          supports.length
+            ? supports
+              .slice(0,8)
+              .map(
+                x =>
+                  `<div class="green-t" style="margin:7px 0">
+                    ${fmt(x.price)}
+                  </div>`
+              )
+              .join("")
+            : `<div class="empty">ندارد</div>`
+        }
+      </div>
 
+      <div class="card">
+        <div class="label">مقاومت‌ها</div>
+        ${
+          resistances.length
+            ? resistances
+              .slice(0,8)
+              .map(
+                x =>
+                  `<div class="red-t" style="margin:7px 0">
+                    ${fmt(x.price)}
+                  </div>`
+              )
+              .join("")
+            : `<div class="empty">ندارد</div>`
+        }
+      </div>
+    </div>
+  `;
 }
-
-function renderLevelList(
-  id,
-  arr,
-  support
-){
-
-  const el = $(id);
-
-  if(!arr.length){
-
-    el.innerHTML =
-      `<div class="empty">
-        ${support ? "حمایتی" : "مقاومتی"} پیدا نشد.
-      </div>`;
-
-    return;
-  }
-
-  el.innerHTML =
-    arr.map(x => {
-
-      const liq =
-        x.orderbook || {};
-
-      return `
-
-        <div class="row">
-
-          <span class="label">
-            ${number(x.price,8)}
-          </span>
-
-          <span class="value">
-
-            Bid:
-            ${number(liq.bidValue,2)}
-
-            |
-
-            Ask:
-            ${number(liq.askValue,2)}
-
-          </span>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
 
 /* =========================================================
    HUNT
@@ -2080,95 +1241,39 @@ function renderLevelList(
 function renderHunt(data){
 
   const h =
-    data.liquidityHunt || {};
+    data.liquidityHunt ||
+    {};
 
-  if(!h.detected){
+  return `
+    <section class="panel">
 
-    $("huntContent").innerHTML = `
-      <div class="empty">
-        🟡 در آخرین کندل Hunt تأییدشده‌ای دیده نشد.
+      <div class="panel-title">
+        🎯 Liquidity Hunt
       </div>
-    `;
 
-    return;
-  }
+      <div class="panel-body">
 
-  const cls =
-    h.type === "BULLISH"
-      ? "long"
-      : "short";
-
-  $("huntContent").innerHTML = `
-
-    <div class="signal-main">
-
-      <div class="stat">
-        <div class="stat-title">نوع Hunt</div>
-        <div class="stat-value ${cls}">
-          ${esc(h.type)}
+        <div class="grid">
+          ${metric("وضعیت",h.detected ? "تشخیص داده شد" : "تشخیص داده نشد")}
+          ${metric("نوع",faHunt(h.type))}
+          ${metric("Level",fmt(h.level))}
+          ${metric("Wick",fmt(h.wick))}
+          ${metric("Close",fmt(h.close))}
+          ${metric("Sweep",fmt(h.sweepPct)+"%")}
+          ${metric("Volume",fmt(h.candleVolume))}
         </div>
+
+        <details>
+          <summary>نقدینگی اطراف سطح Hunt</summary>
+          <div class="detail">
+            ${renderObjectTable(h.liquidityAroundLevel || {})}
+          </div>
+        </details>
+
       </div>
-
-      <div class="stat">
-        <div class="stat-title">Level</div>
-        <div class="stat-value">
-          ${number(h.level,8)}
-        </div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Wick</div>
-        <div class="stat-value">
-          ${number(h.wick,8)}
-        </div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Sweep %</div>
-        <div class="stat-value">
-          ${pct(h.sweepPct,4)}
-        </div>
-      </div>
-
-    </div>
-
-    <div class="box" style="margin-top:12px">
-
-      <div class="row">
-        <span class="label">Close</span>
-        <span class="value">${number(h.close,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Sweep Amount</span>
-        <span class="value">${number(h.sweepAmount,8)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Candle Volume</span>
-        <span class="value">${number(h.candleVolume,2)}</span>
-      </div>
-
-      <div class="row">
-        <span class="label">Bid Around Level</span>
-        <span class="value">
-          ${number(h.liquidityAroundLevel?.bidValue,2)}
-        </span>
-      </div>
-
-      <div class="row">
-        <span class="label">Ask Around Level</span>
-        <span class="value">
-          ${number(h.liquidityAroundLevel?.askValue,2)}
-        </span>
-      </div>
-
-    </div>
-
+    </section>
   `;
-
 }
-
 
 /* =========================================================
    INDICATORS
@@ -2177,599 +1282,348 @@ function renderHunt(data){
 function renderIndicators(data){
 
   const i =
-    data.indicators || {};
+    data.indicators ||
+    {};
 
-  const one =
-    i.MACD1m || {};
+  return `
+    <section class="panel">
+      <div class="panel-title">
+        📊 اندیکاتورها
+      </div>
 
-  const fifteen =
-    i.MACD15m || {};
+      <div class="panel-body">
 
-  $("indicatorContent").innerHTML = `
-
-    <div class="grid2">
-
-      <div class="box">
-
-        <h3>📊 1 Minute</h3>
-
-        <div class="row">
-          <span class="label">RSI</span>
-          <span class="value">
-            ${number(i.RSI1m,2)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">MACD</span>
-          <span class="value">
-            ${number(one.macd,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Signal</span>
-          <span class="value">
-            ${number(one.signal,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Histogram</span>
-          <span class="value">
-            ${number(one.histogram,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">MACD Cross</span>
-          <span class="value">
-            ${esc(one.cross || "NONE")}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">ATR</span>
-          <span class="value">
-            ${number(i.ATR1m,8)}
-          </span>
+        <div class="grid">
+          ${metric("RSI 1M",fmt(i.RSI1m))}
+          ${metric("RSI 15M",fmt(i.RSI15m))}
+          ${metric("MACD 1M",fmt(i.MACD1m?.macd))}
+          ${metric("MACD 15M",fmt(i.MACD15m?.macd))}
+          ${metric("ATR 1M",fmt(i.ATR1m))}
+          ${metric("ATR 15M",fmt(i.ATR15m))}
+          ${metric("BB Width 1M",fmt(i.Bollinger1m?.width)+"%")}
+          ${metric("BB Width 15M",fmt(i.Bollinger15m?.width)+"%")}
         </div>
 
       </div>
-
-      <div class="box">
-
-        <h3>📊 15 Minute</h3>
-
-        <div class="row">
-          <span class="label">RSI</span>
-          <span class="value">
-            ${number(i.RSI15m,2)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">MACD</span>
-          <span class="value">
-            ${number(fifteen.macd,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Signal</span>
-          <span class="value">
-            ${number(fifteen.signal,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">Histogram</span>
-          <span class="value">
-            ${number(fifteen.histogram,8)}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">MACD Cross</span>
-          <span class="value">
-            ${esc(fifteen.cross || "NONE")}
-          </span>
-        </div>
-
-        <div class="row">
-          <span class="label">ATR</span>
-          <span class="value">
-            ${number(i.ATR15m,8)}
-          </span>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="box" style="margin-top:12px">
-
-      <h3>📐 Bollinger Bands — 1M</h3>
-
-      <div class="row">
-        <span class="label">Upper</span>
-        <span class="value">
-          ${number(i.Bollinger1m?.upper,8)}
-        </span>
-      </div>
-
-      <div class="row">
-        <span class="label">Middle</span>
-        <span class="value">
-          ${number(i.Bollinger1m?.middle,8)}
-        </span>
-      </div>
-
-      <div class="row">
-        <span class="label">Lower</span>
-        <span class="value">
-          ${number(i.Bollinger1m?.lower,8)}
-        </span>
-      </div>
-
-      <div class="row">
-        <span class="label">Width</span>
-        <span class="value">
-          ${pct(i.Bollinger1m?.width,3)}
-        </span>
-      </div>
-
-    </div>
-
+    </section>
   `;
-
 }
 
-
 /* =========================================================
-   TABS
-   مهم:
-   منوها خودکار بسته نمی‌شوند.
+   VOLUME
 ========================================================= */
 
-document
-  .querySelectorAll(".tab")
-  .forEach(tab => {
+function renderVolume(data){
 
-    tab.addEventListener(
-      "click",
-      () => {
+  const v =
+    data.volume ||
+    {};
 
-        const target =
-          tab.dataset.tab;
+  return `
+    <section class="panel">
+      <div class="panel-title">
+        📊 حجم
+      </div>
 
-        document
-          .querySelectorAll(".tab")
-          .forEach(x =>
-            x.classList.remove("active")
-          );
+      <div class="panel-body">
 
-        document
-          .querySelectorAll(".section")
-          .forEach(x =>
-            x.classList.remove("active")
-          );
+        <div class="grid">
+          ${metric("Volume 1M",fmt(v.oneMinute?.current))}
+          ${metric("Average 1M",fmt(v.oneMinute?.average))}
+          ${metric("Ratio 1M",fmt(v.oneMinute?.ratio))}
+          ${metric("Spike 1M",v.oneMinute?.spike ? "بله" : "خیر")}
+          ${metric("Volume 15M",fmt(v.fifteenMinute?.current))}
+          ${metric("Average 15M",fmt(v.fifteenMinute?.average))}
+          ${metric("Ratio 15M",fmt(v.fifteenMinute?.ratio))}
+          ${metric("Spike 15M",v.fifteenMinute?.spike ? "بله" : "خیر")}
+        </div>
 
-        tab.classList.add("active");
-
-        const section =
-          document.getElementById(target);
-
-        if(section){
-
-          section.classList.add("active");
-
-          section.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-          });
-
-        }
-
-      }
-    );
-
-  });
-
+      </div>
+    </section>
+  `;
+}
 
 /* =========================================================
-   CLEAR
+   COMPLETE RENDER
 ========================================================= */
 
-$("clearBtn").addEventListener(
-  "click",
-  () => {
+function renderAnalysis(data){
 
-    selectedSymbol = "";
+  output.innerHTML = `
 
-    currentAnalysis = null;
+    <section class="panel">
+      <div class="panel-title">
+        🪙 ${escapeHtml(data.symbol || "")}
+        <span class="sub">
+          • ${data.category === "linear" ? "Futures" : "Spot"}
+        </span>
+      </div>
 
-    symbolInput.value = "";
+      <div class="panel-body">
 
-    selectedSymbolBox.textContent =
-      "نمادی انتخاب نشده است";
+        <div class="grid">
+          ${metric("قیمت",fmt(data.price))}
+          ${metric("بازار 1M",faTrend(data.market?.trend1m))}
+          ${metric("بازار 15M",faTrend(data.market?.trend15m))}
+          ${metric("سبک",tradingStyleFa(data.market?.style))}
+        </div>
 
-    $("signalEmpty").style.display =
-      "block";
+      </div>
+    </section>
 
-    $("signalData").style.display =
-      "none";
+    ${renderSignal(data)}
 
-    $("maContent").innerHTML =
-      `<div class="empty">
-        هنوز داده‌ای وجود ندارد.
-      </div>`;
+    ${renderTradingStyle(data)}
 
-    $("smartContent").innerHTML =
-      `<div class="empty">
-        هنوز داده‌ای وجود ندارد.
-      </div>`;
+    ${renderMA20(data)}
 
-    $("huntContent").innerHTML =
-      `<div class="empty">
-        هنوز داده‌ای وجود ندارد.
-      </div>`;
+    ${render15M(data)}
 
-    $("scanResults").innerHTML =
-      "";
+    ${renderFootprint(data)}
 
-    $("scanStatus").textContent =
-      "برای اسکن بازار روی دکمه بالا بزنید.";
+    ${renderOrderBook(data)}
 
-  }
-);
+    ${renderHunt(data)}
 
+    <section class="panel">
+
+      <div class="panel-title">
+        📍 حمایت و مقاومت
+      </div>
+
+      <div class="panel-body">
+        ${renderLevels(data.levels || {})}
+      </div>
+
+    </section>
+
+    ${renderIndicators(data)}
+
+    ${renderVolume(data)}
+
+    <section class="panel">
+
+      <div class="panel-title">
+        🧾 وضعیت داده
+      </div>
+
+      <div class="panel-body">
+        ${renderObjectTable(data.dataStatus || {})}
+      </div>
+
+    </section>
+
+    <section class="panel">
+
+      <details>
+        <summary>
+          🧪 خروجی کامل Worker
+        </summary>
+
+        <div class="detail">
+          <pre>${escapeHtml(
+            JSON.stringify(data,null,2)
+          )}</pre>
+        </div>
+
+      </details>
+
+    </section>
+  `;
+}
 
 /* =========================================================
-   SCAN
+   MARKET SCAN
 ========================================================= */
 
 $("scanBtn").addEventListener(
   "click",
-  startScan
+  scanMarket
 );
 
-$("stopScanBtn").addEventListener(
-  "click",
-  () => {
+async function scanMarket(){
 
-    scanRunning = false;
-
-    $("scanStatus").innerHTML =
-      `<div class="error">
-        ⛔ اسکن متوقف شد.
-      </div>`;
-
-  }
-);
-
-async function startScan(){
-
-  if(scanRunning) return;
-
-  scanRunning = true;
-
-  $("scanBtn").disabled =
-    true;
-
-  $("scanStatus").innerHTML =
-    `<div class="loading">
-      ⏳ در حال اسکن بازار Bybit...
-    </div>`;
-
-  $("scanResults").innerHTML =
-    "";
+  output.innerHTML =
+    `<section class="panel">
+      <div class="loading">
+        🔄 در حال اسکن بازار Bybit...
+      </div>
+    </section>`;
 
   try{
 
     const data =
       await api(
-        `/api/scan?difficulty=${encodeURIComponent(difficulty.value)}`
+        "/api/scan?" +
+        new URLSearchParams({
+          difficulty:difficulty.value
+        }).toString()
       );
-
-    if(!scanRunning) return;
 
     renderScan(data);
 
-  }catch(err){
+  }catch(e){
 
-    $("scanStatus").innerHTML =
-      `<div class="error">
-        🔴 خطا در اسکن:
-        ${esc(err.message)}
-      </div>`;
-
-  }finally{
-
-    scanRunning = false;
-
-    $("scanBtn").disabled =
-      false;
+    output.innerHTML =
+      `<section class="panel">
+        <div class="panel-body error">
+          ${escapeHtml(e.message)}
+        </div>
+      </section>`;
 
   }
-
 }
-
-
-/* =========================================================
-   SCAN RENDER
-========================================================= */
 
 function renderScan(data){
 
   const signals =
-    data.signals || [];
+    data.signals ||
+    [];
 
   const candidates =
-    data.candidatesDetail || [];
+    data.candidatesDetail ||
+    [];
 
-  $("scanStatus").innerHTML = `
+  output.innerHTML = `
 
-    <div class="success">
+    <section class="panel">
 
-      🟢 اسکن انجام شد
+      <div class="panel-title">
+        🔎 نتیجه اسکن بازار
+      </div>
 
-      <br>
+      <div class="panel-body">
 
-      تعداد بررسی:
-      <b>${number(data.checked,0)}</b>
-
-      |
-
-      کاندید:
-      <b>${number(data.candidates,0)}</b>
-
-      |
-
-      سیگنال:
-      <b>${number(signals.length,0)}</b>
-
-    </div>
-
-  `;
-
-  let html = "";
-
-  if(signals.length){
-
-    html += `
-
-      <div class="card">
-
-        <div class="card-title">
-          🚨 سیگنال‌های پیدا شده
+        <div class="grid">
+          ${metric("نمادهای بررسی‌شده",data.checked || 0)}
+          ${metric("کاندیدا",data.candidates || 0)}
+          ${metric("سیگنال",signals.length)}
+          ${metric("سختی",data.difficulty || 0)}
         </div>
 
-        <div class="table-wrap">
+      </div>
 
-          <table>
+    </section>
 
-            <thead>
+    <section class="panel">
 
-              <tr>
-                <th>Symbol</th>
-                <th>Market</th>
-                <th>Direction</th>
-                <th>Score</th>
-                <th>Bull</th>
-                <th>Bear</th>
-                <th>Price</th>
-                <th>15M</th>
-                <th>تحلیل</th>
-              </tr>
+      <div class="panel-title">
+        🎯 سیگنال‌های پیدا شده
+      </div>
 
-            </thead>
+      <div class="panel-body">
 
-            <tbody>
+        ${
+          signals.length
+            ? signals
+              .map(
+                x => `
+                <div class="card" style="margin-bottom:9px">
+                  <div class="signal-main">
+                    <div>
+                      <b>${escapeHtml(x.symbol)}</b>
+                      <div class="sub">
+                        ${escapeHtml(
+                          x.tradingStyle?.style ||
+                          x.styles?.current ||
+                          "RANGE"
+                        )}
+                      </div>
+                    </div>
 
-              ${signals.map(x => {
-
-                const s =
-                  x.signal || {};
-
-                return `
-
-                  <tr>
-
-                    <td>
-                      <b>${esc(x.symbol)}</b>
-                    </td>
-
-                    <td>
-                      ${x.category === "linear"
-                        ? "Futures"
-                        : "Spot"}
-                    </td>
-
-                    <td>
-
-                      <span class="badge ${
-                        directionClass(s.direction)
-                      }">
-
-                        ${esc(s.direction)}
-
-                      </span>
-
-                    </td>
-
-                    <td>
-                      ${number(s.score,0)}
-                    </td>
-
-                    <td class="long">
-                      ${number(s.bull,0)}
-                    </td>
-
-                    <td class="short">
-                      ${number(s.bear,0)}
-                    </td>
-
-                    <td>
-                      ${number(x.price,8)}
-                    </td>
-
-                    <td>
-                      ${esc(
-                        x.higherTimeframe?.expectation ||
-                        "-"
+                    <div class="${
+                      x.signal?.direction === "LONG"
+                        ? "green-t"
+                        : "red-t"
+                    }">
+                      ${escapeHtml(
+                        x.signal?.direction || "WAIT"
                       )}
-                    </td>
+                      •
+                      ${round(x.signal?.score || 0,0)}
+                    </div>
+                  </div>
 
-                    <td>
+                  <button
+                    style="margin-top:10px"
+                    onclick="openSignal('${escapeAttr(x.symbol)}','${escapeAttr(x.category)}')"
+                  >
+                    مشاهده تحلیل
+                  </button>
+                </div>
+              `
+              )
+              .join("")
+            : `<div class="empty">
+                در این اسکن سیگنال بالاتر از آستانه پیدا نشد.
+              </div>`
+        }
 
-                      <button
-                        onclick="openScanSymbol(
-                          '${esc(x.symbol)}',
-                          '${esc(x.category)}'
-                        )"
-                      >
-                        🔎
-                      </button>
+      </div>
 
-                    </td>
+    </section>
 
+    <section class="panel">
+
+      <details>
+        <summary>
+          📡 کاندیداهای نزدیک MA20
+        </summary>
+
+        <div class="detail">
+
+          ${
+            candidates.length
+              ? `
+              <table>
+                <thead>
+                  <tr>
+                    <th>نماد</th>
+                    <th>بازار</th>
+                    <th>قیمت</th>
+                    <th>MA20</th>
+                    <th>فاصله</th>
+                    <th>Trend</th>
+                    <th>RSI</th>
                   </tr>
+                </thead>
 
-                `;
-
-              }).join("")}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }else{
-
-    html += `
-
-      <div class="card">
-
-        <div class="empty">
-          در این مرحله سیگنال واجد شرایط پیدا نشد.
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-
-  if(candidates.length){
-
-    html += `
-
-      <div class="card">
-
-        <div class="card-title">
-          📡 نزدیک‌ترین کاندیدها به MA20
-        </div>
-
-        <div class="table-wrap">
-
-          <table>
-
-            <thead>
-
-              <tr>
-                <th>Symbol</th>
-                <th>Market</th>
-                <th>Distance</th>
-                <th>Trend</th>
-                <th>MA Bias</th>
-                <th>MA Slope</th>
-                <th>RSI</th>
-                <th>Volume</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              ${candidates.map(x => `
-
-                <tr>
-
-                  <td>
-                    <b>${esc(x.symbol)}</b>
-                  </td>
-
-                  <td>
-                    ${x.category === "linear"
-                      ? "Futures"
-                      : "Spot"}
-                  </td>
-
-                  <td>
-                    ${pct(x.distance,3)}
-                  </td>
-
-                  <td>
-                    ${esc(x.trend)}
-                  </td>
-
-                  <td>
-                    ${esc(x.maBias)}
-                  </td>
-
-                  <td>
-                    ${pct(x.maSlope,4)}
-                  </td>
-
-                  <td>
-                    ${number(x.rsi,2)}
-                  </td>
-
-                  <td>
-                    ${number(x.volumeRatio,2)}x
-                  </td>
-
-                </tr>
-
-              `).join("")}
-
-            </tbody>
-
-          </table>
+                <tbody>
+                  ${
+                    candidates
+                      .map(
+                        x => `
+                        <tr
+                          style="cursor:pointer"
+                          onclick="openSignal('${escapeAttr(x.symbol)}','${escapeAttr(x.category)}')"
+                        >
+                          <td><b>${escapeHtml(x.symbol)}</b></td>
+                          <td>${x.category === "linear" ? "Futures" : "Spot"}</td>
+                          <td>${fmt(x.price)}</td>
+                          <td>${fmt(x.ma20)}</td>
+                          <td>${fmt(x.distance)}%</td>
+                          <td>${faTrend(x.trend)}</td>
+                          <td>${fmt(x.rsi)}</td>
+                        </tr>
+                      `
+                      )
+                      .join("")
+                  }
+                </tbody>
+              </table>
+              `
+              : `<div class="empty">کاندیدایی پیدا نشد.</div>`
+          }
 
         </div>
+      </details>
 
-      </div>
-
-    `;
-
-  }
-
-  $("scanResults").innerHTML =
-    html;
-
+    </section>
+  `;
 }
 
-
-/* =========================================================
-   OPEN SCAN SYMBOL
-========================================================= */
-
-window.openScanSymbol =
+window.openSignal =
   async function(symbol,cat){
-
-    selectedSymbol =
-      symbol;
-
-    selectedCategory =
-      cat;
 
     symbolInput.value =
       symbol;
@@ -2777,36 +1631,522 @@ window.openScanSymbol =
     category.value =
       cat;
 
-    selectedSymbolBox.innerHTML =
-      `نماد انتخاب شده:
-       <b>${esc(symbol)}</b>
-       — ${cat === "linear" ? "Futures" : "Spot"}`;
-
-    await analyzeCurrent();
-
     window.scrollTo({
       top:0,
       behavior:"smooth"
     });
 
+    await analyze();
   };
 
-
 /* =========================================================
-   START
+   HELPERS
 ========================================================= */
 
-(async function(){
+function metric(label,value){
 
-  difficultyValue.textContent =
-    difficulty.value;
+  return `
+    <div class="card">
+      <div class="label">
+        ${escapeHtml(String(label))}
+      </div>
 
-  selectedCategory =
-    category.value;
+      <div class="value">
+        ${value ?? "-"}
+      </div>
+    </div>
+  `;
+}
 
-  await checkConnection();
+function renderList(arr){
 
-})();
+  if(!arr?.length){
+    return `<div class="empty">موردی ثبت نشده.</div>`;
+  }
+
+  return `
+    <div class="badges">
+      ${
+        arr.map(
+          x =>
+            `<span class="badge">
+              ${escapeHtml(String(x))}
+            </span>`
+        ).join("")
+      }
+    </div>
+  `;
+}
+
+function renderObjectTable(obj){
+
+  if(
+    !obj ||
+    typeof obj !== "object"
+  ){
+    return `<div class="empty">داده‌ای نیست.</div>`;
+  }
+
+  const rows =
+    Object.entries(obj)
+      .filter(
+        ([k]) =>
+          k !== "bids" &&
+          k !== "asks" &&
+          k !== "trades"
+      );
+
+  if(!rows.length){
+    return `<div class="empty">داده‌ای نیست.</div>`;
+  }
+
+  return `
+    <table>
+      <tbody>
+        ${
+          rows.map(
+            ([k,v]) => `
+            <tr>
+              <th>${escapeHtml(k)}</th>
+              <td>${formatValue(v)}</td>
+            </tr>
+          `
+          ).join("")
+        }
+      </tbody>
+    </table>
+  `;
+}
+
+function renderWalls(arr){
+
+  if(!arr?.length){
+    return `<div class="empty">دیوار قابل توجهی پیدا نشد.</div>`;
+  }
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>قیمت</th>
+          <th>ارزش</th>
+          <th>فاصله</th>
+          <th>قدرت</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          arr.map(
+            x => `
+            <tr>
+              <td>${fmt(x.price)}</td>
+              <td>${money(x.value)}</td>
+              <td>${fmt(x.distancePct)}%</td>
+              <td>${fmt(x.strength)}x</td>
+            </tr>
+          `
+          ).join("")
+        }
+      </tbody>
+    </table>
+  `;
+}
+
+function renderFVG(arr){
+
+  if(!arr?.length){
+    return `<div class="empty">FVG پیدا نشد.</div>`;
+  }
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>نوع</th>
+          <th>بالا</th>
+          <th>پایین</th>
+          <th>اندازه%</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          arr.slice(-15).reverse().map(
+            x => `
+            <tr>
+              <td class="${
+                x.type === "BULLISH"
+                  ? "green-t"
+                  : "red-t"
+              }">
+                ${x.type}
+              </td>
+              <td>${fmt(x.top)}</td>
+              <td>${fmt(x.bottom)}</td>
+              <td>${fmt(x.sizePct)}%</td>
+            </tr>
+          `
+          ).join("")
+        }
+      </tbody>
+    </table>
+  `;
+}
+
+function renderOB(arr){
+
+  if(!arr?.length){
+    return `<div class="empty">Order Block پیدا نشد.</div>`;
+  }
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>نوع</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Size</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${
+          arr.slice(-15).reverse().map(
+            x => `
+            <tr>
+              <td class="${
+                x.type === "BULLISH"
+                  ? "green-t"
+                  : "red-t"
+              }">
+                ${x.type}
+              </td>
+              <td>${fmt(x.high)}</td>
+              <td>${fmt(x.low)}</td>
+              <td>${fmt(x.size)}</td>
+            </tr>
+          `
+          ).join("")
+        }
+      </tbody>
+    </table>
+  `;
+}
+
+function formatValue(v){
+
+  if(v === null || v === undefined){
+    return "-";
+  }
+
+  if(typeof v === "object"){
+    return escapeHtml(
+      JSON.stringify(v)
+    );
+  }
+
+  if(typeof v === "boolean"){
+    return v ? "بله" : "خیر";
+  }
+
+  return escapeHtml(
+    String(v)
+  );
+}
+
+function fmt(v){
+
+  const n =
+    Number(v);
+
+  if(!Number.isFinite(n)){
+    return "-";
+  }
+
+  if(
+    Math.abs(n) >= 1000000
+  ){
+    return (
+      (n / 1000000)
+        .toFixed(2) +
+      "M"
+    );
+  }
+
+  if(
+    Math.abs(n) >= 1000
+  ){
+    return (
+      (n / 1000)
+        .toFixed(2) +
+      "K"
+    );
+  }
+
+  if(
+    Math.abs(n) < 0.000001 &&
+    n !== 0
+  ){
+    return n.toExponential(3);
+  }
+
+  return Number(
+    n.toFixed(6)
+  ).toString();
+}
+
+function money(v){
+  return fmt(v);
+}
+
+function round(v,d=2){
+
+  const n =
+    Number(v);
+
+  if(!Number.isFinite(n)){
+    return 0;
+  }
+
+  return Number(
+    n.toFixed(d)
+  );
+}
+
+/* =========================================================
+   FA LABELS
+========================================================= */
+
+function faTrend(v){
+
+  if(v === "BULLISH")
+    return "🟢 صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 نزولی";
+
+  if(v === "RANGE")
+    return "🟡 رنج";
+
+  return v || "نامشخص";
+}
+
+function faBias(v){
+
+  if(v === "BULLISH")
+    return "🟢 صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 نزولی";
+
+  return "🟡 رنج";
+}
+
+function faPosition(v){
+
+  if(v === "ABOVE")
+    return "بالای MA20";
+
+  if(v === "BELOW")
+    return "زیر MA20";
+
+  if(v === "ON_MA")
+    return "روی MA20";
+
+  return v || "نامشخص";
+}
+
+function faRejection(v){
+
+  if(v === "BULLISH")
+    return "🟢 صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 نزولی";
+
+  return "ندارد";
+}
+
+function faConfirmation(v){
+
+  if(v === "BULLISH")
+    return "🟢 صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 نزولی";
+
+  return "ندارد";
+}
+
+function faSide(v){
+
+  if(v === "BULLISH")
+    return "🟢 صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 نزولی";
+
+  return v || "ندارد";
+}
+
+function faHunt(v){
+
+  if(v === "BULLISH")
+    return "🟢 Hunt صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 Hunt نزولی";
+
+  return "ندارد";
+}
+
+function faExpectation(v){
+
+  if(v === "BULLISH")
+    return "🟢 تمایل صعودی";
+
+  if(v === "BEARISH")
+    return "🔴 تمایل نزولی";
+
+  return "🟡 رنج";
+}
+
+function faVolume(v){
+
+  if(!v)
+    return "ندارد";
+
+  if(v.strongSpike)
+    return "🔥 جهش بسیار قوی";
+
+  if(v.spike)
+    return "⚡ افزایش حجم";
+
+  return "عادی";
+}
+
+function tradingStyleFa(v){
+
+  const map = {
+    "SMART MONEY LONG":
+      "🟢 Smart Money Long",
+
+    "SMART MONEY SHORT":
+      "🔴 Smart Money Short",
+
+    "MA20 + LIQUIDITY HUNT LONG":
+      "🟢 MA20 + شکار نقدینگی Long",
+
+    "MA20 + LIQUIDITY HUNT SHORT":
+      "🔴 MA20 + شکار نقدینگی Short",
+
+    "SMART_MONEY_BULLISH":
+      "🟢 Smart Money صعودی",
+
+    "SMART_MONEY_BEARISH":
+      "🔴 Smart Money نزولی",
+
+    "RANGE":
+      "🟡 رنج",
+
+    "RANGE / NO CLEAR STYLE":
+      "🟡 سبک مشخص نیست"
+  };
+
+  return map[v] ||
+    v ||
+    "🟡 سبک مشخص نیست";
+}
+
+function tradingFactorFa(v){
+
+  const map = {
+
+    MA20_RETEST:
+      "بازآزمایی MA20",
+
+    LIQUIDITY_HUNT:
+      "شکار نقدینگی",
+
+    BOS:
+      "شکست ساختار BOS",
+
+    CHoCH:
+      "تغییر ساختار CHoCH",
+
+    FVG:
+      "Fair Value Gap",
+
+    ORDER_BLOCK:
+      "Order Block",
+
+    BUY_PRESSURE:
+      "فشار خرید",
+
+    SELL_PRESSURE:
+      "فشار فروش",
+
+    BID_DOMINANCE:
+      "غلبه Bid",
+
+    ASK_DOMINANCE:
+      "غلبه Ask"
+  };
+
+  return map[v] || v;
+}
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function escapeHtml(v){
+
+  return String(v ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function escapeAttr(v){
+  return escapeHtml(v);
+}
+
+/* =========================================================
+   DETAILS FIX
+   بازشدنی‌ها خودکار بسته نمی‌شوند
+========================================================= */
+
+document.addEventListener(
+  "click",
+  e => {
+
+    const summary =
+      e.target.closest("summary");
+
+    if(!summary) return;
+
+    e.stopPropagation();
+
+  },
+  true
+);
+
+document.addEventListener(
+  "toggle",
+  e => {
+
+    if(
+      e.target.tagName === "DETAILS"
+    ){
+      /* intentionally empty:
+         native details state remains open */
+    }
+
+  },
+  true
+);
 
 </script>
 
