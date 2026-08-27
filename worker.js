@@ -4326,7 +4326,7 @@ function calculateStyle(
   };
 }
 
-/* ========================= MASTER ============================ */
+/* ========================= MASTER ========================= */
 
 function calculateMasterSignal(
   one,
@@ -4337,49 +4337,12 @@ function calculateMasterSignal(
   rsiSignal,
   macdSignal,
   divergenceSignal,
-  strictness,
-  selectedBases = []
+  strictness
 ) {
   let long = 0;
   let short = 0;
 
   const reasons = [];
-
-  /*
-   * مبناهای قابل انتخاب:
-   * RSI
-   * MACD
-   * DIVERGENCE
-   * PRICE
-   * FOOTPRINT
-   * ORDERBOOK
-   * 15M
-   *
-   * اگر selectedBases خالی باشد،
-   * رفتار قبلی حفظ می‌شود و همه مبناهای اصلی فعال هستند.
-   */
-
-  const defaults = [
-    "RSI",
-    "MACD",
-    "DIVERGENCE"
-  ];
-
-  const bases =
-    Array.isArray(selectedBases) &&
-    selectedBases.length
-      ? selectedBases
-          .map(x =>
-            String(x)
-              .trim()
-              .toUpperCase()
-          )
-          .filter(Boolean)
-      : defaults;
-
-  const has =
-    key =>
-      bases.includes(key);
 
   function add(
     direction,
@@ -4387,20 +4350,15 @@ function calculateMasterSignal(
     text
   ) {
     if (
-      !Number.isFinite(score) ||
-      score === 0
-    ) {
-      return;
-    }
-
-    if (
-      direction === "LONG"
+      direction ===
+      "LONG"
     ) {
       long += score;
     }
 
     if (
-      direction === "SHORT"
+      direction ===
+      "SHORT"
     ) {
       short += score;
     }
@@ -4416,290 +4374,191 @@ function calculateMasterSignal(
     });
   }
 
-  /*
-   * PRICE / MARKET DIRECTION
-   */
   if (
-    has("PRICE")
+    one?.direction ===
+    "LONG"
+  ) {
+    add(
+      "LONG",
+      25,
+      "واکنش صعودی قیمت در 1m."
+    );
+  }
+
+  if (
+    one?.direction ===
+    "SHORT"
+  ) {
+    add(
+      "SHORT",
+      25,
+      "واکنش نزولی قیمت در 1m."
+    );
+  }
+
+  add(
+    rsiSignal.direction,
+    rsiSignal.score * 0.15,
+    "RSI واقعی در امتیاز نهایی لحاظ شد."
+  );
+
+  add(
+    macdSignal.direction,
+    macdSignal.score * 0.15,
+    "MACD واقعی در امتیاز نهایی لحاظ شد."
+  );
+
+  add(
+    divergenceSignal.direction,
+    divergenceSignal.score * 0.15,
+    "واگرایی واقعی در امتیاز نهایی لحاظ شد."
+  );
+
+  /*
+   * سبک‌ها با وزن واقعی ولی محدود.
+   */
+  for (
+    const style of styles
   ) {
     if (
-      one?.direction ===
+      style.direction ===
       "LONG"
     ) {
-      add(
-        "LONG",
-        25,
-        "واکنش صعودی قیمت در 1m."
-      );
+      long +=
+        style.score *
+        0.08;
     }
 
     if (
-      one?.direction ===
+      style.direction ===
       "SHORT"
     ) {
-      add(
-        "SHORT",
-        25,
-        "واکنش نزولی قیمت در 1m."
-      );
+      short +=
+        style.score *
+        0.08;
     }
   }
 
-  /*
-   * RSI
-   */
   if (
-    has("RSI") &&
-    rsiSignal
-  ) {
-    add(
-      rsiSignal.direction,
-      rsiSignal.score * 0.15,
-      `RSI واقعی در امتیاز نهایی لحاظ شد: ${Math.round(rsiSignal.score)}`
-    );
-  }
-
-  /*
-   * MACD
-   */
-  if (
-    has("MACD") &&
-    macdSignal
-  ) {
-    add(
-      macdSignal.direction,
-      macdSignal.score * 0.15,
-      `MACD واقعی در امتیاز نهایی لحاظ شد: ${Math.round(macdSignal.score)}`
-    );
-  }
-
-  /*
-   * DIVERGENCE
-   */
-  if (
-    has("DIVERGENCE") &&
-    divergenceSignal
-  ) {
-    add(
-      divergenceSignal.direction,
-      divergenceSignal.score * 0.15,
-      `واگرایی واقعی در امتیاز نهایی لحاظ شد: ${Math.round(divergenceSignal.score)}`
-    );
-  }
-
-  /*
-   * سبک‌های معاملاتی
-   * فعلاً همیشه به‌صورت اطلاعات تحلیلی باقی می‌مانند
-   * و فقط وقتی مبنای STYLE انتخاب شده باشد وارد امتیاز می‌شوند.
-   */
-  if (
-    has("STYLE")
-  ) {
-    for (
-      const style of styles || []
-    ) {
-      if (
-        style.direction ===
-        "LONG"
-      ) {
-        long +=
-          style.score *
-          0.08;
-
-        reasons.push({
-          side: "LONG",
-          points:
-            Math.round(
-              style.score *
-              0.08
-            ),
-          text:
-            `${style.name || "سبک معاملاتی"} صعودی است.`
-        });
-      }
-
-      if (
-        style.direction ===
-        "SHORT"
-      ) {
-        short +=
-          style.score *
-          0.08;
-
-        reasons.push({
-          side: "SHORT",
-          points:
-            Math.round(
-              style.score *
-              0.08
-            ),
-          text:
-            `${style.name || "سبک معاملاتی"} نزولی است.`
-        });
-      }
-    }
-  }
-
-  /*
-   * FOOTPRINT / ORDER FLOW
-   */
-  if (
-    has("FOOTPRINT") &&
     footprint?.available
   ) {
     if (
-      Number.isFinite(
-        footprint.deltaPercent
-      ) &&
-      footprint.deltaPercent > 10
+      footprint.deltaPercent >
+      10
     ) {
-      add(
-        "LONG",
-        8,
-        `Footprint مثبت است؛ Delta واقعی: ${footprint.deltaPercent.toFixed(2)}%`
-      );
+      long += 8;
+
+      reasons.push({
+        side: "LONG",
+        points: 8,
+        text:
+          "Delta واقعی مثبت است."
+      });
     }
 
     if (
-      Number.isFinite(
-        footprint.deltaPercent
-      ) &&
-      footprint.deltaPercent < -10
+      footprint.deltaPercent <
+      -10
     ) {
-      add(
-        "SHORT",
-        8,
-        `Footprint منفی است؛ Delta واقعی: ${footprint.deltaPercent.toFixed(2)}%`
-      );
+      short += 8;
+
+      reasons.push({
+        side: "SHORT",
+        points: 8,
+        text:
+          "Delta واقعی منفی است."
+      });
     }
   }
 
-  /*
-   * ORDER BOOK
-   */
   if (
-    has("ORDERBOOK") &&
     orderbook?.available
   ) {
-    const buyShare =
-      Number(
-        orderbook.buyShare
-      );
-
-    const sellShare =
-      Number(
-        orderbook.sellShare
-      );
+    if (
+      orderbook.buyShare >
+      orderbook.sellShare + 8
+    ) {
+      long += 5;
+    }
 
     if (
-      Number.isFinite(buyShare) &&
-      Number.isFinite(sellShare)
+      orderbook.sellShare >
+      orderbook.buyShare + 8
     ) {
-      if (
-        buyShare >
-        sellShare + 8
-      ) {
-        add(
-          "LONG",
-          5,
-          `Order Book به نفع خریداران است: Buy ${buyShare.toFixed(2)}% / Sell ${sellShare.toFixed(2)}%`
-        );
-      }
-
-      if (
-        sellShare >
-        buyShare + 8
-      ) {
-        add(
-          "SHORT",
-          5,
-          `Order Book به نفع فروشندگان است: Buy ${buyShare.toFixed(2)}% / Sell ${sellShare.toFixed(2)}%`
-        );
-      }
+      short += 5;
     }
   }
 
   /*
-   * 15M CONFIRMATION
-   *
-   * 15m همچنان تأییدکننده است،
-   * نه اینکه خودش به‌تنهایی سیگنال بسازد.
+   * تأیید 15m:
+   * خلاف جهت امتیاز کم می‌کند،
+   * اما سیگنال را به‌صورت کور حذف نمی‌کند.
    */
   if (
-    has("15M")
+    fifteen?.direction ===
+    "LONG" &&
+    long > short
   ) {
-    if (
-      fifteen?.direction ===
-        "LONG" &&
-      long > short
-    ) {
-      long += 10;
+    long += 10;
 
-      reasons.push({
-        side: "LONG",
-        points: 10,
-        text:
-          "15m جهت صعودی را تأیید می‌کند."
-      });
-    }
+    reasons.push({
+      side: "LONG",
+      points: 10,
+      text:
+        "15m جهت صعودی را تأیید می‌کند."
+    });
+  }
 
-    if (
-      fifteen?.direction ===
-        "SHORT" &&
-      short > long
-    ) {
-      short += 10;
+  if (
+    fifteen?.direction ===
+    "SHORT" &&
+    short > long
+  ) {
+    short += 10;
 
-      reasons.push({
-        side: "SHORT",
-        points: 10,
-        text:
-          "15m جهت نزولی را تأیید می‌کند."
-      });
-    }
+    reasons.push({
+      side: "SHORT",
+      points: 10,
+      text:
+        "15m جهت نزولی را تأیید می‌کند."
+    });
+  }
 
-    if (
-      fifteen?.direction ===
-        "SHORT" &&
-      long > short
-    ) {
-      long -= 10;
+  if (
+    fifteen?.direction ===
+    "SHORT" &&
+    long > short
+  ) {
+    long -= 10;
 
-      reasons.push({
-        side: "LONG",
-        points: -10,
-        text:
-          "15m خلاف جهت LONG است."
-      });
-    }
+    reasons.push({
+      side: "LONG",
+      points: -10,
+      text:
+        "15m خلاف جهت LONG است."
+    });
+  }
 
-    if (
-      fifteen?.direction ===
-        "LONG" &&
-      short > long
-    ) {
-      short -= 10;
+  if (
+    fifteen?.direction ===
+    "LONG" &&
+    short > long
+  ) {
+    short -= 10;
 
-      reasons.push({
-        side: "SHORT",
-        points: -10,
-        text:
-          "15m خلاف جهت SHORT است."
-      });
-    }
+    reasons.push({
+      side: "SHORT",
+      points: -10,
+      text:
+        "15m خلاف جهت SHORT است."
+    });
   }
 
   long =
-    Math.max(
-      0,
-      long
-    );
+    Math.max(0, long);
 
   short =
-    Math.max(
-      0,
-      short
-    );
+    Math.max(0, short);
 
   const finalRaw =
     Math.max(
@@ -4733,21 +4592,6 @@ function calculateMasterSignal(
     finalRaw >=
       threshold;
 
-  const selectedCount =
-    bases.length;
-
-  const longReasons =
-    reasons.filter(
-      x =>
-        x.side === "LONG"
-    ).length;
-
-  const shortReasons =
-    reasons.filter(
-      x =>
-        x.side === "SHORT"
-    ).length;
-
   return {
     score:
       Math.round(
@@ -4776,26 +4620,306 @@ function calculateMasterSignal(
 
     qualifies,
 
-    selectedBases:
-      bases,
+    reasons
+  };
+}
 
-    selectedBaseCount:
-      selectedCount,
+/* ========================= FULL ANALYSIS ========================= */
 
-    confirmation:
-      qualifies
-        ? "CONFIRMED"
-        : finalRaw > 0
-          ? "WEAK"
-          : "NO_CONFIRMATION",
-
-    reasonCount:
-      Math.max(
-        longReasons,
-        shortReasons
+async function analyzeSymbol(
+  symbol,
+  category,
+  strictness,
+  deep = true
+) {
+  const [
+    k1,
+    k15,
+    ticker,
+    trades,
+    book
+  ] =
+    await Promise.all([
+      getKlines(
+        category,
+        symbol,
+        "1",
+        KLINE_LIMIT_1M
       ),
 
-    reasons
+      getKlines(
+        category,
+        symbol,
+        "15",
+        KLINE_LIMIT_15M
+      ),
+
+      getTicker(
+        category,
+        symbol
+      ),
+
+      getRecentTrades(
+        category,
+        symbol
+      ),
+
+      getOrderbook(
+        category,
+        symbol
+      )
+    ]);
+
+  const one =
+    analyze1m(k1);
+
+  const fifteen =
+    analyze15m(k15);
+
+  const footprint =
+    analyzeFootprint(
+      trades
+    );
+
+  const orderbook =
+    analyzeOrderbook(
+      book,
+      num(
+        ticker?.lastPrice
+      ) ||
+        one.price
+    );
+
+  one.supportResistance =
+    supportResistance(
+      k1,
+      one.price,
+      orderbook,
+      footprint
+    );
+
+  let oi = {
+    available: false,
+    reason:
+      "OI فقط برای Futures است."
+  };
+
+  let funding = {
+    available: false,
+    reason:
+      "Funding فقط برای Futures است."
+  };
+
+  let longShort = {
+    available: false
+  };
+
+  if (
+    category ===
+    "linear"
+  ) {
+    const [
+      oiHistory,
+      fundingHistory,
+      longShortData
+    ] =
+      await Promise.all([
+        getOIHistory(
+          symbol
+        ).catch(
+          () => null
+        ),
+
+        getFundingHistory(
+          symbol
+        ).catch(
+          () => null
+        ),
+
+        getLongShort(
+          symbol
+        ).catch(
+          () => null
+        )
+      ]);
+
+    oi =
+      analyzeOI(
+        oiHistory
+      );
+
+    funding =
+      analyzeFunding(
+        fundingHistory,
+        ticker
+      );
+
+    longShort =
+      analyzeLongShort(
+        longShortData
+      );
+  }
+
+  const styleNames = [
+    "Trend Following",
+    "Breakout",
+    "Reversal",
+    "Liquidity / Smart Money",
+    "Order Flow",
+    "Momentum / Pump-Dump"
+  ];
+
+  const styles =
+    styleNames.map(
+      style =>
+        calculateStyle(
+          style,
+          one,
+          fifteen,
+          footprint,
+          orderbook,
+          strictness
+        )
+    );
+
+  const rsiSignal =
+    calculateRSISignal(
+      one
+    );
+
+  const macdSignal =
+    calculateMACDSignal(
+      one
+    );
+
+  const divergenceSignal =
+    calculateDivergenceSignal(
+      one
+    );
+
+  const master =
+    calculateMasterSignal(
+      one,
+      fifteen,
+      footprint,
+      orderbook,
+      styles,
+      rsiSignal,
+      macdSignal,
+      divergenceSignal,
+      strictness
+    );
+
+  const marketState1m =
+    one.marketStyle ===
+    "BULLISH"
+      ? "LONG"
+      : one.marketStyle ===
+          "BEARISH"
+        ? "SHORT"
+        : "RANGE";
+
+  return {
+    ok: true,
+
+    mode:
+      "personal",
+
+    version:
+      PERSONAL_VERSION,
+
+    symbol,
+    category,
+
+    price:
+      num(
+        ticker?.lastPrice
+      ) ||
+      one.price,
+
+    direction:
+      master.direction,
+
+    score:
+      master.score,
+
+    longScore:
+      master.longScore,
+
+    shortScore:
+      master.shortScore,
+
+    threshold:
+      master.threshold,
+
+    qualifies:
+      master.qualifies,
+
+    reasons:
+      master.reasons,
+
+    marketState1m,
+
+    marketState15m:
+      fifteen.direction,
+
+    marketStyle:
+      one.marketStyle,
+
+    oneMinute:
+      one,
+
+    fifteenMinute:
+      fifteen,
+
+    signalBases: {
+      all:
+        master,
+
+      rsi:
+        rsiSignal,
+
+      macd:
+        macdSignal,
+
+      divergence:
+        divergenceSignal
+    },
+
+    tradingStyles:
+      styles,
+
+    footprint,
+
+    orderBook:
+      orderbook,
+
+    supportResistance:
+      one.supportResistance,
+
+    liquiditySweep:
+      one.liquiditySweep,
+
+    structure:
+      one.structure,
+
+    fvg:
+      one.fvg,
+
+    orderBlocks:
+      one.orderBlocks,
+
+    cisd:
+      one.cisd,
+
+    oi,
+
+    funding,
+
+    longShort,
+
+    generatedAt:
+      Date.now()
   };
 }
 
